@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api\V1\Rep;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Resources\RepCustomersResource as CustomerResource;
+use App\Customer;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -14,7 +17,13 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+      $customers = Customer::where(['area' => Auth::user()->area])->get();
+      $customers = CustomerResource::collection($customers);
+
+      return response()->json([
+        'code'  =>  201,
+        'data'  =>  $customers
+      ]);
     }
 
     /**

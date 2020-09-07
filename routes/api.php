@@ -17,3 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+/** Rep routes */
+Route::group([
+  'middleware' => 'auth:api',
+  'prefix' => 'rep/v1',
+  'namespace' => 'Api\V1\Rep'
+], function() {
+  // customers routes
+  Route::apiResource('/customers','CustomerController');
+});

@@ -22670,7 +22670,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   state: {
     // customers specialty
-    specialties: ['Gyna', 'Ortho', 'Ped', 'Physo', 'IM', 'GP', 'Derma', 'Uro', 'Optha'],
+    specialties: ['Gyna', 'Ortho', 'Ped', 'Physo', 'IM', 'GP', 'Derma', 'Uro', 'Optha', 'Ent', 'Chest', 'Dent'],
     // customer titles
     titles: ['Assistant', 'Specialist', 'MD', 'Prof'],
     // customer parameters
