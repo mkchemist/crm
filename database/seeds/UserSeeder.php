@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
                 'email'     =>  'r001@user.com',
                 'password'  =>  Hash::make(123456),
                 'role'      =>  'rep',
-                'area'      =>  'sub giza 1',
+                'area'      =>  'sub giza1',
                 'district'  =>  'giza 1',
                 'territory' =>  'giza',
                 'region'    =>  'cairo'

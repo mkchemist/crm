@@ -17,8 +17,6 @@ class CreateCustomerParametersTable extends Migration
             $table->id();
             $table->bigInteger('customer_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
-            $table->date('from_date');
-            $table->date('to_date');
             $table->string('param')->default('NN');
             $table->string('state')->default('new');
             $table->string('approved_by')->nullable();

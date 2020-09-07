@@ -12,12 +12,12 @@ $factory->define(Customer::class, function (Faker $faker) {
     $titles = ['Assistant','Specialist','MD','Prof'];
     return [
       'name'  =>  $faker->name,
-      'specialty' =>  rand(0, count($specialties)-1),
-      'title'     =>  rand(0, count($titles)-1),
+      'specialty' =>  $specialties[rand(0, count($specialties)-1)],
+      'title'     =>  $titles[rand(0, count($titles)-1)],
       'phone'     =>  $faker->phoneNumber,
       'address'   =>  $faker->address,
-      'brick'     =>  rand(0, count($bricks) -1),
-      'area'      =>  rand(0, count($areas)-1),
+      'brick'     =>  $bricks[rand(0, count($bricks) -1)],
+      'area'      =>  $areas[rand(0, count($areas)-1)],
       'district'  =>  'giza1',
       'territory' =>  'giza',
       'region'    =>  'cairo'
