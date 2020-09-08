@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class RepCustomersResource extends JsonResource
 {
@@ -24,7 +25,8 @@ class RepCustomersResource extends JsonResource
         'address' =>  $this->address,
         'area'    =>  $this->area,
         'workplace' =>  $this->workplace_id,
-        'phone'   =>  $this->phone
+        'phone'   =>  $this->phone,
+        'parameter' =>  $this->params()->where(['user_id' => Auth::user()->id])->first()->param
       ];
     }
 }

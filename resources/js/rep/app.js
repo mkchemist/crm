@@ -5,6 +5,12 @@ import router from "./routes";
 import {extend, localize, ValidationObserver, ValidationProvider} from "vee-validate"
 import * as rules from "vee-validate/dist/rules"
 import en from "vee-validate/dist/locale/en.json";
+import "vue-loaders/dist/vue-loaders.css";
+import VueLoaders from "vue-loaders";
+import Toasted from "vue-toasted";
+
+Vue.component('vue-loaders',VueLoaders.component);
+Vue.use(Toasted);
 
 Object.keys(rules).forEach((rule) => {
   extend(rule, rules[rule]);

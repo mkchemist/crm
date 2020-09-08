@@ -1,23 +1,23 @@
 <template>
   <div class="col-lg-3">
     <div class="list-group list-group-flush">
-      <router-link to="/customers/new" class="list-group-item list-group-item-action p-2">
+      <router-link to="/customers/new" class="list-group-item list-group-item-action p-2" active-class="active-list-item">
         <span><i class="fa fa-plus-circle"></i></span>
         <span>Add</span>
       </router-link>
-      <router-link to="/customers" class="list-group-item list-group-item-action p-2">
+      <router-link to="/customers" class="list-group-item list-group-item-action p-2" active-class="active-list-item" exact>
         <span><i class="fa fa-unlock"></i></span>
         <span>Active</span>
       </router-link>
-      <router-link to="/customers/inactive" class="list-group-item list-group-item-action p-2">
+      <router-link to="/customers/inactive" class="list-group-item list-group-item-action p-2" active-class="active-list-item">
         <span><i class="fa fa-lock"></i></span>
         <span>InActive</span>
       </router-link>
-      <router-link to="/customers/all" class="list-group-item list-group-item-action p-2">
+      <router-link to="/customers/all" class="list-group-item list-group-item-action p-2" active-class="active-list-item">
         <span><i class="fa fa-user-md"></i></span>
         <span>All</span>
       </router-link>
-      <router-link to="/customers/favorite" class="list-group-item list-group-item-action p-2">
+      <router-link to="/customers/favorite" class="list-group-item list-group-item-action p-2" active-class="active-list-item">
         <span><i class="fa fa-star"></i></span>
         <span>Favorite list</span>
       </router-link>
@@ -40,6 +40,14 @@ export default {
         border-left:3px solid #38c172;
         background-color:#1111;
       }
+    }
+  }
+  .active-list-item {
+    background-color: #38c172;
+    color: white;
+
+    &:hover{
+      color: #1119;
     }
   }
 </style>

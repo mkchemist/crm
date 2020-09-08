@@ -1,0 +1,48 @@
+.buttons-html5 {
+  margin-left: 5px !important;
+  background-color: #38c172 !important;
+  border-color: #38c172 !important;
+  color: white !important;
+}
+
+.page-link {
+  color: #38c172 !important;
+}
+
+.disabled .page-link {
+  color: #1119 !important;
+}
+
+.active .page-link {
+  background-color: #38c172 !important;
+  border-color: #38c172 !important;
+  color: white !important;
+}
+
+.page-fade {
+  -webkit-animation-name: page_fade_animation;
+          animation-name: page_fade_animation;
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
+}
+
+@-webkit-keyframes page_fade_animation {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes page_fade_animation {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+

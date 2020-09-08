@@ -2,7 +2,7 @@
   <div>
       <navbar />
       <div class="my-2 bg-white p-2" style="min-height:600px">
-        <router-view></router-view>
+        <router-view class="page-fade"></router-view>
       </div>
   </div>
 </template>

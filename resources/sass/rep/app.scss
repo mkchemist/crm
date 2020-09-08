@@ -1,0 +1,39 @@
+$success: #38c172;
+.buttons-html5 {
+  margin-left: 5px !important;
+  background-color: $success !important;
+  border-color: $success!important;
+  color:white !important;
+}
+
+.page-link {
+  color: #38c172 !important;
+}
+
+.disabled {
+  .page-link{
+    color: #1119 !important;
+  }
+}
+
+.active {
+  .page-link {
+    background-color: $success!important;
+    border-color: $success !important;
+    color: white !important;
+  }
+}
+
+.page-fade {
+  animation-name: page_fade_animation;
+  animation-duration: 1s;
+}
+
+@keyframes page_fade_animation {
+  from {
+    opacity:0;
+  }
+  to {
+    opacity: 1;
+  }
+}

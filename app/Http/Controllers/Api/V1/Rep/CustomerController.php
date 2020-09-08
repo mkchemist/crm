@@ -17,7 +17,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
-      $customers = Customer::where(['area' => Auth::user()->area])->get();
+      $customers = Customer::with(['params'])
+      ->where(['area' => Auth::user()->area])
+      ->get();
       $customers = CustomerResource::collection($customers);
 
       return response()->json([
