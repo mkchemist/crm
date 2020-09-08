@@ -9,8 +9,10 @@ import "vue-loaders/dist/vue-loaders.css";
 import VueLoaders from "vue-loaders";
 import Toasted from "vue-toasted";
 
-Vue.component('vue-loaders',VueLoaders.component);
-Vue.use(Toasted);
+Vue.use(Toasted, {
+  duration: 2000,
+  iconPack: 'fontawesome',
+});
 
 Object.keys(rules).forEach((rule) => {
   extend(rule, rules[rule]);
@@ -18,6 +20,7 @@ Object.keys(rules).forEach((rule) => {
 
 localize(en);
 
+Vue.component('vue-loaders',VueLoaders.component);
 Vue.component('ValidationObserver', ValidationObserver);
 Vue.component('ValidationProvider', ValidationProvider);
 

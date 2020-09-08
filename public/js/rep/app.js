@@ -2259,7 +2259,12 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
-    this.$store.dispatch("customerGetAll");
+    this.$store.dispatch("customerGetAll").then(function () {
+      /* this.$toasted.show('list loaded successfully', {
+        icon: 'check',
+        type: 'success'
+      }) */
+    });
   },
   computed: {
     activeCustomers: function activeCustomers() {
@@ -25303,12 +25308,15 @@ var vee_validate_dist_locale_en_json__WEBPACK_IMPORTED_MODULE_6___namespace = /*
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('vue-loaders', vue_loaders__WEBPACK_IMPORTED_MODULE_8__["default"].component);
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_toasted__WEBPACK_IMPORTED_MODULE_9___default.a);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_toasted__WEBPACK_IMPORTED_MODULE_9___default.a, {
+  duration: 2000,
+  iconPack: 'fontawesome'
+});
 Object.keys(vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_5__).forEach(function (rule) {
   Object(vee_validate__WEBPACK_IMPORTED_MODULE_4__["extend"])(rule, vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_5__[rule]);
 });
 Object(vee_validate__WEBPACK_IMPORTED_MODULE_4__["localize"])(vee_validate_dist_locale_en_json__WEBPACK_IMPORTED_MODULE_6__);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('vue-loaders', vue_loaders__WEBPACK_IMPORTED_MODULE_8__["default"].component);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('ValidationObserver', vee_validate__WEBPACK_IMPORTED_MODULE_4__["ValidationObserver"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('ValidationProvider', vee_validate__WEBPACK_IMPORTED_MODULE_4__["ValidationProvider"]);
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
@@ -25661,13 +25669,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../helpers/http-service */ "./resources/js/rep/helpers/http-service.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _helpers_http_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../helpers/http-service */ "./resources/js/rep/helpers/http-service.js");
 /**
  * Customer module
  *
  * this module deal with all customer related http service
  *
  */
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   state: {
@@ -25721,12 +25732,17 @@ __webpack_require__.r(__webpack_exports__);
       var state = _ref.state;
 
       if (!state.all.length) {
-        _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].get('rep/v1/customers').then(function (http) {
+        _helpers_http_service__WEBPACK_IMPORTED_MODULE_1__["httpCall"].get('rep/v1/customers').then(function (http) {
           var res = http.data;
 
           if (res.code === 201) {
             state.all = res.data;
           }
+        })["finally"](function () {
+          vue__WEBPACK_IMPORTED_MODULE_0___default.a.toasted.show('list loaded', {
+            type: 'success',
+            icon: 'check'
+          });
         });
       }
     }

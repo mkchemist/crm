@@ -36,7 +36,12 @@
 import TableComponent from "../../../components/TableComponent.vue";
 export default {
   created() {
-    this.$store.dispatch("customerGetAll");
+    this.$store.dispatch("customerGetAll").then(() => {
+      /* this.$toasted.show('list loaded successfully', {
+        icon: 'check',
+        type: 'success'
+      }) */
+    });
   },
   computed: {
     activeCustomers() {

@@ -4,7 +4,7 @@
  * this module deal with all customer related http service
  *
  */
-
+import Vue from "vue";
 import { httpCall } from "../helpers/http-service"
 
 
@@ -64,7 +64,12 @@ export default {
           if(res.code === 201) {
             state.all = res.data;
           }
-        })
+        }).finally(() => {
+          Vue.toasted.show('list loaded',{
+            type: 'success',
+            icon: 'check'
+          })
+        });
       }
     }
   }
