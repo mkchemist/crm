@@ -1,6 +1,14 @@
 <template>
   <div>
-    <h1>FavoriteList</h1>
+    <div class="px-0">
+      <p class="alert alert-success">
+        <span><i class="fa fa-star"></i></span>
+        <span>Favorite list</span>
+      </p>
+      <div>
+
+      </div>
+    </div>
   </div>
 </template>
 
@@ -12,7 +20,11 @@ export default {
     .then(({data}) => {
       console.log(data)
     })
-  }
+  },
+  data: () => ({
+    customers: [],
+    fetched: false
+  })
 }
 </script>
 
