@@ -6,11 +6,12 @@
  */
 import Vue from "vue";
 import { httpCall } from "../helpers/http-service"
-
+import router from "../routes";
 
 export default {
   state: {
-    all: []
+    all: [],
+    fetched: false
   },
   mutations: {
 
@@ -48,6 +49,9 @@ export default {
      */
     all: state => {
       return state.all;
+    },
+    fetched: state => {
+      return state.fetched;
     }
   },
   actions: {
@@ -55,22 +59,66 @@ export default {
      * get all customers from api
      *
      * @param {object} state
+     * @param {boolean} force // to force module to update customers
      */
-    customerGetAll({state}) {
-      if(!state.all.length) {
+    customerGetAll({state}, force) {
+      if(!state.all.length|| force) {
         httpCall.get('rep/v1/customers')
         .then(http => {
           let res = http.data;
           if(res.code === 201) {
             state.all = res.data;
+            setTimeout(() => {
+              state.fetched = true;
+            },2000);
+            if(res.data.length) {
+              Vue.toasted.show('list loaded',{
+                type: 'success',
+                icon: 'check'
+              })
+            } else {
+
+              Vue.toasted.show('No data to view', {
+                type: 'info',
+                icon: 'circle'
+              })
+            }
           }
-        }).finally(() => {
-          Vue.toasted.show('list loaded',{
-            type: 'success',
-            icon: 'check'
-          })
         });
       }
+    },
+
+    /**
+     * add new customer
+     *
+     * @param {object} {state, dispatch}
+     * @param {object} data
+     * @return {void}
+     */
+    addNewCustomer({dispatch}, data) {
+      httpCall.post('rep/v1/customers',data)
+      .then(({data}) => {
+        if(data.code === 203) {
+          Object.keys(data.data).forEach((key) => {
+            let errors = data.data[key];
+            errors.forEach((err) => {
+              Vue.toasted.show(err, {
+                type: 'warning',
+                icon : 'times-circle',
+                duration: null
+              })
+            });
+          });
+          return ;
+        }
+        Vue.toasted.show(`customer ${data.data.name} add successfully`, {
+          type: 'success',
+          icon : 'check'
+        })
+      }).finally(() => {
+        dispatch("customerGetAll", true)
+        router.replace("/customers");
+      })
     }
   }
 }

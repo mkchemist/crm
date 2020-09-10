@@ -31,7 +31,7 @@
 </template>
 
 <script>
-let base_url = process.env.MIX_APP_API_URL.replace('api', '');
+let base_url = process.env.MIX_APP_API_URL.replace('api/', '');
 export default {
   data() {
     return {

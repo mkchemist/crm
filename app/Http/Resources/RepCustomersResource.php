@@ -15,6 +15,8 @@ class RepCustomersResource extends JsonResource
      */
     public function toArray($request)
     {
+      $params = $this->params()->where(['user_id' => Auth::user()->id])->first();
+      $freq = $this->frequency()->where(['user_id' =>  Auth::user()->id])->first();
         //return parent::toArray($request);
       return [
         'id'    =>  $this->id,
@@ -26,7 +28,9 @@ class RepCustomersResource extends JsonResource
         'area'    =>  $this->area,
         'workplace' =>  $this->workplace_id,
         'phone'   =>  $this->phone,
-        'parameter' =>  $this->params()->where(['user_id' => Auth::user()->id])->first()->param
+        'parameter' =>  $params ? $params->param : "NN",
+        'current_freq'    =>  $freq ? $freq->current : 0,
+        'next_freq'   =>  $freq ? $freq->next : 0
       ];
     }
 }

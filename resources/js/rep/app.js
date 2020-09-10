@@ -10,7 +10,7 @@ import VueLoaders from "vue-loaders";
 import Toasted from "vue-toasted";
 
 Vue.use(Toasted, {
-  duration: 2000,
+  duration: 4000,
   iconPack: 'fontawesome',
 });
 

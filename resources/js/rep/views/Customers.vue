@@ -14,6 +14,9 @@ import CustomersSideBar from "../components/CustomersSideBar.vue";
 export default {
   components: {
     CustomersSideBar
+  },
+  created() {
+    this.$store.dispatch("customerGetAll");
   }
 }
 </script>

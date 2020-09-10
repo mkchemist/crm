@@ -12,11 +12,14 @@
         </router-link>
       </div>
       <div class="p-2">
-        <table-component
-          v-if="activeCustomers.length"
-          :headers="headers"
+        <customers-table
           :data="activeCustomers"
+          v-if="activeCustomers.length"
+          :withFavorite="true"
         />
+        <div v-else-if="fetched">
+          <p class="text-center lead">No data found</p>
+        </div>
         <div
           v-else
           class="text-center d-flex justify-content-center align-items-center"
@@ -33,47 +36,19 @@
 </template>
 
 <script>
-import TableComponent from "../../../components/TableComponent.vue";
+import CustomersTable from "../../components/CustomersTable";
 export default {
-  created() {
-    this.$store.dispatch("customerGetAll").then(() => {
-      /* this.$toasted.show('list loaded successfully', {
-        icon: 'check',
-        type: 'success'
-      }) */
-    });
-  },
   computed: {
     activeCustomers() {
       return this.$store.getters.active;
+    },
+    fetched() {
+      return this.$store.getters.fetched;
     }
   },
-  data: () => ({
-    headers: [
-      {
-        title: "Name",
-        name: "name"
-      },
-      {
-        title: 'Specialty',
-        name: 'specialty'
-      },
-      {
-        title: 'Param',
-        name: 'parameter'
-      },
-      {
-        title: 'Brick',
-        name: 'brick'
-      },
-      {
-        title: 'Area',
-        name: 'area'
-      }
-    ]
-  }),
+  data: () => ({}),
   components: {
-    TableComponent
+    CustomersTable
   }
 };
 </script>

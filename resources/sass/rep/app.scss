@@ -1,9 +1,12 @@
 $success: #38c172;
-.buttons-html5 {
-  margin-left: 5px !important;
-  background-color: $success !important;
-  border-color: $success!important;
-  color:white !important;
+.dt-buttons {
+
+  .btn {
+    margin-left: 5px !important;
+    background-color: $success !important;
+    border-color: $success!important;
+    color:white !important;
+  }
 }
 
 .page-link {

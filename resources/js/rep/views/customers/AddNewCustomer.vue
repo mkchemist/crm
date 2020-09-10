@@ -183,7 +183,7 @@ export default {
   }),
   methods: {
     onSubmit() {
-      console.log(this);
+      this.$store.dispatch('addNewCustomer',this.customer);
     }
   },
   created(){
