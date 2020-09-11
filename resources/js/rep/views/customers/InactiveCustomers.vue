@@ -20,16 +20,7 @@
         <div v-else-if="fetched">
           <p class="text-center lead">No data found</p>
         </div>
-        <div
-          v-else
-          class="text-center d-flex justify-content-center align-items-center"
-        >
-          <vue-loaders
-            name="ball-pulse-rise"
-            color="seagreen"
-            scale="1"
-          ></vue-loaders>
-        </div>
+        <loader-component v-else/>
       </div>
     </div>
   </div>

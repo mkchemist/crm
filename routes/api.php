@@ -28,4 +28,6 @@ Route::group([
   Route::apiResource('/customers','CustomerController');
   // Customers favorite lists routes
   Route::apiResource('/customers-favorite-list', 'CustomerFavoriteListController');
+  // workplaces routes
+  Route::apiResource('/workplaces', 'WorkplaceController');
 });

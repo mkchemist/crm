@@ -1,6 +1,6 @@
 <template>
   <div class="col-lg-3">
-    <div class="list-group list-group-flush">
+    <div class="list-group list-group-flush sidebar-list-group">
       <router-link to="/customers/new" class="list-group-item list-group-item-action p-2" active-class="active-list-item">
         <span><i class="fa fa-plus-circle"></i></span>
         <span>Add</span>
@@ -32,22 +32,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .list-group {
-    .list-group-item {
-      transition:.2s;
-
-      &:hover {
-        border-left:3px solid #38c172;
-        background-color:#1111;
-      }
-    }
-  }
-  .active-list-item {
-    background-color: #38c172;
-    color: white;
-
-    &:hover{
-      color: #1119;
-    }
-  }
 </style>

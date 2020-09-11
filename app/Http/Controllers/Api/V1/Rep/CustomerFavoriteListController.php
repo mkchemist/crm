@@ -21,10 +21,16 @@ class CustomerFavoriteListController extends Controller
       $customers = Customer::with(['params', 'frequency'])
       ->whereIn('id', function ($query) {
         $query->from('customer_favorite_lists')
-        ->select('id')
+        ->select('customer_id')
         ->where('user_id', Auth::user()->id)
         ->get();
       })->get();
+      if(count($customers) === 0) {
+        return response()->json([
+          'code'  =>  203,
+          'data'  =>  'No data to show'
+        ]);
+      }
       return response()->json([
         'code'  =>  201,
         'data'  =>  CustomerResource::collection($customers)
@@ -103,9 +109,33 @@ class CustomerFavoriteListController extends Controller
      */
     public function destroy($id)
     {
-        //
+      $item = $this->isAlreadyInList($id);
+      if(!$item) {
+        return response()->json([
+          'code'  =>  400,
+          'data'  =>  [
+            'errors'  =>  [
+              'Bad request input',
+              'this customer id is not valid'
+            ]
+          ]
+        ]);
+      }
+      $item->delete();
+      return response()->json([
+        "code"  =>  201,
+        "data"  =>  sprintf('customer %s remove from favorite list', $item->customer->name)
+      ]);
     }
 
+    /**
+     * check if customer already added to favorite list
+     * if customer add return CustomerFavoriteList instance
+     * else return false
+     *
+     * @param integer $id
+     * @return CustomerFavoriteList|boolean
+     */
     public function isAlreadyInList(int $id)
     {
       $customer = CustomerFavoriteList::where([

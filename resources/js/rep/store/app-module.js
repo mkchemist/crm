@@ -6,6 +6,13 @@
  *
  */
 
+let user = document.getElementById('user');
+if(user) {
+  user = JSON.parse(user.value);
+} else {
+  user : null
+}
+
 export default  {
   state: {
     // customers specialty
@@ -43,6 +50,20 @@ export default  {
       'LL',
       'NN',
       'XX'
+    ],
+    user,
+    /**
+     * workplace hospitals type
+     *
+     * i.e MOH hospital, polyclinic, Family healthcare unit
+     */
+    hospitalTypes: [
+      'MOH hospital',
+      'PolyClinic',
+      'Family clinic',
+      'Company',
+      'Private hospital',
+      'Tender'
     ]
   },
   actions: {
@@ -60,6 +81,9 @@ export default  {
     },
     param: state => {
       return state.params;
+    },
+    hospitalTypes: state => {
+      return state.hospitalTypes
     }
   }
 }

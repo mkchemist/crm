@@ -6,15 +6,11 @@
         Edit Customer <span v-if="customer">{{ customer.name }}</span>
       </p>
       <div class="my-2 p-2">
-        <div
-          class="d-flex justify-content-center align-items-center"
-          style="min-height:200px"
-          v-if="loading"
-        >
-          <vue-loaders name="square-spin" scale="2" color="#38c172" />
-        </div>
+        <loader-component v-if="loading" />
         <div v-else-if="error" class="text-center">
-          <p class="font-weight-lighter" style="font-size:3rem">Error {{ error_code }}</p>
+          <p class="font-weight-lighter" style="font-size:3rem">
+            Error {{ error_code }}
+          </p>
           <p class="text-danger lead"><b>Oops</b> something wrong happen</p>
         </div>
         <div v-else>
@@ -165,17 +161,17 @@ export default {
           this.customerNotFoundError(err, data.code);
           return;
         }
-        if(data.code === 400) {
+        if (data.code === 400) {
           let errors = data.data.errors;
           this.loading = false;
           this.error = errors;
           this.error_code = data.code;
-          errors.forEach((err) => {
+          errors.forEach(err => {
             this.$toasted.show(err, {
-              icon: 'exclamation',
-              duration:10000
-            })
-          })
+              icon: "exclamation",
+              duration: 10000
+            });
+          });
           return;
         }
         this.customer = data.data;

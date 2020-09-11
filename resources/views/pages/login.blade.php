@@ -16,7 +16,7 @@
             @endif
             <div class="form-group">
                 <label for="username" class="text-muted">Username</label>
-                <input type="text" name="username" id="username" class="form-control form-control-sm" placeholder="Enter username">
+                <input type="text" name="username" id="username" class="form-control form-control-sm" placeholder="Enter username" autofocus>
                 @error("username")
                 <span class="text-danger small">Username required</span>
                 @enderror

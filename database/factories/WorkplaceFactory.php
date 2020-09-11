@@ -11,10 +11,10 @@ $factory->define(Workplace::class, function (Faker $faker) {
   $types = ['MOH hospital','Family clinic', 'Private hospital', 'Polyclinic','Tender', 'Company'];
   return [
     'name'  =>  $faker->name,
-    'type'      =>  rand(0, count($types)-1),
+    'type'      =>  $types[rand(0, count($types)-1)],
     'address'   =>  $faker->address,
-    'brick'     =>  rand(0, count($bricks) -1),
-    'area'      =>  rand(0, count($areas)-1),
+    'brick'     =>  $bricks[rand(0, count($bricks) -1)],
+    'area'      =>  $areas[rand(0, count($areas)-1)],
     'district'  =>  'giza1',
     'territory' =>  'giza',
     'region'    =>  'cairo'

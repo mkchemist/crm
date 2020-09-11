@@ -72,7 +72,7 @@ export default {
               state.fetched = true;
             },2000);
             if(res.data.length) {
-              Vue.toasted.show('list loaded',{
+              Vue.toasted.show('Customers list loaded',{
                 type: 'success',
                 icon: 'check'
               })

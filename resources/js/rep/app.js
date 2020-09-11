@@ -8,6 +8,7 @@ import en from "vee-validate/dist/locale/en.json";
 import "vue-loaders/dist/vue-loaders.css";
 import VueLoaders from "vue-loaders";
 import Toasted from "vue-toasted";
+import LoaderComponent from "./components/LoaderComponent";
 
 Vue.use(Toasted, {
   duration: 4000,
@@ -23,6 +24,7 @@ localize(en);
 Vue.component('vue-loaders',VueLoaders.component);
 Vue.component('ValidationObserver', ValidationObserver);
 Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('LoaderComponent', LoaderComponent);
 
 var app = new Vue({
   render: h => h(App),

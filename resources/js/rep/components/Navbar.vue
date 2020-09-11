@@ -4,7 +4,7 @@
       <router-link to="/" class="navbar-brand">
         <img :src="`${base_url}images/logo.png`" alt="" class="img-fluid">
         <br>
-        <span class="small text-muted font-italic d-none d-lg-block">Welcome Dr name</span>
+        <span class="small text-muted font-italic d-none d-lg-block">Welcome Dr {{ $store.state.AppModule.user.name }}</span>
       </router-link>
       <button class="navbar-toggler" data-toggle="collapse" data-target="#rep_navbar">
         <span class="navbar-toggler-icon"></span>
@@ -33,6 +33,9 @@
 <script>
 let base_url = process.env.MIX_APP_API_URL.replace('api/', '');
 export default {
+  created() {
+
+  },
   data() {
     return {
       base_url,

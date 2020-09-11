@@ -40,3 +40,22 @@ $success: #38c172;
     opacity: 1;
   }
 }
+
+.sidebar-list-group {
+  .list-group-item {
+    transition:.2s;
+
+    &:hover {
+      border-left:3px solid #38c172;
+      background-color:#1111;
+    }
+  }
+  .active-list-item {
+    background-color: #38c172;
+    color: white;
+
+    &:hover{
+      color: #1119;
+    }
+  }
+}
