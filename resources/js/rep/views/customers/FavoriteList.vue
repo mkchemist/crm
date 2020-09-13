@@ -3,7 +3,7 @@
     <div class="px-0">
       <p class="alert alert-success">
         <span><i class="fa fa-star"></i></span>
-        <span>Favorite list</span>
+        <span class="font-weight-bold">Favorite list</span>
       </p>
       <div>
         <customers-table

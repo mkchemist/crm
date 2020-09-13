@@ -108,10 +108,10 @@ class WorkplaceController extends Controller
         'code'  =>  301,
         'data'  =>  [
           'errors' => [
-            'Invalid workplace Id'
+            'Invalid hospital Id'
           ]
         ]
-      ], 301);
+      ]);
     }
 
     return response()->json([
@@ -129,7 +129,53 @@ class WorkplaceController extends Controller
    */
   public function update(Request $request, $id)
   {
-    //
+    $validator = Validator::make($request->all(), [
+      'name'  =>  'required',
+      'type'  =>  'required',
+      'brick' =>  'required'
+    ]);
+    if($validator->fails()) {
+      return response()->json([
+        'code'  =>  400,
+        'data' => $validator->errors()
+      ]);
+    }
+    if (!is_numeric($id)) {
+      return response()->json([
+        'code'  =>  400,
+        'data'  =>  [
+          'errors'  =>  [
+            'Bad Request Input',
+            'Id must be numeric (alphabetic is not allowed)'
+          ]
+        ]
+      ]);
+    }
+    $workplace = Workplace::where([
+      'area'  =>  Auth::user()->area,
+      'id'    =>  $id
+    ])->first();
+
+    if (!$workplace) {
+      return response()->json([
+        'code'  =>  301,
+        'data'  =>  [
+          'errors' => [
+            'Invalid hospital Id'
+          ]
+        ]
+      ]);
+    }
+
+    $workplace->type = $request->type;
+    $workplace->address = $request->address;
+    $workplace->brick = $request->brick;
+    $workplace->save();
+    return response() ->json([
+      'code'  =>  201,
+      'data'  =>  sprintf('Hospital %s updated successfully', $workplace->name)
+    ]);
+
   }
 
   /**

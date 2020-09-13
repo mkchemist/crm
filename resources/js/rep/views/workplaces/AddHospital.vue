@@ -3,7 +3,7 @@
     <div class="px-0 shadow">
       <p class="alert alert-success">
         <span><i class="fa fa-plus-circle"></i></span>
-        <span>Add new Hospital</span>
+        <span class="font-weight-bold">Add new Hospital</span>
       </p>
       <div class="my-2 p-2">
         <ValidationObserver v-slot="{ handleSubmit }">
@@ -82,7 +82,7 @@
                 </ValidationProvider>
               </div>
             </div>
-            <hr>
+            <hr />
             <div class="form-group text-right">
               <router-link to="/workplaces" class="btn  btn-sm btn-dark">
                 <span><i class="fa fa-chevron-circle-left"></i></span>
@@ -101,39 +101,44 @@
 </template>
 
 <script>
-import { httpCall } from '../../helpers/http-service';
+import { httpCall } from "../../helpers/http-service";
 export default {
   methods: {
     onSubmit() {
-      httpCall.post('rep/v1/workplaces',this.hospital)
-      .then(({data}) => {
-        if(data.code === 400) {
-          let errors = data.data;
-          Object.keys(errors).forEach((key) => {
-            let item = errors[key];
-            item.forEach((err) => {
-              this.$toasted.show(err, {
-                icon:'exclamation',
-                theme: ''
-              })
-            })
-          })
-          return;
-        }
-        if(data.code === 203) {
-          this.$toasted.show(data.data.errors, {
-            type: 'ido',
-            icon: 'Exclamation'
-          })
-          return;
-        }
-        this.$toasted.show('Hospital added Successfully', {
-          type: 'success',
-          icon: 'check'
+      httpCall
+        .post("rep/v1/workplaces", this.hospital)
+        .then(({ data }) => {
+          if (data.code === 400) {
+            let errors = data.data;
+            Object.keys(errors).forEach(key => {
+              let item = errors[key];
+              item.forEach(err => {
+                this.$toasted.show(err, {
+                  icon: "exclamation",
+                  theme: ""
+                });
+              });
+            });
+            return;
+          }
+          if (data.code === 203) {
+            this.$toasted.show(data.data.errors, {
+              type: "ido",
+              icon: "Exclamation"
+            });
+            return;
+          } else {
+            this.$toasted.show("Hospital added Successfully", {
+              type: "success",
+              icon: "check"
+            });
+            this.$router.replace("/workplaces");
+            //this.$store.dispatch("workplaceGetAll");
+
+          }
+        })
+        .finally(() => {
         });
-        this.$router.replace('/workplaces');
-        this.$store.dispatch('workplaceGetAll');
-      })
     }
   },
   data: () => ({

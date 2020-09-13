@@ -30,4 +30,6 @@ Route::group([
   Route::apiResource('/customers-favorite-list', 'CustomerFavoriteListController');
   // workplaces routes
   Route::apiResource('/workplaces', 'WorkplaceController');
+  // pharmacies routes
+  Route::apiResource('/pharmacies', 'PharmacyController');
 });

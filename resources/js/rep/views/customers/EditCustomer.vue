@@ -3,7 +3,9 @@
     <div class="px-0 shadow">
       <p class="alert alert-warning">
         <span><i class="fa fa-edit"></i></span>
-        Edit Customer <span v-if="customer">{{ customer.name }}</span>
+        <span class="font-weight-bold">
+          Edit Customer <span v-if="customer">{{ customer.name }}</span>
+        </span>
       </p>
       <div class="my-2 p-2">
         <loader-component v-if="loading" />

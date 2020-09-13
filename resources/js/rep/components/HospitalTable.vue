@@ -24,13 +24,13 @@
         <td>{{ workplace.state }}</td>
         <td>
           <router-link
-            :to="`/workplaces/view/${workplace.id}`"
+            :to="`/workplaces/hospital/view/${workplace.id}`"
             class="btn btn-sm btn-info"
           >
             <span><i class="fa fa-eye"></i></span>
           </router-link>
           <router-link
-            :to="`/workplaces/edit/${workplace.id}`"
+            :to="`/workplaces/hospital/edit/${workplace.id}`"
             class="btn btn-sm btn-warning"
           >
             <span><i class="fa fa-edit"></i></span>

@@ -64,6 +64,17 @@ export default  {
       'Company',
       'Private hospital',
       'Tender'
+    ],
+    /**
+     * pharmacy types
+     *
+     *
+     */
+    pharmacyTypes: [
+      'Private',
+      'Company',
+      'Tender',
+      'Chain'
     ]
   },
   actions: {
@@ -84,6 +95,9 @@ export default  {
     },
     hospitalTypes: state => {
       return state.hospitalTypes
+    },
+    pharmacyTypes: state => {
+      return state.pharmacyTypes;
     }
   }
 }

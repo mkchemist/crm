@@ -21,7 +21,7 @@ export default new VueRouter({
     CustomersRoutes,
     {
       path: "/planner",
-      component: Planner
+      component: Planner,
     },
     WorkplaceRoutes,
     {

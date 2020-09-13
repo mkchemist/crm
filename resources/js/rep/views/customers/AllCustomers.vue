@@ -3,7 +3,7 @@
     <div class="px-0">
       <p class="alert alert-success">
         <span><i class="fa fa-list"></i></span>
-        <span>All Customer List</span>
+        <span class="font-weight-bold">All Customer List</span>
       </p>
       <div class="p-2 text-right">
         <router-link to="/customers/new" class="btn btn-sm btn-success">

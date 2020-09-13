@@ -2,7 +2,9 @@
   <div>
     <div class="px-0 shadow pb-3 rounded">
       <p class="alert alert-success">
-        View Customer {{ customer ?customer.name : null }} card
+        <span class="font-weight-bold">
+          View Customer {{ customer ?customer.name : null }} card
+        </span>
       </p>
       <div class="p-2">
         <!-- ctrl buttons section  -->

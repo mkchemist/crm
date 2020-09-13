@@ -3,7 +3,7 @@
     <div class="px-0 shadow">
       <p class="alert alert-success">
         <span><i class="fa fa-plus-circle"></i></span>
-        <span>Add new customer</span>
+        <span class="font-weight-bold">Add new customer</span>
       </p>
       <div class="p-2">
         <ValidationObserver v-slot="{ handleSubmit }">
