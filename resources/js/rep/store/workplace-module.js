@@ -21,8 +21,8 @@ export default {
      *
      * @param {object} {state}
      */
-    workplaceGetAll: ({ state }) => {
-      if (!state.all.length) {
+    workplaceGetAll: ({ state }, force) => {
+      if (!state.all.length || !force) {
         httpCall.get("rep/v1/workplaces").then(({ data }) => {
           if (data.code === 201) {
             state.fetched = true;
@@ -40,8 +40,8 @@ export default {
      *
      *
      */
-    pharmacyGetAll: ({state}) => {
-      if(!state.pharmacies.length) {
+    pharmacyGetAll: ({state}, force) => {
+      if(!state.pharmacies.length || !force) {
         httpCall.get('rep/v1/pharmacies')
         .then(({data}) => {
           if(data.code === 201) {

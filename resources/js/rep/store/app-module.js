@@ -32,9 +32,9 @@ export default  {
     ],
     // customer titles
     titles: [
-      'Assistant',
+      'Resident',
       'Specialist',
-      'MD',
+      'Physician',
       'Prof'
     ],
     // customer parameters
@@ -60,10 +60,11 @@ export default  {
     hospitalTypes: [
       'MOH hospital',
       'PolyClinic',
-      'Family clinic',
+      'Health unit',
       'Company',
       'Private hospital',
-      'Tender'
+      'Tender',
+      'Military hospital'
     ],
     /**
      * pharmacy types

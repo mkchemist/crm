@@ -63,6 +63,9 @@ export default {
         }
       ]
     });
+  },
+  destroyed() {
+    this.table.destroy();
   }
 }
 </script>

@@ -154,9 +154,9 @@ export default {
           this.$toasted.show(data.data, {
             type: 'success',
             theme: 'bubble'
-          })
-          this.$router.replace('/workplaces')
-          this.$store.dispacy('workplaceGetAll');
+          });
+          this.$router.push('/workplaces');
+          this.$store.dispatch('workplaceGetAll', true)
         }
       });
     }

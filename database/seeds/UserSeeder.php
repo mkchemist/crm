@@ -23,7 +23,8 @@ class UserSeeder extends Seeder
                 'area'      =>  'all',
                 'district'  =>  'all',
                 'territory' =>  'all',
-                'region'    =>  'all'
+                'region'    =>  'all',
+                'line'      =>  'all'
             ],
             [
                 'name'      =>  'R001',
@@ -34,7 +35,8 @@ class UserSeeder extends Seeder
                 'area'      =>  'sub giza1',
                 'district'  =>  'giza 1',
                 'territory' =>  'giza',
-                'region'    =>  'cairo'
+                'region'    =>  'cairo',
+                'line'      =>  'line1'
             ]
         ]);
     }

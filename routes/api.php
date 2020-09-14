@@ -32,4 +32,9 @@ Route::group([
   Route::apiResource('/workplaces', 'WorkplaceController');
   // pharmacies routes
   Route::apiResource('/pharmacies', 'PharmacyController');
+  // Workplace Department routes
+  Route::group(['prefix' => '/workplace-department'], function() {
+    Route::get('/all/{id}', 'WorkplaceDepartmentController@getWorkplaceDepartment');
+    Route::post('/', 'WorkplaceDepartmentController@store');
+  });
 });
