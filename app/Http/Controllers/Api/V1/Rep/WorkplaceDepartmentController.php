@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Rep;
 
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\WorkplaceDepartment;
 use Illuminate\Http\Request;
@@ -20,10 +21,7 @@ class WorkplaceDepartmentController extends Controller
         ->first();
     })->get();
     if(count($departs) === 0) {
-      return response()->json([
-        'code'  =>  301,
-        'data'  =>  'No data to Show'
-      ]);
+      return response()->json(ResponseHelper::EMPTY_RESPONSE);
     }
     return response()->json([
       'code'  =>  201,
@@ -44,10 +42,7 @@ class WorkplaceDepartmentController extends Controller
       'name'         => 'required'
     ]);
     if($validator->fails()) {
-      return response()->json([
-        'code'  =>  400,
-        'data'  =>  $validator->errors()
-      ]);
+      return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
     $check = WorkplaceDepartment::where([
       'workplace_id'  =>  $request->workplace_id,
@@ -55,12 +50,7 @@ class WorkplaceDepartmentController extends Controller
     ])->first();
 
     if($check) {
-      return response()->json([
-        'code'  =>  203,
-        'data'  =>  [
-          'errors'  =>  ['Department already exists']
-        ]
-      ]);
+      return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
     WorkplaceDepartment::create($request->all());
     return response()->json([
@@ -69,4 +59,27 @@ class WorkplaceDepartmentController extends Controller
     ]);
   }
 
+  /**
+   * update department
+   *
+   * @param Request $request
+   * @param int $id
+   * @return void
+   */
+  public function update(Request $request, int $id)
+  {
+    if(!ResponseHelper::isNumeric($id)) {
+      return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
+    }
+    $department = WorkplaceDepartment::find($id);
+    if(!$department) {
+      return response()->json(ResponseHelper::INVALID_ID);
+    }
+    $department->head = $request->head;
+    $department->save();
+    return response()->json([
+      'code'  =>  201,
+      'data'  =>  'Department edit successfully'
+    ]);
+  }
 }

@@ -8,6 +8,7 @@ use App\Http\Resources\RepCustomersResource as CustomerResource;
 use App\Customer;
 use App\CustomerFrequency;
 use App\CustomerParameter;
+use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -47,10 +48,7 @@ class CustomerController extends Controller
       ]);
 
       if($validator->fails()) {
-        return response()->json([
-          "code"  =>  203,
-          "data"  =>  $validator->errors()
-        ]);
+        return response()->json(ResponseHelper::validationErrorResponse($validator));
       }
 
       if($this->checkIfCustomerExist(
@@ -58,24 +56,11 @@ class CustomerController extends Controller
         $request->brick,
         $request->specialty
       )) {
-        return response()->json([
-          "code"  =>  203,
-          "data"  =>  [
-            "error" =>  [
-              sprintf('Customer %s is already exist', $request->name)
-            ]
-          ]
-        ]);
+        return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
       }
 
       $data = array_merge($request->all(), $this->getUserAreaDetails());
       $customer = Customer::create($data);
-
-      /* $params = CustomerParameter::create([
-        "user_id" =>  Auth::user()->id,
-        "customer_id" =>  $customer->id,
-        "param"       =>  $request->params
-      ]); */
       $params = $this->customerParameterUpdateOrCreate($customer->id,$request->params);
       $freq = $this->customerFrequencyUpdateOrCreate($customer->id, $request->frequency, false);
       $customer->params = $params;
@@ -96,24 +81,11 @@ class CustomerController extends Controller
     public function show($id)
     {
         if(!is_numeric($id)) {
-          return response()->json([
-            'code'  =>  400,
-            'data'  =>  [
-              'errors'  =>  [
-                'Error: Bad Request',
-                'Id must be numeric (alphabetic is not allowed)'
-              ]
-            ]
-          ]);
+          return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
         }
         $customer = $this->getCustomerById($id);
         if(!$customer) {
-          return response()->json([
-            'code'  =>  301,
-            'data'  =>  [
-              'errors'  =>  'this customer ID is not valid ID'
-            ]
-          ]);
+          return response()->json(ResponseHelper::INVALID_ID);
         }
         return response()->json([
           "code"  =>  201,
@@ -136,33 +108,19 @@ class CustomerController extends Controller
         'next_freq' =>  'required|numeric'
       ]);
       if($validator->fails()) {
-        return response()->json([
-          'code'  =>  203,
-          'data'  =>  $validator->errors()
-        ]);
+        return response()->json(ResponseHelper::validationErrorResponse($validator));
       }
       // check if the customer with the given id
       // is already exists
       $customer = $this->getCustomerById($id);
       if(!$customer) {
-        return response()->json([
-          'code'  =>  301,
-          'data'  =>  [
-            'errors'  =>  'this customer ID is not valid ID'
-          ]
-        ]);
+        return response()->json(ResponseHelper::INVALID_ID);
       }
 
       $customer->address = $request->address;
       $customer->phone = $request->phone;
       $customer->workplace_id = $request->workplace === "null" ? null :$request->workplace;
       $customer->title = $request->title;
-      /* $params = CustomerParameter::updateOrCreate([
-        "user_id" =>  Auth::user()->id,
-        "customer_id" =>  $customer->id,
-      ]);
-      $params->param = $request->parameter;
-      $params->save(); */
       $this->customerParameterUpdateOrCreate($customer->id, $request->parameter);
       $this->customerFrequencyUpdateOrCreate($customer->id, $request->next_freq, false);
       $customer->save();

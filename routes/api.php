@@ -36,5 +36,6 @@ Route::group([
   Route::group(['prefix' => '/workplace-department'], function() {
     Route::get('/all/{id}', 'WorkplaceDepartmentController@getWorkplaceDepartment');
     Route::post('/', 'WorkplaceDepartmentController@store');
+    Route::put('/{id}','WorkplaceDepartmentController@update');
   });
 });

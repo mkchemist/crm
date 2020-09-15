@@ -1,6 +1,6 @@
 <template>
   <div class="p-2 shadow table-wrapper">
-    <table class="table table-striped table-sm small" id="customers-table">
+    <table class="table table-striped table-sm small table-responsive" id="customers-table">
       <thead>
         <tr class="bg-success text-light">
           <th>id</th>
@@ -236,12 +236,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-td,
-tr,
-th {
-  white-space: nowrap;
-}
-.table-wrapper {
-  overflow: auto;
-}
+
 </style>

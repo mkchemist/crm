@@ -64,3 +64,13 @@
   color: #1119;
 }
 
+.table-wrapper {
+  overflow-x: auto;
+}
+
+td,
+tr,
+th {
+  white-space: nowrap;
+}
+

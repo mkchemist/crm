@@ -1,6 +1,6 @@
 <template>
   <div class="col-12">
-    <table class="table table-striped w-100">
+    <table class="table table-striped w-100 table-responsive-sm">
       <thead>
         <tr>
           <th>Name</th>
@@ -64,6 +64,7 @@ export default {
     },
     editDepartment() {
       this.$emit('onEdit', this.selected);
+      $('#edit_department_modal').modal('hide');
     }
   },
   data: () => ({

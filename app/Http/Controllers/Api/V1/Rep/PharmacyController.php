@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Rep;
 
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Pharmacy;
 use Illuminate\Http\Request;
@@ -41,10 +42,7 @@ class PharmacyController extends Controller
       'brick' =>  'required'
     ]);
     if ($validator->fails()) {
-      return response()->json([
-        'code'  =>  400,
-        'data'  =>  $validator->errors()
-      ]);
+      return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
     $check = $this->getPharmacy([
       'name'  =>  $request->name,
@@ -52,14 +50,7 @@ class PharmacyController extends Controller
       'brick' =>  $request->brick
     ]);
     if ($check) {
-      return response()->json([
-        'code'  =>  302,
-        'data'  =>  [
-          'errors'  => [
-            sprintf('Pharmacy %s is already exists', $check->name)
-          ]
-        ]
-      ]);
+      return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
     $user = Auth::user();
     $pharmacy = Pharmacy::create(array_merge($request->all(), [
@@ -84,29 +75,14 @@ class PharmacyController extends Controller
   public function show($id)
   {
     if(!is_numeric($id)) {
-      return response()->json([
-        'code'  =>  400,
-        'data'  =>  [
-          'errors'  =>  [
-            'Bad Request Input',
-            'Pharmacy Id must be number'
-          ]
-        ]
-      ]);
+      return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
     $pharmacy = $this->getPharmacy([
       'id'  =>  $id,
       'area'  =>  Auth::user()->area
     ]);
     if(!$pharmacy) {
-      return response()->json([
-        'code'  =>  302,
-        'data'  =>  [
-          'errors'  =>  [
-            'Pharmacy Id is not valid'
-          ]
-        ]
-      ]);
+      return response()->json(ResponseHelper::INVALID_ID);
     }
     return response()->json([
       'code'  =>  201,
@@ -128,35 +104,17 @@ class PharmacyController extends Controller
       'brick' =>  'required'
     ]);
     if($validator->fails()) {
-      return response()->json([
-        'code'  =>  400,
-        'data'  =>  $validator->errors()
-      ]);
+      return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
     if(!is_numeric($id)) {
-      return response()->json([
-        'code'  =>  400,
-        'data'  =>  [
-          'errors'  =>  [
-            'Bad Request Input',
-            'Pharmacy Id must be number'
-          ]
-        ]
-      ]);
+      return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
     $pharmacy = $this->getPharmacy([
       'id'  =>  $id,
       'area'  =>  Auth::user()->area
     ]);
     if(!$pharmacy) {
-      return response()->json([
-        'code'  =>  302,
-        'data'  =>  [
-          'errors'  =>  [
-            'Pharmacy Id is not valid'
-          ]
-        ]
-      ]);
+      return response()->json(ResponseHelper::INVALID_ID);
     }
     $pharmacy->type = $request->type;
     $pharmacy->key_person = $request->key_person;

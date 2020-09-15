@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\CustomerFavoriteList;
 use App\Customer;
+use App\Helpers\ResponseHelper;
 use App\Http\Resources\RepCustomersResource as CustomerResource;
 
 class CustomerFavoriteListController extends Controller
@@ -26,10 +27,7 @@ class CustomerFavoriteListController extends Controller
         ->get();
       })->get();
       if(count($customers) === 0) {
-        return response()->json([
-          'code'  =>  203,
-          'data'  =>  'No data to show'
-        ]);
+        return response()->json(ResponseHelper::EMPTY_RESPONSE);
       }
       return response()->json([
         'code'  =>  201,
@@ -47,26 +45,11 @@ class CustomerFavoriteListController extends Controller
     {
       $id = $request->id;
       if(!is_numeric($id)) {
-        return response()->json([
-          'code'  =>  400,
-          'data'  =>  [
-            'errors'  =>  [
-              'bad Request input',
-              'Id must be numeric'
-            ]
-          ]
-        ]);
+        return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
       }
       $item = $this->isAlreadyInList($id);
       if($item) {
-        return response()->json([
-          'code'  =>  203,
-          'data'  =>  [
-            'errors'  =>  [
-              sprintf('Dr %s is already in your favorite list', $item->customer->name)
-            ]
-          ]
-        ]);
+        return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
       }
       $list = CustomerFavoriteList::create([
         'customer_id' =>  $id,
@@ -111,15 +94,7 @@ class CustomerFavoriteListController extends Controller
     {
       $item = $this->isAlreadyInList($id);
       if(!$item) {
-        return response()->json([
-          'code'  =>  400,
-          'data'  =>  [
-            'errors'  =>  [
-              'Bad request input',
-              'this customer id is not valid'
-            ]
-          ]
-        ]);
+        return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
       }
       $item->delete();
       return response()->json([

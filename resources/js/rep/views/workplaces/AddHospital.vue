@@ -132,8 +132,8 @@ export default {
               type: "success",
               icon: "check"
             });
+            this.$store.dispatch("workplaceGetAll", true);
             this.$router.replace("/workplaces");
-            //this.$store.dispatch("workplaceGetAll");
 
           }
         })

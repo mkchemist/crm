@@ -5,6 +5,16 @@
         <span><i class="fa fa-address-card"></i></span>
         <span>View Hospital {{ hospital ? hospital.name : null }}</span>
       </p>
+      <div class="p-2 text-right">
+        <router-link to="/workplaces" class="btn btn-sm btn-dark">
+          <span><i class="fa fa-chevron-circle-left"></i></span>
+          <span>back</span>
+        </router-link>
+        <router-link :to="`workplaces/hospital/edit/${$route.params.id}`" class="btn btn-sm btn-warning">
+          <span><i class="fa fa-edit"></i></span>
+          <span>edit</span>
+        </router-link>
+      </div>
       <div class="p-2">
         <!-- hospital info -->
         <div class="border p-2 rounded">
@@ -85,14 +95,7 @@ export default {
       let id = this.getHospitalId();
       httpCall.get("rep/v1/workplaces/" + id).then(({ data }) => {
         if (data.code === 400 || data.code === 301) {
-          Object.keys(data.data).forEach(key => {
-            data.data[key].forEach(err => {
-              this.$toasted.show(err, {
-                icon: "exclamation-triangle",
-                duration: 10000
-              });
-            });
-          });
+          this.handleResponseError(data);
           if(data.code === 400) {
             this.hospital_error = "Hospital ID must be a number";
           }else {
@@ -116,12 +119,12 @@ export default {
       let id = this.getHospitalId();
       httpCall.get('rep/v1/workplace-department/all/'+id)
       .then(({data}) => {
-        if(data.code === 301) {
-          this.$toasted.show(data.data, {
+        if(data.code === 203) {
+          this.$toasted.show("No departments found", {
             icon: 'exclamation-triangle',
             duration:10000
           });
-          this.departments_error = "No data to provided";
+          this.departments_error = "No data  provided";
         } else {
           this.$toasted.show('Departments loaded successfully', {
             type: 'success',
@@ -154,14 +157,7 @@ export default {
       httpCall.post('rep/v1/workplace-department',{...department, workplace_id: id })
       .then(({data}) => {
         if(data.code === 400 || data.code === 203) {
-          Object.keys(data.data).forEach((key) => {
-            data.data[key].forEach((err) => {
-              this.$toasted.show(err, {
-                icon: 'exclamation',
-                duration: 10000
-              });
-            });
-          });
+          this.handleResponseError(data)
         } else {
           this.$toasted.show('Department added successfully', {
             type: 'success',
@@ -177,7 +173,18 @@ export default {
      * @param {object} department
      */
     editDepartment(department) {
-
+      httpCall.post('rep/v1/workplace-department/'+department.id, {...department, _method: 'PUT'})
+      .then(({data}) => {
+        if(data.code === 400) {
+          this.handleResponseError(data);
+        } else {
+          this.$toasted.show(data.data, {
+            type: 'success',
+            icon : 'check'
+          });
+          this.getDepartments();
+        }
+      });
     }
   },
   data: () => ({

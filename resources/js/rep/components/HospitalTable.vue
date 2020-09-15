@@ -78,7 +78,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  td,th,tr {
-    white-space: nowrap;
-  }
+
 </style>

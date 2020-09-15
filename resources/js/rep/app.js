@@ -9,17 +9,22 @@ import "vue-loaders/dist/vue-loaders.css";
 import VueLoaders from "vue-loaders";
 import Toasted from "vue-toasted";
 import LoaderComponent from "./components/LoaderComponent";
+import { ResponseHandler } from "./helpers/response-handler";
 
 Vue.use(Toasted, {
   duration: 4000,
   iconPack: 'fontawesome',
 });
 
+
+Vue.mixin(ResponseHandler)
+
 Object.keys(rules).forEach((rule) => {
   extend(rule, rules[rule]);
 });
 
 localize(en);
+
 
 Vue.component('vue-loaders',VueLoaders.component);
 Vue.component('ValidationObserver', ValidationObserver);

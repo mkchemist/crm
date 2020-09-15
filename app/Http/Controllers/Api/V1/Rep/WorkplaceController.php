@@ -8,6 +8,7 @@ use App\Http\Resources\RepWorkplaceResource as WorkplaceResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\ResponseHelper;
 
 class WorkplaceController extends Controller
 {
@@ -48,10 +49,7 @@ class WorkplaceController extends Controller
     // return response with code 203
     // and validation errors
     if($validator->fails()) {
-      return response()->json([
-        'code'  =>  400,
-        'data'  =>  $validator->errors()
-      ]);
+      return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
     $check = $this->getWorkplace([
       'name'  =>  $request->name,
@@ -60,12 +58,7 @@ class WorkplaceController extends Controller
       ]);
     // if hospital is already exists
     if($check) {
-      return response()->json([
-        'code'  =>  203,
-        'data'  =>  [
-          'errors'=> sprintf("Hospital %s is already exists", $request->name)
-        ]
-      ],203);
+      return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
     $hospital = Workplace::create(array_merge($request->all(),[
       'area'      =>  Auth::user()->area,
@@ -88,15 +81,7 @@ class WorkplaceController extends Controller
   public function show($id)
   {
     if (!is_numeric($id)) {
-      return response()->json([
-        'code'  =>  400,
-        'data'  =>  [
-          'errors'  =>  [
-            'Bad Request Input',
-            'Id must be numeric (alphabetic is not allowed)'
-          ]
-        ]
-      ]);
+      return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
     $workplace = Workplace::where([
       'area'  =>  Auth::user()->area,
@@ -104,14 +89,7 @@ class WorkplaceController extends Controller
     ])->first();
 
     if (!$workplace) {
-      return response()->json([
-        'code'  =>  301,
-        'data'  =>  [
-          'errors' => [
-            'Invalid hospital Id'
-          ]
-        ]
-      ]);
+      return response()->json(ResponseHelper::INVALID_ID);
     }
 
     return response()->json([
@@ -135,21 +113,10 @@ class WorkplaceController extends Controller
       'brick' =>  'required'
     ]);
     if($validator->fails()) {
-      return response()->json([
-        'code'  =>  400,
-        'data' => $validator->errors()
-      ]);
+      return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
     if (!is_numeric($id)) {
-      return response()->json([
-        'code'  =>  400,
-        'data'  =>  [
-          'errors'  =>  [
-            'Bad Request Input',
-            'Id must be numeric (alphabetic is not allowed)'
-          ]
-        ]
-      ]);
+      return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
     $workplace = Workplace::where([
       'area'  =>  Auth::user()->area,
@@ -157,14 +124,7 @@ class WorkplaceController extends Controller
     ])->first();
 
     if (!$workplace) {
-      return response()->json([
-        'code'  =>  301,
-        'data'  =>  [
-          'errors' => [
-            'Invalid hospital Id'
-          ]
-        ]
-      ]);
+      return response()->json(ResponseHelper::INVALID_ID);
     }
 
     $workplace->type = $request->type;
