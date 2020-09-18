@@ -13,7 +13,22 @@
           </router-link>
         </div>
         <!--pharmacies table --->
-        <pharmacies-table v-if="pharmacies.length" :data="pharmacies" />
+        <!-- <pharmacies-table v-if="pharmacies.length" :data="pharmacies" /> -->
+        <table-component v-if="pharmacies.length" :data="pharmacies" :heads="heads" head-class="bg-success text-light">
+          <template v-slot:head>
+            <th>Actions</th>
+          </template>
+          <template v-slot:body="{ item }">
+            <td>
+              <router-link :to="`/workplaces/pharmacy/view/${item.id}`" class="btn btn-sm btn-info">
+                <span><i class="fa fa-eye"></i></span>
+              </router-link>
+               <router-link :to="`/workplaces/pharmacy/edit/${item.id}`" class="btn btn-sm btn-warning">
+                <span><i class="fa fa-edit"></i></span>
+              </router-link>
+            </td>
+          </template>
+        </table-component>
         <loader-component v-else/>
       </div>
     </div>
@@ -21,19 +36,51 @@
 </template>
 
 <script>
-import PharmaciesTable from "../../components/PharmaciesTable"
+import TableComponent from "../../../components/TableComponent";
 export default {
   created() {
     this.$store.dispatch('pharmacyGetAll');
   },
   components: {
-    PharmaciesTable
+    TableComponent
   },
   computed: {
     pharmacies() {
       return this.$store.getters.pharmacies;
     }
-  }
+  },
+  data: () => ({
+    heads: [
+      {
+        title: 'ID',
+        name: 'id'
+      },
+      {
+        title: 'Name',
+        name: 'name'
+      },
+      {
+        title: 'Type',
+        name: 'type'
+      },
+        {
+          title: 'Key Person',
+          name: 'key_person'
+        },
+      {
+        title: 'Address',
+        name: 'address'
+      },
+      {
+        title: 'Brick',
+        name: 'brick'
+      },
+      {
+        title: 'Area',
+        name: 'area'
+      },
+    ]
+  })
 }
 </script>
 

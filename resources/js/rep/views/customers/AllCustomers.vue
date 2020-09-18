@@ -12,11 +12,27 @@
         </router-link>
       </div>
       <div class="p-2">
-        <customers-table
+        <table-component
+          :heads="heads"
           :data="allCustomers"
           v-if="allCustomers.length"
-          :withFavorite="true"
-        />
+          headClass="bg-success text-light"
+          :with-favorite="true"
+        >
+          <template v-slot:head>
+            <th>Actions</th>
+          </template>
+          <template v-slot:body="{ item }">
+            <td>
+              <router-link :to="`/customers/view/${item.id}`" class="btn btn-sm btn-info">
+                <span><i class="fa fa-eye"></i></span>
+              </router-link>
+              <router-link :to="`/customers/edit/${item.id}`" class="btn btn-sm btn-warning">
+                <span><i class="fa fa-edit"></i></span>
+              </router-link>
+            </td>
+          </template>
+        </table-component>
         <div v-else-if="fetched">
           <p class="text-center lead">No data found</p>
         </div>
@@ -27,8 +43,8 @@
 </template>
 
 <script>
-import CustomersTable from "../../components/CustomersTable";
-
+import TableComponent from "../../../components/TableComponent";
+import {CUSTOMERS_TABLE_HEADS} from "../../helpers/constants"
 export default {
   computed: {
     allCustomers() {
@@ -38,9 +54,11 @@ export default {
       return this.$store.getters.fetched;
     }
   },
-  data: () => ({}),
+  data: () => ({
+    heads: CUSTOMERS_TABLE_HEADS
+  }),
   components: {
-    CustomersTable
+    TableComponent
   }
 };
 </script>

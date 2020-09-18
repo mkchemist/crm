@@ -76,6 +76,15 @@ export default  {
       'Company',
       'Tender',
       'Chain'
+    ],
+    /**
+     * Visit types
+     *
+     *
+     */
+    visitTypes:[
+      'Single',
+      'Coach'
     ]
   },
   actions: {
@@ -99,6 +108,9 @@ export default  {
     },
     pharmacyTypes: state => {
       return state.pharmacyTypes;
+    },
+    visitTypes: state => {
+      return state.visitTypes;
     }
   }
 }

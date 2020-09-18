@@ -22,7 +22,7 @@ export default {
      * @param {object} {state}
      */
     workplaceGetAll: ({ state }, force) => {
-      if (!state.all.length || !force) {
+      if (!state.all.length || force) {
         httpCall.get("rep/v1/workplaces").then(({ data }) => {
           if (data.code === 201) {
             state.fetched = true;

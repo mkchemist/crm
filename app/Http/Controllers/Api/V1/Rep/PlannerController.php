@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1\Rep;
+
+use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\RepPlannerResource;
+use App\Planner;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class PlannerController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+      $plans = Planner::where([
+        'user_id' =>  Auth::user()->id
+      ])->orderBy('plan_date', 'asc')->get();
+      if(count($plans) === 0) {
+        return response()->json(ResponseHelper::EMPTY_RESPONSE);
+      }
+      return response()->json([
+        'code'  =>  201,
+        'data'  =>  RepPlannerResource::collection($plans)
+      ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+      $ids = json_decode($request->customers);
+      $exists = [];
+      $user = Auth::user();
+      $accepted = [];
+      foreach($ids as $id) {
+        $check = Planner::where([
+          'customer_id' =>  $id,
+          'user_id'   =>  $user->id,
+          'plan_date' =>  $request->date
+        ])->first();
+
+        if($check) {
+          $exists[] = $check->customer->name;
+        } else {
+          $plan = Planner::create([
+            'customer_id' =>  $id,
+            'user_id'     =>  $user->id,
+            'plan_date'   =>  $request->date
+          ]);
+          $accepted[] = $plan->customer->name;
+        }
+      }
+      return response()->json([
+        'code'  =>  201,
+        'accepted'  =>  $accepted,
+        'rejected'  =>  $exists
+      ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}

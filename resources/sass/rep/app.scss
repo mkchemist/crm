@@ -59,9 +59,28 @@ $success: #38c172;
     }
   }
 }
-.table-wrapper {
-  overflow-x: auto;
+
+
+.PM{
+  /* background-color: rgb(76, 85, 97) !important;
+  color: rgb(253, 253, 253) !important;
+  margin:.3rem 0;
+  border-radius: 5px;
+  padding:.4rem; */
+background-color: rgb(54, 214, 94) !important;
+margin:.2rem 0;
 }
-td,tr,th {
-  white-space: nowrap;
+
+#side_datepicker {
+
+  .vuecal__cell--selected {
+    border: 2px solid #1119 !important;
+    border-radius:50%;
+  }
+}
+
+.vuecal__body, .weekday-label{
+  @media(max-width:767.98px) {
+    font-size: .4rem;
+  }
 }

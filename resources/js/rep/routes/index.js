@@ -3,8 +3,8 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import CustomersRoutes from "./customers-route";
 import WorkplaceRoutes from './workplace-route';
-import Planner from "../views/Planner.vue";
-import Workplaces from "../views/Workplaces.vue";
+import PlannerRoutes from "./planner-route";
+//import Planner from "../views/Planner.vue";
 import Reports from "../views/Reports.vue";
 import ErrorPage from "../../components/ErrorPage";
 
@@ -19,10 +19,7 @@ export default new VueRouter({
       component: Home
     },
     CustomersRoutes,
-    {
-      path: "/planner",
-      component: Planner,
-    },
+    PlannerRoutes,
     WorkplaceRoutes,
     {
       path: "/reports",

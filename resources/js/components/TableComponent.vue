@@ -1,57 +1,27 @@
 <template>
-  <div class="p-2 shadow table-wrapper">
-    <table class="table table-striped table-sm small table-responsive" id="customers-table">
-      <thead>
-        <tr class="bg-success text-light">
-          <th>id</th>
-          <th>Name</th>
-          <th>Specialty</th>
-          <th>title</th>
-          <th>Param</th>
-          <th>Current Freq.</th>
-          <th>Next Freq.</th>
-          <th>Address</th>
-          <th>Brick</th>
-          <th>Area</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="customer in data" :key="customer.id">
-          <td>{{ customer.id }}</td>
-          <td>{{ customer.name }}</td>
-          <td>{{ customer.specialty }}</td>
-          <td>{{ customer.title ? customer.title : "------" }}</td>
-          <td>{{ customer.parameter }}</td>
-          <td>{{ customer.current_freq }}</td>
-          <td>{{ customer.next_freq }}</td>
-          <td>{{ customer.address }}</td>
-          <td>{{ customer.brick }}</td>
-          <td>{{ customer.area }}</td>
-          <td>
-            <router-link
-              :to="`/customers/view/${customer.id}`"
-              class="btn btn-sm btn-info"
-            >
-              <span><i class="fa fa-eye"></i></span>
-            </router-link>
-            <router-link
-              :to="`/customers/edit/${customer.id}`"
-              class="btn btn-sm btn-warning"
-            >
-              <span><i class="fa fa-edit"></i></span>
-            </router-link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <table
+    class="table table-striped table-sm small bg-white table-responsive"
+    id="data-table"
+  >
+    <thead>
+      <tr :class="headClass">
+        <th v-for="(head, i) in heads" :key="i">{{ head.title }}</th>
+        <slot name="head"></slot>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(item, i) in data" :key="i">
+        <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td>
+        <slot name="body" :item="item"></slot>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <script>
-import { httpCall } from "../helpers/http-service";
+import {httpCall} from "../rep/helpers/http-service";
 export default {
-  props: ["data", "withFavorite", "withUnlink", "onUnlink"],
+  props: ["heads", "data", "headClass",'withFavorite', 'withUnlink','onUnlink'],
   data: () => ({
     table: null
   }),
@@ -77,7 +47,7 @@ export default {
       ];
       buttons = this.addFavoriteButton(buttons);
       buttons = this.addUnlinkButton(buttons);
-      this.table = $("#customers-table").DataTable({
+      this.table = $("#data-table").DataTable({
         columnDefs: [{ targets: 0, visible: false }],
         order: [[1, "asc"]],
         language: {
@@ -224,17 +194,11 @@ export default {
       return buttons;
     }
   },
-  /**
-   * when component destroyed
-   * it will destroy DataTable instance
-   *
-   */
   destroyed() {
     this.table.destroy();
   }
 };
 </script>
 
-<style lang="scss" scoped>
-
+<style>
 </style>

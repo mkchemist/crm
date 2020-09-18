@@ -11,7 +11,8 @@ import router from "../routes";
 export default {
   state: {
     all: [],
-    fetched: false
+    fetched: false,
+    filtered: []
   },
   mutations: {
 
@@ -68,6 +69,7 @@ export default {
           let res = http.data;
           if(res.code === 201) {
             state.all = res.data;
+            state.filtered = res.data;
             setTimeout(() => {
               state.fetched = true;
             },2000);

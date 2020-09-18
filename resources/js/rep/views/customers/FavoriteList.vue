@@ -6,12 +6,28 @@
         <span class="font-weight-bold">Favorite list</span>
       </p>
       <div>
-        <customers-table
+        <table-component
+          :heads="heads"
           :data="customers"
-          v-if="customers.length > 0"
-          :withUnlink="true"
-          :on-unlink="getFavoriteList"
-        />
+          v-if="customers.length"
+          headClass="bg-success text-light"
+          :with-unlink="true"
+          :on-unlink = "getFavoriteList"
+        >
+          <template v-slot:head>
+            <th>Actions</th>
+          </template>
+          <template v-slot:body="{ item }">
+            <td>
+              <router-link :to="`/customers/view/${item.id}`" class="btn btn-sm btn-info">
+                <span><i class="fa fa-eye"></i></span>
+              </router-link>
+              <router-link :to="`/customers/edit/${item.id}`" class="btn btn-sm btn-warning">
+                <span><i class="fa fa-edit"></i></span>
+              </router-link>
+            </td>
+          </template>
+        </table-component>
         <div v-else-if="fetched">
           <p class="lead text-center">No data to show</p>
         </div>
@@ -23,17 +39,19 @@
 
 <script>
 import { httpCall } from "../../helpers/http-service";
-import CustomersTable from "../../components/CustomersTable";
+import TableComponent from "../../../components/TableComponent";
+import { CUSTOMERS_TABLE_HEADS } from '../../helpers/constants';
 export default {
   created() {
     this.getFavoriteList();
   },
   data: () => ({
     customers: [],
-    fetched: false
+    fetched: false,
+    heads: CUSTOMERS_TABLE_HEADS
   }),
   components: {
-    CustomersTable
+    TableComponent
   },
   methods: {
     getFavoriteList() {

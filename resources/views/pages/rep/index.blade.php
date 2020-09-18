@@ -14,8 +14,8 @@
 @endsection
 
 @section('script')
-<script src="{{ asset('libs/data-tables/datatables.min.js') }}"></script>
-<script src="{{ asset('libs/data-tables/FixedHeader-3.1.7/js/fixedHeader.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('libs/data-tables/Buttons-1.6.2/js/buttons.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('js/rep/app.js') }}"></script>
+<script src="{{ asset('libs/data-tables/datatables.min.js') }}" defer></script>
+<script src="{{ asset('libs/data-tables/FixedHeader-3.1.7/js/fixedHeader.bootstrap4.min.js') }}" defer></script>
+<script src="{{ asset('libs/data-tables/Buttons-1.6.2/js/buttons.bootstrap4.min.js') }}" defer></script>
+<script src="{{ asset('js/rep/app.js') }}" defer></script>
 @endsection

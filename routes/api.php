@@ -38,4 +38,6 @@ Route::group([
     Route::post('/', 'WorkplaceDepartmentController@store');
     Route::put('/{id}','WorkplaceDepartmentController@update');
   });
+  // planner routes
+  Route::apiResource('planner', 'PlannerController');
 });
