@@ -21,7 +21,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-      $customers = Customer::with(['params', 'frequency'])
+      $customers = Customer::with(['params', 'frequency','planner'])
       ->where(['area' => Auth::user()->area])
       ->orderBy('name', 'asc')->get();
       $customers = CustomerResource::collection($customers);

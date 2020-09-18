@@ -62,4 +62,15 @@ class UserController extends Controller
                 return redirect('/rep');
         }
     }
+
+    /**
+     * Change user password
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\Response
+     */
+    public function changePassword(Request $request)
+    {
+
+    }
 }

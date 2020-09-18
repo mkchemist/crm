@@ -13,7 +13,10 @@
           <td>{{ depart.name }}</td>
           <td>{{ depart.head }}</td>
           <td>
-            <button class="btn btn-warning btn-sm" @click="markSelected(depart)">
+            <button
+              class="btn btn-warning btn-sm"
+              @click="markSelected(depart)"
+            >
               <span><i class="fa fa-edit"></i></span>
             </button>
             <button class="btn btn-danger btn-sm">
@@ -23,56 +26,65 @@
         </tr>
       </tbody>
     </table>
-    <div class="modal fade" id="edit_department_modal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header bg-success text-light">
-            <span class="mx-1"><i class="fa fa-edit"></i></span>
-            <span>Edit Department {{ selected ? selected.name : null }}</span>
-            <button class="close" data-dismiss="modal">&times;</button>
-          </div>
-          <div class="modal-body" v-if="selected">
-            <div>
-              <label for="head" class="text-muted">Department head</label>
-              <input type="text" class="form-control form-control-sm" id="head" name="head" v-model="selected.head">
-            </div>
-            <hr>
-            <div class="text-right">
-              <button class="btn btn-dark btn-sm" data-dismiss="modal">
-                <span><i class="fa fa-times"></i></span>
-                <span>close</span>
-              </button>
-              <button class="btn btn-success btn-sm" @click="editDepartment">
-                <span><i class="fa fa-save"></i></span>
-                <span>save</span>
-              </button>
-            </div>
-          </div>
+    <modal-fade
+      :show="show_edit_modal"
+      :data="selected"
+      @onClose="() => (show_edit_modal = false)"
+      :centered="true"
+    >
+      <template v-slot:header v-if="selected">
+        Edit {{ selected.name }}
+      </template>
+      <template v-slot:body v-if="selected">
+        <div>
+          <label for="head" class="text-muted">Department head</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="head"
+            name="head"
+            v-model="selected.head"
+          />
         </div>
-      </div>
-    </div>
+        <hr />
+        <div class="text-right">
+          <button class="btn btn-dark btn-sm" data-dismiss="modal">
+            <span><i class="fa fa-times"></i></span>
+            <span>close</span>
+          </button>
+          <button class="btn btn-success btn-sm" @click="editDepartment">
+            <span><i class="fa fa-save"></i></span>
+            <span>save</span>
+          </button>
+        </div>
+      </template>
+    </modal-fade>
   </div>
 </template>
 
 <script>
+import ModalFade from "../../components/ModalFade";
+
 export default {
-  props: ['data', 'onEdit'],
+  props: ["data", "onEdit"],
   methods: {
     markSelected(depart) {
       this.selected = depart;
-      $('#edit_department_modal').modal('show')
+      this.show_edit_modal = true;
     },
     editDepartment() {
-      this.$emit('onEdit', this.selected);
-      $('#edit_department_modal').modal('hide');
+      this.$emit("onEdit", this.selected);
+      this.show_edit_modal = false;
     }
   },
   data: () => ({
-    selected: null
-  })
-}
+    selected: null,
+    show_edit_modal: false
+  }),
+  components: {
+    ModalFade
+  }
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -39,4 +39,9 @@ class Customer extends Model
     public function fav() {
       return $this->hasMany('App\CustomerFavoriteList', 'customer_id', 'id');
     }
+
+    public function planner()
+    {
+      return $this->hasMany('App\Planner', 'customer_id', 'id');
+    }
 }

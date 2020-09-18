@@ -33,6 +33,10 @@ export const CUSTOMERS_TABLE_HEADS = [
     name: 'next_freq'
   },
   {
+    title: 'Plans',
+    name: 'plans'
+  },
+  {
     title: 'Address',
     name: 'address'
   },

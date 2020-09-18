@@ -100,4 +100,27 @@ class PlannerController extends Controller
     {
         //
     }
+
+    /**
+     * Delete group of plans
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\Response
+     */
+    public function groupDelete(Request $request)
+    {
+      $ids = json_decode($request->customers);
+      foreach($ids as $id) {
+        $customer = Planner::where([
+          'customer_id'  =>  $id,
+          'user_id' =>  Auth::user()->id,
+          'plan_date' =>  $request->date
+        ]);
+        $customer->delete();
+      }
+      return response()->json([
+        'code'  =>  201,
+        'data'  =>  sprintf('%d customer deleted', count($ids))
+      ]);
+    }
 }

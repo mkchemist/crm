@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="modal_fade">
-    <div class="modal-dialog modal-dialog-centered">
+    <div :class="`modal-dialog ${centered ? 'modal-dialog-centered' : null}`">
       <div class="modal-content">
         <div class="modal-header">
           <slot name="header" :data="data ? data: {}"></slot>
@@ -9,7 +9,7 @@
         <div class="modal-body">
           <slot name="body" :data="data ? data: {}"></slot>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" v-if="footer">
           <slot name="footer" :data="data ? data: {}"></slot>
           <button class="btn btn-dark btn-sm" @click="closeModal">cancel</button>
         </div>
@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  props: ['show', 'data'],
+  props: ['show', 'data', 'centered', 'footer'],
   watch:{
     show: function() {
       let modal = $('#modal_fade');

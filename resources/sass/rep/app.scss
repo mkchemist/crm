@@ -1,11 +1,10 @@
 $success: #38c172;
 .dt-buttons {
-
   .btn {
     margin-left: 5px !important;
     background-color: $success !important;
-    border-color: $success!important;
-    color:white !important;
+    border-color: $success !important;
+    color: white !important;
   }
 }
 
@@ -14,14 +13,14 @@ $success: #38c172;
 }
 
 .disabled {
-  .page-link{
+  .page-link {
     color: #1119 !important;
   }
 }
 
 .active {
   .page-link {
-    background-color: $success!important;
+    background-color: $success !important;
     border-color: $success !important;
     color: white !important;
   }
@@ -34,7 +33,7 @@ $success: #38c172;
 
 @keyframes page_fade_animation {
   from {
-    opacity:0;
+    opacity: 0;
   }
   to {
     opacity: 1;
@@ -43,44 +42,43 @@ $success: #38c172;
 
 .sidebar-list-group {
   .list-group-item {
-    transition:.2s;
+    transition: 0.2s;
 
     &:hover {
-      border-left:3px solid #38c172;
-      background-color:#1111;
+      border-left: 3px solid #38c172;
+      background-color: #1111;
     }
   }
   .active-list-item {
     background-color: #38c172;
     color: white;
 
-    &:hover{
+    &:hover {
       color: #1119;
     }
   }
 }
 
-
-.PM{
+.PM {
   /* background-color: rgb(76, 85, 97) !important;
   color: rgb(253, 253, 253) !important;
   margin:.3rem 0;
   border-radius: 5px;
   padding:.4rem; */
-background-color: rgb(54, 214, 94) !important;
-margin:.2rem 0;
+  background-color: rgb(54, 214, 94) !important;
+  margin: 0.2rem 0;
 }
 
 #side_datepicker {
-
   .vuecal__cell--selected {
     border: 2px solid #1119 !important;
-    border-radius:50%;
+    border-radius: 50%;
   }
 }
 
-.vuecal__body, .weekday-label{
-  @media(max-width:767.98px) {
-    font-size: .4rem;
+.vuecal__body,
+.weekday-label {
+  @media (max-width: 767.98px) {
+    font-size: 0.4rem;
   }
 }

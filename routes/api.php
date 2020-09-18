@@ -39,5 +39,6 @@ Route::group([
     Route::put('/{id}','WorkplaceDepartmentController@update');
   });
   // planner routes
+  Route::delete('planner/delete','PlannerController@groupDelete');
   Route::apiResource('planner', 'PlannerController');
 });
