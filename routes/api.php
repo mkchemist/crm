@@ -41,4 +41,7 @@ Route::group([
   // planner routes
   Route::delete('planner/delete','PlannerController@groupDelete');
   Route::apiResource('planner', 'PlannerController');
+  // workplace planner routes
+  Route::delete('workplace-planner/delete','WorkplacePlannerController@groupDelete');
+  Route::apiResource('/workplace-planner', 'WorkplacePlannerController');
 });

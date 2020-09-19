@@ -87,7 +87,16 @@ class PlannerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      $plan = Planner::where([
+        'id'  =>  $id,
+        'user_id' =>  Auth::user()->id
+      ])->first();
+      $plan->plan_date = $request->date;
+      $plan->save();
+      return response()->json([
+        'code'  =>  201,
+        'data'  =>  "Plan of {$plan->customer->name} updated successfully"
+      ]);
     }
 
     /**

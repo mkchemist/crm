@@ -1,7 +1,7 @@
 import Planner from '../views/Planner';
 import PlannerHome from '../views/planner/PlannerHome';
-import AddPlan from "../views/planner/AddPlan";
-import RePlanning from "../views/planner/RePlanning";
+import AddPmPlans from "../views/planner/AddPmPlans";
+import AddAmPlans from "../views/planner/AddAmPlans";
 
 export default {
   path: '/planner',
@@ -12,12 +12,12 @@ export default {
       component: PlannerHome
     },
     {
-      path: 'add',
-      component: AddPlan
+      path: 'add-pm',
+      component: AddPmPlans
     },
     {
-      path: 'replan',
-      component: RePlanning
+      path: 'add-am',
+      component: AddAmPlans
     }
   ]
 }

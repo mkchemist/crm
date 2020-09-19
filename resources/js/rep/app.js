@@ -14,6 +14,13 @@ import { ResponseHandler } from "./helpers/response-handler";
 Vue.use(Toasted, {
   duration: 4000,
   iconPack: 'fontawesome',
+  action:{
+    onClick: (e, toastObject) => {
+      toastObject.goAway(0);
+    },
+    class: 'small text-light',
+    icon: 'times'
+  }
 });
 
 

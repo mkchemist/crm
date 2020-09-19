@@ -1,8 +1,8 @@
 <template>
-  <div class="modal fade" id="modal_fade">
+  <div class="modal fade" :id="id ? id :`modal_fade`">
     <div :class="`modal-dialog ${centered ? 'modal-dialog-centered' : null}`">
       <div class="modal-content">
-        <div class="modal-header">
+        <div :class="`modal-header  ${headerStyle}`">
           <slot name="header" :data="data ? data: {}"></slot>
           <button class="close" @click="closeModal">&times;</button>
         </div>
@@ -20,10 +20,11 @@
 
 <script>
 export default {
-  props: ['show', 'data', 'centered', 'footer'],
+  props: ['show', 'data', 'centered', 'footer', 'id', 'headerStyle'],
   watch:{
     show: function() {
-      let modal = $('#modal_fade');
+      let id = this.id ? `#${this.id}` : '#modal_fade'
+      let modal = $(id);
       modal.on('hide.bs.modal', () => {
         this.$emit('onClose');
       });
@@ -36,7 +37,8 @@ export default {
   },
   methods: {
     closeModal() {
-      let modal = $('#modal_fade');
+      let id = this.id ? `#${this.id}` : '#modal_fade'
+      let modal = $(id);
       modal.on('hide.bs.modal', () => {
         this.$emit('onClose');
       });

@@ -37,6 +37,7 @@ export default {
   created() {
     this.$store.dispatch("customerGetAll").then(() => {
       this.$store.dispatch("getPlanner");
+      this.$store.dispatch('getWorkplacePlanner');
     });
   },
   components: {

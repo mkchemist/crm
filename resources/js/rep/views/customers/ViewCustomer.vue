@@ -59,23 +59,12 @@ export default {
       let id = this.$route.params.id;
       httpCall.get('rep/v1/customers/'+id)
       .then(({data}) => {
-        if(data.code === 400) {
-          data.data.errors.forEach((err) => {
-            this.$toasted.show(err, {
-              icon: 'exclamation',
-              duration: 10000
-            })
-          });
+        if(data.code === 400 || data.code === 301) {
+          this.handleResponseError(data)
           return;
-        }
-        if(data.code === 301) {
-          this.$toasted.show(data.data.errors, {
-            icon: 'exclamation',
-            durtation: 10000
-          });
-          return;
-        }
+        } else {
           this.customer = data.data;
+        }
       });
     }
   },

@@ -59,19 +59,30 @@ $success: #38c172;
   }
 }
 
-.PM {
-  /* background-color: rgb(76, 85, 97) !important;
-  color: rgb(253, 253, 253) !important;
-  margin:.3rem 0;
+.PM , .AM{
+  width:90% !important;
+  margin: 0.2rem auto;
   border-radius: 5px;
-  padding:.4rem; */
-  background-color: rgb(54, 214, 94) !important;
-  margin: 0.2rem 0;
+  cursor: pointer;
+  font-size: 90%;
+  &:hover{
+    opacity:.8;
+  }
+}
+
+.PM {
+  background-color: #42b983 !important;
+  color: white !important;
+
+}
+.AM {
+  background-color: royalblue !important;
+  color: white !important;
 }
 
 #side_datepicker {
   .vuecal__cell--selected {
-    border: 2px solid #1119 !important;
+    border: 2px solid #42a8fc !important;
     border-radius: 50%;
   }
 }

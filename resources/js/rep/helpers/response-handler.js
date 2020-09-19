@@ -17,7 +17,8 @@ export const ResponseHandler = {
           }
           toasted.show(err, {
             icon: 'exclamation',
-            duration: 10000
+            duration: 10000,
+            type: 'error'
           })
         })
       })

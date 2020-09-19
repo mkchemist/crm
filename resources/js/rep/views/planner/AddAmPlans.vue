@@ -1,0 +1,243 @@
+<template>
+  <div>
+    <p class="alert alert-success">
+      <span><i class="fa fa-plus-circle"></i></span>
+      <span class="font-weight-bold">Add Workplace Plans</span>
+    </p>
+    <!-- plans control -->
+    <div class="p-2 row mx-auto">
+      <!-- add plans controller -->
+      <div class="col-lg p-2 border rounded" id="workplace_list">
+        <p class="bg-dark text-light p-2" v-if="selected_workplaces.length">
+          Selected : {{ selected_workplaces.length }}
+        </p>
+        <div
+          v-if="workplaces.length"
+          class="border"
+          style="height:200px;overflow:auto"
+        >
+          <table class="table table-striped table-sm small">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Brick</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="workplace in workplaces" :key="workplace.id">
+                <td>
+                  <input type="checkbox" @click="addToSelected(workplace.id)" />
+                </td>
+                <td>{{ workplace.name }}</td>
+                <td>{{ workplace.address }}</td>
+                <td>{{ workplace.brick }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          class="d-flex justify-content-center align-items-center h-100"
+          v-else
+        >
+          <vue-loaders name="ball-scale" scale="2" color="grey" />
+        </div>
+      </div>
+      <!-- planned workplacess controller -->
+      <div class="col-lg p-2 rounded border" id="plans_list">
+        <p class="bg-dark text-light p-2" v-if="deleted_workplaces.length">
+          Selected : {{ deleted_workplaces.length }}
+        </p>
+        <div class="p-2 border rounded">
+          <table class="table table-striped table-sm small">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Brick</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="workplace in amPlans" :key="workplace.id">
+                <td>
+                  <input type="checkbox" @click="addToDeleted(workplace.id)" />
+                </td>
+                <td>{{ workplace.name }}</td>
+                <td>{{ workplace.address }}</td>
+                <td>{{ workplace.brick }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- end of planner controller -->
+    <hr />
+    <!-- plans control -->
+    <div class="text-right">
+      <router-link to="/planner" class="btn btn-dark btn-sm">
+        <span><i class="fa fa-chevron-circle-left"></i></span>
+        <span class="font-weight-bold">back</span>
+      </router-link>
+      <button class="btn btn-sm btn-success" @click="addPlans">
+        <span
+          class="px-1 text-success bg-light rounded-circle font-weight-bold"
+          v-if="selected_workplaces.length"
+          >{{ selected_workplaces.length }}</span
+        >
+        <span class="font-weight-bold">add</span>
+      </button>
+      <button class="btn btn-sm btn-danger" @click="deletePlans">
+        <span
+          class="px-1 text-danger bg-light rounded-circle font-weight-bold"
+          v-if="deleted_workplaces.length"
+          >{{ deleted_workplaces.length }}</span
+        >
+        <span class="font-weight-bold">delete</span>
+      </button>
+    </div>
+  </div>
+</template>
+
+<script>
+import { httpCall } from '../../helpers/http-service';
+export default {
+  created() {
+    this.$store.dispatch("workplaceGetAll");
+  },
+  data: () => ({
+    selected_workplaces: [],
+    deleted_workplaces: []
+  }),
+  computed: {
+    amPlans() {
+      let plans = this.$store.getters.amPlans;
+      let data = [];
+      plans.forEach(plan => {
+        if (plan.start === this.$attrs.date) {
+          data.push(plan.workplace);
+        }
+      });
+      return data;
+    },
+    workplaces() {
+      return this.$store.getters.allWorkplaces;
+    }
+  },
+  methods: {
+    /**
+     * add workplace to selected container
+     *
+     * @param {int} id
+     */
+    addToSelected(id) {
+      let checked = event.target.checked;
+      if (checked) {
+        if (!this.selected_workplaces.includes(id)) {
+          this.selected_workplaces.push(id);
+        }
+      } else {
+        if (this.selected_workplaces.includes(id)) {
+          let index = this.selected_workplaces.indexOf(id);
+          this.selected_workplaces.splice(index, 1);
+        }
+      }
+    },
+    /**
+     * add workplace to deleted container
+     *
+     * @param {int} id
+     */
+    addToDeleted(id) {
+      let checked = event.target.checked;
+      if (checked) {
+        if (!this.deleted_workplaces.includes(id)) {
+          this.deleted_workplaces.push(id);
+        }
+      } else {
+        if (this.deleted_workplaces.includes(id)) {
+          let index = this.deleted_workplaces.indexOf(id);
+          this.deleted_workplaces.splice(index, 1);
+        }
+      }
+    },
+    /**
+     * store workplace plans
+     *
+     */
+    addPlans() {
+      /** request payload */
+      let data = {
+        workplaces: JSON.stringify(this.selected_workplaces),
+        date: this.$attrs.date
+      };
+      /**
+       * calling API
+       *
+       * handle repsonse error in case of code 400
+       * looping through rejected and accepted plans
+       * if response code  201
+       */
+      httpCall.post('rep/v1/workplace-planner', data)
+      .then(({data}) => {
+        if(data.code === 400) {
+          this.handleResponseError(data);
+        } else {
+          const {rejected, accepted} = data;
+          rejected.forEach((item) => {
+            this.$toasted.show(item, {
+              duration:5000,
+              icon: 'exclamation',
+              type:'info'
+            });
+          });
+          accepted.forEach((item) => {
+            this.$toasted.show(item, {
+              type: 'success',
+              icon: 'check'
+            });
+          });
+        }
+      }).finally(() => {
+        /** get new workplace planner */
+        this.$store.dispatch('getWorkplacePlanner', true);
+        /** uncheck all workplace list checkbox */
+        document.querySelectorAll('#workplace_list input[type="checkbox"]')
+        .forEach((input) => {
+          input.checked = false;
+        });
+        this.selected_workplaces = [];
+      });
+    },
+    deletePlans() {
+      let data = {
+        workplaces: JSON.stringify(this.deleted_workplaces),
+        date: this.$attrs.date,
+        _method: 'DELETE'
+      };
+      httpCall.post('rep/v1/workplace-planner/delete',data)
+      .then(({data}) => {
+        if(data.code === 400) {
+          this.handleResponseError(data)
+        } else {
+          this.$toasted.show(data.data, {
+            type: 'success',
+            icon: 'check'
+          });
+        }
+      }).finally(() => {
+        this.$store.dispatch('getWorkplacePlanner', true);
+        document.querySelectorAll('#plans_list input[type="checkbox"]')
+        .forEach((input) => {
+          input.checked = false;
+        });
+        this.deleted_workplaces = [];
+      })
+    }
+  }
+};
+</script>
+
+<style></style>
