@@ -64,11 +64,7 @@ class WorkplacePlannerController extends Controller
        * for the given workplace id
        *
        */
-      $check = WorkplacePlanner::where([
-        'plan_date'     =>  $request->date,
-        'user_id'       =>  Auth::user()->id,
-        'workplace_id'  =>  $id
-      ])->first();
+      $check = $this->getPlanByWorkplaceId($id, $request->date);
       if ($check) {
         $rejected[] = "Workplace {$check->workplace->name} is already planned";
       } else {
@@ -107,10 +103,11 @@ class WorkplacePlannerController extends Controller
    */
   public function update(Request $request, $id)
   {
-    $plan = WorkplacePlanner::where([
-      'id'  =>  $id,
-      'user_id' =>  Auth::user()->id
-    ])->first();
+    $plan = $this->getPlanById($id);
+    $check = $this->getPlanByWorkplaceId($plan->workplace_id, $request->date);
+    if($check) {
+      return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
+    }
     $plan->plan_date = $request->date;
     $plan->save();
     return response()->json([
@@ -127,7 +124,12 @@ class WorkplacePlannerController extends Controller
    */
   public function destroy($id)
   {
-    //
+    $plan = $this->getPlanById($id);
+    $plan->delete();
+    return response()->json([
+      'code'  =>  201,
+      'data'  =>  sprintf('workplace %s plan removed successfully', $plan->workplace->name)
+    ]);
   }
 
   /**
@@ -149,16 +151,44 @@ class WorkplacePlannerController extends Controller
     $ids = json_decode($request->workplaces);
 
     foreach($ids as $id) {
-      $plan = WorkplacePlanner::where([
-        'user_id' =>  Auth::user()->id,
-        'workplace_id'  =>  $id,
-        'plan_date' =>  $request->date
-      ])->first();
+      $plan = $this->getPlanByWorkplaceId($id, $request->date);
       $plan->delete();
     }
     return response()->json([
       'code'  =>  201,
       'data'  =>  sprintf("%d workplace plans removed successfully", count($ids))
     ]);
+  }
+
+  /**
+   * get plan by workplace ID
+   *
+   * @param integer $id [workplace id]
+   * @param string $date [plan_date]
+   * @return WorkplacePlanner|Null
+   */
+  private function getPlanByWorkplaceId(int $id, string $date)
+  {
+    $plan = WorkplacePlanner::where([
+      'user_id' =>  Auth::user()->id,
+      'workplace_id'  =>  $id,
+      'plan_date' =>  $date
+    ])->first();
+    return $plan;
+  }
+
+  /**
+   * get Planner by ID
+   *
+   * @param int $id [plan id]
+   * @return WorkplacePlanner | Null
+   */
+  private function getPlanById(int $id)
+  {
+    $plan = WorkplacePlanner::where([
+      'id'  =>  $id,
+      'user_id' =>  Auth::user()->id
+    ])->first();
+    return $plan;
   }
 }

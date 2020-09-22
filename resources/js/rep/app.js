@@ -20,7 +20,8 @@ Vue.use(Toasted, {
     },
     class: 'small text-light',
     icon: 'times'
-  }
+  },
+  position: 'top-left'
 });
 
 

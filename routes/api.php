@@ -40,6 +40,8 @@ Route::group([
   });
   // planner routes
   Route::delete('planner/delete','PlannerController@groupDelete');
+  Route::put('planner/duplicate', 'PlannerController@DuplicateDate');
+  Route::delete('planner/clear-day', 'PlannerController@clearDate');
   Route::apiResource('planner', 'PlannerController');
   // workplace planner routes
   Route::delete('workplace-planner/delete','WorkplacePlannerController@groupDelete');

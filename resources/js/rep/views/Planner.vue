@@ -12,6 +12,8 @@
           :selectedDate="date"
           @cell-click="onDayClick"
           style="max-height:250px"
+          :startWeekOnSunday="true"
+          :hideWeekdays="[5]"
         >
           <template v-slot:arrow-prev>
             <i class="fa fa-chevron-circle-left text-success"></i>
@@ -37,14 +39,14 @@ export default {
   created() {
     this.$store.dispatch("customerGetAll").then(() => {
       this.$store.dispatch("getPlanner");
-      this.$store.dispatch('getWorkplacePlanner');
+      this.$store.dispatch("getWorkplacePlanner");
     });
   },
   components: {
     VueCal
   },
   data: () => ({
-    date: new Date().format('YYYY-MM-DD')
+    date: new Date().format("YYYY-MM-DD")
   }),
   methods: {
     onDayClick(date) {

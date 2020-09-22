@@ -20,6 +20,30 @@
       </button>
     </div>
     <!-- end planner home navbar -->
+    <!-- total plan summery-->
+    <div class="p-2">
+      <div class="border my-2 rounded p-2">
+        <p class="text-muted clearfix">
+          <span class="lead">Planner Summery </span>
+          <button class="btn float-right" data-toggle="collapse" data-target="#planner_summery" @click="flipIcon">
+            <span><i :class="`fa ${summery_icon}`"></i></span>
+          </button>
+        </p>
+        <div class="row mx-auto collapse" id="planner_summery">
+          <div class="col">
+            <p class="mb-0 text-muted">Total planned : {{ plans.length }}</p>
+            <p class="mb-0 text-muted">Total P.M. plans : {{ $store.getters.plans.length }}</p>
+            <p class="mb-0 text-muted">Total A.M. plans : {{ $store.getters.amPlans.length }}</p>
+          </div>
+          <div class="col">
+            <p class="mb-0 text-muted">Total planned Days : {{ Object.keys(totalPlannedDays).length }}</p>
+            <p class="mb-0 text-muted">Total P.M. plnned Customers : {{ Object.keys(totalPlannedCustomers).length }}</p>
+            <p class="mb-0 text-muted">Total A.M. planned Workplaces : {{ Object.keys(totalPlannedWorkplaces).length }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of total plan summery -->
     <div class="p-2">
       <!-- planner -->
       <vue-cal
@@ -32,6 +56,9 @@
         :time="false"
         v-if="isPlansFetched"
         :on-event-click="onEventClick"
+        @cell-click="onDayClick"
+        :startWeekOnSunday="true"
+        :hideWeekdays="[5]"
       >
         <template v-slot:arrow-prev>
           <i class="fa fa-chevron-circle-left text-success"></i>
@@ -88,11 +115,31 @@
               <span><i class="fa fa-save"></i></span>
               <span>save</span>
             </button>
-            <button class="btn btn-sm btn-danger" >
+            <button class="btn btn-sm btn-danger" @click="deleteEvent">
               <span><i class="fa fa-trash"></i></span>
               <span>remove</span>
             </button>
           </div>
+        </div>
+      </template>
+    </modal-fade>
+    <modal-fade id="cell_modal_fade" :show="show_day_modal" @onClose="() => show_day_modal = false" :centered="true">
+      <template v-slot:header v-if="selected_day">
+        <span>Edit Date {{ selected_day }}</span>
+      </template>
+      <template v-slot:body>
+        <div class="form-group">
+          <input type="date" v-model="duplicate_date" class="form-control form-control-sm">
+        </div>
+        <div class="form-group text-right">
+          <button class="btn btn-primary btn-sm" @click="duplicateDay">
+            <span><i class="fa fa-redo"></i></span>
+            <span>Duplicate</span>
+          </button>
+          <button class="btn btn-danger btn-sm" @click="clearDay">
+            <span><i class="fa fa-trash"></i></span>
+            <span>Clear</span>
+          </button>
         </div>
       </template>
     </modal-fade>
@@ -111,9 +158,11 @@ export default {
   },
   data: () => ({
     show_event_modal: false,
-    show_cell_modal: false,
+    show_day_modal: false,
     selected_event: null,
-    selected_cell: null
+    selected_day: null,
+    duplicate_date: null,
+    summery_icon: 'fa-chevron-circle-down'
   }),
   methods: {
     /**
@@ -131,6 +180,23 @@ export default {
       this.show_event_modal = true;
     },
     /**
+     * handle day event click
+     * update date or clear date
+     *
+     * @param {object} e [date]
+     */
+    onDayClick(e) {
+      let date;
+      if(e.date) {
+        date = new Date(e.date).format("YYYY-MM-DD");
+      } else {
+        date = new Date(e).format("YYYY-MM-DD");
+      }
+
+      this.selected_day = this.duplicate_date = date;
+      this.show_day_modal = true;
+    },
+    /**
      * update event
      *
      */
@@ -142,8 +208,8 @@ export default {
       httpCall
         .post(eventDetails.url, eventDetails.data)
         .then(({ data }) => {
-          if (data.code === 400 || data.code === 301) {
-            this.handlResponseError(data);
+          if (data.code === 400 || data.code === 301 || data.code === 203) {
+            this.handleResponseError(data);
           } else {
             this.$toasted.success(data.data, {
               icon: {
@@ -155,17 +221,45 @@ export default {
         })
         .finally(() => {
           this.show_event_modal = false;
-          if (eventDetails.model === "customers") {
-            this.$store.dispatch("getPlanner", true);
-            this.$store.dispatch("customerGetAll", true);
+          eventDetails.model();
+        });
+    },
+    /**
+     * delete selected event
+     */
+    deleteEvent() {
+      let eventDetails = this.getEventDetails();
+      if (!eventDetails) {
+        return;
+      }
+      eventDetails.data._method = "DELETE";
+      httpCall
+        .post(eventDetails.url, eventDetails.data)
+        .then(({ data }) => {
+          if (data.code === 400 || data.code === 301 || data.code === 203) {
+            this.handleResponseError(data);
           } else {
-            this.$store.dispatch("getWorkplacePlanner", true);
-            this.$store.dispatch("workplaceGetAll", true);
+            this.$toasted.success(data.data, {
+              icon: {
+                name: "check",
+                after: true
+              }
+            });
           }
+        })
+        .finally(() => {
+          this.show_event_modal = false;
+          eventDetails.model();
         });
     },
     /**
      * get event details
+     * is event is am event or pm event
+     * return :
+     *  - event id
+     *  - event data
+     *  - api url
+     *  - event model
      *
      * @return {object}
      */
@@ -180,7 +274,15 @@ export default {
         this.selected_event.class === "PM"
           ? "rep/v1/planner/" + id
           : "rep/v1/workplace-planner/" + id;
-      model = this.selected_event.class === "PM" ? "customers" : "workplace";
+      model = () => {
+        if (this.selected_event.class === "PM") {
+          this.$store.dispatch("getPlanner", true);
+          this.$store.dispatch("customerGetAll", true);
+        } else {
+          this.$store.dispatch("getWorkplacePlanner", true);
+          this.$store.dispatch("workplaceGetAll", true);
+        }
+      };
 
       data = {
         date: this.selected_event.start,
@@ -192,6 +294,68 @@ export default {
         data,
         model
       };
+    },
+    /**
+     * duplicate date plans
+     *
+     */
+    duplicateDay() {
+
+      let data = {
+        date  :  this.selected_day,
+        replan_date : this.duplicate_date,
+        _method: 'PUT'
+      }
+      httpCall.post('rep/v1/planner/duplicate', data)
+      .then(({data}) => {
+        if(data.code === 400 || data.code === 302 || data.code === 203) {
+          this.handleResponseError(data);
+        } else {
+          if(data.rejected.length) {
+            data.rejected.forEach((item) => {
+              this.$toasted.show(item, {
+                icon: 'exclamation'
+              })
+            })
+          }
+          this.$toasted.success(data.data);
+        }
+      }).finally(() => {
+        this.$store.dispatch('customerGetAll', true);
+        this.$store.dispatch('getPlanner', true);
+        this.show_day_modal = false
+      });
+    },
+    /**
+     * Clear date plan
+     *
+     */
+    clearDay() {
+      let data = {
+        date: this.selected_day,
+        _method: 'DELETE'
+      };
+      httpCall.post('rep/v1/planner/clear-day', data)
+      .then(({data}) => {
+        if(data.code === 400 || data.code === 203 || data.code === 301) {
+          this.handleResponseError(data);
+        } else {
+          this.$toasted.success(data.data, {
+            icon: 'check'
+          })
+        }
+      }).finally(() => {
+        this.$store.dispatch('customerGetAll', true);
+        this.$store.dispatch("getPlanner", true);
+        this.show_day_modal = false;
+      });
+    },
+    flipIcon() {
+      if(this.summery_icon === "fa-chevron-circle-down") {
+        this.summery_icon = "fa-chevron-circle-up";
+      } else {
+        this.summery_icon = "fa-chevron-circle-down";
+      }
     }
   },
   computed: {
@@ -203,8 +367,41 @@ export default {
     },
     isPlansFetched() {
       return this.$store.getters.isPlansFetched;
+    },
+    totalPlannedCustomers() {
+      let plans = this.$store.getters.plans;
+      let result = {};
+      plans.forEach((plan) => {
+        if(!result[plan.customer.name]) {
+          result[plan.customer.name] = [];
+        }
+        result[plan.customer.name].push(plan);
+      });
+      return result;
+    },
+    totalPlannedWorkplaces() {
+      let plans =this.$store.getters.amPlans;
+      let result = {};
+      plans.forEach((plan) => {
+        if(!result[plan.workplace.name]) {
+          result[plan.workplace.name] = [];
+        }
+        result[plan.workplace.name].push(plan);
+      })
+      return result;
+    },
+    totalPlannedDays() {
+      let result = {};
+      this.plans.forEach((plan) => {
+        if(!result[plan.start]) {
+          result[plan.start] = [];
+        }
+        result[plan.start].push(plan);
+      });
+      return result;
     }
   }
+
 };
 </script>
 

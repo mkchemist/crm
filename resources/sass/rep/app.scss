@@ -81,10 +81,17 @@ $success: #38c172;
 }
 
 #side_datepicker {
-  .vuecal__cell--selected {
-    border: 2px solid #42a8fc !important;
-    border-radius: 50%;
+  .vuecal__cell--today {
+    .vuecal__cell-content {
+      background-color: #41aee1 !important;
+      color: white !important;
+      font-weight: bolder;
+    }
   }
+  /* .vuecal__cell--selected {
+    border: 2px solid #42b983 !important;
+    border-radius: 10px;
+  } */
 }
 
 .vuecal__body,
