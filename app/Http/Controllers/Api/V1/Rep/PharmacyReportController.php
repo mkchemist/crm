@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\V1\Rep;
 
 use App\Http\Controllers\Controller;
+use App\PharmacyReport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PharmacyReportController extends Controller
 {
@@ -14,7 +16,15 @@ class PharmacyReportController extends Controller
      */
     public function index()
     {
-        //
+      $visits = PharmacyReport::with(['pharmacy'])
+      ->where([
+        'user_id' =>  Auth::user()->id
+      ])->get();
+
+      return response()->json([
+        'code'  =>  201,
+        'data'  =>  $visits
+      ]);
     }
 
     /**
@@ -25,7 +35,7 @@ class PharmacyReportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $validator =
     }
 
     /**

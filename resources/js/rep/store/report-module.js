@@ -3,6 +3,7 @@ export default {
   state: {
     pm_visits: [],
     am_visits: [],
+    pharmacy_visits: []
   },
   getters: {
     pmVisits: state => {
@@ -10,6 +11,9 @@ export default {
     },
     amVisits: state => {
       return state.am_visits;
+    },
+    pharmacyVisits: state => {
+      return state.pharmacy_visits;
     }
   },
   mutations: {
@@ -43,6 +47,22 @@ export default {
             state.am_visits = data.data
           }
         });
+      }
+    },
+    /**
+     * get all pharmacy reports
+     *
+     * @param {object} {state}
+     * @param {boolean} force
+     */
+    pharmacyReportGetAll({state}, force) {
+      if(!state.pharmacy_visits.length || force) {
+        httpCall.get('rep/v1/reports/pharmacy')
+        .then(({data}) => {
+          if(data.code === 201) {
+            state.pharmacy_visits = data.data;
+          }
+        })
       }
     }
   }
