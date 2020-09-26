@@ -16,4 +16,9 @@ class Workplace extends Model
       'territory',
       'region'
     ];
+
+    public function departs()
+    {
+      return $this->hasMany('App\WorkplaceDepartment', 'workplace_id', 'id');
+    }
 }

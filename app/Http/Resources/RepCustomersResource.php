@@ -19,6 +19,10 @@ class RepCustomersResource extends JsonResource
       $params = $this->params()->where(['user_id' => $user->id])->first();
       $freq = $this->frequency()->where(['user_id' =>  $user->id])->first();
       $plans = $this->planner()->where(['user_id' =>  $user->id])->get();
+      $report = $this->report()->where(['user_id' => $user->id])->get();
+      $workplace = $this->workplace ? $this->workplace->name : null;
+      $workplace_id = $this->workplace? $this->workplace->id : null;
+
         //return parent::toArray($request);
       return [
         'id'    =>  $this->id,
@@ -33,7 +37,10 @@ class RepCustomersResource extends JsonResource
         'parameter' =>  $params ? $params->param : "NN",
         'current_freq'    =>  $freq ? $freq->current : 0,
         'next_freq'   =>  $freq ? $freq->next : 0,
-        'plans'       =>  count($plans)
+        'plans'       =>  count($plans),
+        'workplace' =>  $workplace,
+        'workplace_id' => $workplace_id,
+        'report'   =>  count($report)
       ];
     }
 }

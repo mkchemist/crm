@@ -21,6 +21,10 @@ export const CUSTOMERS_TABLE_HEADS = [
     name: 'title'
   },
   {
+    title: 'Workplace',
+    name: 'workplace'
+  },
+  {
     title: 'Param',
     name: 'parameter'
   },
@@ -35,6 +39,10 @@ export const CUSTOMERS_TABLE_HEADS = [
   {
     title: 'Plans',
     name: 'plans'
+  },
+  {
+    title: 'Visits',
+    name: 'report'
   },
   {
     title: 'Address',

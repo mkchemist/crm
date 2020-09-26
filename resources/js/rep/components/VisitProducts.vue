@@ -1,0 +1,98 @@
+<template>
+  <div>
+    <div class="text-right">
+      <button
+        class="btn btn-sm btn-primary"
+        type="button"
+        @click="addNewProduct"
+      >
+        <span><i class="fa fa-plus-circle"></i></span>
+        <span>add product</span>
+      </button>
+    </div>
+    <div class="row mx-auto" v-for="(product, i) in data" :key="i">
+      <div class="col-lg">
+        <label for="name" class="text-muted small">Name</label>
+        <select
+          name="name"
+          class="form-control form-control-sm"
+          v-model="product.name"
+        >
+          <option v-for="(item, i) in products" :key="i" :value="item">{{
+            item
+          }}</option>
+        </select>
+      </div>
+      <div class="col-lg">
+        <label for="lader" class="text-muted small">Lader of Adaption</label>
+        <select
+          name="lader"
+          class="form-control form-control-sm"
+          v-model="product.lader"
+        >
+          <option v-for="(item, i) in lader" :key="i" :value="item">{{
+            item
+          }}</option>
+        </select>
+      </div>
+      <div class="col-lg">
+        <label for="action" class="text-muted small">Action</label>
+        <select
+          name="action"
+          class="form-control form-control-sm"
+          v-model="product.action"
+        >
+          <option v-for="(item, i) in visitActions" :key="i" :value="item">{{
+            item
+          }}</option>
+        </select>
+      </div>
+      <div class="col-lg">
+        <label for="competitor" class="text-muted small">Competitor</label>
+        <input
+          type="text"
+          name="competitor"
+          class="form-control form-control-sm"
+          v-model="product.competitor"
+        />
+      </div>
+      <div class="col-lg-auto d-flex justify-content-center align-items-center">
+        <button class="btn btn-sm btn-danger" @click="removeProduct(i)">
+          <span><i class="fa fa-times"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: ["data"],
+  computed: {
+    products() {
+      return this.$store.getters.products;
+    },
+    lader() {
+      return this.$store.getters.lader;
+    },
+    visitActions() {
+      return this.$store.getters.visitActions;
+    }
+  },
+  methods: {
+    addNewProduct() {
+      this.data.push({
+        name: '',
+        lader: '',
+        action:'',
+        competitor: ''
+      })
+    },
+    removeProduct(i) {
+      this.data.splice(i, 1);
+    }
+  }
+};
+</script>
+
+<style></style>

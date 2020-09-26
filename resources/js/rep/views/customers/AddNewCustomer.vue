@@ -62,9 +62,15 @@
                   name="workplace"
                   id="workplace"
                   class="form-control form-control-sm"
-                  v-model="customer.workplace"
+                  v-model="customer.workplace_id"
                 >
                   <option value="">Select workplace</option>
+                  <option
+                      v-for="workplace in workplaces"
+                      :key="workplace.id"
+                      :value="workplace.id"
+                      >{{ workplace.name }}</option
+                    >
                 </select>
               </div>
               <div class="form-group col-lg">
@@ -173,7 +179,7 @@ export default {
       name: "",
       title: "",
       specialty: "",
-      workplace: "",
+      workplace_id: "",
       brick: "",
       address: "",
       phone: "",
@@ -187,6 +193,7 @@ export default {
     }
   },
   created(){
+    this.$store.dispatch("workplaceGetAll");
   },
   computed: {
     specialty() {
@@ -197,6 +204,9 @@ export default {
     },
     title() {
       return this.$store.getters.title;
+    },
+     workplaces() {
+      return this.$store.getters.allWorkplaces;
     }
   }
 };

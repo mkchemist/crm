@@ -11,7 +11,8 @@
     </thead>
     <tbody>
       <tr v-for="(item, i) in data" :key="i">
-        <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td>
+        <!-- <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td> -->
+        <td v-for="(head, i) in heads" :key="i">{{ _notation(item, head.name)}}</td>
         <slot name="body" :item="item"></slot>
       </tr>
     </tbody>
@@ -20,8 +21,9 @@
 
 <script>
 import {httpCall} from "../rep/helpers/http-service";
+import { ObjectNotation } from "../rep/helpers/helpers"
 export default {
-  props: ["heads", "data", "headClass",'withFavorite', 'withUnlink','onUnlink'],
+  props: ["heads", "data", "headClass",'withFavorite', 'withUnlink','onUnlink', 'orderBy'],
   data: () => ({
     table: null
   }),
@@ -29,6 +31,9 @@ export default {
     this.createTable();
   },
   methods: {
+    _notation(container, key){
+      return ObjectNotation(container, key)
+    },
     /**
      * create datatable instance
      *
@@ -48,8 +53,7 @@ export default {
       buttons = this.addFavoriteButton(buttons);
       buttons = this.addUnlinkButton(buttons);
       this.table = $("#data-table").DataTable({
-        columnDefs: [{ targets: 0, visible: false }],
-        order: [[1, "asc"]],
+        order: this.ordering(),
         language: {
           searchPlaceholder: "Search..."
         },
@@ -192,6 +196,28 @@ export default {
         });
       }
       return buttons;
+    },
+    /**
+     * ordering table header
+     *
+     */
+    ordering() {
+      if(!this.orderBy) {
+        return [[1, 'asc']]
+      }
+      let $orderBy=this.orderBy;
+      let order = [];
+      $orderBy = $orderBy.split('|');
+      $orderBy.forEach((item) => {
+        let parts = item.split(',');
+        this.heads.forEach((head, i) => {
+          if(head.title === parts[0]) {
+            let dir = parts[1] ? parts[1] : 'asc'
+            order.push([i,dir])
+          }
+        })
+      });
+      return order;
     }
   },
   destroyed() {

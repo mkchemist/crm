@@ -43,8 +43,15 @@
                   <select
                     id="title"
                     class="form-control form-control-sm"
-                    v-model="customer.workplace"
+                    v-model="customer.workplace_id"
                   >
+                    <option value="">Select Workplace</option>
+                    <option
+                      v-for="workplace in workplaces"
+                      :key="workplace.id"
+                      :value="workplace.id"
+                      >{{ workplace.name }}</option
+                    >
                   </select>
                 </div>
               </div>
@@ -155,6 +162,7 @@ export default {
   }),
   created() {
     this.loading = true;
+    this.$store.dispatch("workplaceGetAll");
     httpCall
       .get("rep/v1/customers/" + this.$route.params.id)
       .then(({ data }) => {
@@ -222,6 +230,9 @@ export default {
     },
     param() {
       return this.$store.getters.param;
+    },
+    workplaces() {
+      return this.$store.getters.allWorkplaces;
     }
   }
 };

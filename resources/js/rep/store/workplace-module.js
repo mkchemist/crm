@@ -1,9 +1,21 @@
 import Vue from "vue";
 import { httpCall } from "../helpers/http-service";
+
 export default {
   state: {
+    /**
+     * all workplaces
+     *
+     */
     all: [],
+    /**
+     * is customer fetched
+     */
     fetched: false,
+    /**
+     * customer pharmacies
+     *
+     */
     pharmacies: []
   },
   mutations: {},

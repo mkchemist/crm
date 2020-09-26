@@ -165,6 +165,8 @@ export default {
           });
           this.getDepartments();
         }
+      }).finally(() => {
+        this.$store.dispatch('workplaceGetAll', true);
       });
     },
     /**

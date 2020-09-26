@@ -46,4 +46,11 @@ Route::group([
   // workplace planner routes
   Route::delete('workplace-planner/delete','WorkplacePlannerController@groupDelete');
   Route::apiResource('/workplace-planner', 'WorkplacePlannerController');
+  // Reports routes
+  Route::group(['prefix' => 'reports'], function () {
+    // Report pm routes
+    Route::apiResource('pm', 'CustomerReportController');
+    // Report am routes
+    Route::apiResource('am','WorkplaceReportController');
+  });
 });

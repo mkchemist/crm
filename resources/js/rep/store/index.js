@@ -4,6 +4,7 @@ import AppModule from "./app-module";
 import Customer from "./customer-module";
 import Workplace from "./workplace-module";
 import Planner from './planner-module';
+import Report from "./report-module";
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     AppModule,
     Customer,
     Workplace,
-    Planner
+    Planner,
+    Report
   }
 });

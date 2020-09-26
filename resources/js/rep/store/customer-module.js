@@ -10,8 +10,20 @@ import router from "../routes";
 
 export default {
   state: {
+    /**
+     * all customers
+     *
+     */
     all: [],
+    /**
+     * is customers fetched
+     *
+     */
     fetched: false,
+    /**
+     * filterd customers
+     *
+     */
     filtered: []
   },
   mutations: {

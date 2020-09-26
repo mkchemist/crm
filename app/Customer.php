@@ -44,4 +44,9 @@ class Customer extends Model
     {
       return $this->hasMany('App\Planner', 'customer_id', 'id');
     }
+
+    public function workplace()
+    {
+      return $this->belongsTo('App\Workplace', 'workplace_id', 'id');
+    }
 }
