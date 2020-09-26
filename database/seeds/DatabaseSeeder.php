@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
           UserSeeder::class,
           CustomerSeeder::class,
           WorkplaceSeeder::class,
-          CustomerParameterSeeder::class
         ]);
     }
 }
