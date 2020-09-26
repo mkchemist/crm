@@ -36,7 +36,7 @@ export default {
      * @param {boolean} force
      */
     amGetAll({state}, force) {
-      if(!state.pm_visits.length || force ) {
+      if(!state.am_visits.length || force ) {
         httpCall.get('rep/v1/reports/am')
         .then(({data}) => {
           if(data.code === 201) {
