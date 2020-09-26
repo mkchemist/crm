@@ -5997,7 +5997,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    this.$store.dispatch('pharmacyReportGetAll');
+  }
+});
 
 /***/ }),
 
@@ -50170,7 +50174,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   state: {
     pm_visits: [],
-    am_visits: []
+    am_visits: [],
+    pharmacy_visits: []
   },
   getters: {
     pmVisits: function pmVisits(state) {
@@ -50178,6 +50183,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     amVisits: function amVisits(state) {
       return state.am_visits;
+    },
+    pharmacyVisits: function pharmacyVisits(state) {
+      return state.pharmacy_visits;
     }
   },
   mutations: {},
@@ -50207,12 +50215,32 @@ __webpack_require__.r(__webpack_exports__);
     amGetAll: function amGetAll(_ref3, force) {
       var state = _ref3.state;
 
-      if (!state.pm_visits.length || force) {
+      if (!state.am_visits.length || force) {
         _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].get('rep/v1/reports/am').then(function (_ref4) {
           var data = _ref4.data;
 
           if (data.code === 201) {
             state.am_visits = data.data;
+          }
+        });
+      }
+    },
+
+    /**
+     * get all pharmacy reports
+     *
+     * @param {object} {state}
+     * @param {boolean} force
+     */
+    pharmacyReportGetAll: function pharmacyReportGetAll(_ref5, force) {
+      var state = _ref5.state;
+
+      if (!state.pharmacy_visits.length || force) {
+        _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].get('rep/v1/reports/pharmacy').then(function (_ref6) {
+          var data = _ref6.data;
+
+          if (data.code === 201) {
+            state.pharmacy_visits = data.data;
           }
         });
       }

@@ -52,5 +52,7 @@ Route::group([
     Route::apiResource('pm', 'CustomerReportController');
     // Report am routes
     Route::apiResource('am','WorkplaceReportController');
+    // Report pharmacy routes
+    Route::apiResource('pharmacy', 'PharmacyReportController');
   });
 });
