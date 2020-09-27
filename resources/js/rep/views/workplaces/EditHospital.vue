@@ -135,6 +135,10 @@ export default {
     });
   },
   methods: {
+    /**
+     * updating hospital
+     *
+     */
     onSubmit() {
       let id = this.$route.params.id;
       httpCall.post('rep/v1/workplaces/'+id, {...this.hospital, _method:'PUT'})

@@ -122,6 +122,9 @@
 import { httpCall } from '../../helpers/http-service';
 export default {
   methods: {
+    /**
+     * adding new pharmacy
+     */
     onSubmit() {
       httpCall.post('rep/v1/pharmacies',this.pharmacy)
       .then(({data}) => {
