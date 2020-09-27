@@ -104,6 +104,10 @@
 import { httpCall } from "../../helpers/http-service";
 export default {
   methods: {
+    /**
+     * adding new hospital
+     *
+     */
     onSubmit() {
       httpCall
         .post("rep/v1/workplaces", this.hospital)

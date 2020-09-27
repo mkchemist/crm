@@ -8,6 +8,7 @@ import ViewPmReport from "../views/reports/ViewPmReport";
 import ViewPharmacyReport from "../views/reports/ViewPharmacyReport";
 import EditPmReport from "../views/reports/EditPmReport";
 import EditAmReport from "../views/reports/EditAmReport";
+import EditPharmacyReport from "../views/reports/EditPharmacyReport";
 
 export default {
   path: "/reports",
@@ -48,6 +49,10 @@ export default {
     {
       path: "edit/am/:id",
       component: EditAmReport
+    },
+    {
+      path: 'edit/pharmacy/:id',
+      component: EditPharmacyReport
     }
   ]
 }
