@@ -1,4 +1,5 @@
 import { httpCall } from "../helpers/http-service";
+import Vue from "vue";
 export default {
   state: {
     pm_visits: [],
@@ -30,6 +31,10 @@ export default {
         httpCall.get('rep/v1/reports/pm')
         .then(({data}) => {
           state.pm_visits = data.data;
+          Vue.toasted.show('PM reports loaded', {
+            type: 'success',
+            icon: 'check'
+          })
         })
       }
     },
@@ -45,7 +50,12 @@ export default {
         .then(({data}) => {
           if(data.code === 201) {
             state.am_visits = data.data
+            Vue.toasted.show('AM reports loaded', {
+              type: 'success',
+              icon: 'check'
+            })
           }
+
         });
       }
     },
@@ -61,6 +71,10 @@ export default {
         .then(({data}) => {
           if(data.code === 201) {
             state.pharmacy_visits = data.data;
+            Vue.toasted.show('Pharmacy reports loaded', {
+              type: 'success',
+              icon: 'check'
+            })
           }
         })
       }

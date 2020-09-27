@@ -106,11 +106,14 @@ export default {
     error: null
   }),
   methods: {
+    /**
+     * updating pharmacy
+     */
     onSubmit() {
       let id = this.$route.params.id;
       httpCall.post('rep/v1/pharmacies/'+id, {...this.pharmacy, _method: 'PUT'})
       .then(({data}) => {
-        if(data.code === 400 || data.code === 302) {
+        if(data.code === 400 || data.code === 301) {
           Object.keys(data.data).forEach((key) => {
             data.data[key].forEach((err) => {
               this.$toasted.show(err, {

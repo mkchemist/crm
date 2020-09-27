@@ -350,6 +350,10 @@ export default {
         this.show_day_modal = false;
       });
     },
+    /**
+     * flip summery section icon effect
+     *
+     */
     flipIcon() {
       if(this.summery_icon === "fa-chevron-circle-down") {
         this.summery_icon = "fa-chevron-circle-up";
@@ -359,15 +363,24 @@ export default {
     }
   },
   computed: {
+    /**
+     * get all plans am and pm
+     */
     plans() {
       let am = this.$store.getters.amPlans;
       let pm = this.$store.getters.plans;
       let plans = [...am, ...pm];
       return plans;
     },
+    /**
+     * is plan is already fetched
+     */
     isPlansFetched() {
       return this.$store.getters.isPlansFetched;
     },
+    /**
+     * get total distinct planned customers
+     */
     totalPlannedCustomers() {
       let plans = this.$store.getters.plans;
       let result = {};
@@ -379,6 +392,9 @@ export default {
       });
       return result;
     },
+    /**
+     * get total distinct workplaces planned
+     */
     totalPlannedWorkplaces() {
       let plans =this.$store.getters.amPlans;
       let result = {};
@@ -390,6 +406,9 @@ export default {
       })
       return result;
     },
+    /**
+     * get total distinct planned days
+     */
     totalPlannedDays() {
       let result = {};
       this.plans.forEach((plan) => {

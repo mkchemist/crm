@@ -11,6 +11,7 @@
       </button>
     </div>
     <div class="row mx-auto" v-for="(product, i) in data" :key="i">
+
       <div class="col-lg">
         <label for="name" class="text-muted small">Name</label>
         <select
@@ -23,7 +24,20 @@
           }}</option>
         </select>
       </div>
-      <div class="col-lg">
+      <div class="col-lg" v-if="pharmacyProducts">
+        <label for="rate" class="text-muted small">Rate</label>
+        <select
+          name="rate"
+          class="form-control form-control-sm"
+          v-model="product.rate"
+        >
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+          <option value="Very Low">Very Low</option>
+        </select>
+      </div>
+      <div class="col-lg" v-else>
         <label for="lader" class="text-muted small">Lader of Adaption</label>
         <select
           name="lader"
@@ -35,7 +49,8 @@
           }}</option>
         </select>
       </div>
-      <div class="col-lg">
+
+      <div class="col-lg" v-if="!pharmacyProducts">
         <label for="action" class="text-muted small">Action</label>
         <select
           name="action"
@@ -47,6 +62,7 @@
           }}</option>
         </select>
       </div>
+
       <div class="col-lg">
         <label for="competitor" class="text-muted small">Competitor</label>
         <input
@@ -55,6 +71,20 @@
           class="form-control form-control-sm"
           v-model="product.competitor"
         />
+      </div>
+      <div class="col-lg" v-if="pharmacyProducts">
+        <label for="competitor_rate" class="text-muted small">Competitor Rate</label>
+        <select
+          type="text"
+          name="competitor_rate"
+          class="form-control form-control-sm"
+          v-model="product.competitor_rate"
+        >
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+          <option value="Very Low">Very Low</option>
+        </select>
       </div>
       <div class="col-lg-auto d-flex justify-content-center align-items-center">
         <button class="btn btn-sm btn-danger" @click="removeProduct(i)">
@@ -67,7 +97,7 @@
 
 <script>
 export default {
-  props: ["data"],
+  props: ["data", 'pharmacyProducts'],
   computed: {
     products() {
       return this.$store.getters.products;
@@ -81,12 +111,14 @@ export default {
   },
   methods: {
     addNewProduct() {
-      this.data.push({
-        name: '',
-        lader: '',
-        action:'',
-        competitor: ''
-      })
+      let product = {};
+      product.name= "";
+      product.competitor = "";
+      if(this.pharmacyProducts) {
+        product.rate = "";
+        product.competitor_rate = ""
+      };
+      this.data.push(product)
     },
     removeProduct(i) {
       this.data.splice(i, 1);
