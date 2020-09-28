@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
           UserSeeder::class,
           CustomerSeeder::class,
           WorkplaceSeeder::class,
+          PharmacySeeder::class
         ]);
     }
 }
