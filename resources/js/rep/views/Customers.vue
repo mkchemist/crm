@@ -47,6 +47,11 @@ export default {
         title: "Favorite",
         link: "/customers/favorite",
         icon: "fa-star"
+      },
+      {
+        title: 'Frequency',
+        link: '/customers/frequency',
+        icon: 'fa-wave-square'
       }
     ]
   })

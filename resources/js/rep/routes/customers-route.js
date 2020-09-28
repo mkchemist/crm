@@ -7,6 +7,7 @@ import FavoriteList from "../views/customers/FavoriteList.vue";
 import AddNewCustomer from "../views/customers/AddNewCustomer.vue";
 import ViewCustomer from '../views/customers/ViewCustomer.vue';
 import EditCustomer from "../views/customers/EditCustomer.vue";
+import CustomerFrequency from "../views/customers/CustomerFrequency.vue";
 export default {
   path: "/customers",
   component: Customers,
@@ -38,6 +39,10 @@ export default {
     {
       path: "edit/:id",
       component: EditCustomer
+    },
+    {
+      path: 'frequency',
+      component:CustomerFrequency
     }
   ]
 };
