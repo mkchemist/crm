@@ -119,7 +119,9 @@ class CustomerController extends Controller
 
       $customer->address = $request->address;
       $customer->phone = $request->phone;
-      $customer->workplace_id = $request->workplace_id;
+      if($request->workplace_id !== "null") {
+        $customer->workplace_id = $request->workplace_id;
+      }
       $customer->title = $request->title;
       $this->customerParameterUpdateOrCreate($customer->id, $request->parameter);
       $this->customerFrequencyUpdateOrCreate($customer->id, $request->next_freq, false);
