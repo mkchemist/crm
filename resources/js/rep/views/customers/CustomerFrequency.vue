@@ -11,8 +11,14 @@
             <span><i class="fa fa-chevron-circle-left"></i></span>
             <span>back</span>
           </router-link>
-          <button class="btn btn-sm btn-success" v-if="updated.length" @click="saveFrequency">
-            <span class="bg-light rounded-circle text-success px-1">{{ updated.length }}</span>
+          <button
+            class="btn btn-sm btn-success"
+            v-if="updated.length"
+            @click="saveFrequency"
+          >
+            <span class="bg-light rounded-circle text-success px-1">{{
+              updated.length
+            }}</span>
             <span>update</span>
           </button>
         </div>
@@ -21,6 +27,7 @@
             :heads="heads"
             :data="customers"
             head-class="bg-success text-light"
+            order-by="Name,asc|Specialty,asc"
           >
             <template v-slot:head>
               <th>Next</th>
@@ -40,7 +47,7 @@
           </table-component>
         </div>
         <div v-else>
-          <h1>Loading customers</h1>
+          <loader-component />
         </div>
       </div>
     </div>
@@ -49,7 +56,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
-import { httpCall } from '../../helpers/http-service';
+import { httpCall } from "../../helpers/http-service";
 export default {
   components: {
     TableComponent
@@ -85,10 +92,14 @@ export default {
     updated: []
   }),
   methods: {
+    /**
+     * update customer frequency
+     *
+     * @param {int} id
+     */
     updateCustomerFrequency(id) {
-      let val = event.target.value;
+      let val = parseInt(event.target.value);
       let i = this.isExist(id);
-      console.log(i);
       if (i !== false) {
         this.updated[i].val = val;
       } else {
@@ -98,9 +109,14 @@ export default {
         });
       }
     },
+    /**
+     * check if customer is exists in upadate container
+     *
+     * @param {int} id
+     */
     isExist(id) {
       let exists = false;
-      if(!this.updated.length) {
+      if (!this.updated.length) {
         return exists;
       }
       this.updated.forEach((item, i) => {
@@ -110,15 +126,26 @@ export default {
       });
       return exists;
     },
+    /**
+     * save Updated Frequency
+     *
+     * @return {void}
+     */
     saveFrequency() {
-      let data = {
-        customer : JSON.stringify(this.updated)
-      };
-
-      httpCall.post('rep/v1/customer-frequency',{customers: JSON.stringify(this.updated)})
-      .then(({data}) => {
-        console.log(data)
-      })
+      httpCall
+        .post("rep/v1/customer-frequency", {
+          customers: JSON.stringify(this.updated)
+        })
+        .then(({ data }) => {
+          if (data.code === 201) {
+            this.$toasted.show("customers frequency updated", {
+              type: "success",
+              icon: "check"
+            });
+            this.$router.replace("/customers");
+            this.$store.dispatch("customerGetAll", true);
+          }
+        });
     }
   }
 };
