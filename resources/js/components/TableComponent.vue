@@ -1,6 +1,6 @@
 <template>
   <table
-    class="table table-striped table-sm small bg-white table-responsive"
+    :class="`table table-striped table-sm small bg-white ${notResponsive ?'' :'table-responsive'}`"
     id="data-table"
   >
     <thead>
@@ -23,7 +23,7 @@
 import {httpCall} from "../rep/helpers/http-service";
 import { ObjectNotation } from "../rep/helpers/helpers"
 export default {
-  props: ["heads", "data", "headClass",'withFavorite', 'withUnlink','onUnlink', 'orderBy'],
+  props: ["heads", "data", "headClass",'withFavorite', 'withUnlink','onUnlink', 'orderBy', 'notResponsive'],
   data: () => ({
     table: null
   }),

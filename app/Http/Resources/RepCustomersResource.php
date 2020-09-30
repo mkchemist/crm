@@ -38,9 +38,11 @@ class RepCustomersResource extends JsonResource
         'current_freq'    =>  $freq ? $freq->current : 0,
         'next_freq'   =>  $freq ? $freq->next : 0,
         'plans'       =>  count($plans),
+        'planned_visits' => $plans,
         'workplace' =>  $workplace,
         'workplace_id' => $workplace_id,
-        'report'   =>  count($report)
+        'report'   =>  count($report),
+        "locked_freq" =>  $freq && $freq->locked  ? true : false
       ];
     }
 }

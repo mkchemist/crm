@@ -31,6 +31,7 @@
           >
             <template v-slot:head>
               <th>Next</th>
+              <th>Locked</th>
               <th>Address</th>
             </template>
             <template v-slot:body="{ item }">
@@ -40,6 +41,15 @@
                   :value="item.next_freq"
                   class="form-control form-control-sm"
                   @change="updateCustomerFrequency(item.id)"
+                />
+              </td>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  :disabled="item.locked_freq"
+                  :checked="item.locked_freq"
+                  :value="item.locked_freq"
+                  @click="lockFrequency(item.id)"
                 />
               </td>
               <td>{{ item.address }}</td>
@@ -57,6 +67,17 @@
 <script>
 import TableComponent from "../../../components/TableComponent";
 import { httpCall } from "../../helpers/http-service";
+
+/**
+ * updated object item
+ *
+ */
+let updateObject = {
+  id: null,
+  frequency: null,
+  locked: false
+}
+
 export default {
   components: {
     TableComponent
@@ -96,18 +117,53 @@ export default {
      * update customer frequency
      *
      * @param {int} id
+     * @return {void}
      */
     updateCustomerFrequency(id) {
       let val = parseInt(event.target.value);
       let i = this.isExist(id);
       if (i !== false) {
-        this.updated[i].val = val;
+        this.updated[i].frequency = val;
+        console.log(this.updated[i]);
       } else {
-        this.updated.push({
-          id,
-          val
-        });
+        let customer = this.createUpdateObject(id, val);
+       /*  customer.frequency = val;
+        customer.id = id */
+        this.updated.push(customer);
       }
+    },
+    /**
+     * lock customer frequency
+     *
+     * @param {int} id
+     * @return {void}
+     */
+    lockFrequency(id) {
+      let val =event.target.checked;
+      let i = this.isExist(id);
+      if(i !== false) {
+        this.updated[i].locked = val;
+      } else {
+        let freq = this.getSelectedCustomerFrequency(id);
+        let customer = this.createUpdateObject(id, freq, val);
+        this.updated.push(customer);
+      }
+    },
+    /**
+     * create update object
+     *
+     * @param {int} id [customer id]
+     * @param {int} frequency [customer frequency]
+     * @param {boolean} locked [is customer frequenct is locked]
+     * @return {object}
+     */
+    createUpdateObject(id = null, frequency = null, locked = false) {
+      let customer = {
+        id,
+        frequency,
+        locked
+      };
+      return customer;
     },
     /**
      * check if customer is exists in upadate container
@@ -115,16 +171,31 @@ export default {
      * @param {int} id
      */
     isExist(id) {
-      let exists = false;
+      let exist = false;
       if (!this.updated.length) {
-        return exists;
+        return exist;
       }
       this.updated.forEach((item, i) => {
         if (item.id === id) {
-          exists = i;
+          exist = i;
         }
       });
-      return exists;
+      return exist;
+    },
+    /**
+     * get frequency of selected customer
+     *
+     * @param {int} id [customer id]
+     * @return {int} [customer next freq]
+     */
+    getSelectedCustomerFrequency(id) {
+      let freq = 0;
+      this.customers.forEach((customer) => {
+        if(customer.id === id) {
+          freq = customer.next_freq;
+        }
+      });
+      return freq;
     },
     /**
      * save Updated Frequency
@@ -132,6 +203,8 @@ export default {
      * @return {void}
      */
     saveFrequency() {
+     /*  console.log(this.updated);
+      return; */
       httpCall
         .post("rep/v1/customer-frequency", {
           customers: JSON.stringify(this.updated)
@@ -142,8 +215,8 @@ export default {
               type: "success",
               icon: "check"
             });
-            this.$router.replace("/customers");
             this.$store.dispatch("customerGetAll", true);
+            this.updated = [];
           }
         });
     }
