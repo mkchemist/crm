@@ -30,6 +30,7 @@ Route::group([
   Route::apiResource('/customers-favorite-list', 'CustomerFavoriteListController');
   // customer frequency
   Route::post('/customer-frequency', 'CustomerFrequencyController@update');
+  Route::post('/customer-frequency/submit', 'CustomerFrequencyController@submitFrequency');
   // workplaces routes
   Route::apiResource('/workplaces', 'WorkplaceController');
   // pharmacies routes

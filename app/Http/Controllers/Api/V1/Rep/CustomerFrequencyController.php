@@ -63,4 +63,20 @@ class CustomerFrequencyController extends Controller
 
     return $customer;
   }
+
+  /**
+   * submit all rep frequency
+   *
+   * @return void
+   */
+  public function submitFrequency()
+  {
+    $customers = CustomerFrequency::where([
+      'user_id' =>  Auth::user()->id
+    ])->update(['submitted' => true]);
+    return response()->json([
+      'code'  =>  201,
+      'data'  =>  $customers
+    ]);
+  }
 }

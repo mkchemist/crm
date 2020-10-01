@@ -224,6 +224,9 @@ class CustomerController extends Controller
         'user_id' =>  Auth::user()->id,
         'customer_id' =>  $id,
         ]);
+      if($frequency->locked === 1) {
+        return $frequency;
+      }
       $frequency->next = $freq;
       $frequency->locked = $locked;
       $frequency->save();

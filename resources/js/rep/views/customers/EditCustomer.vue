@@ -20,7 +20,34 @@
             <form @submit.prevent="handleSubmit(onSubmit)">
               <p>Customer info.</p>
               <hr />
+              <!-- customer specialty and brick -->
               <div class="row mx-auto">
+                <div class="col-lg">
+                  <label for="specialty" class="text-muted">Specialty</label>
+                  <input
+                    type="text"
+                    id="specialty"
+                    :value="customer.specialty"
+                    readonly
+                    disabled
+                    class="form-control form-control-sm"
+                  />
+                </div>
+                <div class="col-lg">
+                  <label for="brick" class="text-muted">Brick</label>
+                  <input
+                    type="text"
+                    id="brick"
+                    :value="customer.brick"
+                    readonly
+                    disabled
+                    class="form-control form-control-sm"
+                  />
+                </div>
+              </div>
+              <!-- end of customer specialty and brick -->
+
+              <div class="row mx-auto my-2">
                 <!-- customer title -->
                 <div class="form-group col-lg">
                   <label for="title" class="text-muted">Title</label>
@@ -128,6 +155,7 @@
                     min="0"
                     max="10"
                     v-model="customer.next_freq"
+                    :disabled="customer.locked_freq"
                   />
                 </ValidationProvider>
               </div>

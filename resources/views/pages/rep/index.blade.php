@@ -16,8 +16,7 @@
 
 @section('script')
 <script type="text/javascript" src="{{ asset("libs/data-tables") }}/JSZip-2.5.0/jszip.min.js" ></script>
-<script type="text/javascript" src="{{ asset("libs/data-tables") }}/pdfmake-0.1.36/pdfmake.min.js" ></script>
-<script type="text/javascript" src="{{ asset("libs/data-tables") }}/pdfmake-0.1.36/vfs_fonts.js" ></script>
+
 <script type="text/javascript" src="{{ asset("libs/data-tables/DataTables-1.10.22/js/jquery.dataTables.min.js") }}" ></script>
 <script type="text/javascript" src="{{ asset("libs/data-tables/DataTables-1.10.22/js/dataTables.bootstrap4.min.js") }}" ></script>
 <script type="text/javascript" src="{{ asset("libs/data-tables/Buttons-1.6.4/js/dataTables.buttons.min.js") }}" ></script>

@@ -42,7 +42,7 @@ class RepCustomersResource extends JsonResource
         'workplace' =>  $workplace,
         'workplace_id' => $workplace_id,
         'report'   =>  count($report),
-        "locked_freq" =>  $freq && $freq->locked  ? true : false
+        'freq'  =>  $freq
       ];
     }
 }

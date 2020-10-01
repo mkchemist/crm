@@ -1,6 +1,9 @@
 <template>
   <div>
     <div class="px-0 shadow">
+      <div class="custom-loader" v-if="isLoading">
+        <vue-loaders name="line-scale-pulse-out" color="#38c172" scale="4" />
+      </div>
       <p class="alert alert-success">
         <span><i class="fa fa-wave-square"></i></span>
         <span class="font-weight-bold">Customer Frequency list</span>
@@ -21,6 +24,13 @@
             }}</span>
             <span>update</span>
           </button>
+          <button
+            class="btn btn-primary btn-sm"
+            @click="submitFrequency"
+          >
+            <span><i class="fa fa-paper-plane"></i></span>
+            <span>Submit</span>
+          </button>
         </div>
         <div v-if="customers.length">
           <table-component
@@ -32,6 +42,7 @@
             <template v-slot:head>
               <th>Next</th>
               <th>Locked</th>
+              <th>Submitted</th>
               <th>Address</th>
             </template>
             <template v-slot:body="{ item }">
@@ -40,17 +51,25 @@
                   type="number"
                   :value="item.next_freq"
                   class="form-control form-control-sm"
+                  :disabled="item.freq.submitted===1||item.freq.locked === 1"
                   @change="updateCustomerFrequency(item.id)"
                 />
+                <span class="d-none">{{ item.next_freq }}</span>
               </td>
               <td class="text-center">
                 <input
                   type="checkbox"
-                  :disabled="item.locked_freq"
-                  :checked="item.locked_freq"
-                  :value="item.locked_freq"
+                  :disabled="item.freq.locked===1 || item.freq.submitted === 1"
+                  :checked="item.freq.locked===1 "
+                  :value="item.freq.locked===1"
                   @click="lockFrequency(item.id)"
                 />
+                <span class="d-none">{{ item.freq.locked === 1 ? 'true' : 'false'}}</span>
+              </td>
+              <td>
+                <span v-if="item.freq.submitted ===1"><i class="fa fa-check text-success"></i></span>
+                <span v-else><i class="fa fa-times text-danger"></i></span>
+                <span class="d-none">{{ item.freq.submitted === 1 ? 'true' : 'false'}}</span>
               </td>
               <td>{{ item.address }}</td>
             </template>
@@ -76,7 +95,7 @@ let updateObject = {
   id: null,
   frequency: null,
   locked: false
-}
+};
 
 export default {
   components: {
@@ -110,7 +129,8 @@ export default {
         name: "current_freq"
       }
     ],
-    updated: []
+    updated: [],
+    isLoading: false
   }),
   methods: {
     /**
@@ -127,7 +147,7 @@ export default {
         console.log(this.updated[i]);
       } else {
         let customer = this.createUpdateObject(id, val);
-       /*  customer.frequency = val;
+        /*  customer.frequency = val;
         customer.id = id */
         this.updated.push(customer);
       }
@@ -139,9 +159,9 @@ export default {
      * @return {void}
      */
     lockFrequency(id) {
-      let val =event.target.checked;
+      let val = event.target.checked;
       let i = this.isExist(id);
-      if(i !== false) {
+      if (i !== false) {
         this.updated[i].locked = val;
       } else {
         let freq = this.getSelectedCustomerFrequency(id);
@@ -190,8 +210,8 @@ export default {
      */
     getSelectedCustomerFrequency(id) {
       let freq = 0;
-      this.customers.forEach((customer) => {
-        if(customer.id === id) {
+      this.customers.forEach(customer => {
+        if (customer.id === id) {
           freq = customer.next_freq;
         }
       });
@@ -203,8 +223,7 @@ export default {
      * @return {void}
      */
     saveFrequency() {
-     /*  console.log(this.updated);
-      return; */
+      this.isLoading = true;
       httpCall
         .post("rep/v1/customer-frequency", {
           customers: JSON.stringify(this.updated)
@@ -215,10 +234,30 @@ export default {
               type: "success",
               icon: "check"
             });
-            this.$store.dispatch("customerGetAll", true);
+            this.$store.dispatch("customerGetAll", true).finally(() => {
+              this.isLoading = false;
+            });
             this.updated = [];
           }
         });
+    },
+    /**
+     * Submit Frequnecy
+     * which will make frequency not avaliable to update
+     *
+     * @return {void}
+     */
+    submitFrequency() {
+      httpCall.post('rep/v1/customer-frequency/submit')
+      .then(({data}) => {
+        if(data.code === 201) {
+          this.$toasted.show('Frequency submitted', {
+            type: 'success',
+            icon: 'check'
+          });
+          this.$store.dispatch('customerGetAll', true);
+        }
+      });
     }
   }
 };
