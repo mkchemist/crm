@@ -43,6 +43,7 @@
               <th>Next</th>
               <th>Locked</th>
               <th>Submitted</th>
+              <th>Freqeuncy state</th>
               <th>Address</th>
             </template>
             <template v-slot:body="{ item }">
@@ -71,6 +72,7 @@
                 <span v-else><i class="fa fa-times text-danger"></i></span>
                 <span class="d-none">{{ item.freq.submitted === 1 ? 'true' : 'false'}}</span>
               </td>
+              <td>{{ item.freq.state | uppercase }}</td>
               <td>{{ item.address }}</td>
             </template>
           </table-component>
@@ -258,6 +260,11 @@ export default {
           this.$store.dispatch('customerGetAll', true);
         }
       });
+    }
+  },
+  filters: {
+    uppercase(str) {
+      return str[0].toUpperCase()+str.substr(0);
     }
   }
 };
