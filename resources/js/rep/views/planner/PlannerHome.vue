@@ -25,20 +25,37 @@
       <div class="border my-2 rounded p-2">
         <p class="text-muted clearfix">
           <span class="lead">Planner Summery </span>
-          <button class="btn float-right" data-toggle="collapse" data-target="#planner_summery" @click="flipIcon">
+          <button
+            class="btn float-right"
+            data-toggle="collapse"
+            data-target="#planner_summery"
+            @click="flipIcon"
+          >
             <span><i :class="`fa ${summery_icon}`"></i></span>
           </button>
         </p>
         <div class="row mx-auto collapse" id="planner_summery">
           <div class="col">
             <p class="mb-0 text-muted">Total planned : {{ plans.length }}</p>
-            <p class="mb-0 text-muted">Total P.M. plans : {{ $store.getters.plans.length }}</p>
-            <p class="mb-0 text-muted">Total A.M. plans : {{ $store.getters.amPlans.length }}</p>
+            <p class="mb-0 text-muted">
+              Total P.M. plans : {{ $store.getters.plans.length }}
+            </p>
+            <p class="mb-0 text-muted">
+              Total A.M. plans : {{ $store.getters.amPlans.length }}
+            </p>
           </div>
           <div class="col">
-            <p class="mb-0 text-muted">Total planned Days : {{ Object.keys(totalPlannedDays).length }}</p>
-            <p class="mb-0 text-muted">Total P.M. plnned Customers : {{ Object.keys(totalPlannedCustomers).length }}</p>
-            <p class="mb-0 text-muted">Total A.M. planned Workplaces : {{ Object.keys(totalPlannedWorkplaces).length }}</p>
+            <p class="mb-0 text-muted">
+              Total planned Days : {{ Object.keys(planSummery.days).length }}
+            </p>
+            <p class="mb-0 text-muted">
+              Total P.M. plnned Customers :
+              {{ Object.keys(planSummery.customers).length }}
+            </p>
+            <p class="mb-0 text-muted">
+              Total A.M. planned Workplaces :
+              {{ Object.keys(planSummery.workplaces).length }}
+            </p>
           </div>
         </div>
       </div>
@@ -58,7 +75,6 @@
         :on-event-click="onEventClick"
         @cell-click="onDayClick"
         :startWeekOnSunday="true"
-        :hideWeekdays="[5]"
       >
         <template v-slot:arrow-prev>
           <i class="fa fa-chevron-circle-left text-success"></i>
@@ -123,13 +139,22 @@
         </div>
       </template>
     </modal-fade>
-    <modal-fade id="cell_modal_fade" :show="show_day_modal" @onClose="() => show_day_modal = false" :centered="true">
+    <modal-fade
+      id="cell_modal_fade"
+      :show="show_day_modal"
+      @onClose="() => (show_day_modal = false)"
+      :centered="true"
+    >
       <template v-slot:header v-if="selected_day">
         <span>Edit Date {{ selected_day }}</span>
       </template>
       <template v-slot:body>
         <div class="form-group">
-          <input type="date" v-model="duplicate_date" class="form-control form-control-sm">
+          <input
+            type="date"
+            v-model="duplicate_date"
+            class="form-control form-control-sm"
+          />
         </div>
         <div class="form-group text-right">
           <button class="btn btn-primary btn-sm" @click="duplicateDay">
@@ -151,6 +176,7 @@ import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import ModalFade from "../../../components/ModalFade";
 import { httpCall } from "../../helpers/http-service";
+import { filterData } from "../../helpers/helpers";
 export default {
   components: {
     VueCal,
@@ -162,7 +188,7 @@ export default {
     selected_event: null,
     selected_day: null,
     duplicate_date: null,
-    summery_icon: 'fa-chevron-circle-down'
+    summery_icon: "fa-chevron-circle-down"
   }),
   methods: {
     /**
@@ -187,7 +213,7 @@ export default {
      */
     onDayClick(e, x) {
       let date;
-      if(e.date) {
+      if (e.date) {
         date = new Date(e.date).format("YYYY-MM-DD");
       } else {
         date = new Date(e).format("YYYY-MM-DD");
@@ -195,7 +221,6 @@ export default {
       this.selected_day = this.duplicate_date = date;
       this.show_day_modal = true;
     },
-    // FIXME fix handle response
     /**
      * update event
      *
@@ -205,24 +230,13 @@ export default {
       if (!eventDetails) {
         return;
       }
-      httpCall
-        .post(eventDetails.url, eventDetails.data)
-        .then(({ data }) => {
-          if (data.code === 400 || data.code === 301 || data.code === 203) {
-            this.handleResponseError(data);
-          } else {
-            this.$toasted.success(data.data, {
-              icon: {
-                name: "check",
-                after: true
-              }
-            });
-          }
-        })
-        .finally(() => {
+      httpCall.post(eventDetails.url, eventDetails.data).then(({ data }) => {
+        data.message = data.data;
+        this.handleResponse(data, data => {
           this.show_event_modal = false;
           eventDetails.model();
         });
+      });
     },
     /**
      * delete selected event
@@ -233,24 +247,13 @@ export default {
         return;
       }
       eventDetails.data._method = "DELETE";
-      httpCall
-        .post(eventDetails.url, eventDetails.data)
-        .then(({ data }) => {
-          if (data.code === 400 || data.code === 301 || data.code === 203) {
-            this.handleResponseError(data);
-          } else {
-            this.$toasted.success(data.data, {
-              icon: {
-                name: "check",
-                after: true
-              }
-            });
-          }
-        })
-        .finally(() => {
+      httpCall.post(eventDetails.url, eventDetails.data).then(({ data }) => {
+        data.message = data.date;
+        this.handleResponse(data, data => {
           this.show_event_modal = false;
           eventDetails.model();
         });
+      });
     },
     /**
      * get event details
@@ -300,30 +303,21 @@ export default {
      *
      */
     duplicateDay() {
-
       let data = {
-        date  :  this.selected_day,
-        replan_date : this.duplicate_date,
-        _method: 'PUT'
-      }
-      httpCall.post('rep/v1/planner/duplicate', data)
-      .then(({data}) => {
-        if(data.code === 400 || data.code === 302 || data.code === 203) {
-          this.handleResponseError(data);
-        } else {
-          if(data.rejected.length) {
-            data.rejected.forEach((item) => {
-              this.$toasted.show(item, {
-                icon: 'exclamation'
-              })
-            })
-          }
-          this.$toasted.success(data.data);
-        }
-      }).finally(() => {
-        this.$store.dispatch('customerGetAll', true);
-        this.$store.dispatch('getPlanner', true);
-        this.show_day_modal = false
+        date: this.selected_day,
+        replan_date: this.duplicate_date,
+        _method: "PUT"
+      };
+      httpCall.post("rep/v1/planner/duplicate", data).then(({ data }) => {
+        data.message = data.data;
+        this.handleResponse(data, data => {
+          data.rejected.forEach(item => {
+            this.$toasted.error(item);
+          });
+          this.$store.dispatch("customerGetAll", true);
+          this.$store.dispatch("getPlanner", true);
+          this.show_day_modal = false;
+        });
       });
     },
     /**
@@ -333,21 +327,15 @@ export default {
     clearDay() {
       let data = {
         date: this.selected_day,
-        _method: 'DELETE'
+        _method: "DELETE"
       };
-      httpCall.post('rep/v1/planner/clear-day', data)
-      .then(({data}) => {
-        if(data.code === 400 || data.code === 203 || data.code === 301) {
-          this.handleResponseError(data);
-        } else {
-          this.$toasted.success(data.data, {
-            icon: 'check'
-          })
-        }
-      }).finally(() => {
-        this.$store.dispatch('customerGetAll', true);
-        this.$store.dispatch("getPlanner", true);
-        this.show_day_modal = false;
+      httpCall.post("rep/v1/planner/clear-day", data).then(({ data }) => {
+        data.message = data.data;
+        this.handleResponse(data, data => {
+          this.$store.dispatch("customerGetAll", true);
+          this.$store.dispatch("getPlanner", true);
+          this.show_day_modal = false;
+        });
       });
     },
     /**
@@ -355,7 +343,7 @@ export default {
      *
      */
     flipIcon() {
-      if(this.summery_icon === "fa-chevron-circle-down") {
+      if (this.summery_icon === "fa-chevron-circle-down") {
         this.summery_icon = "fa-chevron-circle-up";
       } else {
         this.summery_icon = "fa-chevron-circle-down";
@@ -376,48 +364,23 @@ export default {
       return this.$store.getters.isPlansFetched;
     },
     /**
-     * get total distinct planned customers
+     * get plan summery
+     *
+     * @return {object}
      */
-    totalPlannedCustomers() {
-      let plans = this.$store.getters.plans;
-      let result = {};
-      plans.forEach((plan) => {
-        if(!result[plan.customer.name]) {
-          result[plan.customer.name] = [];
-        }
-        result[plan.customer.name].push(plan);
-      });
-      return result;
-    },
-    /**
-     * get total distinct workplaces planned
-     */
-    totalPlannedWorkplaces() {
-      let plans =this.$store.getters.amPlans;
-      let result = {};
-      plans.forEach((plan) => {
-        if(!result[plan.workplace.name]) {
-          result[plan.workplace.name] = [];
-        }
-        result[plan.workplace.name].push(plan);
-      })
-      return result;
-    },
-    /**
-     * get total distinct planned days
-     */
-    totalPlannedDays() {
-      let result = {};
-      this.plans.forEach((plan) => {
-        if(!result[plan.start]) {
-          result[plan.start] = [];
-        }
-        result[plan.start].push(plan);
-      });
-      return result;
+    planSummery() {
+      let amPlans = this.$store.getters.amPlans;
+      let pmPlans = this.$store.getters.plans;
+      let workplaces = filterData(amPlans, "workplace.name");
+      let customers = filterData(pmPlans, "customer.name");
+      let days = filterData(this.plans, "start");
+      return {
+        workplaces,
+        customers,
+        days
+      };
     }
   }
-
 };
 </script>
 

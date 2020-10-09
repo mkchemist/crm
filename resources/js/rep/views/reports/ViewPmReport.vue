@@ -43,7 +43,7 @@
             </template>
           </table-component>
           <div v-else class="d-flex justify-content-center align-items-center" style="height:300px">
-            <vue-loaders name="ball-scale" scale="2" color="grey" />
+            <div class="spinner-border"></div>
           </div>
         </div>
       </div>

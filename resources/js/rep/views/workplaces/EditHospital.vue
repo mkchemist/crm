@@ -117,21 +117,10 @@ export default {
     let id = this.$route.params.id;
     httpCall.get("rep/v1/workplaces/" + id).then(({ data }) => {
       this.fetched = true;
-      if (data.code === 400 || data.code === 302) {
-        data.data.errors.forEach(err => {
-          this.$toasted.show(err, {
-            icon: "exclamation",
-            duration: 10000
-          });
-        });
-        return;
-      } else {
-        this.$toasted.show("hospital ready", {
-          type: "success",
-          icon: "check"
-        });
+      data.message = "hospital ready";
+      this.handleResponse(data, data => {
         this.hospital = data.data;
-      }
+      })
     });
   },
   methods: {
@@ -143,25 +132,14 @@ export default {
       let id = this.$route.params.id;
       httpCall.post('rep/v1/workplaces/'+id, {...this.hospital, _method:'PUT'})
       .then(({data}) => {
-        if(data.code === 400 || data.code === 301) {
-          Object.keys(data.data).forEach((key) => {
-            let item = data.data[key];
-            item.forEach((err) => {
-              this.$toasted.show(err, {
-                icon: 'exclamation',
-                duration: 10000
-              })
-            })
-          });
-          return;
-        } else {
-          this.$toasted.show(data.data, {
-            type: 'success',
-            theme: 'bubble'
-          });
-          this.$router.push('/workplaces');
-          this.$store.dispatch('workplaceGetAll', true)
-        }
+        data.message = data.data;
+        this.handleResponse(data, data => {
+          this.$store.dispatch('workplaceGetAll', true).then(() => {
+            setTimeout(() => {
+              this.$router.push('/workplaces');
+            },2000);
+          })
+        });
       });
     }
   },

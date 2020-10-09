@@ -94,20 +94,10 @@ export default {
     getHospital() {
       let id = this.getHospitalId();
       httpCall.get("rep/v1/workplaces/" + id).then(({ data }) => {
-        if (data.code === 400 || data.code === 301) {
-          this.handleResponseError(data);
-          if(data.code === 400) {
-            this.hospital_error = "Hospital ID must be a number";
-          }else {
-            this.hospital_error = "Hospital ID is not valid";
-          }
-        } else {
-          this.$toasted.show("Hospital loaded successfully", {
-            icon: "check",
-            type: "success"
-          });
+        data.message = "hospital loaded";
+        this.handleResponse(data, data => {
           this.hospital = data.data;
-        }
+        })
       }).then(() => {
         this.getDepartments();
       });
@@ -119,19 +109,10 @@ export default {
       let id = this.getHospitalId();
       httpCall.get('rep/v1/workplace-department/all/'+id)
       .then(({data}) => {
-        if(data.code === 203) {
-          this.$toasted.show("No departments found", {
-            icon: 'exclamation-triangle',
-            duration:10000
-          });
-          this.departments_error = "No data  provided";
-        } else {
-          this.$toasted.show('Departments loaded successfully', {
-            type: 'success',
-            icon: 'check'
-          });
+        data.message = "Departments loaded";
+        this.handleResponse(data, data => {
           this.departments = data.data;
-        }
+        })
       })
     },
     /**
@@ -156,18 +137,13 @@ export default {
       let id = this.getHospitalId();
       httpCall.post('rep/v1/workplace-department',{...department, workplace_id: id })
       .then(({data}) => {
-        if(data.code === 400 || data.code === 203) {
-          this.handleResponseError(data)
-        } else {
-          this.$toasted.show('Department added successfully', {
-            type: 'success',
-            icon: 'check'
-          });
+        data.message = "department added";
+        this.handleResponse(data, data => {
           this.getDepartments();
-        }
-      }).finally(() => {
+        })
+      })/* .finally(() => {
         this.$store.dispatch('workplaceGetAll', true);
-      });
+      }); */
     },
     /**
      * edit department
@@ -177,15 +153,10 @@ export default {
     editDepartment(department) {
       httpCall.post('rep/v1/workplace-department/'+department.id, {...department, _method: 'PUT'})
       .then(({data}) => {
-        if(data.code === 400) {
-          this.handleResponseError(data);
-        } else {
-          this.$toasted.show(data.data, {
-            type: 'success',
-            icon : 'check'
-          });
+        data.message = data.data;
+        this.handleResponse(data, data => {
           this.getDepartments();
-        }
+        })
       });
     }
   },

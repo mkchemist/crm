@@ -154,7 +154,6 @@ class WorkplacePlannerController extends Controller
       'plan_date' =>  $request->date
     ])
     ->delete();
-    return response([$ids,$plans]);
     return response()->json([
       'code'  =>  201,
       'data'  =>  sprintf("%d workplace plans removed successfully", count($ids))

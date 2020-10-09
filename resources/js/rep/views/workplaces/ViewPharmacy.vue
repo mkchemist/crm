@@ -56,17 +56,12 @@ export default {
       let id = this.getPharmacyId();
       httpCall.get('rep/v1/pharmacies/'+id)
       .then(({data}) => {
-        if(data.code === 400 || data.code === 301) {
-          this.handleResponseError(data);
-          this.load_pharmacy_error = data.code;
-        } else {
-          this.$toasted.show('Pharmacy laoded', {
-            type: 'info',
-            icon: 'check',
-            theme: 'bubble'
-          });
+        data.message = "Pharmacy loaded";
+        this.handleResponse(data, data => {
           this.pharmacy = data.data;
-        }
+        }, err => {
+          this.load_pharmacy_error = err.code;
+        })
       });
     }
   },

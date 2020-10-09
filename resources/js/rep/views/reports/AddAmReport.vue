@@ -26,7 +26,9 @@
                   rules="required"
                   v-slot="{ errors }"
                 >
-                  <span class="text-danger small" v-if="errors[0]">must select workplace</span>
+                  <span class="text-danger small" v-if="errors[0]"
+                    >must select workplace</span
+                  >
                   <select
                     name="workplace_id"
                     id="workplace_id"
@@ -96,7 +98,10 @@
                       v-for="customer in customers"
                       :key="customer.id"
                     >
-                      <input type="checkbox" @click="toggleCustomer(customer.id)"  />
+                      <input
+                        type="checkbox"
+                        @click="toggleCustomer(customer.id)"
+                      />
                       <span>{{ customer.name }}</span>
                     </li>
                   </ul>
@@ -110,7 +115,7 @@
               </div>
             </div>
             <!-- end of date, workplace and customers -->
-            <br/>
+            <br />
             <!-- visit products -->
             <div class="form-group p-2 border rounded">
               <visit-products :data="visit.products" />
@@ -143,7 +148,7 @@
               </div>
             </div>
             <!-- end of comment and feedback -->
-            <hr>
+            <hr />
             <div class="form-group text-right p-2">
               <router-link to="/reports" class="btn btn-sm btn-dark">
                 <span><i class="fa fa-chevron-circle-left"></i></span>
@@ -162,8 +167,8 @@
 </template>
 
 <script>
-import VisitProducts from '../../components/VisitProducts';
-import { httpCall } from '../../helpers/http-service';
+import VisitProducts from "../../components/VisitProducts";
+import { httpCall } from "../../helpers/http-service";
 
 export default {
   created() {
@@ -171,7 +176,7 @@ export default {
       this.$store.dispatch("workplaceGetAll");
     });
   },
-  components:{
+  components: {
     VisitProducts
   },
   data: () => ({
@@ -205,6 +210,7 @@ export default {
           return false;
         });
       }
+      console.log(data)
       return data;
     }
   },
@@ -213,15 +219,15 @@ export default {
      * submit am report
      */
     saveReport() {
-      if(!this.visit.customers.length) {
-        this.$toasted.error('must select at least one customer', {
-          icon: 'exclamation'
+      if (!this.visit.customers.length) {
+        this.$toasted.error("must select at least one customer", {
+          icon: "exclamation"
         });
         return;
       }
-      if(!this.visit.products.length) {
-        this.$toasted.error('must add one product at least', {
-          icon: 'exclamation'
+      if (!this.visit.products.length) {
+        this.$toasted.error("must add one product at least", {
+          icon: "exclamation"
         });
         return;
       }
@@ -229,25 +235,14 @@ export default {
       Object.assign(data, this.visit);
       data.customers = JSON.stringify(data.customers);
       data.products = JSON.stringify(data.products);
-      httpCall.post('rep/v1/reports/am', data)
-      .then(({data}) => {
-        console.log(data)
-        if(data.code === 400 || data.code === 301 || data.code === 203) {
-          this.handleResponseError(data);
-        } else {
-          data.rejected.forEach((item) => {
-            this.$toasted.show(item, {
-              icon : 'info'
-            });
-          });
-          if(data.accepted.length) {
-            this.$toasted.show(data.data, {
-              type: 'success',
-              icon: 'check'
-            });
+      httpCall.post("rep/v1/reports/am", data).then(({ data }) => {
+        data.message = data.data;
+        this.handleResponse(data, data => {
+          data.rejected.forEach(item => this.$toasted.error(item));
+          if (!data.rejected.length) {
+            this.$router.replace("/reports/view/am");
           }
-          this.$router.replace('/reports/view/pm')
-        }
+        });
       });
     },
     /**
@@ -280,17 +275,17 @@ export default {
      * toggle add ro remove customer from visit customers
      *
      */
-     toggleCustomer(id) {
-       if(event.target.checked) {
-         if(!this.visit.customers.includes(id)) {
-           this.visit.customers.push(id);
-         }
-       } else {
-         if(this.visit.customers.includes(id)) {
-           this.visit.customers.splice(this.visit.customers.indexOf(id), 1);
-         }
-       }
-     }
+    toggleCustomer(id) {
+      if (event.target.checked) {
+        if (!this.visit.customers.includes(id)) {
+          this.visit.customers.push(id);
+        }
+      } else {
+        if (this.visit.customers.includes(id)) {
+          this.visit.customers.splice(this.visit.customers.indexOf(id), 1);
+        }
+      }
+    }
   }
 };
 </script>

@@ -50,7 +50,7 @@
         style="height:300px"
         v-else
       >
-        <vue-loaders name="ball-scale" scale="2" color="grey" />
+        <div class="spinner-border"></div>
       </div>
     </div>
   </div>

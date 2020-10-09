@@ -120,7 +120,7 @@
           v-else
           style="height:300px"
         >
-          <vue-loaders name="ball-scale" scale="2" color="grey" />
+          <div class="spinner-border"></div>
         </div>
       </div>
     </div>
@@ -152,15 +152,10 @@ export default {
     getPharmacy() {
       let id = this.getPharmacyId();
       httpCall.get("rep/v1/reports/pharmacy/" + id).then(({ data }) => {
-        if (data.code === 400 || data.code === 301 || data.code === 203) {
-          this.handleResponseError(data);
-        } else {
-          this.$toasted.show("Pharmacy Report loaded", {
-            type: "success",
-            icon: "check"
-          });
+        data.message = "Pharmacy report loaded";
+        this.handleResponse(data, data => {
           this.visit = data.data;
-        }
+        });
       });
     },
     /**
@@ -181,17 +176,11 @@ export default {
       data.products = JSON.stringify(data.products);
       httpCall.post('rep/v1/reports/pharmacy/'+id, data)
       .then(({data}) => {
-        if(data.code === 400 || data.code === 301 || data.code === 203) {
-          this.handleResponseError(data);
-          return;
-        } else {
-          this.$toasted.show(data.data, {
-            type: 'success',
-            icon: 'check'
-          });
+        data.message = data.data;
+        this.handleResponse(data, data => {
           this.$router.replace('/reports/view/pharmacy');
           this.$store.dispatch('pharmacyReportGetAll', true);
-        }
+        })
       })
     }
   },

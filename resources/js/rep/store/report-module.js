@@ -15,6 +15,9 @@ export default {
     },
     pharmacyVisits: state => {
       return state.pharmacy_visits;
+    },
+    allVisits: state => {
+      return [...state.pm_visits, ...state.am_visits];
     }
   },
   mutations: {

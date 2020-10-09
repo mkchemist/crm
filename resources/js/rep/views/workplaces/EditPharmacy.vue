@@ -81,24 +81,10 @@ export default {
     let id = this.$route.params.id;
     httpCall.get('rep/v1/pharmacies/'+id)
     .then(({data}) => {
-      if(data.code === 302 || data.code === 400) {
-        Object.keys(data.data).forEach((key) => {
-          let errors = data.data[key];
-          errors.forEach((err) => {
-            this.$toasted.show(err, {
-              icon: 'exclamation',
-              duration: 10000
-            })
-          });
-        });
-      } else {
-        this.$toasted.show('Pharmacy loaded', {
-          type: 'info',
-          icon: 'check',
-          theme: 'bubble'
-        });
+      data.message = "Pharmacy loaded";
+      this.handleResponse(data, data => {
         this.pharmacy = data.data;
-      }
+      });
     })
   },
   data: () =>({
@@ -113,23 +99,14 @@ export default {
       let id = this.$route.params.id;
       httpCall.post('rep/v1/pharmacies/'+id, {...this.pharmacy, _method: 'PUT'})
       .then(({data}) => {
-        if(data.code === 400 || data.code === 301) {
-          Object.keys(data.data).forEach((key) => {
-            data.data[key].forEach((err) => {
-              this.$toasted.show(err, {
-                icon: 'exclamation',
-                duration: 10000
-              })
-            })
+        data.message = "Phamracy updated";
+        this.handleResponse(data, data => {
+          this.$store.dispatch('pharmacyGetAll',true).then(() => {
+            setTimeout(() => {
+              this.$router.push('/workplaces/pharmacies');
+            },2000);
           })
-        } else {
-          this.$toasted.show('Pharmacy updated successfully', {
-            type: 'success',
-            icon: 'check'
-          });
-          this.$router.push('/workplaces/pharmacies');
-          this.$store.dispatch('pharmacyGetAll', true);
-        }
+        });
       });
     }
   }

@@ -128,24 +128,15 @@ export default {
     onSubmit() {
       httpCall.post('rep/v1/pharmacies',this.pharmacy)
       .then(({data}) => {
-        if(data.code === 400 || data.code === 302) {
-          Object.keys(data.data).forEach((key) => {
-            let errors = data.data[key];
-            errors.forEach((err) => {
-              this.$toasted.show(err, {
-                icon: 'exclamation',
-                duration: 10000
-              });
-            });
+
+        data.message = "Pharmacy added";
+        this.handleResponse(data, data => {
+          this.$store.dispatch('pharmacyGetAll', true).then(() => {
+            setTimeout(() => {
+              this.$router.replace('/workplaces/pharmacies');
+            }, 2000)
           });
-        } else {
-          this.$toasted.show('Pharmacy added successfully', {
-            type: 'success',
-            icon: 'check'
-          });
-          this.$store.dispatch('pharmacyGetAll');
-          this.$router.replace('/workplaces/pharmacies');
-        }
+        })
       });
     }
   },

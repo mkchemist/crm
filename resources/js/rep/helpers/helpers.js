@@ -51,23 +51,21 @@ export const ObjectNotation = function (container, key) {
 
 // TODO need to be refactored
 /**
- * sort data
+ * filter data
  *
  *
  *
- * @param {*} container
+ * @param {*} data
  * @param {*} condition
  */
-export function sortData(container, condition){
+export function filterData(data, condition){
   let res = {};
-  for(let i in container) {
-    let item = container[i];
-    let key = res[condition];
-    if(key === undefined) {
-      res[condition] = [];
+  data.forEach((item) => {
+    let key = ObjectNotation(item, condition);
+    if (!res[key]) {
+      res[key] = [];
     }
-
-  }
-  console.log(res)
+    res[key].push(item);
+  });
   return res;
 }

@@ -77,7 +77,7 @@
         </ValidationObserver>
       </div>
       <div class="p-2 d-flex justify-content-center align-items-center" v-else style="height:400px">
-        <vue-loaders name="ball-scale" color="grey" scale='2' />
+        <div class="spinner-border"></div>
       </div>
     </div>
   </div>
@@ -92,14 +92,10 @@ export default {
     let id = this.$route.params.id
     httpCall.get('rep/v1/reports/pm/'+id)
     .then(({data}) => {
-      if(data.code === 400 || data.code === 301 || data.code === 203) {
-        this.handleResponseError(data)
-      } else {
-        this.$toasted.success('Visit loaded', {
-          icon: 'check'
-        });
+      data.message = 'visit loaded';
+      this.handleResponse(data, data => {
         this.visit = data.data;
-      }
+      })
     });
   },
   data: () =>({
@@ -117,19 +113,12 @@ export default {
       data['_method'] = "PUT";
       httpCall.post('rep/v1/reports/pm/'+id, data)
       .then(({data}) => {
-        if(data.code === 400 || data.code === 301 || data.code === 203) {
-          this.handleResponseError(data);
-          return;
-        } else {
-          this.$toasted.show('Visit added successfully', {
-            type: 'success',
-            icon: 'check'
-          });
+        data.message = "visit added";
+        this.handleResponse(data, data => {
           this.$store.dispatch('reportGetAll', true);
           this.$store.dispatch('customerGetAll', true);
           this.$router.replace('/reports/view/pm')
-
-        }
+        })
       });
     }
   },

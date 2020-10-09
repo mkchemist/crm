@@ -53,7 +53,7 @@ export default {
      *
      */
     pharmacyGetAll: ({state}, force) => {
-      if(!state.pharmacies.length || !force) {
+      if(!state.pharmacies.length || force) {
         httpCall.get('rep/v1/pharmacies')
         .then(({data}) => {
           if(data.code === 201) {

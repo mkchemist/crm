@@ -113,16 +113,11 @@ export default {
       data.products = JSON.stringify(data.products);
       httpCall.post('rep/v1/reports/pharmacy', data)
       .then(({data}) => {
-        if(data.code === 400 || data.code === 301 || data.code === 203) {
-          this.handleResponseError(data);
-        } else {
-          this.$toasted.show('Visit added successfully', {
-            type: 'success',
-            icon: 'check'
-          });
+        data.message = "visit added successfully";
+        this.handleResponse(data, (data) => {
           this.$router.replace('/reports/view/pharmacy');
           this.$store.dispatch('pharmacyReportGetAll', true);
-        }
+        })
       })
     },
     selectPharmacy(){
@@ -133,11 +128,7 @@ export default {
         });
         return;
       }
-      this.pharmacies.forEach((pharmacy) => {
-        if(pharmacy.id === this.visit.pharmacy_id) {
-          this.selected_pharmacy = pharmacy;
-        }
-      })
+      this.selected_pharmacy = this.pharmacies.filter(pharmacy => pharmacy.id === this.visit.pharmacy_id)[0]
     },
     resetPharmacy() {
       this.visit.pharmacy_id = null;

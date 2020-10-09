@@ -26,7 +26,7 @@ export default {
       },
       {
         title: 'Add Pharmacy',
-        link: '/workplaces/add-pharamcy',
+        link: '/workplaces/add-pharmacy',
         icon: 'fa-plus-circle'
       },
       {

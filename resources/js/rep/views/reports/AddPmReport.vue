@@ -20,7 +20,7 @@
                   </select>
                 </ValidationProvider>
                 <div class="text-center" v-else>
-                  <vue-loaders name="ball-scale" scale="1" color="grey" />
+                  <div class="spinner-border text-success"></div>
                 </div>
               </div>
               <div class="col-lg">
@@ -40,7 +40,7 @@
               </div>
               <div class="col-lg" v-if="visit.dual">
                 <ValidationProvider name="dual_with" rules="required" v-slot="{errors}">
-                  <span class="text-danger small">you must select a coach</span>
+                  <span class="text-danger small" v-if="errors[0]">you must select a coach</span>
                   <select name="dual_with" id="dual_with" class="form-control form-control-sm" v-model="visit.dual_with">
                     <option value="">Select coach</option>
                   </select>
@@ -118,20 +118,12 @@ export default {
       data.products = JSON.stringify(data.products);
       httpCall.post('rep/v1/reports/pm', data)
       .then(({data}) => {
-        console.log(data);
-        if(data.code === 400 || data.code === 301 || data.code === 203) {
-          this.handleResponseError(data);
-          return;
-        } else {
-          this.$toasted.show('Visit added successfully', {
-            type: 'success',
-            icon: 'check'
-          })
-        }
-      }).finally(() => {
-        this.$store.dispatch('reportGetAll', true);
-        this.$store.dispatch('customerGetAll', true);
-        this.$router.replace('/reports/view/pm')
+        data.message = 'visit added successfully';
+        this.handleResponse(data,data => {
+          this.$store.dispatch('reportGetAll', true);
+          this.$store.dispatch('customerGetAll', true);
+          this.$router.replace('/reports/view/pm')
+        });
       });
     }
   },

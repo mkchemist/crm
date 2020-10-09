@@ -112,34 +112,14 @@ export default {
       httpCall
         .post("rep/v1/workplaces", this.hospital)
         .then(({ data }) => {
-          if (data.code === 400) {
-            let errors = data.data;
-            Object.keys(errors).forEach(key => {
-              let item = errors[key];
-              item.forEach(err => {
-                this.$toasted.show(err, {
-                  icon: "exclamation",
-                  theme: ""
-                });
-              });
+          data.message = 'hospital added successfully';
+          this.handleResponse(data, data => {
+            this.$store.dispatch("workplaceGetAll", true).then(() => {
+              setTimeout(() => {
+                this.$router.replace("/workplaces");
+              }, 2000)
             });
-            return;
-          }
-          if (data.code === 203) {
-            this.$toasted.show(data.data.errors, {
-              type: "ido",
-              icon: "Exclamation"
-            });
-            return;
-          } else {
-            this.$toasted.show("Hospital added Successfully", {
-              type: "success",
-              icon: "check"
-            });
-            this.$store.dispatch("workplaceGetAll", true);
-            this.$router.replace("/workplaces");
-
-          }
+          })
         })
         .finally(() => {
         });
