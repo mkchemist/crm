@@ -52,7 +52,7 @@
           <li class="nav-item dropdown">
             <a href="#user_menu" class="nav-link dropdown-toggle" data-toggle="dropdown">user</a>
             <div class="dropdown-menu dropdown-menu-right" id="user_menu">
-              <a href="" class="nav-link dropdown-item small">
+              <a :href="`${base_url}change-password`" class="nav-link dropdown-item small">
                 <span><i class="fa fa-lock"></i></span>
                 <span>change password</span>
               </a>

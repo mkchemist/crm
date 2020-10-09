@@ -28,6 +28,9 @@ Route::group(['middleware' => ['auth']], function () {
         Auth::logout();
         return redirect('/');
     });
+    // user change password
+    Route::get('change-password', 'UserController@changePassword');
+    Route::post('change-password', 'UserController@updatePassword');
     // Rep application
     Route::get('/rep/{name?}', function() {
         return view('pages.rep.index');
