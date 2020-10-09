@@ -64,7 +64,7 @@ export default {
     analysisLinks: [
       {
         title: 'View PM analysis report',
-        link: '/reports/view/pm',
+        link: '/reports/analysis/pm',
         icon: 'fa-chart-line'
       },{
         title: 'View plan analysis report',

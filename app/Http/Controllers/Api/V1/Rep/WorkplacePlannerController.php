@@ -147,13 +147,14 @@ class WorkplacePlannerController extends Controller
     if($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
-
     $ids = json_decode($request->workplaces);
-
-    foreach($ids as $id) {
-      $plan = $this->getPlanByWorkplaceId($id, $request->date);
-      $plan->delete();
-    }
+    $plans = WorkplacePlanner::whereIn('id',$ids)
+    ->where([
+      'user_id' =>  Auth::user()->id,
+      'plan_date' =>  $request->date
+    ])
+    ->delete();
+    return response([$ids,$plans]);
     return response()->json([
       'code'  =>  201,
       'data'  =>  sprintf("%d workplace plans removed successfully", count($ids))

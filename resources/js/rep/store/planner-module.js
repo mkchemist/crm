@@ -39,6 +39,9 @@ export default {
      */
     amPlans: state => {
       return state.workplacePlans;
+    },
+    allPlans: state => {
+      return [...state.workplacePlans, ...state.plans];
     }
   },
   mutations: {

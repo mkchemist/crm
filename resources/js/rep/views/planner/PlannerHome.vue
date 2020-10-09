@@ -185,17 +185,17 @@ export default {
      *
      * @param {object} e [date]
      */
-    onDayClick(e) {
+    onDayClick(e, x) {
       let date;
       if(e.date) {
         date = new Date(e.date).format("YYYY-MM-DD");
       } else {
         date = new Date(e).format("YYYY-MM-DD");
       }
-
       this.selected_day = this.duplicate_date = date;
       this.show_day_modal = true;
     },
+    // FIXME fix handle response
     /**
      * update event
      *
@@ -367,10 +367,7 @@ export default {
      * get all plans am and pm
      */
     plans() {
-      let am = this.$store.getters.amPlans;
-      let pm = this.$store.getters.plans;
-      let plans = [...am, ...pm];
-      return plans;
+      return this.$store.getters.allPlans;
     },
     /**
      * is plan is already fetched

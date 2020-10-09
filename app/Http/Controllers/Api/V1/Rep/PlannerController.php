@@ -125,14 +125,11 @@ class PlannerController extends Controller
     public function groupDelete(Request $request)
     {
       $ids = json_decode($request->customers);
-      foreach($ids as $id) {
-        $customer = Planner::where([
-          'customer_id'  =>  $id,
-          'user_id' =>  Auth::user()->id,
-          'plan_date' =>  $request->date
-        ]);
-        $customer->delete();
-      }
+
+      Planner::where([
+        'user_id' => Auth::user()->id,
+        'plan_date' =>  $request->date
+        ])->whereIn('id', $ids)->delete();
       return response()->json([
         'code'  =>  201,
         'data'  =>  sprintf('%d customer deleted', count($ids))

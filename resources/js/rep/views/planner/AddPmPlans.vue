@@ -49,9 +49,13 @@
             </div>
             <div
               v-else
-              class="text-center d-flex align-items-center justify-content-center h-100"
+              class="text-center d-flex align-items-center justify-content-center flex-column"
+              style="min-height:200px"
             >
-              <vue-loaders name="ball-scale" scale="2" color="grey" />
+            <div class="spinner-border text-info">
+            </div>
+            <p class="my-2 text-info">Loading...</p>
+              <!-- <vue-loaders name="ball-scale" scale="2" color="grey" /> -->
             </div>
           </div>
         </div>
@@ -132,25 +136,14 @@ export default {
     selected_customers: [],
     deleted_customers: []
   }),
-  created() {},
-  beforeMount() {
-    this.$store.dispatch("customerGetAll").then(() => {
-      this.$store.dispatch("getPlanner");
-    });
-  },
   computed: {
     /**
      * get current date plans
      */
     datePlan() {
-      let plans = this.$store.getters.plans;
-      let datePlans = [];
-      plans.forEach(plan => {
-        if (plan.start === this.$attrs.date) {
-          datePlans.push(plan.customer);
-        }
-      });
-
+      let datePlans = this.$store.getters.plans.filter(
+        plan => plan.start === this.$attrs.date
+      )
       return datePlans;
     },
     /**
@@ -212,41 +205,19 @@ export default {
           date: this.$attrs.date
         })
         .then(({ data }) => {
-          if (data.rejected.length === data.accepted) {
+          this.handleResponse(data, (data) => {
             data.rejected.forEach(item => {
-              this.$toasted.show(
-                `customer ${item} already planned in this day`,
-                {
-                  icon: "exclamation"
-                }
-              );
+              this.$toasted.error(`customer ${item} is already planned`);
+            })
+            this.selected_customers = [];
+            this.$store.dispatch("getPlanner", true);
+            this.$store.dispatch("customerGetAll", true);
+            document
+              .querySelectorAll('#customers_container input[type="checkbox"]')
+              .forEach(input => {
+                input.checked = false;
             });
-          } else {
-            data.rejected.forEach(item => {
-              this.$toasted.show(
-                `customer ${item} already planned in this day`,
-                {
-                  icon: "exclamation"
-                }
-              );
-            });
-            data.accepted.forEach(item => {
-              this.$toasted.show(`customer ${item} added successfully`, {
-                type: "success",
-                icon: "check"
-              });
-            });
-          }
-          this.selected_customers = [];
-        })
-        .finally(() => {
-          this.$store.dispatch("getPlanner", true);
-          this.$store.dispatch("customerGetAll", true);
-          document
-            .querySelectorAll('#customers_container input[type="checkbox"]')
-            .forEach(input => {
-              input.checked = false;
-            });
+          })
         });
     },
     /**
@@ -279,19 +250,17 @@ export default {
       httpCall
         .post("rep/v1/planner/delete", data)
         .then(({ data }) => {
-          this.$toasted.show(data.data, {
-            type: "success"
-          });
-          this.deleted_customers = [];
-        })
-        .finally(() => {
-          this.$store.dispatch("getPlanner", true);
-          this.$store.dispatch("customerGetAll", true);
-          document
-            .querySelectorAll('#planned_customers input[type="checkbox"]')
-            .forEach(input => {
-              input.checked = false;
-            });
+          data.message = data.data;
+          this.handleResponse(data, (data) => {
+            this.deleted_customers = [];
+            this.$store.dispatch("getPlanner", true);
+            this.$store.dispatch("customerGetAll", true);
+            document
+              .querySelectorAll('#planned_customers input[type="checkbox"]')
+              .forEach(input => {
+                input.checked = false;
+              });
+          })
         });
     }
   }

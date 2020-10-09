@@ -21,7 +21,8 @@ class RepPlannerResource extends JsonResource
           'title'    => $this->customer->name,
           'id'      =>$this->id,
           'type'    =>  $this->type,
-          'class'   =>  'PM'
+          'class'   =>  'PM',
+          'name'    =>  $this->customer->name
         ];
     }
 }

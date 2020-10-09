@@ -15,7 +15,7 @@ import TodayPlan from "../components/TodayPlan";
 export default {
   components: {
     TodayPlan
-  }
+  },
 }
 </script>
 

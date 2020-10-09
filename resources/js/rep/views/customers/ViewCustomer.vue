@@ -103,13 +103,10 @@ export default {
       let id = this.$route.params.id;
       httpCall.get('rep/v1/customers/'+id)
       .then(({data}) => {
-        if(data.code === 400 || data.code === 301) {
-          this.handleResponseError(data)
-          return;
-        } else {
+        this.handleResponse(data, (data) => {
           this.customer = data.data;
           this.plans = data.data.planned_visits;
-        }
+        })
       });
     },
     navigateToCustomer() {

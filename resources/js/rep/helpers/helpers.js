@@ -48,3 +48,26 @@ export const ObjectNotation = function (container, key) {
   }
   return null;
 }
+
+// TODO need to be refactored
+/**
+ * sort data
+ *
+ *
+ *
+ * @param {*} container
+ * @param {*} condition
+ */
+export function sortData(container, condition){
+  let res = {};
+  for(let i in container) {
+    let item = container[i];
+    let key = res[condition];
+    if(key === undefined) {
+      res[condition] = [];
+    }
+
+  }
+  console.log(res)
+  return res;
+}

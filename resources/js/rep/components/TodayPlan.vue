@@ -4,21 +4,19 @@
       <p class="alert alert-info mb-0 text-center p-1">
         <span>Today Plan</span>
       </p>
-      <div class="row mx-auto align-items-center justify-content-around my-1">
-        <button class="btn btn-sm col-auto">
-          <span><i class="fa fa-chevron-circle-left text-success"></i></span>
-        </button>
-        <input type="date" class="form-control form-control-sm col" :value="today">
-        <button class="btn  btn-sm col-auto">
-          <span><i class="fa fa-chevron-circle-right text-success"></i></span>
-        </button>
+      <div class="row mx-auto align-items-center justify-content-around my-1 p-2">
+        <input type="date" class="form-control form-control-sm col" v-model="today">
       </div>
       <hr class="my-1">
       <div>
         <div v-if="plannedCustomers.length">
           <ul class="nav">
             <li class="nav-item col-12 border-bottom clearfix" v-for="customer in plannedCustomers" :key="customer.id">
-              <span class="text-muted small">{{ customer.customer.name }}</span>
+              <span>
+                <i v-if="customer.class=== 'PM'" class="fa fa-user-md text-success"></i>
+                <i v-else class="fa fa-hospital text-primary"></i>
+              </span>
+              <span class="text-muted small">{{ customer.name }}</span>
               <button class="btn float-right btn-sm">
                 <span><i class="fa fa-hands-helping text-success"></i></span>
               </button>
@@ -26,7 +24,7 @@
           </ul>
         </div>
         <div v-else-if="isLoading" style="height:150px" class="d-flex align-items-center justify-content-center flex-column">
-          <vue-loaders name="ball-scale" scale="1" color="grey"></vue-loaders>
+          <loader-component></loader-component>
         </div>
         <div v-else-if="isFetched && plannedCustomers.length === 0" style="height:150px" class="d-flex align-items-center justify-content-center flex-column">
           <span class="text-muted small">No plans in {{ today }}</span>
@@ -47,30 +45,18 @@
 export default {
   data: () => ({
     isLoading: false,
-    isFetched : false
+    isFetched : false,
+    today: new Date().format('YYYY-MM-DD')
   }),
   computed: {
-    today() {
-      return new Date().format('YYYY-MM-DD')
-    },
     plannedCustomers() {
-      let all = this.allPlans;
+      let all = this.$store.getters.allPlans;
       let dayPlans = [];
-      all.forEach((day) => {
-        if(day.start === this.today) {
-          dayPlans.push(day);
-        }
-      })
+      dayPlans = all.filter(day => day.start === this.today);
       if(all.length) {
         this.isFetched = true;
       }
       return dayPlans;
-    },
-    allPlans() {
-      let am = this.$store.getters.amPlans;
-      let pm = this.$store.getters.plans;
-      let all = [...am, ...pm];
-      return all;
     }
   },
   methods: {

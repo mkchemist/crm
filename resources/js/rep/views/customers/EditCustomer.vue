@@ -194,30 +194,15 @@ export default {
     httpCall
       .get("rep/v1/customers/" + this.$route.params.id)
       .then(({ data }) => {
-        if (data.code === 301) {
-          let err = data.data.errors;
-          this.customerNotFoundError(err, data.code);
-          return;
-        }
-        if (data.code === 400) {
-          let errors = data.data.errors;
+        data.message = "Customer ready";
+        this.handleResponse(data,(data) => {
+          this.customer =data.data;
+          this.loading = false
+        },(data) => {
+          this.error = true;
           this.loading = false;
-          this.error = errors;
           this.error_code = data.code;
-          errors.forEach(err => {
-            this.$toasted.show(err, {
-              icon: "exclamation",
-              duration: 10000
-            });
-          });
-          return;
-        }
-        this.customer = data.data;
-        this.$toasted.show("Customer ready", {
-          type: "success",
-          icon: "check"
         });
-        this.loading = false;
       });
   },
   methods: {
@@ -229,27 +214,16 @@ export default {
       httpCall
         .post("rep/v1/customers/" + this.$route.params.id, data)
         .then(({ data }) => {
-          if (data.code === 301) {
-            let err = data.data.errors;
-            this.customerNotFoundError(err);
-            return;
-          }
-          this.$toasted.show("Customer updated successfully", {
-            type: "success",
-            icon: "check"
+          data.message = "Customer updated successfully";
+          this.handleResponse(data, (data) => {
+            this.$store.dispatch("customerGetAll", true);
+            this.$router.back()
+          }, (data) => {
+            this.loading = false;
+            this.error = true;
+            this.error_code = data.code;
           });
-          this.$store.dispatch("customerGetAll", true);
-          this.$router.back();
         });
-    },
-    customerNotFoundError(err, code) {
-      this.$toasted.show(err, {
-        duration: 10000,
-        icon: "exclamation"
-      });
-      this.loading = false;
-      this.error = err;
-      this.error_code = code;
     }
   },
   computed: {

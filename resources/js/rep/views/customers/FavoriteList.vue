@@ -56,11 +56,11 @@ export default {
   methods: {
     getFavoriteList() {
       httpCall.get("rep/v1/customers-favorite-list").then(({ data }) => {
-        if (data.code === 203) {
+        this.handleResponse(data, (data) => {
+          this.customers = data.data;
+        }, (data) => {
           this.fetched = true;
-          return;
-        }
-        this.customers = data.data;
+        });
       });
     }
   }

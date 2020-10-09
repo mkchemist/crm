@@ -9,6 +9,7 @@ import ViewPharmacyReport from "../views/reports/ViewPharmacyReport";
 import EditPmReport from "../views/reports/EditPmReport";
 import EditAmReport from "../views/reports/EditAmReport";
 import EditPharmacyReport from "../views/reports/EditPharmacyReport";
+import PmReportAnalysis from "../views/reports/PmReportAnalysis";
 
 export default {
   path: "/reports",
@@ -53,6 +54,10 @@ export default {
     {
       path: 'edit/pharmacy/:id',
       component: EditPharmacyReport
+    },
+    {
+      path: 'analysis/pm',
+      component: PmReportAnalysis
     }
   ]
 }
