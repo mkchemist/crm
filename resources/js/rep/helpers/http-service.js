@@ -6,7 +6,7 @@
 import axios from "axios";
 
 
-export const Api = process.env.MIX_APP_API_URL;
+export const Api = document.getElementById('APP_API_URL').value;
 
 export const Token = document.getElementById('token').value;
 

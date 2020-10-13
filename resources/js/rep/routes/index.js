@@ -13,7 +13,7 @@ Vue.use(VueRouter);
 
 export default new VueRouter({
   mode: "history",
-  base: process.env.MIX_APP_BASE_URL + "rep",
+  base: document.getElementById('APP_BASE_URI').value + "rep",
   routes: [
     {
       path: "/",

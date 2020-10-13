@@ -71,7 +71,7 @@
 </template>
 
 <script>
-let base_url = process.env.MIX_APP_API_URL.replace('api/', '');
+let base_url = document.getElementById('APP_API_URL').value.replace('api/', '');
 export default {
   created() {
 

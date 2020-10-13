@@ -9,7 +9,7 @@
     @yield("style")
     <title>{{ env("APP_NAME") }}</title>
 </head>
-<body class="bg-success">
+<body>
     <div class="container">
         @yield("content")
     </div>
