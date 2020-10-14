@@ -7,7 +7,7 @@
 import Vue from "vue";
 import { httpCall } from "../helpers/http-service"
 import router from "../routes";
-
+import { ResponseHandler } from "../helpers/response-handler";
 export default {
   state: {
     /**
@@ -20,11 +20,6 @@ export default {
      *
      */
     fetched: false,
-    /**
-     * filterd customers
-     *
-     */
-    filtered: []
   },
   mutations: {
 
@@ -77,27 +72,12 @@ export default {
     customerGetAll({state}, force) {
       if(!state.all.length|| force) {
         httpCall.get('rep/v1/customers')
-        .then(http => {
-          let res = http.data;
-          if(res.code === 201) {
-            state.all = res.data;
-            state.filtered = res.data;
-            setTimeout(() => {
-              state.fetched = true;
-            },2000);
-            if(res.data.length) {
-              Vue.toasted.show('Customers list loaded',{
-                type: 'success',
-                icon: 'check'
-              })
-            } else {
-
-              Vue.toasted.show('No data to view', {
-                type: 'info',
-                icon: 'circle'
-              })
-            }
-          }
+        .then(({data}) => {
+          data.message = "Customer list loaded";
+          ResponseHandler.methods.handleResponse(data, (data) => {
+            state.all = data.data
+            state.fetched = true;
+          })
         });
       }
     },

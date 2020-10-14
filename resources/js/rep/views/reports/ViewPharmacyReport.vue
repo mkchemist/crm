@@ -45,6 +45,13 @@
           </template>
         </table-component>
       </div>
+      <div v-else-if="$store.getters.fetchedReports" class="text-center" style="min-height:100px">
+        <p class="lead font-weight-bold text-danger">No pharmacy reports found</p>
+        <router-link to="/reports/add/pharmacy" class="btn btn-sm btn-primary">
+          <span><i class="fa fa-plus-circle"></i></span>
+          <span>add pharmacy report</span>
+        </router-link>
+      </div>
       <div
         class="p-2 my-2 d-flex justify-content-center align-items-center"
         style="height:300px"

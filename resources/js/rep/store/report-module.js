@@ -1,10 +1,13 @@
 import { httpCall } from "../helpers/http-service";
 import Vue from "vue";
+import { ResponseHandler } from "../helpers/response-handler";
+
 export default {
   state: {
     pm_visits: [],
     am_visits: [],
-    pharmacy_visits: []
+    pharmacy_visits: [],
+    fetched: false
   },
   getters: {
     pmVisits: state => {
@@ -18,6 +21,9 @@ export default {
     },
     allVisits: state => {
       return [...state.pm_visits, ...state.am_visits];
+    },
+    fetchedReports: state => {
+      return state.fetched;
     }
   },
   mutations: {
@@ -31,13 +37,14 @@ export default {
      */
     reportGetAll({state}, force) {
       if(!state.pm_visits.length || force) {
+        state.fetched = false;
         httpCall.get('rep/v1/reports/pm')
         .then(({data}) => {
-          state.pm_visits = data.data;
-          Vue.toasted.show('PM reports loaded', {
-            type: 'success',
-            icon: 'check'
-          })
+          data.message = "PM reports loaded";
+          ResponseHandler.methods.handleResponse(data, (data) => {
+            state.pm_visits = data.data;
+            state.fetched = true;
+          });
         })
       }
     },
@@ -49,16 +56,14 @@ export default {
      */
     amGetAll({state}, force) {
       if(!state.am_visits.length || force ) {
+        state.fetched = false;
         httpCall.get('rep/v1/reports/am')
         .then(({data}) => {
-          if(data.code === 201) {
-            state.am_visits = data.data
-            Vue.toasted.show('AM reports loaded', {
-              type: 'success',
-              icon: 'check'
-            })
-          }
-
+          data.message = "AM reports loaded";
+          ResponseHandler.methods.handleResponse(data, data => {
+            state.am_visits = data.data;
+            state.fetched = true;
+          });
         });
       }
     },
@@ -70,15 +75,15 @@ export default {
      */
     pharmacyReportGetAll({state}, force) {
       if(!state.pharmacy_visits.length || force) {
+        state.fetched = false;
         httpCall.get('rep/v1/reports/pharmacy')
         .then(({data}) => {
-          if(data.code === 201) {
+
+          data.message = "Pharmacy reports loaded";
+          ResponseHandler.methods.handleResponse(data, data => {
             state.pharmacy_visits = data.data;
-            Vue.toasted.show('Pharmacy reports loaded', {
-              type: 'success',
-              icon: 'check'
-            })
-          }
+            state.fetched = true;
+          });
         })
       }
     }
