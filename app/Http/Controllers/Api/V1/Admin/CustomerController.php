@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,12 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+      $customers = Customer::all();
+      return response()->json([
+        'code'  =>  201,
+        "length"  =>  count($customers),
+        'data'  =>  $customers
+      ]);
     }
 
     /**

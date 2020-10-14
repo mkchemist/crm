@@ -16,7 +16,7 @@ class ResponseHelper
   ];
 
   const INVALID_ID = [
-    'code'  =>  301,
+    'code'  =>  204,
     'data'  =>  [
       'errors'  =>  [
         'ID is not valid'
@@ -25,14 +25,14 @@ class ResponseHelper
   ];
 
   const ITEM_ALREADY_EXIST = [
-    'code'  => 203,
+    'code'  => 409,
     'data'  =>  [
       'errors'  =>  ['Item Already Exist']
     ]
   ];
 
   const EMPTY_RESPONSE = [
-    'code'  =>  203,
+    'code'  =>  204,
     'data'  =>  [
       'errors'  =>  ['Nothing to show']
     ]

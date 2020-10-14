@@ -10,7 +10,7 @@ export const ResponseHandler = {
      * @param {CallableFunction} onErr
      */
     handleResponse: function (data, onSuccess = null, onErr = null) {
-      if(data.code === 400 || data.code === 301 || data.code === 203) {
+      if(data.code === 400 || data.code === 204 || data.code === 409) {
         Object.keys(data.data).forEach((key) => {
           let errors = data.data[key];
           errors.forEach((err) => {

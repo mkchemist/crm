@@ -8,7 +8,5 @@ use Illuminate\Support\Facades\Route;
  *  start with prefix Admin/version/path
  */
 Route::prefix('v1')->group(function() {
-  Route::get('/customers', function () {
-    return response(\App\Customer::all());
-  });
+    Route::apiResource('customers', 'CustomerController');
 });
