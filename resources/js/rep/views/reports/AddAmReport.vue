@@ -210,7 +210,6 @@ export default {
           return false;
         });
       }
-      console.log(data)
       return data;
     }
   },

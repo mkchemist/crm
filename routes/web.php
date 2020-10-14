@@ -18,6 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('pages.login');
 })->name('login');
+
+Route::get('/login', function () {
+  return view('pages.login');
+});
 // login action
 Route::post('/login', 'UserController@login');
 
@@ -59,5 +63,5 @@ Route::group(['middleware' => ['auth']], function () {
     // admin application
     Route::get('/admin/{name?}', function() {
         return view('pages.admin.index');
-    });
+    })->where("name", ".*")->middleware('adminOnly');
 });

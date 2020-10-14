@@ -14,6 +14,12 @@
                 <span>{{ session()->get('login_error') }}</span>
             </p>
             @endif
+            @if (session()->has('auth_err'))
+            <p class="alert alert-danger alert-dismissible">
+              <button class="close" data-dismiss="alert">&times;</button>
+              <span>{{ session()->get('auth_err') }}</span>
+            </p>
+            @endif
             <div class="form-group">
                 <label for="username" class="text-muted">Username</label>
                 <input type="text" name="username" id="username" class="form-control form-control-sm" placeholder="Enter username" autofocus>
@@ -37,4 +43,14 @@
         </form>
     </div>
 </div>
+@endsection
+
+
+@section('script')
+<script>
+  $(document).ready(function(){
+    $(document.body).addClass('bg-success');
+
+  })
+</script>
 @endsection

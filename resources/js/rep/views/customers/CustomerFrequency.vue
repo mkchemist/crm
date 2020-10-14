@@ -2,7 +2,7 @@
   <div>
     <div class="px-0 shadow">
       <div class="custom-loader" v-if="isLoading">
-        <vue-loaders name="line-scale-pulse-out" color="#38c172" scale="4" />
+        <div class="spinner-border"></div>
       </div>
       <p class="alert alert-success">
         <span><i class="fa fa-wave-square"></i></span>
@@ -77,6 +77,9 @@
             </template>
           </table-component>
         </div>
+        <div v-else-if="fetched">
+          <p class="text-center">You must have a active customers to update frequencies</p>
+        </div>
         <div v-else>
           <loader-component />
         </div>
@@ -105,6 +108,10 @@ export default {
   },
   computed: {
     customers() {
+      let fetched = this.$store.getters.fetched;
+      if(fetched) {
+        this.fetched = true;
+      }
       return this.$store.getters.active;
     }
   },
@@ -132,7 +139,8 @@ export default {
       }
     ],
     updated: [],
-    isLoading: false
+    isLoading: false,
+    fetched: false
   }),
   methods: {
     /**
@@ -146,7 +154,6 @@ export default {
       let i = this.isExist(id);
       if (i !== false) {
         this.updated[i].frequency = val;
-        console.log(this.updated[i]);
       } else {
         let customer = this.createUpdateObject(id, val);
         /*  customer.frequency = val;

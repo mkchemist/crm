@@ -59,7 +59,7 @@ export default {
         httpCall.get('rep/v1/planner')
         .then(({data}) => {
           state.fetched = true;
-          if(data.code === 400 || data.code === 203) {
+          /* if(data.code === 400 || data.code === 203) {
             Vue.toasted.show('No Plans found', {
               type: 'info',
               icon: 'exclamation-triangle'
@@ -72,7 +72,11 @@ export default {
               icon: 'check'
             });
             state.plans = data.data;
-          }
+          } */
+          data.message = "Planner loaded";
+          ResponseHandler.methods.handleResponse(data, (data) => {
+            state.plans = data.data;
+          });
         });
       }
     },

@@ -70,6 +70,13 @@
             </td>
           </template>
         </table-component>
+        <div v-else-if="$store.getters.fetchedReports" class="text-center" style="min-height:100px">
+          <p class="lead font-weight-bold text-danger">No am reports found</p>
+          <router-link to="/reports/add/am" class="btn btn-sm btn-primary">
+            <span><i class="fa fa-plus-circle"></i></span>
+            <span>add new am report</span>
+          </router-link>
+        </div>
         <div v-else class="d-flex justify-content-center align-items-center">
           <div class="spinner-border"></div>
         </div>
