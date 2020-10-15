@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
     // District Manager application
     Route::get('/dm/{name?}', function() {
         return view('pages.dm.index');
-    });
+    })->where('name', '.*')->middleware('dmOnly');
 
     // territory Manager application
     Route::get('/tm/{name?}', function() {

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('style')
-<link rel="stylesheet" href="{{ asset('css/rep/app.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin/app.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset("libs/data-tables") }}/DataTables-1.10.22/css/dataTables.bootstrap4.min.css"/>
 <link rel="stylesheet" type="text/css" href="{{ asset("libs/data-tables") }}/Buttons-1.6.4/css/buttons.bootstrap4.min.css"/>
 <link rel="stylesheet" type="text/css" href="{{ asset("libs/data-tables") }}/FixedHeader-3.1.7/css/fixedHeader.bootstrap4.min.css"/>

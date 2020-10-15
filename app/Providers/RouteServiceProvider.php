@@ -91,4 +91,11 @@ class RouteServiceProvider extends ServiceProvider
         ->namespace('App\Http\Controllers\Api\V1\Admin')
         ->group(base_path('routes/admin-api.php'));
     }
+
+    protected function mapDMApiRoute() {
+      Route::prefix("api/dm")
+      ->middleware(["api", "auth:api", "dmOnly"])
+      ->namespace("App\Http\Controllers\Api\V1\DM")
+      ->group(base_path("routes/dm-api.php"));
+    }
 }
