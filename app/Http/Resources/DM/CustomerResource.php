@@ -39,7 +39,7 @@ class CustomerResource extends JsonResource
       "next_freq"     => $freq ? $freq->next : 0,
       "area"    =>  $this->area,
       "param"   =>  $param ? $param->param : 'NN',
-      "reports" =>  $reports
+      "reports" =>  count($reports)
     ];
   }
 }

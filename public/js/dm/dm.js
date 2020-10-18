@@ -2480,6 +2480,9 @@ __webpack_require__.r(__webpack_exports__);
         title: 'Next Frequency',
         name: 'next_freq'
       }, {
+        title: 'Reports',
+        name: 'reports'
+      }, {
         title: 'Address',
         name: 'address'
       }]
@@ -2560,6 +2563,12 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         title: 'Next Freq.',
         name: 'next_freq'
+      }, {
+        title: 'Reports',
+        name: 'reports'
+      }, {
+        title: 'Address',
+        name: 'address'
       }]
     };
   }

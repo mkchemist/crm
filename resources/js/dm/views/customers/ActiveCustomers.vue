@@ -65,6 +65,10 @@ export default {
         name: 'next_freq'
       },
       {
+        title: 'Reports',
+        name: 'reports'
+      },
+      {
         title: 'Address',
         name: 'address'
       }
