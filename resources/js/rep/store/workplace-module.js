@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { httpCall } from "../helpers/http-service";
+import { httpCall } from "../../helpers/http-service";
 
 export default {
   state: {

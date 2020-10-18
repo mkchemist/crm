@@ -1,6 +1,6 @@
-import { httpCall } from "../helpers/http-service";
+import { httpCall } from "../../helpers/http-service";
 import Vue from "vue";
-import { ResponseHandler } from "../helpers/response-handler";
+import { ResponseHandler } from "../../helpers/response-handler";
 
 export default {
   state: {

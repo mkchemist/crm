@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { httpCall } from '../../helpers/http-service';
+import { httpCall } from '../../../helpers/http-service';
 export default {
   created() {
     this.loadPharmacy()

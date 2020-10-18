@@ -38,9 +38,9 @@
 </template>
 
 <script>
-import { httpCall } from "../../helpers/http-service";
+import { httpCall } from "../../../helpers/http-service";
 import TableComponent from "../../../components/TableComponent";
-import { CUSTOMERS_TABLE_HEADS } from '../../helpers/constants';
+import { CUSTOMERS_TABLE_HEADS } from '../../../helpers/constants';
 export default {
   created() {
     this.getFavoriteList();

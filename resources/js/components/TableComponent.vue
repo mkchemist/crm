@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import {httpCall} from "../rep/helpers/http-service";
-import { ObjectNotation } from "../rep/helpers/helpers"
+import {httpCall} from "../helpers/http-service";
+import { ObjectNotation } from "../helpers/helpers"
 export default {
   props: ["heads", "data", "headClass",'withFavorite', 'withUnlink','onUnlink', 'orderBy', 'notResponsive'],
   data: () => ({

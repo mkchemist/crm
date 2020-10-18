@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { filterData } from '../../helpers/helpers';
+import { filterData } from '../../../helpers/helpers';
 export default {
   beforeMount() {
     this.$store.dispatch('reportGetAll');

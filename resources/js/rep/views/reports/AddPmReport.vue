@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { httpCall } from '../../helpers/http-service';
+import { httpCall } from '../../../helpers/http-service';
 import VisitProducts from "../../components/VisitProducts";
 export default {
   created() {

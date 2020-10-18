@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { httpCall } from "../../helpers/http-service";
+import { httpCall } from "../../../helpers/http-service";
 import WorkplaceDepartmentComponent from "../../components/WorkplaceDepartment";
 import AddWorkplaceDepartment from "../../components/AddWorkplaceDepartment";
 

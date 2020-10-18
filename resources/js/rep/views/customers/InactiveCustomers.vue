@@ -45,7 +45,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
-import {CUSTOMERS_TABLE_HEADS} from "../../helpers/constants"
+import {CUSTOMERS_TABLE_HEADS} from "../../../helpers/constants"
 export default {
   computed: {
     inactiveCustomers() {

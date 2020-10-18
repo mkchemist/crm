@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { httpCall } from '../../rep/helpers/http-service'
+import { httpCall } from '../../helpers/http-service'
 export default {
   created() {
     httpCall.get("admin/v1/customers")

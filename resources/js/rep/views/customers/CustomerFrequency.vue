@@ -90,7 +90,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
-import { httpCall } from "../../helpers/http-service";
+import { httpCall } from "../../../helpers/http-service";
 
 /**
  * updated object item

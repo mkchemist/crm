@@ -5,9 +5,9 @@
  *
  */
 import Vue from "vue";
-import { httpCall } from "../helpers/http-service"
+import { httpCall } from "../../helpers/http-service"
 import router from "../routes";
-import { ResponseHandler } from "../helpers/response-handler";
+import { ResponseHandler } from "../../helpers/response-handler";
 export default {
   state: {
     /**

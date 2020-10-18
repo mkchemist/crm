@@ -83,7 +83,7 @@
 
 <script>
 import VisitProducts from "../../components/VisitProducts";
-import { httpCall } from '../../helpers/http-service';
+import { httpCall } from '../../../helpers/http-service';
 export default {
   components:{
     VisitProducts

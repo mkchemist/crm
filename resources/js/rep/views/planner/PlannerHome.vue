@@ -175,8 +175,8 @@
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import ModalFade from "../../../components/ModalFade";
-import { httpCall } from "../../helpers/http-service";
-import { filterData } from "../../helpers/helpers";
+import { httpCall } from "../../../helpers/http-service";
+import { filterData } from "../../../helpers/helpers";
 export default {
   components: {
     VueCal,
