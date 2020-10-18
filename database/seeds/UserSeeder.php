@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
                 'password'  =>  Hash::make(123456),
                 'role'      =>  'rep',
                 'area'      =>  'sub giza1',
-                'district'  =>  'giza 1',
+                'district'  =>  'giza1',
                 'territory' =>  'giza',
                 'region'    =>  'cairo',
                 'line'      =>  'line1'
@@ -48,7 +48,7 @@ class UserSeeder extends Seeder
                 'password'  =>  Hash::make(123456),
                 'role'      =>  'rep',
                 'area'      =>  'sub giza1',
-                'district'  =>  'giza 1',
+                'district'  =>  'giza1',
                 'territory' =>  'giza',
                 'region'    =>  'cairo',
                 'line'      =>  'line2'
@@ -60,7 +60,7 @@ class UserSeeder extends Seeder
                 'password'  =>  Hash::make(123456),
                 'role'      =>  'dm',
                 'area'      =>  'all',
-                'district'  =>  'giza 1',
+                'district'  =>  'giza1',
                 'territory' =>  'giza',
                 'region'    =>  'cairo',
                 'line'      =>  'line1'

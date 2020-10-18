@@ -5,7 +5,7 @@
         <span><i class="fa fa-lock"></i></span>
         <span class="font-weight-bold">Inactive Customers list</span>
       </p>
-      <div class="my-2">
+      <div class="my-2 p-2">
         <table-component
           v-if="customers.length"
           :heads="heads"

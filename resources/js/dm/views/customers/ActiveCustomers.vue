@@ -12,6 +12,9 @@
         <div v-if="activeCustomers.length">
           <table-component  :heads="heads" :data="activeCustomers" />
         </div>
+        <div v-else-if="isFetched">
+          <p class="text-center font-weight-bold text-dark">No data to show</p>
+        </div>
         <div v-else class="text-center">
           <loader-component />
         </div>
