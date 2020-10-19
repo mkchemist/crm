@@ -61,6 +61,10 @@ export default {
       {
         name: 'Reports',
         path: '/reports'
+      },
+      {
+        name: 'Approval',
+        path: '/approval'
       }
     ]
   })

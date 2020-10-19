@@ -26,8 +26,12 @@ class CreateCustomersTable extends Migration
             $table->string('district');
             $table->string('territory');
             $table->string('region');
+            $table->string('state')->default('new');
+            $table->boolean('approved')->default(false);
+            $table->bigInteger('approved_by')->unsigned()->nullable();
             $table->timestamps();
             $table->foreign('workplace_id')->references('id')->on('workplaces');
+            $table->foreign('approved_by')->references('id')->on('users');
         });
     }
 

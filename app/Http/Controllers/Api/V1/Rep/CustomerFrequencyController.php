@@ -72,8 +72,13 @@ class CustomerFrequencyController extends Controller
   public function submitFrequency()
   {
     $customers = CustomerFrequency::where([
-      'user_id' =>  Auth::user()->id
-    ])->update(['submitted' => true]);
+      'user_id' =>  Auth::user()->id,
+    ])
+    ->whereIn('customer_id', function($query) {
+      $query->from('customer_parameters')->select('customer_id')
+      ->whereNotIn('current', ['NN','XX'])
+      ->where('user_id', Auth::user()->id)->get();
+    })->update(['submitted' => true]);
     return response()->json([
       'code'  =>  201,
       'data'  =>  $customers

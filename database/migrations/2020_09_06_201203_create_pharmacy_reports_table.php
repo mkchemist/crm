@@ -17,6 +17,7 @@ class CreatePharmacyReportsTable extends Migration
             $table->id();
             $table->bigInteger('pharmacy_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
+            $table->date('visit_date');
             $table->text('general_feedback');
             $table->longText('products');
             $table->foreign('pharmacy_id')->references('id')->on('pharmacies')->onDelete('cascade');

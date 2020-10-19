@@ -5,6 +5,7 @@
   >
     <thead>
       <tr :class="headClass">
+        <slot name="head:before"></slot>
         <th v-for="(head, i) in heads" :key="i">{{ head.title }}</th>
         <slot name="head"></slot>
       </tr>
@@ -12,6 +13,7 @@
     <tbody>
       <tr v-for="(item, i) in data" :key="i">
         <!-- <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td> -->
+        <slot name="body:before" :item="item"></slot>
         <td v-for="(head, i) in heads" :key="i">{{ _notation(item, head.name)}}</td>
         <slot name="body" :item="item"></slot>
       </tr>
@@ -96,45 +98,10 @@ export default {
             let cId = dt.row({ selected: true }).data()[0];
             /** call favorite list api */
             httpCall
-              .post("rep/v1/customers-favorite-list", { id: cId })
+              .post("customers-favorite-list", { id: cId })
               .then(({ data }) => {
-                /**
-                 * handle  response
-                 *
-                 * if the sent id is not numeric
-                 */
-                if (data.code === 400) {
-                  data.data.errors.forEach(err => {
-                    _this.$toasted.show(err, {
-                      icon: "exclamation",
-                      duration: 10000
-                    });
-                  });
-                  return;
-                }
-                /**
-                 * handle reponse
-                 *
-                 * if customer id is invalid
-                 */
-                if (data.code === 203) {
-                  data.data.errors.forEach(err => {
-                    _this.$toasted.show(err, {
-                      icon: "exclamation",
-                      duration: 10000
-                    });
-                  });
-                  return;
-                }
-                /**
-                 * success response
-                 *
-                 * show taost
-                 */
-                _this.$toasted.show(data.data, {
-                  type: "success",
-                  icon: "check"
-                });
+                data.message=data.data;
+                _this.handleResponse(data);
               });
           }
         });
@@ -155,42 +122,18 @@ export default {
             /** get selected customer id */
             let id = dt.row({ selected: true }).data()[0];
             httpCall
-              .post("rep/v1/customers-favorite-list/" + id, {
+              .post("customers-favorite-list/" + id, {
                 _method: "DELETE"
               })
               .then(({ data }) => {
-                /**
-                 * handle response
-                 *
-                 * if bad request input
-                 */
-                if (data.code === 400) {
-                  data.data.errors.forEach(err => {
-                    _this.$toasted.show(err, {
-                      icon: "exclamation",
-                      duration: 10000
-                    });
-                  });
-                  return;
-                }
-                /**
-                 * handle success response
-                 */
-                _this.$toasted.show(data.data, {
-                  type: "info",
-                  icon: "check",
-                  theme: "outline"
-                });
-                /**
-                 * if there is onUnlink props that is must be
-                 * a function to make any changes after http success
-                 *
-                 */
-                if (_this.onUnlink) {
-                  if (typeof _this.onUnlink === "function") {
-                    _this.onUnlink.call();
+                data.message =data.data;
+                _this.handleResponse(data, data => {
+                  if (_this.onUnlink) {
+                    if (typeof _this.onUnlink === "function") {
+                      _this.onUnlink.call();
+                    }
                   }
-                }
+                });
               });
           }
         });

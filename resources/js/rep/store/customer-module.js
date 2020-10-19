@@ -4,7 +4,6 @@
  * this module deal with all customer related http service
  *
  */
-import Vue from "vue";
 import { httpCall } from "../../helpers/http-service"
 import router from "../routes";
 import { ResponseHandler } from "../../helpers/response-handler";
@@ -22,7 +21,12 @@ export default {
     fetched: false,
   },
   mutations: {
-
+    updateCustomerInStore: (state,{id, payload}) => {
+      let customer = state.all.filter(customer => customer.id === parseInt(id))[0];
+      for(let key in payload) {
+        customer[key] = payload[key];
+      }
+    }
   },
   getters: {
     /**
@@ -30,26 +34,14 @@ export default {
      * with parameters [HH,HM,HL,MH,MM,ML,LH,LM,LL]
      */
     active: state => {
-      let active = [];
-      state.all.map((item) => {
-        if(item.parameter !== "NN" && item.parameter !== "XX") {
-          active.push(item);
-        }
-      })
-      return active;
+      return state.all.filter(customer => !["NN","XX"].includes(customer.parameter))
     },
     /**
      * get only inactive customers
      * with parameters [NN,XX]
      */
     inactive: state => {
-      let active = [];
-      state.all.map((item) => {
-        if(item.parameter === "NN" || item.parameter === "XX") {
-          active.push(item);
-        }
-      })
-      return active;
+      return state.all.filter(customer => ["NN","XX"].includes(customer.parameter));
     },
     /**
      * return all customers
@@ -60,7 +52,8 @@ export default {
     },
     fetched: state => {
       return state.fetched;
-    }
+    },
+
   },
   actions: {
     /**
@@ -92,26 +85,11 @@ export default {
     addNewCustomer({dispatch}, data) {
       httpCall.post('rep/v1/customers',data)
       .then(({data}) => {
-        if(data.code === 203) {
-          Object.keys(data.data).forEach((key) => {
-            let errors = data.data[key];
-            errors.forEach((err) => {
-              Vue.toasted.show(err, {
-                type: 'warning',
-                icon : 'times-circle',
-                duration: null
-              })
-            });
-          });
-          return ;
-        }
-        Vue.toasted.show(`customer ${data.data.name} add successfully`, {
-          type: 'success',
-          icon : 'check'
+        data.message = `customer ${data.data.name} added successfully`;
+        ResponseHandler.methods.handleResponse(data, data => {
+          dispatch("customerGetAll", true)
+          router.replace("/customers");
         })
-      }).finally(() => {
-        dispatch("customerGetAll", true)
-        router.replace("/customers");
       })
     }
   }

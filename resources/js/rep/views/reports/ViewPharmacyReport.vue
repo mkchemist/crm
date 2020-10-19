@@ -30,23 +30,60 @@
           <template v-slot:body="{ item }">
             <td>
               <ul class="nav">
-                <li class="nav-item col-12" v-for="(product,i) in item.products" :key="i">
-                  <span>Name: <span class="font-weight-bold">{{ product.name }}</span></span> |
-                  <span>Rate: <span class="font-weight-bold">{{ product.rate }}</span></span> |
-                  <span>Competitor: <span class="font-weight-bold">{{ product.competitor }}</span></span> |
-                  <span>Competitor Rate: <span class="font-weight-bold">{{ product.competitor_rate }}</span></span>
+                <li
+                  class="nav-item col-12"
+                  v-for="(product, i) in item.products"
+                  :key="i"
+                >
+                  <span
+                    >Name:
+                    <span class="font-weight-bold">{{
+                      product.name
+                    }}</span></span
+                  >
+                  |
+                  <span
+                    >Rate:
+                    <span class="font-weight-bold">{{
+                      product.rate
+                    }}</span></span
+                  >
+                  |
+                  <span
+                    >Competitor:
+                    <span class="font-weight-bold">{{
+                      product.competitor
+                    }}</span></span
+                  >
+                  |
+                  <span
+                    >Competitor Rate:
+                    <span class="font-weight-bold">{{
+                      product.competitor_rate
+                    }}</span></span
+                  >
                 </li>
               </ul>
             </td>
             <td>{{ item.general_feedback }}</td>
             <td>
-              <router-link :to="`/reports/edit/pharmacy/${item.id}`" class="btn btn-sm btn-warning"><span><i class="fa fa-edit"></i></span></router-link>
+              <router-link
+                :to="`/reports/edit/pharmacy/${item.id}`"
+                class="btn btn-sm btn-warning"
+                ><span><i class="fa fa-edit"></i></span
+              ></router-link>
             </td>
           </template>
         </table-component>
       </div>
-      <div v-else-if="$store.getters.fetchedReports" class="text-center" style="min-height:100px">
-        <p class="lead font-weight-bold text-danger">No pharmacy reports found</p>
+      <div
+        v-else-if="$store.getters.fetchedReports"
+        class="text-center"
+        style="min-height:100px"
+      >
+        <p class="lead font-weight-bold text-danger">
+          No pharmacy reports found
+        </p>
         <router-link to="/reports/add/pharmacy" class="btn btn-sm btn-primary">
           <span><i class="fa fa-plus-circle"></i></span>
           <span>add pharmacy report</span>

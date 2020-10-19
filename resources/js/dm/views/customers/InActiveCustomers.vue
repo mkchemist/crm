@@ -11,6 +11,7 @@
           :heads="heads"
           :data="customers"
           headClass="bg-success text-light"
+          :with-favorite="true"
         />
         <div v-else-if="isCustomersFetched">
           <p class="text-center text-dark font-weight-bold">No data to show</p>
@@ -25,6 +26,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
+import { DM_CUSTOMERS_HEADS } from "../../../helpers/constants";
 export default {
   components: {
     TableComponent,
@@ -38,44 +40,7 @@ export default {
     }
   },
   data: () => ({
-    heads: [
-      {
-        title:'Area',
-        name:'area'
-      },
-      {
-        title: 'Brick',
-        name: 'brick'
-      },
-      {
-        title: 'Name',
-        name:'name'
-      },
-      {
-        title: 'Specialty',
-        name:'specialty'
-      },
-      {
-        title: 'Parameters',
-        name: 'param'
-      },
-      {
-        title: 'Current Freq.',
-        name:'current_freq'
-      },
-      {
-        title:'Next Freq.',
-        name:'next_freq'
-      },
-        {
-          title: 'Reports',
-          name: 'reports'
-        },
-      {
-        title: 'Address',
-        name:'address'
-      },
-    ]
+    heads: DM_CUSTOMERS_HEADS
   })
 }
 </script>

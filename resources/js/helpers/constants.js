@@ -57,3 +57,46 @@ export const CUSTOMERS_TABLE_HEADS = [
     name: 'area'
   }
 ];
+
+export const DM_CUSTOMERS_HEADS = [
+  {
+    title: 'ID',
+    name:'id'
+  },
+  {
+    title:'Area',
+    name:'area'
+  },
+  {
+    title: 'Brick',
+    name: 'brick'
+  },
+  {
+    title: 'Name',
+    name:'name'
+  },
+  {
+    title: 'Specialty',
+    name:'specialty'
+  },
+  {
+    title: 'Parameters',
+    name: 'parameter'
+  },
+  {
+    title: 'Current Freq.',
+    name:'current_freq'
+  },
+  {
+    title:'Next Freq.',
+    name:'next_freq'
+  },
+    {
+      title: 'Reports',
+      name: 'reports'
+    },
+  {
+    title: 'Address',
+    name:'address'
+  },
+]

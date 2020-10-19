@@ -25,8 +25,10 @@ class CreatePharmaciesTable extends Migration
             $table->string('territory');
             $table->string('region');
             $table->string('state')->default('new');
-            $table->string('approved_by')->nullable();
+            $table->boolean('approved')->default(false);
+            $table->bigInteger('approved_by')->unsigned()->nullable();
             $table->timestamps();
+            $table->foreign('approved_by')->references('id')->on('users');
         });
     }
 

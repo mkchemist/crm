@@ -19,13 +19,14 @@ class CreateWorkplaceReportsTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('customer_id')->unsigned();
             $table->date('visit_date');
-            $table->string('dual_with')->nullable();
+            $table->bigInteger('dual_with')->unsigned()->nullable();
             $table->longText('comment')->nullable();
             $table->longText('products')->nullable();
             $table->longText('general_feedback')->nullable();
             $table->foreign('workplace_id')->references('id')->on('workplaces')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('dual_with')->references('id')->on('users');
             $table->timestamps();
         });
     }

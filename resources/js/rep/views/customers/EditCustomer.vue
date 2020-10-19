@@ -191,7 +191,11 @@ export default {
   created() {
     this.loading = true;
     this.$store.dispatch("workplaceGetAll");
-    httpCall
+    this.fetchCustomer();
+  },
+  methods: {
+    fetchCustomer() {
+      httpCall
       .get("rep/v1/customers/" + this.$route.params.id)
       .then(({ data }) => {
         data.message = "Customer ready";
@@ -204,25 +208,25 @@ export default {
           this.error_code = data.code;
         });
       });
-  },
-  methods: {
+    },
     onSubmit() {
-      let data = {
+      let _data = {
         ...this.customer,
         _method: "PUT"
       };
       httpCall
-        .post("rep/v1/customers/" + this.$route.params.id, data)
+        .post("rep/v1/customers/" + this.$route.params.id, _data)
         .then(({ data }) => {
           data.message = "Customer updated successfully";
           this.handleResponse(data, (data) => {
-            this.$store.dispatch("customerGetAll", true);
             this.$router.back()
           }, (data) => {
             this.loading = false;
             this.error = true;
             this.error_code = data.code;
           });
+        }).finally(() => {
+          this.$store.dispatch('customerGetAll', true)
         });
     }
   },

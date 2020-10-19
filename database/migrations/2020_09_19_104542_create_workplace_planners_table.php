@@ -18,8 +18,9 @@ class CreateWorkplacePlannersTable extends Migration
           $table->bigInteger('workplace_id')->unsigned();
           $table->bigInteger('user_id')->unsigned();
           $table->date('plan_date');
-          $table->string('state')->default('requested');
-          $table->string('approved_by')->nullable();
+          $table->boolean('submitted')->default(false);
+          $table->boolean('approved')->default(false);
+          $table->bigInteger('approved_by')->unsigned()->nullable();
           $table->timestamps();
           $table->foreign('workplace_id')->references('id')->on('workplaces')->onDelete('cascade');
           $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

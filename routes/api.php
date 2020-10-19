@@ -22,6 +22,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/login', "Api\UserController@login");
 
 
+Route::group(["middleware" => ["auth:api"]] ,function() {
+  // Customers favorite lists routes
+  Route::apiResource('/customers-favorite-list', 'Api\V1\CustomerFavoriteListController');
+});
+
 /** Rep routes */
 Route::group([
   'middleware' => 'auth:api',
@@ -30,8 +35,6 @@ Route::group([
 ], function() {
   // customers routes
   Route::apiResource('/customers','CustomerController');
-  // Customers favorite lists routes
-  Route::apiResource('/customers-favorite-list', 'CustomerFavoriteListController');
   // customer frequency
   Route::post('/customer-frequency', 'CustomerFrequencyController@update');
   Route::post('/customer-frequency/submit', 'CustomerFrequencyController@submitFrequency');

@@ -7,6 +7,8 @@ import * as rules from "vee-validate/dist/rules"
 import en from "vee-validate/dist/locale/en.json";
 import Toasted from "vue-toasted";
 import LoaderComponent from "../components/LoaderComponent.vue";
+import { ResponseHandler } from "../helpers/response-handler";
+
 
 Vue.use(Toasted, {
   duration: 4000,
@@ -21,6 +23,7 @@ Vue.use(Toasted, {
   position: 'top-left'
 });
 
+Vue.mixin(ResponseHandler)
 
 
 Object.keys(rules).forEach((rule) => {

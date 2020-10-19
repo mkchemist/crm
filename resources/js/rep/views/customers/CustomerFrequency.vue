@@ -112,6 +112,7 @@ export default {
       if(fetched) {
         this.fetched = true;
       }
+      console.log(this.$store.getters.active);
       return this.$store.getters.active;
     }
   },
@@ -238,7 +239,7 @@ export default {
           customers: JSON.stringify(this.updated)
         })
         .then(({ data }) => {
-          if (data.code === 201) {
+          /* if (data.code === 201) {
             this.$toasted.show("customers frequency updated", {
               type: "success",
               icon: "check"
@@ -247,7 +248,14 @@ export default {
               this.isLoading = false;
             });
             this.updated = [];
-          }
+          } */
+          data.message = "customers frequency updated";
+          this.handleResponse(data, data => {
+            this.updated = [];
+            this.$store.dispatch('customerGetAll', true).then(() => {
+              this.isLoading = false;
+            })
+          })
         });
     },
     /**
@@ -259,13 +267,17 @@ export default {
     submitFrequency() {
       httpCall.post('rep/v1/customer-frequency/submit')
       .then(({data}) => {
-        if(data.code === 201) {
+        /* if(data.code === 201) {
           this.$toasted.show('Frequency submitted', {
             type: 'success',
             icon: 'check'
           });
           this.$store.dispatch('customerGetAll', true);
-        }
+        } */
+        data.message = "Frequency submitted";
+        this.handleResponse(data, data => {
+          this.$store.dispatch('customerGetAll');
+        })
       });
     }
   },

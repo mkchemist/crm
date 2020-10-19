@@ -51,7 +51,7 @@
               </div>
 
               <!-- hospital location info --->
-              <div class="row mx-auto">
+              <div class="row mx-auto my-2">
                 <div class="col-lg">
                   <label for="name" class="text-muted">Address</label>
                   <input
@@ -64,21 +64,16 @@
                 </div>
 
                 <div class="col-lg">
-                  <label for="name" class="text-muted">Type</label>
-                  <ValidationProvider
-                    name="brick"
-                    rules="required"
-                    v-slot="{ errors }"
-                  >
-                    <span class="text-danger small">{{ errors[0] }}</span>
+                  <label for="name" class="text-muted">Brick</label>
                     <input
                       type="text"
                       name="brick"
                       id="brick"
                       class="form-control form-control-sm"
                       v-model="hospital.brick"
+                      disabled
+                      readonly
                     />
-                  </ValidationProvider>
                 </div>
               </div>
 

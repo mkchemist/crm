@@ -21,10 +21,13 @@ class CreateCustomerFrequenciesTable extends Migration
             $table->integer('next')->default(0);
             $table->boolean('locked')->default(false);
             $table->string('state')->default('requested');
-            $table->string('approved_by')->nullable();
+            $table->boolean('submitted')->default(false);
+            $table->boolean('approved')->default(false);
+            $table->bigInteger('approved_by')->unsigned()->nullable();
             $table->timestamps();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('approved_by')->references('id')->on('users');
         });
     }
 

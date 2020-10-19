@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="px-0">
+    <div class="px-0 shadow">
       <p class="alert alert-success">
         <span><i class="fa fa-star"></i></span>
         <span class="font-weight-bold">Favorite list</span>
       </p>
-      <div>
+      <div class="p-2">
         <table-component
           :heads="heads"
           :data="customers"
@@ -55,11 +55,10 @@ export default {
   },
   methods: {
     getFavoriteList() {
-      httpCall.get("rep/v1/customers-favorite-list").then(({ data }) => {
+      httpCall.get("customers-favorite-list").then(({ data }) => {
         this.handleResponse(data, (data) => {
-          this.customers = data.data;
-        }, (data) => {
-          this.fetched = true;
+         this.fetched = true;
+         this.customers = data.data;
         });
       });
     }

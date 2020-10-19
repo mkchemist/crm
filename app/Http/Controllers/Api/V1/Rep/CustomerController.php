@@ -206,7 +206,7 @@ class CustomerController extends Controller
         'user_id' =>  Auth::user()->id,
         'customer_id' =>  $id
       ]);
-      $params->param = $param;
+      $params->next = $param;
       $params->save();
     }
 

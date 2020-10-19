@@ -119,7 +119,6 @@ class PharmacyController extends Controller
     $pharmacy->type = $request->type;
     $pharmacy->key_person = $request->key_person;
     $pharmacy->address = $request->address;
-    $pharmacy->brick = $request->brick;
     $pharmacy->save();
     return response()->json([
       'code'  =>  201,

@@ -31,6 +31,7 @@ class CustomerResource extends JsonResource
     $param = $this->params()->whereIn('user_id', $usersId)->first();
     $reports =$this->report()->whereIn('user_id', $usersId)->get();
     return [
+      "id"    =>  $this->id,
       "name"  =>  $this->name,
       "specialty" => $this->specialty,
       "brick"     =>  $this->brick,
@@ -38,7 +39,7 @@ class CustomerResource extends JsonResource
       "current_freq"   =>  $freq ? $freq->current : 0,
       "next_freq"     => $freq ? $freq->next : 0,
       "area"    =>  $this->area,
-      "param"   =>  $param ? $param->param : 'NN',
+      "parameter"   =>  $param ? $param->current : 'NN',
       "reports" =>  count($reports)
     ];
   }

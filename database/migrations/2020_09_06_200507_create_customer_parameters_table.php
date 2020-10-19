@@ -17,12 +17,15 @@ class CreateCustomerParametersTable extends Migration
             $table->id();
             $table->bigInteger('customer_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
-            $table->string('param')->default('NN');
-            $table->string('state')->default('new');
-            $table->string('approved_by')->nullable();
+            $table->string('current')->default('NN');
+            $table->string('next')->nullable();
+            $table->string('state')->default('requested');
+            $table->boolean('approved')->default(false);
+            $table->bigInteger('approved_by')->unsigned()->nullable();
             $table->timestamps();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('approved_by')->references('id')->on('users');
         });
     }
 

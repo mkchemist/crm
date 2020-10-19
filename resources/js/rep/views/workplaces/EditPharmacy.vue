@@ -40,10 +40,7 @@
                 </div>
                 <div class="col-lg">
                   <label for="brick" class="text-muted">Brick</label>
-                  <ValidationProvider name="brick" rules="required" v-slot="{errors}">
-                    <span class="text-danger small">{{ errors[0] }}</span>
-                    <input type="text" id="brick" name="brick" class="form-control form-control-sm" v-model="pharmacy.brick">
-                  </ValidationProvider>
+                  <input type="text" id="brick" name="brick" class="form-control form-control-sm" v-model="pharmacy.brick" disabled readonly>
                 </div>
               </div>
               <hr>

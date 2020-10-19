@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Rep;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -26,9 +26,6 @@ class CustomerFavoriteListController extends Controller
         ->where('user_id', Auth::user()->id)
         ->get();
       })->get();
-      if(count($customers) === 0) {
-        return response()->json(ResponseHelper::EMPTY_RESPONSE);
-      }
       return response()->json([
         'code'  =>  201,
         'data'  =>  CustomerResource::collection($customers)

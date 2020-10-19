@@ -129,7 +129,6 @@ class WorkplaceController extends Controller
 
     $workplace->type = $request->type;
     $workplace->address = $request->address;
-    $workplace->brick = $request->brick;
     $workplace->save();
     return response() ->json([
       'code'  =>  201,

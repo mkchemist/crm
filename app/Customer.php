@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Customer extends Model
 {
@@ -48,5 +49,23 @@ class Customer extends Model
     public function workplace()
     {
       return $this->belongsTo('App\Workplace', 'workplace_id', 'id');
+    }
+
+    public function getUserParams()
+    {
+      if(Auth::user()->role === "rep") {
+        return $this->params()->where('user_id', Auth::user()->id)->first();
+      }
+      if(Auth::user()->role === "dm") {
+        return $this->params()->whereIn('user_id', function($query) {
+          $query->from('users')
+          ->select('id')
+          ->where([
+            'district'  => Auth::user()->district,
+            'line'      =>  Auth::user()->line
+          ]);
+        });
+
+      }
     }
 }

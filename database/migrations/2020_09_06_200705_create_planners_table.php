@@ -19,13 +19,16 @@ class CreatePlannersTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->date('plan_date');
             $table->string('type')->default('single');
-            $table->string('dual_visit_with')->nullable();
-            $table->string('dual_approved')->default('requested');
-            $table->string('state')->default('requested');
-            $table->string('approved_by')->nullable();
+            $table->bigInteger('dual_visit_with')->unsigned()->nullable();
+            $table->boolean('dual_approved')->default(false);
+            $table->boolean('submitted')->default(false);
+            $table->boolean('approved')->default(false);
+            $table->bigInteger('approved_by')->unsigned()->nullable();
             $table->timestamps();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('dual_visit_with')->references('id')->on('users');
+            $table->foreign('approved_by')->references('id')->on('users');
         });
     }
 

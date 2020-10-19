@@ -18,14 +18,17 @@ class CreateWorkplacesTable extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('address')->nullable();
+            $table->string('phone')->nullable();
             $table->string('brick');
             $table->string('area');
             $table->string('district');
             $table->string('territory');
             $table->string('region');
             $table->string('state')->default('new');
-            $table->string('approved_by')->nullable();
+            $table->boolean('approved')->default(false);
+            $table->bigInteger('approved_by')->unsigned()->nullable();
             $table->timestamps();
+            $table->foreign('approved_by')->references('id')->on('users');
         });
     }
 

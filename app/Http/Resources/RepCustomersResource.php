@@ -34,7 +34,7 @@ class RepCustomersResource extends JsonResource
         'area'    =>  $this->area,
         'workplace' =>  $this->workplace_id,
         'phone'   =>  $this->phone,
-        'parameter' =>  $params ? $params->param : "NN",
+        'parameter' =>  $params ? $params->current : "NN",
         'current_freq'    =>  $freq ? $freq->current : 0,
         'next_freq'   =>  $freq ? $freq->next : 0,
         'plans'       =>  count($plans),

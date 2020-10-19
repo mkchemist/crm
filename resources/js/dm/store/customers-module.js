@@ -14,10 +14,10 @@ export default{
       return state.customers;
     },
     activeCustomers: state => {
-      return state.customers.filter((customer) => customer.param !== "NN");
+      return state.customers.filter((customer) => customer.parameter !== "NN");
     },
     inactiveCustomers: state => {
-      return state.customers.filter(customer => ["NN","XX"].includes(customer.param));
+      return state.customers.filter(customer => ["NN","XX"].includes(customer.parameter));
     },
     isCustomersFetched: state => state.fetched
   },
@@ -25,6 +25,12 @@ export default{
 
   },
   actions: {
+    /**
+     * get all customers
+     *
+     * @param {customer module} state
+     * @param {boolean} force
+     */
     customersGetAll({state}, force) {
       if(!state.customers.length || force) {
         httpCall.get("dm/v1/customers")
@@ -35,6 +41,7 @@ export default{
           state.fetched = true;
         })
       }
-    }
+    },
+
   }
 }
