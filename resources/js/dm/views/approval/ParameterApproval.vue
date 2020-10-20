@@ -8,10 +8,18 @@
 
       <div class="p-2">
         <div class="btn-group btn-group-sm">
-          <button class="btn btn-secondary">Approve all</button>
-          <button class="btn btn-secondary">Reject all</button>
-          <button class="btn btn-secondary">Approve selected</button>
-          <button class="btn btn-secondary">Reject selected</button>
+          <button class="btn btn-secondary" @click="approveRequests">
+            <span>Approve</span>
+            <span v-if="selected_customers.length" class="text-primary bg-light px-1 rounded-circle">{{
+              selected_customers.length
+            }}</span>
+          </button>
+          <button class="btn btn-secondary" @click="rejectRequests">
+            <span>Reject</span>
+            <span v-if="selected_customers.length" class="text-primary bg-light px-1 rounded-circle">{{
+              selected_customers.length
+            }}</span>
+          </button>
         </div>
         <div class="p-2" id="request_table_container">
           <table-component
@@ -21,12 +29,17 @@
             v-if="customers.length"
           >
             <template v-slot:head:before>
-              <th><input type="checkbox" @click="selectAll"></th>
+              <th><input type="checkbox" @click="selectAll" /></th>
             </template>
-            <template v-slot:body:before="{item}">
-              <td><input type="checkbox" :value="item.id"></td>
+            <template v-slot:body:before="{ item }">
+              <td>
+                <input
+                  type="checkbox"
+                  :value="item.id"
+                  @click="selectCustomer(item.id)"
+                />
+              </td>
             </template>
-
           </table-component>
           <div v-else-if="isFetched">
             <p class="text-dark text-center lead">No data to show</p>
@@ -42,9 +55,9 @@
 
 <script>
 import { httpCall } from "../../../helpers/http-service";
-import TableComponent from "../../../components/TableComponent"
+import TableComponent from "../../../components/TableComponent";
 export default {
-  components:{
+  components: {
     TableComponent
   },
   created() {
@@ -54,62 +67,139 @@ export default {
     customers: [],
     isFetched: false,
     selected_customers: [],
+    request_state: null,
     heads: [
       {
-        title: 'Rep',
-        name: 'user.name'
+        title: "Rep",
+        name: "user.name"
       },
       {
-        title: 'Customer',
-        name: 'customer.name'
+        title: "Customer",
+        name: "customer.name"
       },
       {
-        title: 'Specialty',
-        name: 'customer.specialty'
+        title: "Specialty",
+        name: "customer.specialty"
       },
       {
-        title: 'Area',
-        name: 'customer.area'
+        title: "Area",
+        name: "customer.area"
       },
       {
-        title: 'Brick',
-        name: 'customer.brick'
+        title: "Brick",
+        name: "customer.brick"
       },
       {
-        title: 'From',
-        name: 'current'
+        title: "From",
+        name: "current"
       },
       {
-        title: 'To',
-        name: 'next'
+        title: "To",
+        name: "next"
       },
       {
-        title: 'Adress',
-        name: 'customer.address'
+        title: "Adress",
+        name: "customer.address"
       },
       {
-        title: 'Date',
-        name: 'updated_at'
+        title: "Date",
+        name: "updated_at"
       }
     ]
   }),
   methods: {
+    /**
+     * fetch parameter request list
+     *
+     */
     fetchList() {
       httpCall.get("dm/v1/approval/parameters").then(({ data }) => {
-        console.log(data)
-        this.isFetched = true
+        this.isFetched = true;
         data.message = "list loaded";
         this.handleResponse(data, data => {
           this.customers = data.data;
         });
       });
     },
-    selectAll() {
-      let inputs = Array.from(document.querySelectorAll('#request_table_container input[type="checkbox"]'));
+    /**
+     * select all customers
+     *
+     */
+    selectAll(e) {
+      let checked = e.target.checked;
+      let inputs = Array.from(
+        document.querySelectorAll(
+          '#request_table_container input[type="checkbox"]'
+        )
+      );
       inputs.map(input => {
-        input.checked = true;
-      })
-      this.selected = this.customers.map(customer => customer.id);
+        if (checked) {
+          input.checked = true;
+        } else {
+          input.checked = false;
+        }
+      });
+      if (checked) {
+        this.selected_customers = this.customers.map(customer => customer.id);
+      } else {
+        this.selected_customers = [];
+      }
+    },
+    /**
+     * select customer
+     *
+     * @param {int} id
+     */
+    selectCustomer(id) {
+      /** event target [input that clicked] */
+      let _target = event.target;
+      let checked = _target.checked;
+      if (checked) {
+        if (!this.selected_customers.includes(id)) {
+          this.selected_customers.push(id);
+        }
+      } else {
+        if (this.selected_customers.includes(id)) {
+          this.selected_customers.splice(
+            this.selected_customers.indexOf(id),
+            1
+          );
+        }
+      }
+    },
+    /**
+     * send request
+     *
+     */
+    sendRequests() {
+      let data = {
+        ids: JSON.stringify(this.selected_customers),
+        state: this.request_state
+      }
+      httpCall.post('dm/v1/approval/parameters',data)
+      .then(res => {
+        res.message = res.data.data;
+        this.handleResponse(res)
+      }).finally(() => {
+        this.customers = [];
+        this.fetchList();
+        this.selected_customers = [];
+      });
+    },
+    /**
+     * Approve requests
+     */
+    approveRequests() {
+      this.request_state = "approved";
+      this.sendRequests();
+    },
+    /**
+     * reject requests
+     *
+     */
+    rejectRequests() {
+      this.request_state = "rejected";
+      this.sendRequests();
     }
   }
 };

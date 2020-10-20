@@ -15,6 +15,13 @@
             <span>back</span>
           </router-link>
           <button
+            class="btn btn-sm btn-primary"
+            @click="$store.dispatch('customerGetAll', true)"
+          >
+            <span><i class="fa fa-redo"></i></span>
+            <span>refresh list</span>
+          </button>
+          <button
             class="btn btn-sm btn-success"
             v-if="updated.length"
             @click="saveFrequency"
@@ -24,10 +31,7 @@
             }}</span>
             <span>update</span>
           </button>
-          <button
-            class="btn btn-primary btn-sm"
-            @click="submitFrequency"
-          >
+          <button class="btn btn-primary btn-sm" @click="submitFrequency">
             <span><i class="fa fa-paper-plane"></i></span>
             <span>Submit</span>
           </button>
@@ -52,7 +56,10 @@
                   type="number"
                   :value="item.next_freq"
                   class="form-control form-control-sm"
-                  :disabled="item.freq.submitted===1||item.freq.locked === 1"
+                  :disabled="
+                    (item.freq && item.freq.submitted === 1) ||
+                      (item.freq && item.freq.locked === 1)
+                  "
                   @change="updateCustomerFrequency(item.id)"
                 />
                 <span class="d-none">{{ item.next_freq }}</span>
@@ -60,25 +67,38 @@
               <td class="text-center">
                 <input
                   type="checkbox"
-                  :disabled="item.freq.locked===1 || item.freq.submitted === 1"
-                  :checked="item.freq.locked===1 "
-                  :value="item.freq.locked===1"
+                  :disabled="
+                    (item.freq && item.freq.locked === 1) ||
+                      (item.freq && item.freq.submitted === 1)
+                  "
+                  :checked="item.freq && item.freq.locked === 1"
+                  :value="item.freq && item.freq.locked === 1"
                   @click="lockFrequency(item.id)"
                 />
-                <span class="d-none">{{ item.freq.locked === 1 ? 'true' : 'false'}}</span>
+                <span class="d-none">{{
+                  item.freq && item.freq.locked === 1 ? "true" : "false"
+                }}</span>
               </td>
               <td>
-                <span v-if="item.freq.submitted ===1"><i class="fa fa-check text-success"></i></span>
+                <span v-if="item.freq && item.freq.submitted === 1"
+                  ><i class="fa fa-check text-success"></i
+                ></span>
                 <span v-else><i class="fa fa-times text-danger"></i></span>
-                <span class="d-none">{{ item.freq.submitted === 1 ? 'true' : 'false'}}</span>
+                <span class="d-none">{{
+                  item.freq && item.freq.submitted === 1 ? "true" : "false"
+                }}</span>
               </td>
-              <td>{{ item.freq.state | uppercase }}</td>
+              <td>
+                {{ item.freq && item.freq.state ? item.freq.state : null }}
+              </td>
               <td>{{ item.address }}</td>
             </template>
           </table-component>
         </div>
-        <div v-else-if="fetched">
-          <p class="text-center">You must have a active customers to update frequencies</p>
+        <div v-else-if="isFetched">
+          <p class="text-center">
+            You must have a active customers to update frequencies
+          </p>
         </div>
         <div v-else>
           <loader-component />
@@ -89,6 +109,7 @@
 </template>
 
 <script>
+//FIXME this module need some refactor
 import TableComponent from "../../../components/TableComponent";
 import { httpCall } from "../../../helpers/http-service";
 
@@ -108,12 +129,10 @@ export default {
   },
   computed: {
     customers() {
-      let fetched = this.$store.getters.fetched;
-      if(fetched) {
-        this.fetched = true;
-      }
-      console.log(this.$store.getters.active);
       return this.$store.getters.active;
+    },
+    isFetched() {
+      return this.$store.getters.fetched;
     }
   },
   data: () => ({
@@ -239,23 +258,13 @@ export default {
           customers: JSON.stringify(this.updated)
         })
         .then(({ data }) => {
-          /* if (data.code === 201) {
-            this.$toasted.show("customers frequency updated", {
-              type: "success",
-              icon: "check"
-            });
-            this.$store.dispatch("customerGetAll", true).finally(() => {
-              this.isLoading = false;
-            });
-            this.updated = [];
-          } */
           data.message = "customers frequency updated";
           this.handleResponse(data, data => {
             this.updated = [];
-            this.$store.dispatch('customerGetAll', true).then(() => {
+            this.$store.dispatch("customerGetAll", true).then(() => {
               this.isLoading = false;
-            })
-          })
+            });
+          });
         });
     },
     /**
@@ -265,25 +274,17 @@ export default {
      * @return {void}
      */
     submitFrequency() {
-      httpCall.post('rep/v1/customer-frequency/submit')
-      .then(({data}) => {
-        /* if(data.code === 201) {
-          this.$toasted.show('Frequency submitted', {
-            type: 'success',
-            icon: 'check'
-          });
-          this.$store.dispatch('customerGetAll', true);
-        } */
+      httpCall.post("rep/v1/customer-frequency/submit").then(({ data }) => {
         data.message = "Frequency submitted";
         this.handleResponse(data, data => {
-          this.$store.dispatch('customerGetAll');
-        })
+          this.$store.dispatch("customerGetAll", true);
+        });
       });
     }
   },
   filters: {
     uppercase(str) {
-      return str[0].toUpperCase()+str.substr(0);
+      return str[0].toUpperCase() + str.substr(1);
     }
   }
 };

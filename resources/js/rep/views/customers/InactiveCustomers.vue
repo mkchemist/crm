@@ -10,6 +10,13 @@
           <span><i class="fa fa-plus-circle"></i></span>
           <span>New</span>
         </router-link>
+        <button
+          class="btn btn-sm btn-primary"
+          @click="$store.dispatch('customerGetAll', true)"
+        >
+          <span><i class="fa fa-redo"></i></span>
+          <span>refresh list</span>
+        </button>
       </div>
       <div class="p-2">
         <table-component
@@ -18,17 +25,22 @@
           v-if="inactiveCustomers.length"
           headClass="bg-success text-light"
           :with-favorite="true"
-
         >
           <template v-slot:head>
             <th>Actions</th>
           </template>
           <template v-slot:body="{ item }">
             <td>
-              <router-link :to="`/customers/view/${item.id}`" class="btn btn-sm btn-info">
+              <router-link
+                :to="`/customers/view/${item.id}`"
+                class="btn btn-sm btn-info"
+              >
                 <span><i class="fa fa-eye"></i></span>
               </router-link>
-              <router-link :to="`/customers/edit/${item.id}`" class="btn btn-sm btn-warning">
+              <router-link
+                :to="`/customers/edit/${item.id}`"
+                class="btn btn-sm btn-warning"
+              >
                 <span><i class="fa fa-edit"></i></span>
               </router-link>
             </td>
@@ -45,7 +57,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
-import {CUSTOMERS_TABLE_HEADS} from "../../../helpers/constants"
+import { CUSTOMERS_TABLE_HEADS } from "../../../helpers/constants";
 export default {
   computed: {
     inactiveCustomers() {

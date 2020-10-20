@@ -7,40 +7,62 @@
       </p>
       <div class="p-2">
         <div class="p-2">
-          <div class="btn-group btn-group-sm" role="group">
-            <button class="btn btn-sm btn-secondary">
-              <span>Approval All</span>
+          <div class="">
+            <button
+              class="btn btn-sm btn-secondary"
+              @click="approveFrequencyRequest"
+              :disabled="!selected_customers.length"
+            >
+              <span>Approve</span>
+              <span
+                v-if="selected_customers.length"
+                class="text-primary bg-light px-1 rounded-circle"
+                >{{ selected_customers.length }}</span
+              >
             </button>
-            <button class="btn btn-sm btn-secondary">
-              <span>Reject All</span>
-            </button>
-            <button class="btn btn-sm btn-secondary">
-              <span>Approve Selected</span>
-            </button>
-            <button class="btn btn-sm btn-secondary">
-              <span>Reject Selected</span>
+            <button
+              class="btn btn-sm btn-secondary"
+              @click="rejectedFrequencyRequest"
+              :disabled="!selected_customers.length"
+            >
+              <span>Reject</span>
+              <span
+                v-if="selected_customers.length"
+                class="text-primary bg-light px-1 rounded-circle"
+                >{{ selected_customers.length }}</span
+              >
             </button>
           </div>
         </div>
         <div class="p-2 my-3 border rounded" id="request_table_container">
-          <table-component v-if="customers.length"
-            :heads="heads"
-            :data="customers"
-            headClass="bg-success text-light"
-          >
-          <template v-slot:head:before>
-            <th><input type="checkbox" @click="collectAllCustomers"></th>
-          </template>
-          <template v-slot:head>
-            <th>Date</th>
-          </template>
-          <template v-slot:body:before="{item}">
-            <td><input type="checkbox" :value="item.customer.id" :disabled="item.approved === 1"></td>
-          </template>
-          <template v-slot:body="{item}">
-            <td>{{ item.modified_at ? item.updated_at : item.created_at }}</td>
-          </template>
-          </table-component>
+          <div  v-if="customers.length">
+            <table-component
+              :heads="heads"
+              :data="customers"
+              headClass="bg-success text-light"
+            >
+              <template v-slot:head:before>
+                <th><input type="checkbox" @click="selectAll" /></th>
+              </template>
+              <template v-slot:head>
+                <th>Date</th>
+              </template>
+              <template v-slot:body:before="{ item }">
+                <td>
+                  <input
+                    type="checkbox"
+                    :value="item.customer.id"
+                    @click="selectCustomer(item.id)"
+                  />
+                </td>
+              </template>
+              <template v-slot:body="{ item }">
+                <td>
+                  {{ item.modified_at ? item.updated_at : item.created_at }}
+                </td>
+              </template>
+            </table-component>
+          </div>
           <div v-else-if="isFetched">
             <p class="text-dark lead text-center">No data to show</p>
           </div>
@@ -54,7 +76,7 @@
 </template>
 
 <script>
-import { httpCall } from '../../../helpers/http-service'
+import { httpCall } from "../../../helpers/http-service";
 import TableComponent from "../../../components/TableComponent";
 
 export default {
@@ -67,43 +89,44 @@ export default {
     isFetched: false,
     heads: [
       {
-        title: 'Rep',
-        name: 'user.name'
+        title: "Rep",
+        name: "user.name"
       },
       {
-        title: 'Customer',
-        name: 'customer.name'
+        title: "Customer",
+        name: "customer.name"
       },
       {
-        title: 'Specialty',
-        name: 'customer.specialty'
+        title: "Specialty",
+        name: "customer.specialty"
       },
       {
-        title: 'Parameter',
-        name: 'customer.get_user_params.0.current'
+        title: "Parameter",
+        name: "customer.get_user_params.0.current"
       },
       {
-        title: 'Area',
-        name: 'user.area'
+        title: "Area",
+        name: "user.area"
       },
       {
-        title: 'Brick',
-        name: 'customer.brick'
+        title: "Brick",
+        name: "customer.brick"
       },
       {
-        title: 'From',
-        name: 'current'
+        title: "From",
+        name: "current"
       },
       {
-        title: 'To',
-        name: 'next'
+        title: "To",
+        name: "next"
       },
       {
-        title:'Address',
-        name: 'customer.address'
+        title: "Address",
+        name: "customer.address"
       }
     ],
-    selected_customers : []
+    selected_customers: [],
+    request_state: null
   }),
 
   methods: {
@@ -112,37 +135,103 @@ export default {
      *
      */
     fetchRequestList() {
-      httpCall.get('dm/v1/approval/frequency')
-      .then(({data}) => {
+      httpCall.get("dm/v1/approval/frequency").then(({ data }) => {
         data.message = "list loaded";
         this.handleResponse(data, data => {
           this.customers = data.data;
           this.isFetched = true;
         });
-      })
+      });
     },
     /**
      * collect all customers request
      *
      */
-    collectAllCustomers() {
-      let _inputs = Array.from(document.querySelectorAll('#request_table_container input[type="checkbox"]'));
-      _inputs.map((input) => {
-        if(input.disabled !== true) {
+    selectAll() {
+      let checked = event.target.checked;
+      let _inputs = Array.from(
+        document.querySelectorAll(
+          '#request_table_container input[type="checkbox"]'
+        )
+      );
+      _inputs.map(input => {
+        if (checked) {
           input.checked = true;
+        } else {
+          input.checked = false;
         }
       });
-      let x = Array.from(this.customers.map(customer => customer.approved !== 1 ? customer.id : null));
-      x = x.filter(i => i !== null);
-      console.log(x)
+      if (checked) {
+        this.selected_customers = this.customers.map(customer => customer.id);
+      } else {
+        this.selected_customers = [];
+      }
+    },
+    /**
+     * select customer
+     *
+     * @param {int} id
+     */
+    selectCustomer(id) {
+      /** target element [clicked input] */
+      let _target = event.target;
+      let checked = _target.checked;
+      if (checked) {
+        if (!this.selected_customers.includes(id)) {
+          this.selected_customers.push(id);
+        }
+      } else {
+        if (this.selected_customers.includes(id)) {
+          this.selected_customers.splice(
+            this.selected_customers.indexOf(id),
+            1
+          );
+        }
+      }
+    },
+    /**
+     * Approve Frequency
+     */
+    frequencyRequest() {
+      if (!this.selected_customers.length) {
+        this.$toasted.error("Error: select customers first");
+        return;
+      }
+      if(!['approved', 'rejected'].includes(this.request_state)) {
+        this.$toasted.error('Error: Request state in unkown');
+        return;
+      }
+      let data = {
+        ids: JSON.stringify(this.selected_customers),
+        state: this.request_state
+      };
+      httpCall.post("dm/v1/approval/frequency", data).then(({ data }) => {
+        data.message =data.data;
+        this.handleResponse(data, data => {
+          document.querySelectorAll('#table_request_container input[type="checkbox"]')
+          .forEach((input) => {
+            input.checked = false;
+          })
+        })
+      }).finally(() => {
+        this.customers = [];
+        this.selected_customers = [];
+        this.fetchRequestList();
+      })
+    },
+    approveFrequencyRequest() {
+      this.request_state = "approved";
+      this.frequencyRequest();
+    },
+    rejectedFrequencyRequest() {
+      this.request_state = "rejected";
+      this.frequencyRequest();
     }
   },
   components: {
     TableComponent
   }
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

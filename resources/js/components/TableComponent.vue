@@ -1,7 +1,9 @@
 <template>
+<div>
   <table
     :class="`table table-striped table-sm small bg-white ${notResponsive ?'' :'table-responsive'}`"
     id="data-table"
+    v-if="rows.length"
   >
     <thead>
       <tr :class="headClass">
@@ -11,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(item, i) in data" :key="i">
+      <tr v-for="(item, i) in rows" :key="i">
         <!-- <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td> -->
         <slot name="body:before" :item="item"></slot>
         <td v-for="(head, i) in heads" :key="i">{{ _notation(item, head.name)}}</td>
@@ -19,6 +21,7 @@
       </tr>
     </tbody>
   </table>
+</div>
 </template>
 
 <script>
@@ -31,6 +34,11 @@ export default {
   }),
   mounted() {
     this.createTable();
+  },
+  computed:{
+    rows() {
+      return this.data
+    }
   },
   methods: {
     _notation(container, key){

@@ -18,5 +18,7 @@ Route::prefix('v1')->group(function() {
   Route::group(['prefix' => 'approval'], function() {
     Route::get('/frequency', 'ApprovalController@RequestCustomerFrequency');
     Route::get('/parameters', 'ApprovalController@CustomerParameterRequests');
+    Route::post('/frequency', 'ApprovalController@approveCustomersFrequency');
+    Route::post('/parameters', 'ApprovalController@approveCustomersParameters');
   });
 });

@@ -10,6 +10,10 @@
           <span><i class="fa fa-plus-circle"></i></span>
           <span>New</span>
         </router-link>
+        <button class="btn btn-sm btn-primary" @click="$store.dispatch('customerGetAll', true)">
+          <span><i class="fa fa-redo"></i></span>
+          <span>refresh list</span>
+        </button>
       </div>
       <div class="p-2">
         <table-component
