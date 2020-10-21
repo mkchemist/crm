@@ -22,6 +22,14 @@ class Customer extends Model
       "region"
     ];
 
+    protected $with = [
+      'params',
+      'frequency',
+      'report',
+      'planner',
+      'workplace'
+    ];
+
     public function params()
     {
       return $this->hasMany('App\CustomerParameter','customer_id', 'id');
