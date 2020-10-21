@@ -15,6 +15,12 @@
             >
               Selected : {{ selected_customers.length }}
             </p>
+            <div class="d-flex">
+              <div>
+                <input type="checkbox" @click="toggleInactiveCustomers">
+                <span class="small">Inactive customers</span>
+              </div>
+            </div>
             <div
               v-if="customers.length"
               style="height:200px;overflow:auto"
@@ -134,7 +140,8 @@ import { httpCall } from "../../../helpers/http-service";
 export default {
   data: () => ({
     selected_customers: [],
-    deleted_customers: []
+    deleted_customers: [],
+    withInactiveCustomers : false
   }),
   computed: {
     /**
@@ -150,7 +157,10 @@ export default {
      * get customers
      */
     customers() {
-      return this.$store.getters.all;
+      if(this.withInactiveCustomers) {
+        return this.$store.getters.all;
+      }
+      return this.$store.getters.active;
     }
   },
   methods: {
@@ -262,6 +272,17 @@ export default {
               });
           })
         });
+    },
+    /**
+     * toggle inactive customers
+     *
+     */
+    toggleInactiveCustomers(){
+      if(this.withInactiveCustomers) {
+        this.withInactiveCustomers = false;
+      } else {
+        this.withInactiveCustomers = true;
+      }
     }
   }
 };
