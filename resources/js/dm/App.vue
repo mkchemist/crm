@@ -8,6 +8,11 @@
 </template>
 
 <script>
+/**
+ * //TODO creating planner page
+ * //TODO creating reports page
+ * //TODO createing reps reports page
+ */
 import Navbar from "./components/Navbar"
 export default {
   components: {

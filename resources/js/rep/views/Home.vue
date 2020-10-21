@@ -11,6 +11,11 @@
 </template>
 
 <script>
+/**
+ * //TODO add notification module
+ * //TODO add requests module that show eveny request state
+ *
+ */
 import TodayPlan from "../components/TodayPlan";
 export default {
   components: {

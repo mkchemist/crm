@@ -12,6 +12,12 @@
 </template>
 
 <script>
+/**
+ * //TODO remove validation and requests links
+ * //TODO create customer card
+ * //TODO add report button in customer card
+ *
+ */
 import SideBar from "../../components/SidebarComponent";
 export default {
   components: {

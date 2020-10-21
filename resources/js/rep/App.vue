@@ -8,6 +8,12 @@
 </template>
 
 <script>
+/**
+ * //TODO create requests page
+ * to controller every customer request
+ *
+ *
+ */
 import Navbar from "./components/Navbar.vue";
 export default {
   components: {

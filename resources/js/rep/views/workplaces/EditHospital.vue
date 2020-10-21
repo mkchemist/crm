@@ -102,6 +102,11 @@
 </template>
 
 <script>
+/**
+ * //TODO add phone field
+ * //TODO submit edited values to workplace validation table
+ * then if accpeted it will be submitted to workplace table
+ */
 import { httpCall } from "../../../helpers/http-service";
 export default {
   data: () => ({

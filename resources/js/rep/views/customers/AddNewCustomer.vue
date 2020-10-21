@@ -172,6 +172,10 @@
 </template>
 
 <script>
+/**
+ * //TODO remove customer frequency and parameter from adding new customer
+ *
+ */
 import mapGetters from "vuex";
 export default {
   data: () => ({

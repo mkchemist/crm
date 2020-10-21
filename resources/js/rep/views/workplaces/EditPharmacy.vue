@@ -67,6 +67,10 @@
 </template>
 
 <script>
+/**
+ * //TODO submit edits values to pharmacy validation table
+ * if accepted it will be submitted to pharmacies table
+ */
 import { httpCall } from '../../../helpers/http-service';
 export default {
   computed: {

@@ -90,6 +90,13 @@
 </template>
 
 <script>
+/**
+ * //FIXME reduce space between customer info lines
+ * //TODO add customer reports module
+ * //TODO add other reps plans for the customer
+ * //TODO add other reps reports for the customer
+ * //TODO add report button
+ */
 import { httpCall } from '../../../helpers/http-service';
 export default {
   created() {

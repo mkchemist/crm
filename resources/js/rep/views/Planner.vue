@@ -33,6 +33,10 @@
 </template>
 
 <script>
+/**
+ * //TODO create single customer adding page
+ *
+ */
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 export default {

@@ -136,6 +136,10 @@
 </template>
 
 <script>
+/**
+ * //TODO create customer filters
+ *
+ */
 import { httpCall } from "../../../helpers/http-service";
 export default {
   data: () => ({

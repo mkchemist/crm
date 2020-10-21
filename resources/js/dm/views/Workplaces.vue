@@ -12,6 +12,11 @@
 </template>
 
 <script>
+/**
+ * //TODO create workplace card
+ *
+ *
+ */
 import SideBar from "../../components/SidebarComponent";
 export default {
   components: {
