@@ -19,16 +19,16 @@ class CustomerFavoriteListController extends Controller
      */
     public function index()
     {
-      $customers = Customer::with(['params', 'frequency'])
-      ->whereIn('id', function ($query) {
+      $customers = Customer::whereIn('id', function ($query) {
         $query->from('customer_favorite_lists')
         ->select('customer_id')
         ->where('user_id', Auth::user()->id)
         ->get();
       })->get();
+
       return response()->json([
         'code'  =>  201,
-        'data'  =>  CustomerResource::collection($customers)
+        'data'  =>  CustomerResource::collection($customers),
       ]);
     }
 
@@ -54,7 +54,7 @@ class CustomerFavoriteListController extends Controller
       ]);
       return response()->json([
         'code'  =>  201,
-        'data'  =>  sprintf('Dr %s added successfully to favorite list', $list->customer->name),
+        'data'  =>  'Customer added successfully',
       ]);
     }
 

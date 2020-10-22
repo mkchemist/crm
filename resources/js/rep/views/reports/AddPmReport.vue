@@ -124,10 +124,11 @@ export default {
       .then(({data}) => {
         data.message = 'visit added successfully';
         this.handleResponse(data,data => {
-          this.$store.dispatch('reportGetAll', true);
           this.$store.dispatch('customerGetAll', true);
-          this.$router.replace('/reports/view/pm')
+          this.$store.dispatch('reportGetAll', true);
         });
+      }).finally(() => {
+          this.$router.replace('/reports/view/pm')
       });
     }
   },

@@ -21,7 +21,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-      $customers = Customer::where(['area' => Auth::user()->area])
+      $customers = Customer::with(['params','report','workplace','frequency','planner'])->where(['area' => Auth::user()->area])
       ->orderBy('name', 'asc')->get();
       $customers = CustomerResource::collection($customers);
       return response()->json([
@@ -111,26 +111,41 @@ class CustomerController extends Controller
       }
       // check if the customer with the given id
       // is already exists
-      $customer = $this->getCustomerById($id);
+      /* $customer = $this->getCustomerById($id); */
+      $user = Auth::user();
+      $customer = Customer::without(['planner', 'report', 'workplace', 'frequency', 'params'])->where([
+        'area'  =>  $user->area,
+        'id'  =>  $id
+      ])->first();
       if(!$customer) {
         return response()->json(ResponseHelper::INVALID_ID);
       }
+      $workplace = $request->workplace_id !== "null" ?$request->workplace_id: null;
       $customer->update([
         'address' =>  $request->address,
         'phone'   =>  $request->phone,
-        'title'   =>  $request->title
+        'title'   =>  $request->title,
+        'workplace_id'  =>  $workplace
       ]);
-      if($request->workplace_id !== "null") {
-        $customer->workplace_id = $request->workplace_id;
-        $customer->save();
-      }
-      $param = $this->customerParameterUpdateOrCreate($customer->id, $request->parameter);
-      $this->customerFrequencyUpdateOrCreate($customer->id, $request->next_freq, false);
+
+      CustomerParameter::updateOrCreate(
+        ['user_id'  =>  $user->id, 'customer_id' => $customer->id],
+        [
+          'next' => $request->parameter,
+          'state' =>  'requested',
+          'approved'  =>  false,
+          'approved_by' =>  null
+        ]
+      );
+
+      CustomerFrequency::updateOrCreate(
+        ['user_id'=> $user->id, 'locked' => false, 'customer_id'  =>  $customer->id],
+        ['next' => $request->next_freq, 'locked' => false]
+      );
 
       return response()->json([
         "code"  =>  201,
-        "data"  =>  new CustomerResource($this->getCustomerById($id)),
-        "param" =>  $param
+        "data"  =>  'customer updated successfully',
       ]);
     }
 
@@ -203,18 +218,8 @@ class CustomerController extends Controller
      */
     private function customerParameterUpdateOrCreate(int $id, string $param)
     {
-      /* $params = CustomerParameter::updateOrCreate([
-        'user_id' =>  Auth::user()->id,
-        'customer_id' =>  $id
-      ],[
-        'next' => $param,
-        'state' => 'requested',
-        'approved'=>false,
-        'approved_by' => null
-      ]);
-      return $params; */
       $parameter = CustomerParameter::updateOrCreate(
-        ['user_id' => Auth::user()->id, 'customer_id' => $id],
+        ['user_id' => Auth::id(), 'customer_id' => $id],
         ['next' => $param, 'state' => 'requested', 'approved_by' => null, 'approved' => false]
       );
       return $parameter;
@@ -231,7 +236,7 @@ class CustomerController extends Controller
     private function customerFrequencyUpdateOrCreate(int $id, int $freq,bool $locked)
     {
       $frequency = CustomerFrequency::updateOrCreate([
-        'user_id' =>  Auth::user()->id,
+        'user_id' =>  Auth::id(),
         ['locked', false],
         'customer_id' =>  $id,
       ],[

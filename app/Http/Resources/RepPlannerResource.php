@@ -15,11 +15,11 @@ class RepPlannerResource extends JsonResource
     public function toArray($request)
     {
         return [
-          'customer' => new RepCustomersResource($this->customer) ,
+          //'customer' => new RepCustomersResource($this->customer),
           'start'    => $this->plan_date,
           'end'      => $this->plan_date,
           'title'    => $this->customer->name,
-          'id'      =>$this->id,
+          'id'      =>  $this->id,
           'type'    =>  $this->type,
           'class'   =>  'PM',
           'name'    =>  $this->customer->name

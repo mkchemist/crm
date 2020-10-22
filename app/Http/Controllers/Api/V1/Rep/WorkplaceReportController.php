@@ -52,10 +52,10 @@ class WorkplaceReportController extends Controller
     foreach ($ids as $id) {
       $check = $this->getVisitByCustomerId($id, $request->date, $request->workplace_id);
       if ($check) {
-        $rejected[] = sprintf("visit of %s in workplace %s is already reported", $check->customer->name, $check->workplace->name);
+        $rejected[] = 'visit already exists';
       } else {
 
-        $visit = WorkplaceReport::Create([
+        WorkplaceReport::Create([
           'user_id'     =>  Auth::user()->id,
           'visit_date'  =>  $request->date,
           'customer_id' =>  $id,
@@ -64,7 +64,7 @@ class WorkplaceReportController extends Controller
           'comment'     =>  $request->comment,
           'general_feedback'  =>  $request->general_feedback
         ]);
-        $accepted[] = sprintf('Visit of %s reported successfully', $visit->customer->name);
+        $accepted[] = 'visit added';
       }
     };
     return response()->json([

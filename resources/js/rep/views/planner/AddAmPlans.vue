@@ -41,7 +41,7 @@
           class="d-flex justify-content-center align-items-center h-100"
           v-else
         >
-          <vue-loaders name="ball-scale" scale="2" color="grey" />
+          <loader-component></loader-component>
         </div>
       </div>
       <!-- planned workplacess controller -->

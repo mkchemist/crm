@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Rep;
 
+use App\Customer;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RepPlannerResource;
@@ -19,7 +20,7 @@ class PlannerController extends Controller
      */
     public function index()
     {
-      $plans = Planner::where([
+      $plans = Planner::with('customer')->where([
         'user_id' =>  Auth::user()->id
       ])->orderBy('plan_date', 'asc')->get();
       if(count($plans) === 0) {
@@ -44,17 +45,12 @@ class PlannerController extends Controller
       $user = Auth::user();
       $accepted = [];
       foreach($ids as $id) {
-        $check = $this->checkIfExists($id, $request->date);
-        if($check) {
-          $exists[] = $check->customer->name;
-        } else {
-          $plan = Planner::create([
-            'customer_id' =>  $id,
-            'user_id'     =>  $user->id,
-            'plan_date'   =>  $request->date
-          ]);
-          $accepted[] = $plan->customer->name;
-        }
+
+        Planner::updateOrCreate([
+          'customer_id' =>  $id,
+          'user_id' =>  $user->id,
+          'plan_date' =>  $request->date
+        ]);
       }
       return response()->json([
         'code'  =>  201,

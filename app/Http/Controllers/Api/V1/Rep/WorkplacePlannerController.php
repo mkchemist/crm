@@ -53,6 +53,7 @@ class WorkplacePlannerController extends Controller
     $rejected = [];
     /** accepted plans */
     $accepted = [];
+    $user = Auth::user();
     /** looping through ids */
     foreach ($ids as $id) {
       /**
@@ -64,7 +65,7 @@ class WorkplacePlannerController extends Controller
        * for the given workplace id
        *
        */
-      $check = $this->getPlanByWorkplaceId($id, $request->date);
+      /* $check = $this->getPlanByWorkplaceId($id, $request->date);
       if ($check) {
         $rejected[] = "Workplace {$check->workplace->name} is already planned";
       } else {
@@ -74,7 +75,12 @@ class WorkplacePlannerController extends Controller
           'plan_date'     =>  $request->date
         ]);
         $accepted[] = "Workplace {$plan->workplace->name} is planned successfully";
-      }
+      } */
+      $state = WorkplacePlanner::updateOrCreate([
+        'workplace_id'  =>  $id,
+        'user_id'       =>  Auth::id(),
+        'plan_date'     =>  $request->date
+      ]);
     }
     return response()->json([
       'code'      =>  201,
