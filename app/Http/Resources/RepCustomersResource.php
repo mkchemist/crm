@@ -15,15 +15,6 @@ class RepCustomersResource extends JsonResource
      */
     public function toArray($request)
     {
-      $user = Auth::user();
-      $params = $this->params()->where(['user_id' => $user->id])->first();
-      $freq = $this->frequency()->where(['user_id' =>  $user->id])->first();
-      $plans = $this->planner()->where(['user_id' =>  $user->id])->get();
-      $report = $this->report()->where(['user_id' => $user->id])->get();
-      $workplace = $this->workplace ? $this->workplace->name : null;
-      $workplace_id = $this->workplace? $this->workplace->id : null;
-
-        //return parent::toArray($request);
       return [
         'id'    =>  $this->id,
         'name'  =>    $this->name,
@@ -34,15 +25,15 @@ class RepCustomersResource extends JsonResource
         'area'    =>  $this->area,
         'workplace' =>  $this->workplace_id,
         'phone'   =>  $this->phone,
-        'parameter' =>  $params ? $params->current : "NN",
-        'current_freq'    =>  $freq ? $freq->current : 0,
-        'next_freq'   =>  $freq ? $freq->next : 0,
-        'plans'       =>  count($plans),
-        'planned_visits' => $plans,
-        'workplace' =>  $workplace,
-        'workplace_id' => $workplace_id,
-        'report'   =>  count($report),
-        'freq'  =>  $freq
+        'parameter' =>  count($this->params) ? $this->params[0]->current : "NN",
+        'current_freq'    =>  count($this->frequency) ? $this->frequency[0]->current : 0,
+        'next_freq'   =>  count($this->frequency) ? $this->frequency[0]->next : 0,
+        'plans'       =>  count($this->planner),
+        'planned_visits' => $this->planner,
+        'workplace' =>  $this->workplace ? $this->workplace->name : null,
+        'workplace_id' => $this->workplace ? $this->workplace->id : null,
+        'report'   =>  count($this->report),
+        'freq'  =>  $this->frequency
       ];
     }
 }

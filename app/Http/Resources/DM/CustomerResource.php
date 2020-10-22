@@ -3,8 +3,6 @@
 namespace App\Http\Resources\DM;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class CustomerResource extends JsonResource
 {
@@ -16,31 +14,21 @@ class CustomerResource extends JsonResource
    */
   public function toArray($request)
   {
-    $user = Auth::user();
-    $users = DB::table("users")->select("id")->where([
-      "district"  =>  $user->district,
-      "line"      =>  $user->line,
-    ])
-      ->where('id', '!=', $user->id)
-      ->get();
-    $usersId = [];
-    $usersId = array_map(function ($user) {
-      return $user->id;
-    }, $users->toArray());
-    $freq = $this->frequency()->whereIn('user_id', $usersId)->first();
-    $param = $this->params()->whereIn('user_id', $usersId)->first();
-    $reports =$this->report()->whereIn('user_id', $usersId)->get();
+
     return [
       "id"    =>  $this->id,
       "name"  =>  $this->name,
       "specialty" => $this->specialty,
       "brick"     =>  $this->brick,
       "address"   =>  $this->address,
-      "current_freq"   =>  $freq ? $freq->current : 0,
-      "next_freq"     => $freq ? $freq->next : 0,
+      "current_freq"   =>  count($this->frequency) ? $this->frequency[0]->current : 0,
+      "next_freq"     => count($this->frequency) ? $this->frequency[0]->next : 0,
       "area"    =>  $this->area,
-      "parameter"   =>  $param ? $param->current : 'NN',
-      "reports" =>  count($reports)
+      "parameter"   =>  count($this->params) ? $this->params[0]->current : 'NN',
+      "reports" =>  count($this->report),
+      'workplace' =>  $this->workplace ? $this->workplace->name : null,
+      "plans"     =>  count($this->planner)
     ];
   }
+
 }
