@@ -102,7 +102,7 @@ export default {
       },
       {
         title: "Parameter",
-        name: "customer.get_user_params.0.current"
+        name: "customer.params.0.current"
       },
       {
         title: "Area",
