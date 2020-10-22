@@ -6,7 +6,12 @@
         <span class="font-weight-bold">Active customers</span>
       </p>
       <div class="p-2">
-        <div class="text-right"></div>
+        <div class="text-right">
+          <button class="btn btn-primary btn-sm" @click="$store.dispatch('customersGetAll', true)">
+            <span><i class="fa fa-redo"></i></span>
+            <span>refresh list</span>
+          </button>
+        </div>
         <div v-if="activeCustomers.length">
           <table-component
             :heads="heads"
