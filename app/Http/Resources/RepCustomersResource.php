@@ -33,7 +33,7 @@ class RepCustomersResource extends JsonResource
         'workplace' =>  $this->workplace ? $this->workplace->name : null,
         'workplace_id' => $this->workplace ? $this->workplace->id : null,
         'report'   =>  count($this->report),
-        'freq'  =>  $this->frequency
+        'freq'  =>  count($this->frequency) ? $this->frequency[0] : null
       ];
     }
 }
