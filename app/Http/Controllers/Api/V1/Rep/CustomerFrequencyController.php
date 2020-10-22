@@ -28,6 +28,7 @@ class CustomerFrequencyController extends Controller
         } else {
           $freq->next = $customer->frequency;
           $freq->locked = $customer->locked;
+          $freq->state = "updated";
           $freq->save();
         }
       } else {
@@ -35,7 +36,8 @@ class CustomerFrequencyController extends Controller
           'customer_id' =>  $customer->id,
           'user_id'     =>  Auth::user()->id,
           'next'        =>  $customer->frequency,
-          'locked'      =>  $customer->locked
+          'locked'      =>  $customer->locked,
+          "state"       =>  "updated"
         ]);
       }
       $result[] = $freq;
@@ -71,14 +73,16 @@ class CustomerFrequencyController extends Controller
    */
   public function submitFrequency()
   {
+    $user = Auth::user();
     $customers = CustomerFrequency::where([
-      'user_id' =>  Auth::user()->id,
+      'user_id' =>  $user->id,
+      'state'   =>  'updated'
     ])
-    ->whereIn('customer_id', function($query) {
+    ->whereIn('customer_id', function($query) use($user) {
       $query->from('customer_parameters')->select('customer_id')
       ->whereNotIn('current', ['NN','XX'])
-      ->where('user_id', Auth::user()->id)->get();
-    })->update(['submitted' => true]);
+      ->where('user_id', $user->id)->get();
+    })->update(['submitted' => true, "state" => "requested"]);
     return response()->json([
       'code'  =>  201,
       'data'  =>  $customers

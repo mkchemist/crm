@@ -21,7 +21,7 @@ class ApprovalController extends Controller
    */
   public function RequestCustomerFrequency()
   {
-    $customers = CustomerFrequency::with(['customer','user','customer.getUserParams'])
+    $customers = CustomerFrequency::with(['customer.params','user'])
     ->whereIn('user_id', function ($query) {
       $query->from('users')
         ->select('id')
