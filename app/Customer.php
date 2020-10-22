@@ -2,11 +2,14 @@
 
 namespace App;
 
+use App\Helpers\Traits\CustomData;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class Customer extends Model
 {
+
+  use CustomData;
 
   protected $fillable = [
     "name",
@@ -32,20 +35,21 @@ class Customer extends Model
 
   public function params()
   {
-    return $this->hasMany('App\CustomerParameter', 'customer_id', 'id');
+   $model = $this->hasMany('App\CustomerParameter');
+   return $this->getRelatedUserData($model);
   }
 
   public function frequency()
   {
     $model = $this->hasMany('App\CustomerFrequency');
-    return $this->getUserData($model);
+    return $this->getRelatedUserData($model);
 
   }
 
   public function report()
   {
     $model = $this->hasMany('App\CustomerReport');
-    return $this->getUserData($model);
+    return $this->getRelatedUserData($model);
   }
 
   public function fav()
@@ -56,7 +60,7 @@ class Customer extends Model
   public function planner()
   {
    $model = $this->hasMany('App\Planner', 'customer_id', 'id');
-   return $this->getUserData($model);
+   return $this->getRelatedUserData($model);
   }
 
   public function workplace()
