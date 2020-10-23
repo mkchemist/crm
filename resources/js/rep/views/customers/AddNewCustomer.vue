@@ -114,45 +114,6 @@
               </div>
             </div>
 
-            <!-- customer parameters part -->
-            <p>Customer parameters</p>
-            <hr />
-            <div class="form-group row mx-auto">
-              <label for="params" class="text-muted col-lg-5"
-                >Classification</label
-              >
-              <ValidationProvider name="params" rules="required" v-slot="{ errors }" class="col-lg">
-                <span class="text-danger small">{{  errors[0]  }}</span>
-                <select
-                  name="params"
-                  id="params"
-                  class="form-control form-control-sm"
-                  v-model="customer.params"
-                >
-                  <option value="">Select Parameter</option>
-                  <option v-for="(item,i ) in param" :key="i" :value="item">{{ item }}</option>
-                </select>
-              </ValidationProvider>
-            </div>
-            <div class="form-group row mx-auto">
-              <label for="frequency" class="text-muted col-lg-5"
-                >Frequency</label
-              >
-              <ValidationProvider name="frequency" rules="required" v-slot="{errors}" class="col-lg">
-                <span class="text-danger small">{{ errors[0] }}</span>
-                <input
-                  type="number"
-                  name="frequency"
-                  id="frequency"
-                  class="form-control form-control-sm"
-                  placeholder="Enter frequency"
-                  min="0"
-                  max="10"
-                  v-model="customer.frequency"
-                />
-              </ValidationProvider>
-            </div>
-
             <hr />
             <div class="form-group text-right">
               <router-link to="/customers" class="btn btn-dark">
@@ -172,11 +133,7 @@
 </template>
 
 <script>
-/**
- * //TODO remove customer frequency and parameter from adding new customer
- *
- */
-import mapGetters from "vuex";
+
 export default {
   data: () => ({
     customer: {
@@ -187,8 +144,6 @@ export default {
       brick: "",
       address: "",
       phone: "",
-      params: "",
-      frequency: ""
     }
   }),
   methods: {
