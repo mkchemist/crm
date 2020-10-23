@@ -21,7 +21,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-      $customers = Customer::with(['params','report','workplace','frequency','planner'])->where(['area' => Auth::user()->area])
+      $customers = Customer::where(['area' => Auth::user()->area])
       ->orderBy('name', 'asc')->get();
       $customers = CustomerResource::collection($customers);
       return response()->json([
@@ -42,8 +42,6 @@ class CustomerController extends Controller
         'name'  =>  'required',
         'specialty' =>  'required',
         'brick'     =>  'required',
-        'params'     =>  'required',
-        'frequency'   =>  'required|numeric'
       ]);
 
       if($validator->fails()) {
@@ -60,11 +58,6 @@ class CustomerController extends Controller
 
       $data = array_merge($request->all(), $this->getUserAreaDetails());
       $customer = Customer::create($data);
-      $params = $this->customerParameterUpdateOrCreate($customer->id,$request->params);
-      $freq = $this->customerFrequencyUpdateOrCreate($customer->id, $request->frequency, false);
-      $customer->params = $params;
-      $customer->freq = $freq;
-
       return response()->json([
         "code"  =>  201,
         "data"  =>  $customer

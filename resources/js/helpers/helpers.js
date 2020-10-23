@@ -9,7 +9,7 @@
  * @return {mixed}
  */
 export const ObjectNotation = function (container, key) {
-  /** regaular expression test */
+  /** regular expression test */
   let test = /\./gm;
   /** matches in key */
   let matches = key.match(test);
@@ -49,7 +49,6 @@ export const ObjectNotation = function (container, key) {
   return null;
 }
 
-// TODO need to be refactored
 /**
  * filter data
  *
@@ -68,4 +67,101 @@ export function filterData(data, condition){
     res[key].push(item);
   });
   return res;
+}
+
+
+/**
+ * check if the given type is string
+ *
+ * @param {mixed} v
+ * @return {boolean}
+ */
+const isString = v => "string" === typeof v;
+
+/**
+ * check if the given type is object
+ *
+ * @param {mixed} v
+ * @return {boolean}
+ */
+const isObject = v => "object" === typeof v;
+
+/**
+ * check if the given type is number
+ *
+ * @param {mixed} v
+ * @return {boolean}
+ */
+const isNumber = v => "number" === typeof v;
+
+/**
+ * check if the given type is null
+ *
+ * @param {mixed} v
+ * @return {boolean}
+ */
+const isNull = v => v === null || v === "";
+
+/**
+ * Exceptions
+ */
+var INVALID_OBJECT_TYPE_ERROR = "sortBy method used with array of objects only";
+var INVALID_ITEM_TYPE_ERROR = "sortBy method compare only String and Number types";
+
+/**
+ * compare between the given values
+ *
+ *
+ * @param {object} a
+ * @param {object} b
+ * @param {string} item
+ * @param {string} factor
+ * @return {int}
+ */
+function compare(a, b, item, factor) {
+
+
+    if(!isObject(a) || !isObject(b)) {
+        throw new Error(INVALID_OBJECT_TYPE_ERROR);
+    }
+
+    let val1 = a[item];
+    let val2 = b[item];
+
+    if(!isString(val1) && !isString(val2) && !isNumber(val1) && !isNumber(val2)) {
+        throw new Error(INVALID_ITEM_TYPE_ERROR);
+    }
+
+    if(isString(val1)) {
+        val1 = val1.toUpperCase();
+    }
+    if(isString(val2)) {
+        val2 = val2.toUpperCase();
+    }
+
+    var result = 0;
+    if(val1 > val2) {
+        result =  1 * factor;
+    }
+
+    if(val1 < val2) {
+        result = -1 * factor;
+    }
+
+    return result;
+}
+
+/**
+ * Sorting array of objects
+ * @param {array} arr       Array<Object>
+ * @param {string} item     [key of sorting]
+ * @param {string} dir      [Asc|Desc]
+ */
+export function sortBy(arr, item, dir ="asc") {
+    let res = Array.from(arr);
+    let factor = dir.toUpperCase() === "ASC" ? 1 : -1;
+    return res.sort((a, b) => {
+        return compare(a, b, item, factor)
+    });
+
 }
