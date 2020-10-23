@@ -17,7 +17,7 @@
             </p>
             <div class="d-flex">
               <div>
-                <input type="checkbox" @click="toggleInactiveCustomers">
+                <input type="checkbox" @click="toggleInactiveCustomers" />
                 <span class="small">Inactive customers</span>
               </div>
             </div>
@@ -53,14 +53,19 @@
                 </tbody>
               </table>
             </div>
+            <div v-else-if="isFetched" class="pt-5">
+              <p class="text-center text-muted small">
+                No active customers found, try to select from inactive customers
+                or edit customers
+              </p>
+            </div>
             <div
               v-else
               class="text-center d-flex align-items-center justify-content-center flex-column"
               style="min-height:200px"
             >
-            <div class="spinner-border text-info">
-            </div>
-            <p class="my-2 text-info">Loading...</p>
+              <div class="spinner-border text-info"></div>
+              <p class="my-2 text-info">Loading...</p>
               <!-- <vue-loaders name="ball-scale" scale="2" color="grey" /> -->
             </div>
           </div>
@@ -145,7 +150,7 @@ export default {
   data: () => ({
     selected_customers: [],
     deleted_customers: [],
-    withInactiveCustomers : false
+    withInactiveCustomers: false
   }),
   computed: {
     /**
@@ -154,17 +159,20 @@ export default {
     datePlan() {
       let datePlans = this.$store.getters.plans.filter(
         plan => plan.start === this.$attrs.date
-      )
+      );
       return datePlans;
     },
     /**
      * get customers
      */
     customers() {
-      if(this.withInactiveCustomers) {
+      if (this.withInactiveCustomers) {
         return this.$store.getters.all;
       }
       return this.$store.getters.active;
+    },
+    isFetched() {
+      return this.$store.getters.fetched;
     }
   },
   methods: {
@@ -175,20 +183,14 @@ export default {
      */
     addToSelected(id) {
       let checked = event.target.checked;
-      if (checked) {
-        this.customers.forEach(customer => {
-          if (customer.id === id) {
-            if (!this.selected_customers.includes(customer)) {
-              this.selected_customers.push(customer);
-            }
-          }
-        });
+      let customer = this.customers.filter(customer => customer.id === id)[0];
+      if(checked && !this.selected_customers.includes(customer.id)) {
+        this.selected_customers.push(customer.id);
       } else {
-        this.selected_customers.forEach((customer, i) => {
-          if (customer.id === id) {
-            this.selected_customers.splice(i, 1);
-          }
-        });
+        if(this.selected_customers.includes(customer.id)) {
+          let i = this.selected_customers.indexOf(customer.id);
+          this.selected_customers.splice(i, 1);
+        }
       }
     },
     /**
@@ -205,8 +207,8 @@ export default {
      *
      */
     addPlan() {
-      let customersId = this.getSelectedCustomersId();
-      if (!customersId.length) {
+      //let customersId = this.getSelectedCustomersId();
+      if (!this.selected_customers.length) {
         this.$toasted.show("you must pick customer|s first", {
           icon: "redo",
           duration: 5000
@@ -215,14 +217,14 @@ export default {
       }
       httpCall
         .post("rep/v1/planner", {
-          customers: JSON.stringify(customersId),
+          customers: JSON.stringify(this.selected_customers),
           date: this.$attrs.date
         })
         .then(({ data }) => {
-          this.handleResponse(data, (data) => {
+          this.handleResponse(data, data => {
             data.rejected.forEach(item => {
               this.$toasted.error(`customer ${item} is already planned`);
-            })
+            });
             this.selected_customers = [];
             this.$store.dispatch("getPlanner", true);
             this.$store.dispatch("customerGetAll", true);
@@ -230,8 +232,8 @@ export default {
               .querySelectorAll('#customers_container input[type="checkbox"]')
               .forEach(input => {
                 input.checked = false;
-            });
-          })
+              });
+          });
         });
     },
     /**
@@ -261,28 +263,26 @@ export default {
         _method: "DELETE",
         date: this.$attrs.date
       };
-      httpCall
-        .post("rep/v1/planner/delete", data)
-        .then(({ data }) => {
-          data.message = data.data;
-          this.handleResponse(data, (data) => {
-            this.deleted_customers = [];
-            this.$store.dispatch("getPlanner", true);
-            this.$store.dispatch("customerGetAll", true);
-            document
-              .querySelectorAll('#planned_customers input[type="checkbox"]')
-              .forEach(input => {
-                input.checked = false;
-              });
-          })
+      httpCall.post("rep/v1/planner/delete", data).then(({ data }) => {
+        data.message = data.data;
+        this.handleResponse(data, data => {
+          this.deleted_customers = [];
+          this.$store.dispatch("getPlanner", true);
+          this.$store.dispatch("customerGetAll", true);
+          document
+            .querySelectorAll('#planned_customers input[type="checkbox"]')
+            .forEach(input => {
+              input.checked = false;
+            });
         });
+      });
     },
     /**
      * toggle inactive customers
      *
      */
-    toggleInactiveCustomers(){
-      if(this.withInactiveCustomers) {
+    toggleInactiveCustomers() {
+      if (this.withInactiveCustomers) {
         this.withInactiveCustomers = false;
       } else {
         this.withInactiveCustomers = true;
