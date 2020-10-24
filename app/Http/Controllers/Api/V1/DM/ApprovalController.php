@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\DM;
 
+use App\Customer;
 use App\CustomerFrequency;
 use App\CustomerParameter;
 use App\Helpers\ResponseHelper;
@@ -150,5 +151,56 @@ class ApprovalController extends Controller
       'state.in' => 'State must be Approved or rejected'
     ]);
     return $validator;
+  }
+
+  /**
+   * get all new customer added
+   *
+   * @return Illuminate\Http\Response
+   */
+  public function newCustomerApprovals()
+  {
+    $user = Auth::user();
+    $customers = Customer::without(['planner', 'report','params', 'frequency', 'workplace'])->where([
+      'district'  =>  $user->district,
+      'state'     =>  'new'
+    ])->orderBy('name')->get();
+
+    return response([
+      'code'  =>  200,
+      'data'  =>  $customers
+    ], 200);
+  }
+  /**
+   * approve new customers list
+   *
+   * @param Illuminate\Http\Request $request
+   * @return Illuminate\Http\Response
+   */
+  public function approveNewCustomers(Request $request)
+  {
+    $user = Auth::user();
+    $ids = json_decode($request->ids);
+    if($request->state === 'approved') {
+      Customer::where('district',$user->district)
+      ->whereIn('id', $ids)
+      ->update([
+        'state' => 'approved',
+        'approved'  =>  true,
+        'approved_by' =>  $user->id
+      ]);
+    } else {
+      Customer::where('district',$user->district)
+      ->whereIn('id', $ids)
+      ->update([
+        'state' => 'rejected',
+        'approved'  =>  false,
+        'approved_by' =>  $user->id
+      ]);
+    }
+    return response([
+      'code'  =>  200,
+      'data'  =>  'Customer requests approved'
+    ], 200);
   }
 }

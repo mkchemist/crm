@@ -20,5 +20,7 @@ Route::prefix('v1')->group(function() {
     Route::get('/parameters', 'ApprovalController@CustomerParameterRequests');
     Route::post('/frequency', 'ApprovalController@approveCustomersFrequency');
     Route::post('/parameters', 'ApprovalController@approveCustomersParameters');
+    Route::get('/new-customers', 'ApprovalController@newCustomerApprovals');
+    Route::post('/new-customers', 'ApprovalController@approveNewCustomers');
   });
 });

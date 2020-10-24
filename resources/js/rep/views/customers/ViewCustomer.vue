@@ -260,6 +260,9 @@ export default {
           data => {
             this.customer = data.data.customer;
             this.plans = data.data.plans;
+            data.data.reports.map(report => {
+              report.products = JSON.parse(report.products)
+            });
             this.reports = data.data.reports;
           },
           err => {

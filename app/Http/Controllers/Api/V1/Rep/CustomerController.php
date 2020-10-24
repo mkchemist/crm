@@ -22,7 +22,10 @@ class CustomerController extends Controller
      */
     public function index()
     {
-      $customers = Customer::where(['area' => Auth::user()->area])
+      $customers = Customer::where([
+        'area' => Auth::user()->area,
+        'state' =>  'approved'
+      ])
       ->orderBy('name', 'asc')->get();
       $customers = CustomerResource::collection($customers);
       return response()->json([
@@ -85,7 +88,7 @@ class CustomerController extends Controller
           "data"  => [
             "customer" => new CustomerResource($customer),
             "plans" =>  $customer->planner,
-            "reports" =>  RepReportResource::collection($customer->report)
+            "reports" =>  $customer->report
           ]
         ]);
     }
