@@ -36,7 +36,7 @@ export default {
       component: AddAmReport
     },
     {
-      path: "add/pm",
+      path: "add/pm/:id?",
       component: AddPmReport
     },
     {

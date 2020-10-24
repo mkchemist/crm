@@ -14,10 +14,15 @@
                 <label for="customer" class="text-muted">Customer</label>
                 <ValidationProvider name="customer" rules="required" v-slot="{ errors }" v-if="customers.length">
                   <span class="text-danger small">{{ errors[0] }}</span>
-                  <select name="customer" id="customer" v-model="visit.customer" class="form-control form-control-sm">
+                  <div v-if="is_single_customer">
+                    <input type="text" readonly disabled class="form-control form-control-sm" :value="customer.name">
+                    <input type="hidden" readonly disabled class="form-control form-control-sm" name="customer" id="customer"  v-model="visit.customer">
+                  </div>
+                  <select name="customer" id="customer" v-model="visit.customer" class="form-control form-control-sm" v-else>
                     <option value="">Select customer</option>
                     <option v-for="customer in customers" :key="customer.id" :value="customer.id">{{ customer.name }}</option>
                   </select>
+
                 </ValidationProvider>
                 <div class="text-center" v-else>
                   <div class="spinner-border text-success"></div>
@@ -97,6 +102,9 @@ import VisitProducts from "../../components/VisitProducts";
 export default {
   created() {
     this.$store.dispatch('customerGetAll');
+    if(this.$route.params.id) {
+      this.is_single_customer = true;
+    }
   },
   components: {
     VisitProducts
@@ -110,7 +118,8 @@ export default {
       comment: '',
       products: [],
       general_feedback: ''
-    }
+    },
+    is_single_customer: false
   }),
   methods: {
     /**
@@ -126,15 +135,25 @@ export default {
         this.handleResponse(data,data => {
           this.$store.dispatch('customerGetAll', true);
           this.$store.dispatch('reportGetAll', true);
+          if(this.is_single_customer) {
+            this.$router.replace('/customers/view/'+this.$route.params.id);
+          } else {
+
+            this.$router.replace('/reports/view/pm')
+          }
         });
-      }).finally(() => {
-          this.$router.replace('/reports/view/pm')
-      });
+      })
     }
   },
   computed: {
     customers() {
       return this.$store.getters.all;
+    },
+    customer() {
+      let customers = this.customers;
+      let id = parseInt(this.$route.params.id);
+      this.visit.customer = id;
+      return this.customers.filter(customer => customer.id === id)[0];
     }
   }
 }

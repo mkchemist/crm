@@ -9,6 +9,7 @@ use App\Customer;
 use App\CustomerFrequency;
 use App\CustomerParameter;
 use App\Helpers\ResponseHelper;
+use App\Http\Resources\RepReportResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -82,9 +83,9 @@ class CustomerController extends Controller
         return response()->json([
           "code"  =>  201,
           "data"  => [
-            "customers" => new CustomerResource($customer),
+            "customer" => new CustomerResource($customer),
             "plans" =>  $customer->planner,
-            "reports" =>  $customer->report
+            "reports" =>  RepReportResource::collection($customer->report)
           ]
         ]);
     }

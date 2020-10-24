@@ -200,7 +200,7 @@ export default {
       .then(({ data }) => {
         data.message = "Customer ready";
         this.handleResponse(data,(data) => {
-          this.customer =data.data;
+          this.customer =data.data.customer;
           this.loading = false
         },(data) => {
           this.error = true;
