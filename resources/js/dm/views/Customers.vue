@@ -13,8 +13,6 @@
 
 <script>
 /**
- * //TODO remove validation and requests links
- * //TODO create customer card
  * //TODO add report button in customer card
  *
  */
@@ -39,16 +37,6 @@ export default {
         title: 'Favorite List',
         icon: 'fa-star',
         link:'/customers/favorite-list'
-      },
-      {
-        title: 'Validation',
-        icon: 'fa-tasks',
-        link: '/customers/validation'
-      },
-      {
-        title: 'Requests',
-        icon: 'fa-search-dollar',
-        link: '/customers/requests'
       }
     ]
   }),

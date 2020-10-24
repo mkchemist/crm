@@ -18,7 +18,18 @@
             :data="activeCustomers"
             headClass="bg-success text-light"
             :with-favorite="true"
-          />
+          >
+          <template v-slot:head:before>
+            <th></th>
+          </template>
+          <template v-slot:body:before="{item}">
+            <td>
+              <router-link :to="`/customers/view/${item.id}`">
+                <span><i class="fa fa-eye"></i></span>
+              </router-link>
+            </td>
+          </template>
+          </table-component>
         </div>
         <div v-else-if="isFetched">
           <p class="text-center font-weight-bold text-dark">No data to show</p>

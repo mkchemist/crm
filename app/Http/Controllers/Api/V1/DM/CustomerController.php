@@ -47,7 +47,15 @@ class CustomerController extends Controller
    */
   public function show($id)
   {
-    //
+    $user = Auth::user();
+    $customer = Customer::where([
+      'district' => $user->district,
+      'id'       => $id
+    ])->first();
+    return response([
+      'code'  =>  201,
+      'data'  =>  new CustomerResource($customer)
+    ]);
   }
 
   /**

@@ -1,0 +1,121 @@
+<template>
+  <div>
+    <div class="px-0 shadow">
+      <p class="alert alert-success">
+        <span><i class="fa fa-user-md"></i></span>
+        <span class="font-weight-bold"
+          >View customer {{ customer ? customer.name : null }}</span
+        >
+      </p>
+      <div class="p-2">
+        <div class="p-2">
+          <button class="btn btn-sm btn-dark" @click="$router.back()">
+            <span><i class="fa fa-chevron-circle-left"></i></span>
+            <span>Back</span>
+          </button>
+        </div>
+        <!-- customer info. -->
+        <div class="border p-2 rounded">
+          <p class="lead text-muted">Customer Info.</p>
+          <div class="row mx-auto" v-if="customer">
+            <div class="col-lg">
+              <p class="mb-0 small">
+                Title :
+                <span class="font-weight-bold text-primary">{{
+                  customer.title
+                }}</span>
+              </p>
+              <p class="mb-0 small">
+                Name :
+                <span class="font-weight-bold text-primary">{{
+                  customer.name
+                }}</span>
+              </p>
+              <p class="mb-0 small">
+                Specialty :
+                <span class="font-weight-bold text-primary">{{
+                  customer.specialty
+                }}</span>
+              </p>
+              <p class="mb-0 small">
+                Workplace :
+                <span class="font-weight-bold text-primary">{{
+                  customer.workplace
+                }}</span>
+              </p>
+              <p class="mb-0 small">
+                Parameter :
+                <span class="font-weight-bold text-primary">{{
+                  customer.parameter
+                }}</span>
+              </p>
+              <p class="mb-0 small">
+                Frequency :
+                <span class="font-weight-bold text-primary">{{
+                  customer.current_freq
+                }}</span>
+              </p>
+            </div>
+            <div class="col-lg">
+              <p class="mb-0 small">
+                Address :
+                <span class="font-weight-bold text-primary">{{
+                  customer.address
+                }}</span>
+              </p>
+              <p class="mb-0 small">
+                Brick :
+                <span class="font-weight-bold text-primary">{{
+                  customer.brick
+                }}</span>
+              </p>
+              <p class="mb-0 small">
+                Area :
+                <span class="font-weight-bold text-primary">{{
+                  customer.area
+                }}</span>
+              </p>
+              <p class="mb-0 small">
+                No. of Planned visits :
+                <span class="font-weight-bold text-primary">{{
+                  customer.plans
+                }}</span>
+              </p>
+              <p class="mb-0 small">
+                No. of acutal visits :
+                <span class="font-weight-bold text-primary">{{
+                  customer.reports
+                }}</span>
+              </p>
+            </div>
+          </div>
+          <div v-else>
+            <loader-component></loader-component>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { httpCall } from "../../../helpers/http-service";
+export default {
+  created() {
+    this.getCustomer();
+  },
+  methods: {
+    getCustomer() {
+      let id = this.$route.params.id;
+      httpCall.get(`dm/v1/customers/${id}`).then(({ data }) => {
+        this.customer = data.data;
+      });
+    }
+  },
+  data: () => ({
+    customer: null
+  })
+};
+</script>
+
+<style></style>
