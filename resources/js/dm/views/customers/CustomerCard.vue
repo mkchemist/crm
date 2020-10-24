@@ -93,6 +93,35 @@
             <loader-component></loader-component>
           </div>
         </div>
+        <!-- customer planned visits -->
+          <div class="px-0 border my-2">
+            <p class="alert alert-success">
+              <span><i class="fa fa-calendar-alt"></i></span>
+              <span class="font-weight-bold">Planned visits</span>
+            </p>
+            <div class="p-2" v-if="plans.length > 0">
+              <table class="table table-sm small table-striped">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>State</th>
+                    <th>Dual</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="plan in plans" :key="plan.id">
+                    <td>{{ plan.plan_date }}</td>
+                    <td>{{ plan.state }}</td>
+                    <td>{{ plan.dual_with }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-center p-2" v-else>
+              <p class="lead text-muted">No planned visits</p>
+            </div>
+          </div>
+          <!-- end of customer planned visits -->
       </div>
     </div>
   </div>
@@ -108,12 +137,16 @@ export default {
     getCustomer() {
       let id = this.$route.params.id;
       httpCall.get(`dm/v1/customers/${id}`).then(({ data }) => {
-        this.customer = data.data;
+        this.customer = data.data.customer;
+        this.plans = data.data.plans;
+        this.reports = data.data.reports;
       });
     }
   },
   data: () => ({
-    customer: null
+    customer: null,
+    plans: [],
+    reports: []
   })
 };
 </script>

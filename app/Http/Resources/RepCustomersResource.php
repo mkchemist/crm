@@ -29,7 +29,6 @@ class RepCustomersResource extends JsonResource
         'current_freq'    =>  count($this->frequency) ? $this->frequency[0]->current : 0,
         'next_freq'   =>  count($this->frequency) ? $this->frequency[0]->next : 0,
         'plans'       =>  count($this->planner),
-        'planned_visits' => $this->planner,
         'workplace' =>  $this->workplace ? $this->workplace->name : null,
         'workplace_id' => $this->workplace ? $this->workplace->id : null,
         'report'   =>  count($this->report),

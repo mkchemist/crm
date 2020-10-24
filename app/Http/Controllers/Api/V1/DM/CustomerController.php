@@ -54,7 +54,11 @@ class CustomerController extends Controller
     ])->first();
     return response([
       'code'  =>  201,
-      'data'  =>  new CustomerResource($customer)
+      'data'  =>  [
+        'customer'  =>  new CustomerResource($customer),
+        'reports'   =>  $customer->report,
+        'plans'     =>  $customer->planner
+      ]
     ]);
   }
 

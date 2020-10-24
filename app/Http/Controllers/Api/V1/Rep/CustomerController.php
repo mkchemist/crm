@@ -81,7 +81,11 @@ class CustomerController extends Controller
         }
         return response()->json([
           "code"  =>  201,
-          "data"  =>  new CustomerResource($customer)
+          "data"  => [
+            "customers" => new CustomerResource($customer),
+            "plans" =>  $customer->planner,
+            "reports" =>  $customer->report
+          ]
         ]);
     }
 

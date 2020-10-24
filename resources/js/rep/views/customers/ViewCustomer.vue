@@ -32,18 +32,18 @@
             <hr>
             <div class="row mx-auto">
               <div class="col-lg">
-                <p>Name: <b class="text-primary">{{ customer.name }}</b></p>
-                <p>Specialty: <b class="text-primary">{{ customer.specialty }}</b></p>
-                <p>Title: <b class="text-primary">{{ customer.title }}</b></p>
-                <p>Parameter: <b class="text-primary">{{ customer.parameter}}</b></p>
-                <p>Frequency: <b class="text-primary">{{ customer.current_freq}}</b></p>
-                <p>Plans: <b class="text-primary">{{ customer.plans}}</b></p>
+                <p class="mb-0 small">Name: <b class="text-primary">{{ customer.name }}</b></p>
+                <p class="mb-0 small">Specialty: <b class="text-primary">{{ customer.specialty }}</b></p>
+                <p class="mb-0 small">Title: <b class="text-primary">{{ customer.title }}</b></p>
+                <p class="mb-0 small">Parameter: <b class="text-primary">{{ customer.parameter}}</b></p>
+                <p class="mb-0 small">Frequency: <b class="text-primary">{{ customer.current_freq}}</b></p>
+                <p class="mb-0 small">Plans: <b class="text-primary">{{ customer.plans}}</b></p>
               </div>
               <div class="col-lg">
-                <p>Address: <b class="text-primary">{{ customer.address ? customer.address : "Null" }}</b></p>
-                <p>Brick: <b class="text-primary">{{ customer.brick}}</b></p>
-                <p>Area: <b class="text-primary">{{ customer.area}}</b></p>
-                <p>Phone: <b class="text-primary">{{ customer.phone ? customer.phone :"Null"}}</b></p>
+                <p class="mb-0 small">Address: <b class="text-primary">{{ customer.address ? customer.address : "Null" }}</b></p>
+                <p class="mb-0 small">Brick: <b class="text-primary">{{ customer.brick}}</b></p>
+                <p class="mb-0 small">Area: <b class="text-primary">{{ customer.area}}</b></p>
+                <p class="mb-0 small">Phone: <b class="text-primary">{{ customer.phone ? customer.phone :"Null"}}</b></p>
               </div>
             </div>
           </div>
@@ -91,7 +91,6 @@
 
 <script>
 /**
- * //FIXME reduce space between customer info lines
  * //TODO add customer reports module
  * //TODO add other reps plans for the customer
  * //TODO add other reps reports for the customer
@@ -110,9 +109,11 @@ export default {
       let id = this.$route.params.id;
       httpCall.get('rep/v1/customers/'+id)
       .then(({data}) => {
+        console.log(data)
         this.handleResponse(data, (data) => {
-          this.customer = data.data;
-          this.plans = data.data.planned_visits;
+          this.customer = data.data.customers;
+          this.plans = data.data.plans;
+          this.reports = data.data.reports;
         })
       });
     },
