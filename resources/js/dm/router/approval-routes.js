@@ -4,6 +4,7 @@ import ParameterApproval from "../views/approval/ParameterApproval"
 import CustomersApproval from "../views/approval/CustomersApproval"
 import WorkplacesApproval from "../views/approval/WorkplacesApproval"
 import PharmaciesApproval from "../views/approval/PharmaciesApproval";
+import CustomerDetailsApproval from "../views/approval/CustomerDetailsApproval"
 
 export default {
   path:'/approval',
@@ -28,6 +29,10 @@ export default {
     {
       path: 'pharmacies',
       component: PharmaciesApproval
+    },
+    {
+      path: 'customer-details',
+      component:CustomerDetailsApproval
     }
   ]
 }
