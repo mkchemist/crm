@@ -14,15 +14,18 @@ class RepPlannerResource extends JsonResource
      */
     public function toArray($request)
     {
+        $freq = count($this->customer->frequency) ? $this->customer->frequency[0]->current: 0;
         return [
           //'customer' => new RepCustomersResource($this->customer),
           'start'    => $this->plan_date,
           'end'      => $this->plan_date,
-          'title'    => $this->customer->name,
           'id'      =>  $this->id,
           'type'    =>  $this->type,
           'class'   =>  'PM',
-          'name'    =>  $this->customer->name
+          'title'    =>  $this->customer->name,
+          'specialty' =>  $this->customer->specialty,
+          'freq'      =>  $freq,
+          'plans_count' =>  count($this->customer->planner)
         ];
     }
 }

@@ -32,6 +32,7 @@ export default  {
     ],
     // customer titles
     titles: [
+      'Assistant',
       'Resident',
       'Specialist',
       'Physician',

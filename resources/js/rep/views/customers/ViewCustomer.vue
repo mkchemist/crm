@@ -188,9 +188,9 @@
                 </thead>
                 <tbody>
                   <tr v-for="report in reports" :key="report.id">
-                    <td>{{ report.date }}</td>
-                    <td>{{ report.dual_with }}</td>
-                    <td>{{ report.comment }}</td>
+                    <td>{{ report.visit_date }}</td>
+                    <td>{{ report.dual_with?report.dual_with: 'Single' }}</td>
+                    <td>{{ report.comment ? report.comment : '-----' }}</td>
                     <td>
                       <ul
                         v-for="(product, i) in report.products"
@@ -211,7 +211,7 @@
                         </li>
                       </ul>
                     </td>
-                    <td>{{ report.general_feedback }}</td>
+                    <td>{{ report.general_feedback ? report.general_feedback : '----' }}</td>
                   </tr>
                 </tbody>
               </table>

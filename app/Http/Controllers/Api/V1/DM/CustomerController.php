@@ -17,7 +17,7 @@ class CustomerController extends Controller
    */
   public function index()
   {
-    $customers = Customer::with(['params', 'report', 'frequency'])
+    $customers = Customer::with(['params', 'report', 'frequency', 'planner', 'workplace'])
     ->where([
       'district'  =>  Auth::user()->district
     ])

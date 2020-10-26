@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\DM;
 use App\Customer;
 use App\CustomerFrequency;
 use App\CustomerParameter;
+use App\CustomerValidation;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -31,12 +32,7 @@ class ApprovalController extends Controller
           'district'  =>  Auth::user()->district
         ])->get();
     })
-    ->whereIn('customer_id', function($query) {
-      $query->from('customer_parameters')
-      ->select('customer_id')
-      ->whereNotIn('current', ['NN', 'XX'])
-      ->get();
-    })->where(['state' => 'requested', 'submitted' => true])->get();
+   ->where(['state' => 'requested', 'submitted' => true])->get();
     return response([
       'code'  =>  201,
       'data'  =>  $customers
@@ -67,6 +63,7 @@ class ApprovalController extends Controller
   }
 
   /**
+   * //FIXME fix this update query
    * Approve customers frequency requests
    *
    * @param \Illuminate\Http\Request $request
@@ -100,6 +97,7 @@ class ApprovalController extends Controller
   }
 
   /**
+   * //FIXME fix this update query
    * Approve customers parameters requests
    *
    * @param \Illuminate\Http\Request $request
@@ -201,6 +199,57 @@ class ApprovalController extends Controller
     return response([
       'code'  =>  200,
       'data'  =>  'Customer requests approved'
+    ], 200);
+  }
+
+  /**
+   * get all customer details requests
+   *
+   * @return Illuminate\Http\Response;
+   */
+  public function customerDetailsApproval()
+  {
+    $user = Auth::user();
+    $customers = CustomerValidation::with(['customer', 'user', 'workplace'])
+    ->whereIn('user_id', function($query) use($user) {
+      $query->from('users')->select('id')
+      ->where([
+        'district'  =>  $user->district,
+        'line'      =>  $user->line,
+      ])->get();
+    })->where('approved', false)->get();
+
+    return response([
+      'code'  =>  200,
+      'data'  =>  $customers
+    ], 200);
+  }
+
+  /**
+   * approve customers details
+   *
+   * @param Illuminate\Http\Request $request
+   * @return Illuminate\Http\Response
+   */
+  public function approveCustomerDetails(Request $request)
+  {
+    $ids = json_decode($request->ids);
+    $validatedCustomers = CustomerValidation::whereIn('id', $ids);
+    foreach($validatedCustomers->get() as $item) {
+      $item->customer()->update([
+        'phone' =>    $item->phone,
+        'address' =>  $item->address,
+        'title'   =>  $item->title,
+        'workplace_id'  =>  $item->workplace_id,
+      ]);
+    }
+    $validatedCustomers->update([
+      'approved' => true,
+      'approved_by' => Auth::id()
+    ]);
+    return response([
+      'code'  =>  200,
+      'data'  =>  'Request approved'
     ], 200);
   }
 }

@@ -50,7 +50,7 @@
           Selected : {{ deleted_workplaces.length }}
         </p>
         <div class="p-2 border rounded">
-          <table class="table table-striped table-sm small">
+          <table class="table table-striped table-sm small table-responsive">
             <thead>
               <tr>
                 <th></th>
@@ -60,13 +60,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="workplace in amPlans" :key="workplace.id">
+              <tr v-for="plan in amPlans" :key="plan.id">
                 <td>
-                  <input type="checkbox" @click="addToDeleted(workplace.id)" />
+                  <input type="checkbox" @click="addToDeleted(plan.id)" />
                 </td>
-                <td>{{ workplace.name }}</td>
-                <td>{{ workplace.address }}</td>
-                <td>{{ workplace.brick }}</td>
+                <td>{{ plan.name }}</td>
+                <td>{{ plan.workplace.address }}</td>
+                <td>{{ plan.workplace.brick }}</td>
               </tr>
             </tbody>
           </table>
@@ -76,7 +76,7 @@
     <!-- end of planner controller -->
     <hr />
     <!-- plans control -->
-    <div class="text-right">
+    <div class="text-right p-2">
       <router-link to="/planner" class="btn btn-dark btn-sm">
         <span><i class="fa fa-chevron-circle-left"></i></span>
         <span class="font-weight-bold">back</span>

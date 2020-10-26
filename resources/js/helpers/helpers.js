@@ -42,7 +42,7 @@ export const ObjectNotation = function (container, key) {
   /**
    * if parent item exists
    */
-  if(parentItem !== undefined) {
+  if(parentItem !== undefined && parentItem !== null) {
     let _joined = parts.join('.');
     return ObjectNotation(parentItem, _joined);
   }

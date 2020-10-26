@@ -16,14 +16,14 @@ class RepWorkplacePlannerResource extends JsonResource
     public function toArray($request)
     {
       return [
-        'workplace' =>  new RepWorkplaceResource($this->workplace),
         'start'     =>  $this->plan_date,
         'end'       =>  $this->plan_date,
         'title'     =>  $this->workplace->name,
         'id'        =>  $this->id,
         'type'      =>  'AM',
         'class'     =>  'AM',
-        'name'      =>  $this->workplace->name
+        'name'      =>  $this->workplace->name,
+        'workplace' =>  $this->workplace
       ];
     }
 }
