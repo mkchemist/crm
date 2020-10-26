@@ -98,12 +98,12 @@
                         @click="addToDeletedCustomers(customer.id)"
                       />
                     </td>
-                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.title }}</td>
                     <td>
                       {{ customer.specialty }}
                     </td>
-                    <td>{{ customer.current_freq }}</td>
-                    <td>{{ customer.plans }}</td>
+                    <td>{{ customer.freq }}</td>
+                    <td>{{ customer.plans_count }}</td>
                   </tr>
                 </tbody>
               </table>

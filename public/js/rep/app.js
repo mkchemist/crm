@@ -5308,10 +5308,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 /**
  * //TODO adding submit plan
@@ -27533,34 +27529,41 @@ var render = function() {
             : _vm._e(),
           _vm._v(" "),
           _c("div", { staticClass: "p-2 border rounded" }, [
-            _c("table", { staticClass: "table table-striped table-sm small" }, [
-              _vm._m(2),
-              _vm._v(" "),
-              _c(
-                "tbody",
-                _vm._l(_vm.amPlans, function(workplace) {
-                  return _c("tr", { key: workplace.id }, [
-                    _c("td", [
-                      _c("input", {
-                        attrs: { type: "checkbox" },
-                        on: {
-                          click: function($event) {
-                            return _vm.addToDeleted(workplace.id)
+            _c(
+              "table",
+              {
+                staticClass:
+                  "table table-striped table-sm small table-responsive"
+              },
+              [
+                _vm._m(2),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.amPlans, function(plan) {
+                    return _c("tr", { key: plan.id }, [
+                      _c("td", [
+                        _c("input", {
+                          attrs: { type: "checkbox" },
+                          on: {
+                            click: function($event) {
+                              return _vm.addToDeleted(plan.id)
+                            }
                           }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(workplace.name))]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(workplace.address))]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(workplace.brick))])
-                  ])
-                }),
-                0
-              )
-            ])
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(plan.name))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(plan.workplace.address))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(plan.workplace.brick))])
+                    ])
+                  }),
+                  0
+                )
+              ]
+            )
           ])
         ]
       )
@@ -27570,7 +27573,7 @@ var render = function() {
     _vm._v(" "),
     _c(
       "div",
-      { staticClass: "text-right" },
+      { staticClass: "text-right p-2" },
       [
         _c(
           "router-link",
@@ -27848,7 +27851,7 @@ var render = function() {
                               })
                             ]),
                             _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(customer.name))]),
+                            _c("td", [_vm._v(_vm._s(customer.title))]),
                             _vm._v(" "),
                             _c("td", [
                               _vm._v(
@@ -27858,9 +27861,9 @@ var render = function() {
                               )
                             ]),
                             _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(customer.current_freq))]),
+                            _c("td", [_vm._v(_vm._s(customer.freq))]),
                             _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(customer.plans))])
+                            _c("td", [_vm._v(_vm._s(customer.plans_count))])
                           ])
                         }),
                         0
@@ -28132,7 +28135,7 @@ var render = function() {
                 attrs: {
                   "active-view": "week",
                   selectedDate: _vm.$attrs.date,
-                  "disable-views": ["years"],
+                  "disable-views": ["years", "year"],
                   events: _vm.plans,
                   time: false,
                   "on-event-click": _vm.onEventClick,
@@ -28184,7 +28187,7 @@ var render = function() {
           "header-style": "bg-primary text-light"
         },
         on: {
-          onClose: function() {
+          onClose: function($event) {
             _vm.show_event_modal = false
           }
         },
@@ -28328,8 +28331,8 @@ var render = function() {
           centered: true
         },
         on: {
-          onClose: function() {
-            return (_vm.show_day_modal = false)
+          onClose: function($event) {
+            _vm.show_day_modal = false
           }
         },
         scopedSlots: _vm._u(
@@ -53281,21 +53284,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].get('rep/v1/planner').then(function (_ref2) {
           var data = _ref2.data;
           state.fetched = true;
-          /* if(data.code === 400 || data.code === 203) {
-            Vue.toasted.show('No Plans found', {
-              type: 'info',
-              icon: 'exclamation-triangle'
-            })
-            ResponseHandler.methods.handleResponseError(data);
-            state.fetched = true;
-          } else {
-            Vue.toasted.show('Planner loaded', {
-              type: 'info',
-              icon: 'check'
-            });
-            state.plans = data.data;
-          } */
-
           data.message = "Planner loaded";
           _helpers_response_handler__WEBPACK_IMPORTED_MODULE_2__["ResponseHandler"].methods.handleResponse(data, function (data) {
             state.plans = data.data;

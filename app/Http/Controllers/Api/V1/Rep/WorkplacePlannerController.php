@@ -20,7 +20,7 @@ class WorkplacePlannerController extends Controller
   public function index()
   {
     $user = Auth::user();
-    $plans = WorkplacePlanner::where([
+    $plans = WorkplacePlanner::with('workplace')->where([
       'user_id'  => $user->id
     ])->orderBy('plan_date', 'asc')->get();
 

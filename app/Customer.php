@@ -25,13 +25,13 @@ class Customer extends Model
     "region"
   ];
 
-  protected $with = [
+  /* protected $with = [
     'params',
     'frequency',
     'report',
     'planner',
     'workplace'
-  ];
+  ]; */
 
   public function params()
   {

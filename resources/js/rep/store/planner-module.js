@@ -59,20 +59,6 @@ export default {
         httpCall.get('rep/v1/planner')
         .then(({data}) => {
           state.fetched = true;
-          /* if(data.code === 400 || data.code === 203) {
-            Vue.toasted.show('No Plans found', {
-              type: 'info',
-              icon: 'exclamation-triangle'
-            })
-            ResponseHandler.methods.handleResponseError(data);
-            state.fetched = true;
-          } else {
-            Vue.toasted.show('Planner loaded', {
-              type: 'info',
-              icon: 'check'
-            });
-            state.plans = data.data;
-          } */
           data.message = "Planner loaded";
           ResponseHandler.methods.handleResponse(data, (data) => {
             state.plans = data.data;

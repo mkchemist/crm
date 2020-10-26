@@ -66,7 +66,7 @@
       <vue-cal
         active-view="week"
         :selectedDate="$attrs.date"
-        :disable-views="['years']"
+        :disable-views="['years', 'year']"
         class="vuecal--green-theme"
         ref="planner"
         :events="plans"
@@ -90,11 +90,7 @@
       :show="show_event_modal"
       :centered="true"
       header-style="bg-primary text-light"
-      @onClose="
-        () => {
-          show_event_modal = false;
-        }
-      "
+      @onClose="show_event_modal = false"
     >
       <template v-slot:header v-if="selected_event">
         <span
@@ -142,7 +138,7 @@
     <modal-fade
       id="cell_modal_fade"
       :show="show_day_modal"
-      @onClose="() => (show_day_modal = false)"
+      @onClose="show_day_modal = false"
       :centered="true"
     >
       <template v-slot:header v-if="selected_day">

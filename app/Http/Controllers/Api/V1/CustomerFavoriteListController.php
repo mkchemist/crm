@@ -19,7 +19,8 @@ class CustomerFavoriteListController extends Controller
      */
     public function index()
     {
-      $customers = Customer::whereIn('id', function ($query) {
+      $customers = Customer::with(['params', 'frequency', 'report', 'planner', 'workplace'])
+      ->whereIn('id', function ($query) {
         $query->from('customer_favorite_lists')
         ->select('customer_id')
         ->where('user_id', Auth::user()->id)

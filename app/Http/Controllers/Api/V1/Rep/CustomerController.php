@@ -23,7 +23,9 @@ class CustomerController extends Controller
    */
   public function index()
   {
-    $customers = Customer::where([
+    $customers = Customer::with([
+      'params', 'frequency', 'workplace', 'report', 'planner'
+    ])->where([
       'area' => Auth::user()->area,
       'state' =>  'approved'
     ])
@@ -115,7 +117,7 @@ class CustomerController extends Controller
     // is already exists
     /* $customer = $this->getCustomerById($id); */
     $user = Auth::user();
-    $customer = Customer::without(['planner', 'report', 'workplace', 'frequency', 'params'])->where([
+    $customer = Customer::where([
       'area'  =>  $user->area,
       'id'  =>  $id
     ])->first();
@@ -213,47 +215,13 @@ class CustomerController extends Controller
    */
   private function getCustomerById(int $id)
   {
-    $customer = Customer::where([
+    $customer = Customer::with([
+      'params', 'frequency', 'report', 'planner', 'workplace'
+    ])
+    ->where([
       'id'  =>  $id,
       'area'  =>  Auth::user()->area
     ])->first();
     return $customer;
-  }
-
-  /**
-   * create or update customer parameter
-   *
-   * @param integer $id
-   * @param string $param
-   * @return CustomerParameter
-   */
-  private function customerParameterUpdateOrCreate(int $id, string $param)
-  {
-    $parameter = CustomerParameter::updateOrCreate(
-      ['user_id' => Auth::id(), 'customer_id' => $id],
-      ['next' => $param, 'state' => 'requested', 'approved_by' => null, 'approved' => false]
-    );
-    return $parameter;
-  }
-
-  /**
-   * create or update customer frequency
-   *
-   * @param integer $id
-   * @param integer $freq
-   * @param boolean $locked
-   * @return void
-   */
-  private function customerFrequencyUpdateOrCreate(int $id, int $freq, bool $locked)
-  {
-    $frequency = CustomerFrequency::updateOrCreate([
-      'user_id' =>  Auth::id(),
-      ['locked', false],
-      'customer_id' =>  $id,
-    ], [
-      'next' => $freq,
-      'locked' => $locked,
-    ]);
-    return $frequency;
   }
 }
