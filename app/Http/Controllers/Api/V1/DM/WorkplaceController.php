@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1\DM;
 
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Workplace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Whoops\Handler\XmlResponseHandler;
 
 class WorkplaceController extends Controller
 {
@@ -45,7 +47,23 @@ class WorkplaceController extends Controller
      */
     public function show($id)
     {
-        //
+      if(!is_numeric($id)) {
+        return response(ResponseHelper::BAD_REQUEST_INPUT,200);
+      }
+      $user = Auth::user();
+      $workplace = Workplace::with('departs')->where([
+        'id'  =>  $id,
+        'district'  =>  $user->district
+      ])->first();
+
+      if(!$workplace) {
+        return response(ResponseHelper::INVALID_ID, 200);
+      }
+
+      return response([
+        'code'  =>  200,
+        'data' =>  $workplace
+      ], 200);
     }
 
     /**

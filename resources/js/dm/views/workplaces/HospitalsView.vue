@@ -11,7 +11,18 @@
           :heads="heads"
           headClass="bg-success text-light"
           v-if="hospitals.length"
-        />
+        >
+        <template v-slot:head:before>
+          <th>actions</th>
+        </template>
+        <template v-slot:body:before="{item}">
+          <td>
+            <router-link :to="`/workplaces/view/hospital/${item.id}`">
+              <span class="fa fa-eye"></span>
+            </router-link>
+          </td>
+        </template>
+        </table-component>
         <div v-else class="text-center p-3">
           <loader-component />
         </div>
