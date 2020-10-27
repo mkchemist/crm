@@ -11,7 +11,7 @@
       <tbody>
         <tr v-for="depart in data" :key="depart.id">
           <td>{{ depart.name }}</td>
-          <td>{{ depart.head }}</td>
+          <td>{{ depart.head ? depart.head : '--------' }}</td>
           <td>
             <button
               class="btn btn-warning btn-sm"

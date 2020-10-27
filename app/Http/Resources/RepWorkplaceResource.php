@@ -23,7 +23,8 @@ class RepWorkplaceResource extends JsonResource
           'brick'   =>  $this->brick,
           'area'    =>  $this->area,
           'state'   =>  $this->state,
-          'depart'  =>  $this->departs
+          'depart'  =>  $this->departs,
+          'phone'   =>  $this->phone
         ];
     }
 }

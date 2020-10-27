@@ -5754,6 +5754,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5790,15 +5791,11 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var customers = this.$store.getters.all;
-      var data = null;
+      var data = [];
 
       if (this.visit.workplace_id && this.filter_departs.length) {
         data = customers.filter(function (customer) {
-          if (customer.workplace_id === _this2.visit.workplace_id && _this2.filter_departs.includes(customer.specialty)) {
-            return true;
-          }
-
-          return false;
+          return customer.workplace_id === _this2.visit.workplace_id && _this2.filter_departs.includes(customer.specialty);
         });
       }
 
@@ -5806,6 +5803,17 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    /**
+     * handle changes of workplace dropdown
+     * reset departs and filter departs
+     *
+     */
+    handleWorkplacesDropdownChange: function handleWorkplacesDropdownChange() {
+      var val = event.target.value;
+      this.departs = null;
+      this.filter_departs = [];
+    },
+
     /**
      * submit am report
      */
@@ -5877,6 +5885,7 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * toggle add ro remove customer from visit customers
      *
+     * @param {int} id [customer id]
      */
     toggleCustomer: function toggleCustomer(id) {
       if (event.target.checked) {
@@ -7436,7 +7445,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//TODO Add Phone Field
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   methods: {
@@ -7467,7 +7490,8 @@ __webpack_require__.r(__webpack_exports__);
         name: null,
         type: null,
         address: null,
-        brick: null
+        brick: null,
+        phone: null
       }
     };
   },
@@ -7773,9 +7797,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /**
- * //TODO add phone field
  * //TODO submit edited values to workplace validation table
  * then if accpeted it will be submitted to workplace table
  */
@@ -8052,6 +8091,9 @@ __webpack_require__.r(__webpack_exports__);
         title: 'Address',
         name: 'address'
       }, {
+        title: 'Phone',
+        name: 'phone'
+      }, {
         title: 'Brick',
         name: 'brick'
       }, {
@@ -8248,6 +8290,47 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -8270,13 +8353,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getHospital: function getHospital() {
       var _this = this;
 
+      this.fetched = false;
       var id = this.getHospitalId();
       _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].get("rep/v1/workplaces/" + id).then(function (_ref) {
         var data = _ref.data;
+        _this.fetched = true;
         data.message = "hospital loaded";
 
         _this.handleResponse(data, function (data) {
           _this.hospital = data.data;
+          _this.reports = data.reports;
         });
       }).then(function () {
         _this.getDepartments();
@@ -8362,10 +8448,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       hospital: null,
+      fetched: false,
       hospital_error: null,
       departments: [],
       departments_error: null,
-      open_add_card: false
+      open_add_card: false,
+      reports: []
     };
   },
   components: {
@@ -8497,6 +8585,25 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, ".navbar-brand img[data-v-0b1d856e] {\n  width: 100px;\n  transition: 0.5s;\n}\n@media (min-width: 992px) {\n.navbar-brand img[data-v-0b1d856e] {\n    width: 200px;\n}\n}\n@media (min-width: 992px) {\n.active[data-v-0b1d856e] {\n    background-color: #38c172;\n    border-radius: 5px;\n    color: white !important;\n}\n}", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--9-2!./node_modules/sass-loader/dist/cjs.js??ref--9-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "tr[data-v-e71613a0], td[data-v-e71613a0], th[data-v-e71613a0] {\n  white-space: pre-wrap;\n}", ""]);
 
 // exports
 
@@ -9055,6 +9162,36 @@ options.transform = transform
 options.insertInto = undefined;
 
 var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--9-2!./node_modules/sass-loader/dist/cjs.js??ref--9-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../../node_modules/css-loader!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--9-2!../../../../../node_modules/sass-loader/dist/cjs.js??ref--9-3!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true& */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -24301,7 +24438,9 @@ var render = function() {
               return _c("tr", { key: depart.id }, [
                 _c("td", [_vm._v(_vm._s(depart.name))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(depart.head))]),
+                _c("td", [
+                  _vm._v(_vm._s(depart.head ? depart.head : "--------"))
+                ]),
                 _vm._v(" "),
                 _c("td", [
                   _c(
@@ -28618,29 +28757,32 @@ var render = function() {
                                                   id: "workplace_id"
                                                 },
                                                 on: {
-                                                  change: function($event) {
-                                                    var $$selectedVal = Array.prototype.filter
-                                                      .call(
-                                                        $event.target.options,
-                                                        function(o) {
-                                                          return o.selected
-                                                        }
+                                                  change: [
+                                                    function($event) {
+                                                      var $$selectedVal = Array.prototype.filter
+                                                        .call(
+                                                          $event.target.options,
+                                                          function(o) {
+                                                            return o.selected
+                                                          }
+                                                        )
+                                                        .map(function(o) {
+                                                          var val =
+                                                            "_value" in o
+                                                              ? o._value
+                                                              : o.value
+                                                          return val
+                                                        })
+                                                      _vm.$set(
+                                                        _vm.visit,
+                                                        "workplace_id",
+                                                        $event.target.multiple
+                                                          ? $$selectedVal
+                                                          : $$selectedVal[0]
                                                       )
-                                                      .map(function(o) {
-                                                        var val =
-                                                          "_value" in o
-                                                            ? o._value
-                                                            : o.value
-                                                        return val
-                                                      })
-                                                    _vm.$set(
-                                                      _vm.visit,
-                                                      "workplace_id",
-                                                      $event.target.multiple
-                                                        ? $$selectedVal
-                                                        : $$selectedVal[0]
-                                                    )
-                                                  }
+                                                    },
+                                                    _vm.handleWorkplacesDropdownChange
+                                                  ]
                                                 }
                                               },
                                               [
@@ -28795,7 +28937,7 @@ var render = function() {
                                 [_vm._v("Customers")]
                               ),
                               _vm._v(" "),
-                              _vm.customers
+                              _vm.customers.length
                                 ? _c("div", [
                                     _vm.customers.length
                                       ? _c(
@@ -32627,7 +32769,7 @@ var render = function() {
                         }
                       },
                       [
-                        _c("div", { staticClass: "row mx-auto" }, [
+                        _c("div", { staticClass: "row mx-auto my-1" }, [
                           _c(
                             "div",
                             { staticClass: "col-lg" },
@@ -32812,7 +32954,7 @@ var render = function() {
                           )
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "row mx-auto" }, [
+                        _c("div", { staticClass: "row mx-auto my-1" }, [
                           _c("div", { staticClass: "col-lg" }, [
                             _c(
                               "label",
@@ -32930,6 +33072,52 @@ var render = function() {
                             ],
                             1
                           )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "row mx-auto my-1" }, [
+                          _c("div", { staticClass: "col-lg" }, [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "text-muted",
+                                attrs: { for: "phone" }
+                              },
+                              [_vm._v("phone")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.hospital.phone,
+                                  expression: "hospital.phone"
+                                }
+                              ],
+                              staticClass: "form-control form-control-sm",
+                              attrs: {
+                                type: "text",
+                                id: "phone",
+                                name: "phone",
+                                placeholder: "Enter Hospital phone"
+                              },
+                              domProps: { value: _vm.hospital.phone },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.hospital,
+                                    "phone",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-lg" })
                         ]),
                         _vm._v(" "),
                         _c("hr"),
@@ -33779,6 +33967,58 @@ var render = function() {
                                     ]
                                   ),
                                   _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    { staticClass: "row mx-auto my-2" },
+                                    [
+                                      _c("div", { staticClass: "col-lg" }, [
+                                        _c(
+                                          "label",
+                                          {
+                                            staticClass: "text-muted",
+                                            attrs: { for: "phone" }
+                                          },
+                                          [_vm._v("phone")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.hospital.phone,
+                                              expression: "hospital.phone"
+                                            }
+                                          ],
+                                          staticClass:
+                                            "form-control form-control-sm",
+                                          attrs: {
+                                            type: "text",
+                                            name: "phone",
+                                            id: "phone"
+                                          },
+                                          domProps: {
+                                            value: _vm.hospital.phone
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.hospital,
+                                                "phone",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "col-lg" })
+                                    ]
+                                  ),
+                                  _vm._v(" "),
                                   _c("hr"),
                                   _vm._v(" "),
                                   _c(
@@ -33829,7 +34069,7 @@ var render = function() {
                       ],
                       null,
                       false,
-                      3353390136
+                      1520126591
                     )
                   })
                 ],
@@ -34577,10 +34817,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&":
-/*!*************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0& ***!
-  \*************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&scoped=true&":
+/*!*************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&scoped=true& ***!
+  \*************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -34627,7 +34867,7 @@ var render = function() {
             "router-link",
             {
               staticClass: "btn btn-sm btn-warning",
-              attrs: { to: "workplaces/hospital/edit/" + _vm.$route.params.id }
+              attrs: { to: "/workplaces/hospital/edit/" + _vm.$route.params.id }
             },
             [
               _c("span", [_c("i", { staticClass: "fa fa-edit" })]),
@@ -34653,7 +34893,7 @@ var render = function() {
             _vm.hospital
               ? _c("div", { staticClass: "row mx-auto" }, [
                   _c("div", { staticClass: "col-lg" }, [
-                    _c("p", [
+                    _c("p", { staticClass: "mb-0 small" }, [
                       _vm._v("Name: "),
                       _c(
                         "span",
@@ -34662,18 +34902,27 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _c("p", [
+                    _c("p", { staticClass: "mb-0 small" }, [
                       _vm._v("Type: "),
                       _c(
                         "span",
                         { staticClass: "font-weight-bold text-primary" },
                         [_vm._v(_vm._s(_vm.hospital.type))]
                       )
+                    ]),
+                    _vm._v(" "),
+                    _c("p", { staticClass: "mb-0 small" }, [
+                      _vm._v("Phone: "),
+                      _c(
+                        "span",
+                        { staticClass: "font-weight-bold text-primary" },
+                        [_vm._v(_vm._s(_vm.hospital.phone))]
+                      )
                     ])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "col-lg" }, [
-                    _c("p", [
+                    _c("p", { staticClass: "mb-0 small" }, [
                       _vm._v("Address: "),
                       _c(
                         "span",
@@ -34682,7 +34931,7 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _c("p", [
+                    _c("p", { staticClass: "mb-0 small" }, [
                       _vm._v("Brick: "),
                       _c(
                         "span",
@@ -34764,6 +35013,121 @@ var render = function() {
               : _c("loader-component")
           ],
           1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "border p-2 rounded my-2" },
+          [
+            _c("p", { staticClass: "lead text-muted" }, [
+              _vm._v("Hospital Reports")
+            ]),
+            _vm._v(" "),
+            Object.keys(_vm.reports).length
+              ? _c("div", { staticClass: "p-2" }, [
+                  _c(
+                    "table",
+                    { staticClass: "table table-sm small table-responsive-sm" },
+                    [
+                      _vm._m(4),
+                      _vm._v(" "),
+                      _vm._l(_vm.reports, function(date, i) {
+                        return _c(
+                          "tbody",
+                          { key: i },
+                          [
+                            _c("tr", { staticClass: "bg-secondary" }, [
+                              _c("td", { attrs: { colspan: "4" } }, [
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass:
+                                      "text-light text-decoration-none",
+                                    attrs: {
+                                      href: "#details_" + i,
+                                      "data-toggle": "collapse"
+                                    }
+                                  },
+                                  [_vm._v(_vm._s(i))]
+                                )
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(date, function(report) {
+                              return _c(
+                                "tr",
+                                {
+                                  key: report.id,
+                                  staticClass: "collapse",
+                                  attrs: { id: "details_" + i }
+                                },
+                                [
+                                  _c("td", [
+                                    _vm._v(_vm._s(report.customer.name))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(report.comment))]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "td",
+                                    _vm._l(
+                                      JSON.parse(report.products),
+                                      function(product, i) {
+                                        return _c(
+                                          "ul",
+                                          { key: i, staticClass: "nav" },
+                                          _vm._l(product, function(val, key) {
+                                            return _c(
+                                              "li",
+                                              {
+                                                key: key,
+                                                staticClass: "nav-item col-12"
+                                              },
+                                              [
+                                                _c("span", [
+                                                  _vm._v(_vm._s(key) + " : "),
+                                                  _c(
+                                                    "span",
+                                                    {
+                                                      staticClass:
+                                                        "font-weight-bold text-primary"
+                                                    },
+                                                    [_vm._v(_vm._s(val))]
+                                                  )
+                                                ])
+                                              ]
+                                            )
+                                          }),
+                                          0
+                                        )
+                                      }
+                                    ),
+                                    0
+                                  ),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v(_vm._s(report.general_feedback))
+                                  ])
+                                ]
+                              )
+                            })
+                          ],
+                          2
+                        )
+                      })
+                    ],
+                    2
+                  )
+                ])
+              : _vm.fetched
+              ? _c("div", { staticClass: "p-2" }, [
+                  _c("p", { staticClass: "text-center text-muted" }, [
+                    _vm._v("No reports found")
+                  ])
+                ])
+              : _c("loader-component")
+          ],
+          1
         )
       ])
     ])
@@ -34796,6 +35160,22 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("p", [
       _c("span", [_c("i", { staticClass: "fa fa-exclamation-triangle fa-4x" })])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("td", [_vm._v("Customer")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Comment")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Products")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Feedback")])
+      ])
     ])
   }
 ]
@@ -55850,9 +56230,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ViewHospital_vue_vue_type_template_id_e71613a0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ViewHospital.vue?vue&type=template&id=e71613a0& */ "./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&");
+/* harmony import */ var _ViewHospital_vue_vue_type_template_id_e71613a0_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ViewHospital.vue?vue&type=template&id=e71613a0&scoped=true& */ "./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&scoped=true&");
 /* harmony import */ var _ViewHospital_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ViewHospital.vue?vue&type=script&lang=js& */ "./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _ViewHospital_vue_vue_type_style_index_0_id_e71613a0_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true& */ "./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -55860,13 +56242,13 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _ViewHospital_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ViewHospital_vue_vue_type_template_id_e71613a0___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ViewHospital_vue_vue_type_template_id_e71613a0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _ViewHospital_vue_vue_type_template_id_e71613a0_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ViewHospital_vue_vue_type_template_id_e71613a0_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
-  null,
+  "e71613a0",
   null
   
 )
@@ -55892,19 +56274,35 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&":
-/*!*******************************************************************************************!*\
-  !*** ./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0& ***!
-  \*******************************************************************************************/
+/***/ "./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true&":
+/*!**********************************************************************************************************************!*\
+  !*** ./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true& ***!
+  \**********************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_2_node_modules_sass_loader_dist_cjs_js_ref_9_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_style_index_0_id_e71613a0_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader!../../../../../node_modules/css-loader!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--9-2!../../../../../node_modules/sass-loader/dist/cjs.js??ref--9-3!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=style&index=0&id=e71613a0&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_2_node_modules_sass_loader_dist_cjs_js_ref_9_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_style_index_0_id_e71613a0_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_2_node_modules_sass_loader_dist_cjs_js_ref_9_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_style_index_0_id_e71613a0_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_2_node_modules_sass_loader_dist_cjs_js_ref_9_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_style_index_0_id_e71613a0_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_2_node_modules_sass_loader_dist_cjs_js_ref_9_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_style_index_0_id_e71613a0_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_2_node_modules_sass_loader_dist_cjs_js_ref_9_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_style_index_0_id_e71613a0_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&scoped=true&":
+/*!*******************************************************************************************************!*\
+  !*** ./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&scoped=true& ***!
+  \*******************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_template_id_e71613a0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewHospital.vue?vue&type=template&id=e71613a0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_template_id_e71613a0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_template_id_e71613a0_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewHospital.vue?vue&type=template&id=e71613a0&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/rep/views/workplaces/ViewHospital.vue?vue&type=template&id=e71613a0&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_template_id_e71613a0_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_template_id_e71613a0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewHospital_vue_vue_type_template_id_e71613a0_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

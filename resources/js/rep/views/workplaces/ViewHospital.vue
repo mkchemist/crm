@@ -10,7 +10,7 @@
           <span><i class="fa fa-chevron-circle-left"></i></span>
           <span>back</span>
         </router-link>
-        <router-link :to="`workplaces/hospital/edit/${$route.params.id}`" class="btn btn-sm btn-warning">
+        <router-link :to="`/workplaces/hospital/edit/${$route.params.id}`" class="btn btn-sm btn-warning">
           <span><i class="fa fa-edit"></i></span>
           <span>edit</span>
         </router-link>
@@ -22,12 +22,13 @@
           <hr>
           <div class="row mx-auto" v-if="hospital">
             <div class="col-lg">
-              <p>Name: <span class="font-weight-bold text-primary">{{ hospital.name }}</span></p>
-              <p>Type: <span class="font-weight-bold text-primary">{{ hospital.type }}</span></p>
+              <p class="mb-0 small">Name: <span class="font-weight-bold text-primary">{{ hospital.name }}</span></p>
+              <p class="mb-0 small">Type: <span class="font-weight-bold text-primary">{{ hospital.type }}</span></p>
+              <p class="mb-0 small">Phone: <span class="font-weight-bold text-primary">{{ hospital.phone }}</span></p>
             </div>
             <div class="col-lg">
-              <p>Address: <span class="font-weight-bold text-primary">{{ hospital.address }}</span></p>
-              <p>Brick: <span class="font-weight-bold text-primary">{{ hospital.brick }}</span></p>
+              <p class="mb-0 small">Address: <span class="font-weight-bold text-primary">{{ hospital.address }}</span></p>
+              <p class="mb-0 small">Brick: <span class="font-weight-bold text-primary">{{ hospital.brick }}</span></p>
             </div>
           </div>
           <div v-else-if="hospital_error" class="text-center">
@@ -66,6 +67,46 @@
           <loader-component v-else />
         </div>
 
+        <!-- hospital Reports -->
+        <div class="border p-2 rounded my-2">
+          <p class="lead text-muted">Hospital Reports</p>
+          <div class="p-2" v-if="Object.keys(reports).length">
+            <table class="table table-sm small table-responsive-sm">
+              <thead>
+                <tr>
+                  <td>Customer</td>
+                  <td>Comment</td>
+                  <td>Products</td>
+                  <td>Feedback</td>
+                </tr>
+              </thead>
+              <tbody v-for="(date,i) in reports" :key="i">
+                <tr class="bg-secondary">
+                  <td colspan="4">
+                    <a :href="`#details_${i}`" data-toggle="collapse" class="text-light text-decoration-none">{{ i }}</a>
+                  </td>
+                </tr>
+                <tr v-for="report in date" :key="report.id" :id="'details_'+i" class="collapse">
+                  <td>{{ report.customer.name }}</td>
+                  <td>{{ report.comment }}</td>
+                  <td>
+                    <ul v-for="(product,i) in JSON.parse(report.products)" :key="i" class="nav">
+                      <li v-for="(val, key) in product" :key="key" class="nav-item col-12">
+                        <span>{{ key }} : <span class="font-weight-bold text-primary">{{ val }}</span></span>
+                      </li>
+                    </ul>
+                  </td>
+                  <td>{{ report.general_feedback }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="p-2" v-else-if="fetched">
+            <p class="text-center text-muted">No reports found</p>
+          </div>
+          <loader-component v-else></loader-component>
+        </div>
+        <!-- end of hospital Reports -->
       </div>
     </div>
   </div>
@@ -92,11 +133,14 @@ export default {
      *
      */
     getHospital() {
+      this.fetched = false;
       let id = this.getHospitalId();
       httpCall.get("rep/v1/workplaces/" + id).then(({ data }) => {
+        this.fetched = true
         data.message = "hospital loaded";
         this.handleResponse(data, data => {
           this.hospital = data.data;
+          this.reports = data.reports;
         })
       }).then(() => {
         this.getDepartments();
@@ -162,10 +206,12 @@ export default {
   },
   data: () => ({
     hospital: null,
+    fetched : false,
     hospital_error: null,
     departments: [],
     departments_error: null,
-    open_add_card: false
+    open_add_card: false,
+    reports: []
   }),
   components: {
     WorkplaceDepartmentComponent,
@@ -174,4 +220,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+  tr, td, th {
+    white-space: pre-wrap;
+  }
+</style>

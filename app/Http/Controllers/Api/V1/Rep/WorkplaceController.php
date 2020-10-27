@@ -83,7 +83,7 @@ class WorkplaceController extends Controller
     if (!is_numeric($id)) {
       return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
-    $workplace = Workplace::where([
+    $workplace = Workplace::with(['reports', 'reports.customer'])->where([
       'area'  =>  Auth::user()->area,
       'id'    =>  $id
     ])->first();
@@ -94,7 +94,8 @@ class WorkplaceController extends Controller
 
     return response()->json([
       'code'  =>  201,
-      'data'  =>  new WorkplaceResource($workplace)
+      'data'  =>  new WorkplaceResource($workplace),
+      'reports' =>  $workplace->reports->groupBy('visit_date')
     ], 201);
   }
 
@@ -129,6 +130,7 @@ class WorkplaceController extends Controller
 
     $workplace->type = $request->type;
     $workplace->address = $request->address;
+    $workplace->phone = $request->phone;
     $workplace->save();
     return response() ->json([
       'code'  =>  201,

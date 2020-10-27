@@ -33,6 +33,7 @@
                     name="workplace_id"
                     id="workplace_id"
                     v-model="visit.workplace_id"
+                    @change="handleWorkplacesDropdownChange"
                     :class="
                       `form-control form-control-sm ${
                         errors[0] ? 'border-danger' : ''
@@ -91,7 +92,7 @@
               <!-- customers -->
               <div class="col-lg">
                 <label for="customers" class="text-muted">Customers</label>
-                <div v-if="customers">
+                <div v-if="customers.length">
                   <ul class="nav border rounded p-2" v-if="customers.length">
                     <li
                       class="nav-item col-12"
@@ -198,22 +199,24 @@ export default {
     },
     customers() {
       let customers = this.$store.getters.all;
-      let data = null;
-      if (this.visit.workplace_id && this.filter_departs.length) {
-        data = customers.filter(customer => {
-          if (
-            customer.workplace_id === this.visit.workplace_id &&
-            this.filter_departs.includes(customer.specialty)
-          ) {
-            return true;
-          }
-          return false;
-        });
+      let data = [];
+      if(this.visit.workplace_id && this.filter_departs.length) {
+        data = customers.filter(customer => customer.workplace_id === this.visit.workplace_id && this.filter_departs.includes(customer.specialty));
       }
       return data;
     }
   },
   methods: {
+    /**
+     * handle changes of workplace dropdown
+     * reset departs and filter departs
+     *
+     */
+    handleWorkplacesDropdownChange() {
+      let val = event.target.value;
+      this.departs = null;
+      this.filter_departs=[];
+    },
     /**
      * submit am report
      */
@@ -273,6 +276,7 @@ export default {
     /**
      * toggle add ro remove customer from visit customers
      *
+     * @param {int} id [customer id]
      */
     toggleCustomer(id) {
       if (event.target.checked) {

@@ -67,6 +67,10 @@ export default {
         name: 'address'
       },
       {
+        title: 'Phone',
+        name: 'phone'
+      },
+      {
         title: 'Brick',
         name: 'brick'
       },

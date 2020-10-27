@@ -77,6 +77,22 @@
                 </div>
               </div>
 
+              <!-- hospital location info --->
+              <div class="row mx-auto my-2">
+                <div class="col-lg">
+                  <label for="phone" class="text-muted">phone</label>
+                  <input
+                    type="text"
+                    name="phone"
+                    id="phone"
+                    class="form-control form-control-sm"
+                    v-model="hospital.phone"
+                  />
+                </div>
+
+                <div class="col-lg"></div>
+              </div>
+
               <hr />
 
               <div class="form-group text-right">
@@ -103,7 +119,6 @@
 
 <script>
 /**
- * //TODO add phone field
  * //TODO submit edited values to workplace validation table
  * then if accpeted it will be submitted to workplace table
  */

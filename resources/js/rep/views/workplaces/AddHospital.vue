@@ -9,7 +9,7 @@
         <ValidationObserver v-slot="{ handleSubmit }">
           <form @submit.prevent="handleSubmit(onSubmit)">
             <!-- hospital info. -->
-            <div class="row mx-auto">
+            <div class="row mx-auto my-1">
               <div class="col-lg">
                 <label for="name" class="text-muted">Name</label>
                 <ValidationProvider
@@ -51,7 +51,7 @@
               </div>
             </div>
             <!-- hospital location info. --->
-            <div class="row mx-auto">
+            <div class="row mx-auto my-1">
               <div class="col-lg">
                 <label for="address" class="text-muted">Address</label>
                 <input
@@ -82,6 +82,21 @@
                 </ValidationProvider>
               </div>
             </div>
+            <!-- hospital Phone --->
+            <div class="row mx-auto my-1">
+              <div class="col-lg">
+                <label for="phone" class="text-muted">phone</label>
+                <input
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  class="form-control form-control-sm"
+                  placeholder="Enter Hospital phone"
+                  v-model="hospital.phone"
+                />
+              </div>
+              <div class="col-lg"></div>
+            </div>
             <hr />
             <div class="form-group text-right">
               <router-link to="/workplaces" class="btn  btn-sm btn-dark">
@@ -101,8 +116,6 @@
 </template>
 
 <script>
-//TODO Add Phone Field
-
 import { httpCall } from "../../../helpers/http-service";
 export default {
   methods: {
@@ -132,7 +145,8 @@ export default {
       name: null,
       type: null,
       address: null,
-      brick: null
+      brick: null,
+      phone: null
     }
   }),
   computed: {
