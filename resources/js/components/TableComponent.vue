@@ -1,48 +1,64 @@
 <template>
-<div>
-  <table
-    :class="`table table-striped table-sm small bg-white ${notResponsive ?'' :'table-responsive'}`"
-    id="data-table"
-    v-if="rows.length"
-  >
-    <thead>
-      <tr :class="headClass">
-        <slot name="head:before"></slot>
-        <th v-for="(head, i) in heads" :key="i">{{ head.title }}</th>
-        <slot name="head"></slot>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(item, i) in rows" :key="i">
-        <!-- <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td> -->
-        <slot name="body:before" :item="item"></slot>
-        <td v-for="(head, i) in heads" :key="i">{{ _notation(item, head.name)}}</td>
-        <slot name="body" :item="item"></slot>
-      </tr>
-    </tbody>
-  </table>
-</div>
+  <div>
+    <table
+      :class="
+        `table table-striped table-sm small bg-white ${
+          notResponsive ? '' : 'table-responsive'
+        }`
+      "
+      id="data-table"
+      v-if="rows.length"
+    >
+      <thead>
+        <tr :class="headClass">
+          <slot name="head:before"></slot>
+          <th v-for="(head, i) in heads" :key="i">{{ head.title }}</th>
+          <slot name="head"></slot>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, i) in rows" :key="i">
+          <!-- <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td> -->
+          <slot name="body:before" :item="item"></slot>
+          <td v-for="(head, i) in heads" :key="i">
+            {{ _notation(item, head.name) }}
+          </td>
+          <slot name="body" :item="item"></slot>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
-import {httpCall} from "../helpers/http-service";
-import { ObjectNotation } from "../helpers/helpers"
+import { httpCall } from "../helpers/http-service";
+import { ObjectNotation } from "../helpers/helpers";
 export default {
-  props: ["heads", "data", "headClass",'withFavorite', 'withUnlink','onUnlink', 'orderBy', 'notResponsive'],
+  props: [
+    "heads",
+    "data",
+    "headClass",
+    "withFavorite",
+    "withUnlink",
+    "onUnlink",
+    "orderBy",
+    "notResponsive",
+    "actionCell"
+  ],
   data: () => ({
     table: null
   }),
   mounted() {
     this.createTable();
   },
-  computed:{
+  computed: {
     rows() {
-      return this.data
+      return this.data;
     }
   },
   methods: {
-    _notation(container, key){
-      return ObjectNotation(container, key)
+    _notation(container, key) {
+      return ObjectNotation(container, key);
     },
     /**
      * create datatable instance
@@ -102,13 +118,14 @@ export default {
         buttons.push({
           text: '<i class="fa fa-star"></i> Favorite',
           action: function(e, dt, node, config) {
+            let index = _this.actionCell ? _this.actionCell : 0;
             /** get selected customer id from datatable api  */
-            let cId = dt.row({ selected: true }).data()[0];
+            let cId = dt.row({ selected: true }).data()[index];
             /** call favorite list api */
             httpCall
               .post("customers-favorite-list", { id: cId })
               .then(({ data }) => {
-                data.message=data.data;
+                data.message = data.data;
                 _this.handleResponse(data);
               });
           }
@@ -134,7 +151,7 @@ export default {
                 _method: "DELETE"
               })
               .then(({ data }) => {
-                data.message =data.data;
+                data.message = data.data;
                 _this.handleResponse(data, data => {
                   if (_this.onUnlink) {
                     if (typeof _this.onUnlink === "function") {
@@ -153,20 +170,20 @@ export default {
      *
      */
     ordering() {
-      if(!this.orderBy) {
-        return [[1, 'asc']]
+      if (!this.orderBy) {
+        return [[1, "asc"]];
       }
-      let $orderBy=this.orderBy;
+      let $orderBy = this.orderBy;
       let order = [];
-      $orderBy = $orderBy.split('|');
-      $orderBy.forEach((item) => {
-        let parts = item.split(',');
+      $orderBy = $orderBy.split("|");
+      $orderBy.forEach(item => {
+        let parts = item.split(",");
         this.heads.forEach((head, i) => {
-          if(head.title === parts[0]) {
-            let dir = parts[1] ? parts[1] : 'asc'
-            order.push([i,dir])
+          if (head.title === parts[0]) {
+            let dir = parts[1] ? parts[1] : "asc";
+            order.push([i, dir]);
           }
-        })
+        });
       });
       return order;
     }
@@ -177,5 +194,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
