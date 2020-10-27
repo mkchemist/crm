@@ -17,11 +17,12 @@ class CustomerController extends Controller
    */
   public function index()
   {
-    $customers = Customer::with(['params', 'report', 'frequency', 'planner', 'workplace'])
-    ->where([
-      'district'  =>  Auth::user()->district
-    ])
-    ->orderBy('name', 'asc')->get();
+    $customers = Customer::with([
+      'params', 'report', 'frequency', 'planner', 'workplace'
+      ])->where([
+        'district'  =>  Auth::user()->district
+      ])
+      ->orderBy('name', 'asc')->get();
     return response([
       "code"  =>  201,
       "data"  =>  CustomerResource::collection($customers),
@@ -48,7 +49,7 @@ class CustomerController extends Controller
   public function show($id)
   {
     $user = Auth::user();
-    $customer = Customer::where([
+    $customer = Customer::with(['params', 'planner'])->where([
       'district' => $user->district,
       'id'       => $id
     ])->first();

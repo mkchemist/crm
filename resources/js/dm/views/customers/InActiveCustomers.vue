@@ -13,6 +13,7 @@
           headClass="bg-success text-light"
           :with-favorite="true"
           order-by="Area,asc"
+          :actionCell='1'
         >
           <template v-slot:head:before>
             <th></th>

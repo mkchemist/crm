@@ -34,6 +34,11 @@ export default {
         link: '/customers/inactive'
       },
       {
+        title: "All",
+        icon: 'fa-user-md',
+        link: "/customers/all"
+      },
+      {
         title: 'Favorite List',
         icon: 'fa-star',
         link:'/customers/favorite-list'

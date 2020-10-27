@@ -2,8 +2,8 @@
   <div>
     <div class="px-0 shadow">
       <p class="alert alert-success">
-        <span><i class="fa fa-unlock"></i></span>
-        <span class="font-weight-bold">Active customers</span>
+        <span><i class="fa fa-user-md"></i></span>
+        <span class="font-weight-bold">All customers</span>
       </p>
       <div class="p-2">
         <div class="text-right">
@@ -49,7 +49,7 @@ import { DM_CUSTOMERS_HEADS } from "../../../helpers/constants"
 export default {
   computed: {
     activeCustomers() {
-      return this.$store.getters.activeCustomers;
+      return this.$store.getters.allCustomers;
     },
     isFetched() {
       return this.$store.getters.isCustomersFetched;

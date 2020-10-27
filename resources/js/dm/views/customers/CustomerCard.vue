@@ -94,34 +94,89 @@
           </div>
         </div>
         <!-- customer planned visits -->
-          <div class="px-0 border my-2">
-            <p class="alert alert-success">
-              <span><i class="fa fa-calendar-alt"></i></span>
-              <span class="font-weight-bold">Planned visits</span>
-            </p>
-            <div class="p-2" v-if="plans.length > 0">
-              <table class="table table-sm small table-striped">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>State</th>
-                    <th>Dual</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="plan in plans" :key="plan.id">
-                    <td>{{ plan.plan_date }}</td>
-                    <td>{{ plan.state }}</td>
-                    <td>{{ plan.dual_with }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="text-center p-2" v-else>
-              <p class="lead text-muted">No planned visits</p>
+        <div class="px-0 border my-2">
+          <p class="alert alert-success">
+            <span><i class="fa fa-calendar-alt"></i></span>
+            <span class="font-weight-bold">Planned visits</span>
+          </p>
+          <div class="p-2" v-if="plans.length">
+            <table class="table table-sm small table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>State</th>
+                  <th>Dual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="plan in plans" :key="plan.id">
+                  <td>{{ plan.plan_date }}</td>
+                  <td>
+                    {{ plan.submitted === 1 ? "Submitted" : "Requested" }}
+                  </td>
+                  <td>{{ plan.dual_with ? plan.dual_with : "-----" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="text-center p-2" v-else>
+            <p class="lead text-muted">No planned visits</p>
+          </div>
+        </div>
+        <!-- end of customer planned visits -->
+        <!-- Customer Report -->
+        <div class="px-0 shadow my-2">
+          <p class="alert alert-success">
+            <span><i class="fa fa-hands-helping"></i></span>
+            <span class="font-weight-bold">Reports</span>
+          </p>
+          <div class="p-2">
+            <table
+              v-if="reports.length"
+              class="table table-sm small table-responsive"
+            >
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Products</th>
+                  <th>Comment</th>
+                  <th>Coach</th>
+                  <th>General Feedback</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="report in reports" :key="report.id">
+                  <td>{{ report.visit_date }}</td>
+                  <td>
+                    <ul
+                      v-for="(product, i) in report.products"
+                      :key="i"
+                      class="nav"
+                    >
+                      <li
+                        class="nav-item col-12"
+                        v-for="(val, key) in product"
+                        :key="key"
+                      >
+                        {{ key }} :
+                        <span class="font-weight-bold text-primary">{{
+                          val
+                        }}</span>
+                      </li>
+                    </ul>
+                  </td>
+                  <td>{{ report.comment ? report.comment : 'No comment' }}</td>
+                  <td>{{ report.dual_with ? report.dual_with : 'Single' }}</td>
+                  <td>{{ report.general_feedback ? report.general_feedback : 'No feedback' }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div v-else>
+              <p class="text-muted lead text-center">No visits</p>
             </div>
           </div>
-          <!-- end of customer planned visits -->
+        </div>
+        <!-- end of customer report -->
       </div>
     </div>
   </div>
@@ -139,6 +194,9 @@ export default {
       httpCall.get(`dm/v1/customers/${id}`).then(({ data }) => {
         this.customer = data.data.customer;
         this.plans = data.data.plans;
+        data.data.reports.map(report => {
+          report.products = JSON.parse(report.products);
+        });
         this.reports = data.data.reports;
       });
     }
