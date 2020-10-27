@@ -2554,6 +2554,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -23768,11 +23769,11 @@ var render = function() {
               _c(
                 "ul",
                 { staticClass: "nav" },
-                _vm._l(_vm.plannedCustomers, function(customer) {
+                _vm._l(_vm.plannedCustomers, function(customer, i) {
                   return _c(
                     "li",
                     {
-                      key: customer.id,
+                      key: customer.id + "" + i,
                       staticClass: "nav-item col-12 border-bottom clearfix"
                     },
                     [
@@ -23787,11 +23788,30 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "text-muted small" }, [
-                        _vm._v(_vm._s(customer.name))
+                        _vm._v(_vm._s(customer.title))
                       ]),
                       _vm._v(" "),
-                      _vm._m(1, true)
-                    ]
+                      customer.class === "PM"
+                        ? _c(
+                            "router-link",
+                            {
+                              staticClass: "float-right",
+                              attrs: {
+                                to: "/reports/add/pm/" + customer.customer_id
+                              }
+                            },
+                            [
+                              _c("span", [
+                                _c("i", {
+                                  staticClass:
+                                    "fa fa-hands-helping text-success"
+                                })
+                              ])
+                            ]
+                          )
+                        : _vm._e()
+                    ],
+                    1
                   )
                 }),
                 0
@@ -23840,7 +23860,7 @@ var render = function() {
                     staticClass: "btn btn-sm btn-primary",
                     on: { click: _vm.loadPlans }
                   },
-                  [_vm._m(2), _vm._v(" "), _c("span", [_vm._v("load")])]
+                  [_vm._m(1), _vm._v(" "), _c("span", [_vm._v("load")])]
                 )
               ]
             )
@@ -23855,14 +23875,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("p", { staticClass: "alert alert-info mb-0 text-center p-1" }, [
       _c("span", [_vm._v("Today Plan")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "btn float-right btn-sm" }, [
-      _c("span", [_c("i", { staticClass: "fa fa-hands-helping text-success" })])
     ])
   },
   function() {

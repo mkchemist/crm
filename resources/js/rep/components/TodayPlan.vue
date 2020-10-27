@@ -11,15 +11,16 @@
       <div>
         <div v-if="plannedCustomers.length">
           <ul class="nav">
-            <li class="nav-item col-12 border-bottom clearfix" v-for="customer in plannedCustomers" :key="customer.id">
+            <li class="nav-item col-12 border-bottom clearfix" v-for="(customer,i) in plannedCustomers" :key="customer.id+''+i">
               <span>
                 <i v-if="customer.class=== 'PM'" class="fa fa-user-md text-success"></i>
                 <i v-else class="fa fa-hospital text-primary"></i>
               </span>
-              <span class="text-muted small">{{ customer.name }}</span>
-              <button class="btn float-right btn-sm">
+              <span class="text-muted small">{{ customer.title }}</span>
+              <router-link :to="`/reports/add/pm/${customer.customer_id}`" v-if="customer.class === 'PM'" class="float-right">
                 <span><i class="fa fa-hands-helping text-success"></i></span>
-              </button>
+              </router-link>
+
             </li>
           </ul>
         </div>

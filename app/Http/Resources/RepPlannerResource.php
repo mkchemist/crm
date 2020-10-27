@@ -25,7 +25,8 @@ class RepPlannerResource extends JsonResource
           'title'    =>  $this->customer->name,
           'specialty' =>  $this->customer->specialty,
           'freq'      =>  $freq,
-          'plans_count' =>  count($this->customer->planner)
+          'plans_count' =>  count($this->customer->planner),
+          'customer_id' =>  $this->customer->id
         ];
     }
 }
