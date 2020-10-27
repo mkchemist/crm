@@ -1,6 +1,6 @@
 <template>
   <div class="col-12">
-    <table class="table table-striped w-100 table-responsive-sm">
+    <table class="table table-striped w-100 table-responsive-sm table-sm small">
       <thead>
         <tr>
           <th>Name</th>

@@ -42,7 +42,7 @@ export const CUSTOMERS_TABLE_HEADS = [
   },
   {
     title: "Visits",
-    name: "report"
+    name: "reports"
   },
   {
     title: "Address",
