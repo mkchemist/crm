@@ -1,4 +1,6 @@
 {
+    "/js/dm/manifest.js": "/js/dm/manifest.js",
+    "/js/dm/vendor.js": "/js/dm/vendor.js",
     "/js/admin/admin.js": "/js/admin/admin.js",
     "/js/dm/dm.js": "/js/dm/dm.js",
     "/js/rep/app.js": "/js/rep/app.js",
