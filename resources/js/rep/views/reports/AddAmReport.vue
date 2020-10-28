@@ -29,6 +29,10 @@
                   <span class="text-danger small" v-if="errors[0]"
                     >must select workplace</span
                   >
+                  <div v-if="is_single_workplace">
+                    <input type="text" class="form-control form-control-sm" :value="workplace?workplace.name: ''" disabled readonly>
+                    <input type="hidden" v-model="visit.workplace_id">
+                  </div>
                   <select
                     name="workplace_id"
                     id="workplace_id"
@@ -39,6 +43,7 @@
                         errors[0] ? 'border-danger' : ''
                       }`
                     "
+                    v-else
                   >
                     <option value="">Select workplace</option>
                     <option
@@ -54,6 +59,7 @@
                     type="button"
                     class="btn btn-sm btn-primary"
                     @click="selectWorkplace"
+                    v-if="!is_single_workplace"
                   >
                     select
                   </button>
@@ -176,6 +182,10 @@ export default {
     this.$store.dispatch("customerGetAll").finally(() => {
       this.$store.dispatch("workplaceGetAll");
     });
+    if(this.$route.params.id) {
+      this.is_single_workplace = true;
+      this.visit.workplace_id = parseInt(this.$route.params.id);
+    }
   },
   components: {
     VisitProducts
@@ -188,8 +198,9 @@ export default {
       comment: "",
       general_feedback: "",
       dual_with: "",
-      products: []
+      products: [],
     },
+    is_single_workplace: false,
     departs: null,
     filter_departs: []
   }),
@@ -204,6 +215,16 @@ export default {
         data = customers.filter(customer => customer.workplace_id === this.visit.workplace_id && this.filter_departs.includes(customer.specialty));
       }
       return data;
+    },
+    workplace() {
+      if(!this.workplaces.length) {
+        return;
+      }
+      let id = parseInt(this.$route.params.id);
+      let workplace = this.workplaces.filter(workplace => workplace.id === id)[0];
+      this.departs = workplace.depart;
+      this.visit.customers = [];
+      return workplace
     }
   },
   methods: {
@@ -240,10 +261,7 @@ export default {
       httpCall.post("rep/v1/reports/am", data).then(({ data }) => {
         data.message = data.data;
         this.handleResponse(data, data => {
-          data.rejected.forEach(item => this.$toasted.error(item));
-          if (!data.rejected.length) {
-            this.$router.replace("/reports/view/am");
-          }
+          this.$router.replace("/reports/view/am");
         });
       });
     },

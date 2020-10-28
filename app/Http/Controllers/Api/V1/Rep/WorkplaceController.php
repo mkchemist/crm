@@ -95,7 +95,8 @@ class WorkplaceController extends Controller
     return response()->json([
       'code'  =>  201,
       'data'  =>  new WorkplaceResource($workplace),
-      'reports' =>  $workplace->reports->groupBy('visit_date')
+      'reports' =>  $workplace->reports->groupBy('visit_date'),
+      'plans'   =>  $workplace->plans
     ], 201);
   }
 

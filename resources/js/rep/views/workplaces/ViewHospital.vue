@@ -45,7 +45,7 @@
           <hr>
           <!-- add new department button -->
           <div class="p-2 text-right">
-            <button class="btn btn-sm btn-primary" @click="openAddCard">
+            <button class="btn btn-sm btn-primary" @click="openAddDepartmentCard">
               <span><i class="fa fa-plus-circle"></i></span>
               <span>Add</span>
             </button>
@@ -53,23 +53,54 @@
 
           <!-- add new department component -->
           <div class="border my-2 p-3 bg-light" v-if="open_add_card">
-            <add-workplace-department @onCancel="closeAddCard" @onAdd="addDepartment"/>
+            <add-workplace-department @onCancel="closeAddDepartmentCard" @onAdd="addDepartment"/>
           </div>
           <!-- workplace departments components -->
-          <div v-if="departments.length">
-            <workplace-department-component :data="departments" @onEdit="editDepartment" />
+          <div v-if="hospital && hospital.depart.length">
+            <workplace-department-component :data="hospital.depart" @onEdit="editDepartment" />
           </div>
 
           <div v-else-if="departments_error" class="text-center">
             <p><span><i class="fa fa-exclamation-triangle fa-4x"></i></span></p>
             <p class="lead">{{ departments_error }}</p>
           </div>
+          <div v-else-if="fetched">
+            <p class="text-center text-muted">No Departments found</p>
+          </div>
           <loader-component v-else />
         </div>
-
+        <div class="my-2 border p-2 rounded">
+          <p class="lead text-muted">Hospital Plans</p>
+          <div class="p-2">
+            <table class="table table-sm small" v-if="plans.length">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Submitted</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="plan in plans" :key="plan.id">
+                  <td>{{ plan.plan_date }}</td>
+                  <td>{{ plan.submitted ? 'Submitted'  : 'No'}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div v-else-if="fetched">
+              <p class="text-muted text-center">No data to show </p>
+            </div>
+            <loader-component v-else></loader-component>
+          </div>
+        </div>
         <!-- hospital Reports -->
         <div class="border p-2 rounded my-2">
           <p class="lead text-muted">Hospital Reports</p>
+          <div class="p-2 text-right" v-if="hospital">
+            <router-link :to="`/reports/add/am/${hospital.id}`" class="btn btn-sm btn-primary">
+              <span><i class="fa fa-plus-circle"></i></span>
+              <span>new report</span>
+            </router-link>
+          </div>
           <div class="p-2" v-if="Object.keys(reports).length">
             <table class="table table-sm small table-responsive-sm">
               <thead>
@@ -121,6 +152,20 @@ export default {
   created() {
     this.getHospital()
   },
+  data: () => ({
+    hospital: null,
+    reports: [],
+    plans: [],
+    fetched : false,
+    hospital_error: null,
+    departments: [],
+    departments_error: null,
+    open_add_card: false,
+  }),
+  components: {
+    WorkplaceDepartmentComponent,
+    AddWorkplaceDepartment
+  },
   methods: {
     /**
      * get hospital id
@@ -141,35 +186,21 @@ export default {
         this.handleResponse(data, data => {
           this.hospital = data.data;
           this.reports = data.reports;
+          this.plans = data.plans
         })
-      }).then(() => {
-        this.getDepartments();
       });
-    },
-    /**
-     * get hospital departments
-     */
-    getDepartments() {
-      let id = this.getHospitalId();
-      httpCall.get('rep/v1/workplace-department/all/'+id)
-      .then(({data}) => {
-        data.message = "Departments loaded";
-        this.handleResponse(data, data => {
-          this.departments = data.data;
-        })
-      })
     },
     /**
      * open add card
      */
-    openAddCard() {
+    openAddDepartmentCard() {
       this.open_add_card = true;
     },
     /**
      * close add card
      *
      */
-    closeAddCard() {
+    closeAddDepartmentCard() {
       this.open_add_card = false;
     },
     /**
@@ -183,11 +214,10 @@ export default {
       .then(({data}) => {
         data.message = "department added";
         this.handleResponse(data, data => {
-          this.getDepartments();
+          this.getHospital();
+          this.$store.dispatch('workplaceGetAll')
         })
-      })/* .finally(() => {
-        this.$store.dispatch('workplaceGetAll', true);
-      }); */
+      })
     },
     /**
      * edit department
@@ -199,24 +229,13 @@ export default {
       .then(({data}) => {
         data.message = data.data;
         this.handleResponse(data, data => {
-          this.getDepartments();
+          this.getHospital();
+          this.$store.dispatch('workplaceGetAll')
         })
       });
     }
   },
-  data: () => ({
-    hospital: null,
-    fetched : false,
-    hospital_error: null,
-    departments: [],
-    departments_error: null,
-    open_add_card: false,
-    reports: []
-  }),
-  components: {
-    WorkplaceDepartmentComponent,
-    AddWorkplaceDepartment
-  }
+
 };
 </script>
 

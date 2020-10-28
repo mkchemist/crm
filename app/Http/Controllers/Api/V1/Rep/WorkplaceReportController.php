@@ -46,32 +46,22 @@ class WorkplaceReportController extends Controller
     if ($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
-    $rejected = [];
-    $accepted = [];
+    $user = Auth::user();
     $ids = json_decode($request->customers);
     foreach ($ids as $id) {
-      $check = $this->getVisitByCustomerId($id, $request->date, $request->workplace_id);
-      if ($check) {
-        $rejected[] = 'visit already exists';
-      } else {
-
-        WorkplaceReport::Create([
-          'user_id'     =>  Auth::user()->id,
-          'visit_date'  =>  $request->date,
+      WorkplaceReport::updateOrCreate([
           'customer_id' =>  $id,
-          'products'    =>  $request->products,
-          'workplace_id' => $request->workplace_id,
-          'comment'     =>  $request->comment,
+          'user_id' =>  $user->id,
+          'visit_date'  =>  $request->date,
+          'workplace_id'  =>  $request->workplace_id,
+          'products'  => $request->products,
+          'comment'   =>  $request->comment,
           'general_feedback'  =>  $request->general_feedback
-        ]);
-        $accepted[] = 'visit added';
-      }
+      ]);
     };
     return response()->json([
       'code'  =>  201,
-      'data'  =>  sprintf('%d visits reported successfully', count($accepted)),
-      'rejected'  =>  $rejected,
-      'accepted'  =>  $accepted
+      'data'  =>  'Report submitted',
     ]);
   }
 
@@ -83,12 +73,12 @@ class WorkplaceReportController extends Controller
    */
   public function show($id)
   {
-    if(!is_numeric($id)) {
+    if (!is_numeric($id)) {
       return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
 
     $visit = $this->getVisitById($id);
-    if(!$visit) {
+    if (!$visit) {
       return response()->json(ResponseHelper::INVALID_ID);
     }
 
@@ -107,15 +97,15 @@ class WorkplaceReportController extends Controller
    */
   public function update(Request $request, $id)
   {
-    if(!is_numeric($id)) {
+    if (!is_numeric($id)) {
       return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
     $visit = $this->getVisitById($id);
-    if(!$visit) {
+    if (!$visit) {
       return response()->json(ResponseHelper::INVALID_ID);
     }
-    $check = $this->getVisitByCustomerId($visit->customer_id, $request->date,$visit->workplace_id);
-    if($check && $visit->visit_date !== $request->date) {
+    $check = $this->getVisitByCustomerId($visit->customer_id, $request->date, $visit->workplace_id);
+    if ($check && $visit->visit_date !== $request->date) {
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
     $visit->products = $request->products;

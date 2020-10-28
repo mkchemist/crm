@@ -32,7 +32,7 @@ export default {
       component: ViewPharmacyReport
     },
     {
-      path: "add/am",
+      path: "add/am/:id?",
       component: AddAmReport
     },
     {

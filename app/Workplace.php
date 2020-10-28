@@ -31,4 +31,10 @@ class Workplace extends Model
       $model = $this->hasMany('App\WorkplaceReport')->orderBy('visit_date');
       return $this->getRelatedUserData($model);
     }
+
+    public function plans()
+    {
+      $model = $this->hasMany('App\WorkplacePlanner')->orderBy('plan_date');
+      return $this->getRelatedUserData($model);
+    }
 }
