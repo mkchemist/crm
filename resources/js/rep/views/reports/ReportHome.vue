@@ -59,6 +59,11 @@ export default {
         title: 'View pharmacy report',
         link: '/reports/view/pharmacy',
         icon: 'fa-book-open'
+      },
+      {
+        title: 'View plans report',
+        link: '/reports/view/plans',
+        icon: 'fa-book-open'
       }
     ],
     analysisLinks: [

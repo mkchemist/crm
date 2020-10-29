@@ -10,6 +10,9 @@ import EditPmReport from "../views/reports/EditPmReport";
 import EditAmReport from "../views/reports/EditAmReport";
 import EditPharmacyReport from "../views/reports/EditPharmacyReport";
 import PmReportAnalysis from "../views/reports/PmReportAnalysis";
+import ViewPlansReport from '../views/reports/ViewPlansReport';
+import PmPlansReport from '../views/reports/plans/PmPlansReport'
+import AmPlansReport from '../views/reports/plans/AmPlansReport'
 
 export default {
   path: "/reports",
@@ -30,6 +33,20 @@ export default {
     {
       path: "view/pharmacy",
       component: ViewPharmacyReport
+    },
+    {
+      path: 'view/plans',
+      component: ViewPlansReport,
+      children: [
+        {
+          path: '',
+          component: PmPlansReport
+        },
+        {
+          path: 'am',
+          component: AmPlansReport
+        }
+      ]
     },
     {
       path: "add/am/:id?",

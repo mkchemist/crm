@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-view></router-view>
+    <router-view class="page-fade"></router-view>
   </div>
 </template>
 
