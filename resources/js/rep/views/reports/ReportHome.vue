@@ -12,7 +12,6 @@
         <hr>
         <div class="row mx-auto p-3">
           <div class="col-lg">
-            <list-component :links="addLinks" />
           </div>
           <div class="col-lg">
             <list-component :links="analysisLinks" />

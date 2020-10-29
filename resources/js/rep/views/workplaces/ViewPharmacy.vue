@@ -15,29 +15,55 @@
           <span>edit</span>
         </router-link>
       </div>
-      <div class="p-2">
-        <div v-if="pharmacy" class="border my-2 p-2 rounded">
+      <div class="p-2" v-if="pharmacy">
+        <div class="border my-2 p-2 rounded">
           <p class="lead text-muted">Pharmacy Info.</p>
           <hr>
           <div class="row mx-auto">
             <div class="col-lg">
-              <p>Name: <span class="text-primary">{{ pharmacy.name }}</span></p>
-              <p>Type: <span class="text-primary">{{ pharmacy.type }}</span></p>
-              <p>Key Person: <span class="text-primary">{{ pharmacy.key_person }}</span></p>
+              <p  class="mb-0 small">Name: <span class="text-primary">{{ pharmacy.name }}</span></p>
+              <p  class="mb-0 small">Type: <span class="text-primary">{{ pharmacy.type }}</span></p>
+              <p  class="mb-0 small">Key Person: <span class="text-primary">{{ pharmacy.key_person }}</span></p>
             </div>
             <div class="col-lg">
-              <p>Address: <span class="text-primary">{{ pharmacy.address }}</span></p>
-              <p>Brick: <span class="text-primary">{{ pharmacy.brick }}</span></p>
+              <p  class="mb-0 small">Address: <span class="text-primary">{{ pharmacy.address }}</span></p>
+              <p  class="mb-0 small">Brick: <span class="text-primary">{{ pharmacy.brick }}</span></p>
             </div>
           </div>
         </div>
-        <div v-else-if="load_pharmacy_error" class="text-center">
-          <p class="lead mb-0">Oops</p>
-          <p class="lead mb-0 text-danger">Error {{ load_pharmacy_error }}</p>
-          <p class="text-muted">Something went wrong</p>
+        <div class="my-2 border p-2 rounded">
+          <p class="lead text-muted">Pharmacy Reports</p>
+          <div class="p-2 text-right">
+            <router-link :to="`/reports/add/pharmacy/${pharmacy.id}`" class="btn btn-sm btn-primary">
+              <span><i class="fa fa-plus-circle"></i></span>
+              <span>report</span>
+            </router-link>
+          </div>
+          <table class="table table-sm small">
+            <thead class="bg-success text-light">
+              <tr>
+                <th>Date</th>
+                <th>Products</th>
+                <th>Feedback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="report in reports" :key="report.id">
+                <td>{{ report.visit_date }}</td>
+                <td>
+                  <ul v-for="(product,i) in JSON.parse(report.products)" :key="i" class="nav">
+                    <li class="nav-item col-12" v-for="(val, key) in product" :key="`${key}-${i}`">
+                      <span>{{ key.toUpperCase() }}</span> : <span class="font-weight-bold text-primary">{{ val }}</span>
+                    </li>
+                  </ul>
+                </td>
+                <td>{{ report.general_feedback }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <loader-component v-else />
       </div>
+      <loader-component v-else />
     </div>
   </div>
 </template>
@@ -59,15 +85,14 @@ export default {
         data.message = "Pharmacy loaded";
         this.handleResponse(data, data => {
           this.pharmacy = data.data;
-        }, err => {
-          this.load_pharmacy_error = err.code;
+          this.reports = data.data.report;
         })
       });
     }
   },
   data: () => ({
     pharmacy: null,
-    load_pharmacy_error: false
+    reports: []
   })
 }
 </script>

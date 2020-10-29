@@ -140,7 +140,7 @@ class PharmacyController extends Controller
 
   private function getPharmacy($condition)
   {
-    $pharmacy = Pharmacy::where($condition)->first();
+    $pharmacy = Pharmacy::with('report')->where($condition)->first();
     return $pharmacy;
   }
 }

@@ -74,7 +74,7 @@
           <div class="p-2">
             <table class="table table-sm small" v-if="plans.length">
               <thead>
-                <tr>
+                <tr class="bg-success text-light">
                   <th>Date</th>
                   <th>Submitted</th>
                 </tr>
@@ -104,7 +104,7 @@
           <div class="p-2" v-if="Object.keys(reports).length">
             <table class="table table-sm small table-responsive-sm">
               <thead>
-                <tr>
+                <tr class="bg-success text-light">
                   <td>Customer</td>
                   <td>Comment</td>
                   <td>Products</td>

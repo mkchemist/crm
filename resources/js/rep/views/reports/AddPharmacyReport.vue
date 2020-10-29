@@ -22,12 +22,16 @@
                 <label for="pharamcy_id" class="text-muted">Pharmacy</label>
                 <ValidationProvider name="pharmacy_id" rules="required" v-slot="{ errors }">
                   <span v-if="errors[0]" class="text-danger small">must select a pharmacy</span>
-                  <select name="pharmacy_id" v-model="visit.pharmacy_id" :class="`form-control form-control-sm ${errors[0] ? 'border-danger' : ''}`">
+                  <div v-if="pharmacy">
+                    <input type="text" class="form-control form-control-sm" disabled :value="pharmacy.name">
+                    <input type="hidden" name="pharmacy_id" v-model="visit.pharamcy_id">
+                  </div>
+                  <select name="pharmacy_id" v-model="visit.pharmacy_id" :class="`form-control form-control-sm ${errors[0] ? 'border-danger' : ''}`" v-else>
                     <option value="">Select Pharmacy</option>
                     <option v-for="pharmacy in pharmacies" :key="pharmacy.id" :value="pharmacy.id">{{ pharmacy.name }}</option>
                   </select>
                 </ValidationProvider>
-                <div class="text-right my-2">
+                <div class="text-right my-2" v-if="!is_single_pharmacy">
                   <button type="button" class="btn btn-primary btn-sm" @click="selectPharmacy">
                     <span>select</span>
                   </button>
@@ -39,7 +43,7 @@
             </div>
             <!-- end of Date and Pharmacy -->
             <!-- selected pharmacy info -->
-            <div class="p-2 rounded border row mx-auto my-2" v-if="selected_pharmacy">
+            <div class="p-2 rounded border row mx-auto my-2" v-if="selected_pharmacy || pharmacy">
               <div class="col-lg">
                 <p class="mb-0 small">Name <span class="font-weight-bold text-primary">{{ selected_pharmacy.name }}</span></p>
                 <p class="mb-0 small">Type <span class="font-weight-bold text-primary">{{ selected_pharmacy.type }}</span></p>
@@ -90,13 +94,18 @@ export default {
   },
   created(){
     this.$store.dispatch('pharmacyGetAll');
+    if(this.$route.params.id) {
+      this.is_single_pharmacy = true;
+      this.visit.pharmacy_id = this.$route.params.id;
+    }
   },
   data: () => ({
     visit: {
       date: new Date().format('YYYY-MM-DD'),
       pharmacy_id: null,
       products: [],
-      general_feedback: ''
+      general_feedback: '',
+      is_single_pharmacy: false
     },
     selected_pharmacy: null
   }),
@@ -138,6 +147,15 @@ export default {
   computed: {
     pharmacies(){
       return this.$store.getters.pharmacies;
+    },
+    pharmacy() {
+      if(this.is_single_pharmacy) {
+        let id = this.$route.params.id;
+        let pharmacy = this.pharmacies.filter(pharmacy => pharmacy.id === parseInt(id))[0];
+        this.selected_pharmacy = pharmacy;
+        return pharmacy;
+      }
+      return null;
     }
   }
 }
