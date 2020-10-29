@@ -166,6 +166,10 @@
                   <span><i class="fa fa-chevron-circle-left"></i></span>
                   <span>back</span>
                 </router-link>
+                <router-link :to="`/customers/view/${customer.id}`" class="btn btn-primary" v-if="customer">
+                  <span><i class="fa fa-book-open"></i></span>
+                  <span>view</span>
+                </router-link>
                 <button class="btn btn-success" type="submit">
                   <span><i class="fa fa-save"></i></span>
                   <span>update</span>
