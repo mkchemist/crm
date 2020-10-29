@@ -20,23 +20,17 @@
               <router-link :to="`/reports/add/pm/${customer.customer_id}`" v-if="customer.class === 'PM'" class="float-right">
                 <span><i class="fa fa-hands-helping text-success"></i></span>
               </router-link>
-
             </li>
           </ul>
         </div>
-        <div v-else-if="isLoading" style="height:150px" class="d-flex align-items-center justify-content-center flex-column">
-          <loader-component></loader-component>
+        <div v-else-if="fetched" class="text-center p-3">
+          <p class="text-muted small">No plans found</p>
+          <router-link to="/planner" class="btn btn-sm btn-primary">
+            <span><i class="fa fa-plus-circle"></i></span>
+            <span>plan</span>
+          </router-link>
         </div>
-        <div v-else-if="isFetched && plannedCustomers.length === 0" style="height:150px" class="d-flex align-items-center justify-content-center flex-column">
-          <span class="text-muted small">No plans in {{ today }}</span>
-        </div>
-        <div v-else class="d-flex align-items-center justify-content-center flex-column" style="height:150px">
-          <span class="small text-muted">It seem that plans is not loaded yet</span>
-          <button class="btn btn-sm btn-primary" @click="loadPlans">
-            <span><i class="fa fa-download"></i></span>
-            <span>load</span>
-          </button>
-        </div>
+        <loader-component v-else></loader-component>
       </div>
     </div>
   </div>
@@ -44,6 +38,12 @@
 
 <script>
 export default {
+  created(){
+    this.$store.dispatch('getWorkplacePlanner')
+    .then(() => {
+      this.$store.dispatch('getPlanner');
+    })
+  },
   data: () => ({
     isLoading: false,
     isFetched : false,
@@ -58,6 +58,9 @@ export default {
         this.isFetched = true;
       }
       return dayPlans;
+    },
+    fetched() {
+      return this.$store.getters.isPlansFetched;
     }
   },
   methods: {

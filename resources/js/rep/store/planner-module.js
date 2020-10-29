@@ -74,8 +74,10 @@ export default {
      */
     getWorkplacePlanner({state}, force) {
       if(!state.workplacePlans.length || force) {
+        this.fetched = false;
         httpCall.get('rep/v1/workplace-planner')
         .then(({data}) => {
+          this.fetched = true;
           if(data.code === 201) {
             Vue.toasted.show('Workplace planner loaded successfully', {
               type: 'success',
