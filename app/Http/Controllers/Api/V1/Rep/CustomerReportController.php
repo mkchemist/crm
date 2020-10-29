@@ -19,7 +19,7 @@ class CustomerReportController extends Controller
    */
   public function index()
   {
-    $visits = CustomerReport::with(['customer'])
+    $visits = CustomerReport::with(['customer', 'customer.params', 'customer.frequency', 'customer.planner','user'])
       ->where(['user_id' => Auth::user()->id])->get();
     return response()->json([
       'code'  =>  201,

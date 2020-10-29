@@ -9,7 +9,7 @@ import ViewPharmacyReport from "../views/reports/ViewPharmacyReport";
 import EditPmReport from "../views/reports/EditPmReport";
 import EditAmReport from "../views/reports/EditAmReport";
 import EditPharmacyReport from "../views/reports/EditPharmacyReport";
-import PmReportAnalysis from "../views/reports/PmReportAnalysis";
+import PmReportAnalysis from "../views/reports/analysis/PmReportAnalysis";
 import ViewPlansReport from '../views/reports/ViewPlansReport';
 import PmPlansReport from '../views/reports/plans/PmPlansReport'
 import AmPlansReport from '../views/reports/plans/AmPlansReport'

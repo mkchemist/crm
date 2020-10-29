@@ -16,10 +16,6 @@
         </router-link>
       </div>
       <div class="p-2">
-        <div>
-          <p v-if="$store.getters.fetchedReports">Fetched</p>
-          <p v-else>Fetching</p>
-        </div>
         <div class="border rounded p-2">
           <table-component
             :data="visits"
@@ -130,6 +126,10 @@ export default {
       {
         title: "Specialty",
         name: "customer.specialty"
+      },
+      {
+        title: "Param",
+        name: "customer.params.0.current"
       },
       {
         title: "Address",

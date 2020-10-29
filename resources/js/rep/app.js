@@ -8,7 +8,6 @@ import en from "vee-validate/dist/locale/en.json";
 import Toasted from "vue-toasted";
 import LoaderComponent from "../components/LoaderComponent";
 import { ResponseHandler } from "../helpers/response-handler";
-
 Vue.use(Toasted, {
   duration: 4000,
   iconPack: 'fontawesome',
