@@ -129,7 +129,8 @@ export default {
       },
       {
         title: "Param",
-        name: "customer.params.0.current"
+        name: "customer.params.0.current",
+        fallback: 'NN'
       },
       {
         title: "Address",

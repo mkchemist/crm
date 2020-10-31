@@ -6,7 +6,7 @@
 </template>
 
 <script>
-let base_url = process.env.MIX_APP_API_URL.replace('api/','');
+let base_url = document.getElementById('APP_BASE_URI').value.replace('api/','');
 export default {
   data: () => ({
     base_url

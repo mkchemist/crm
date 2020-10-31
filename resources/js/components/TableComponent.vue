@@ -21,7 +21,7 @@
           <!-- <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td> -->
           <slot name="body:before" :item="item"></slot>
           <td v-for="(head, i) in heads" :key="i">
-            {{ _notation(item, head.name) }}
+            {{ _notation(item, head.name, head.fallback) }}
           </td>
           <slot name="body" :item="item"></slot>
         </tr>
@@ -57,8 +57,8 @@ export default {
     }
   },
   methods: {
-    _notation(container, key) {
-      return ObjectNotation(container, key);
+    _notation(container, key, $default) {
+      return ObjectNotation(container, key, $default);
     },
     /**
      * create datatable instance

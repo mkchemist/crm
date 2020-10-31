@@ -8,7 +8,7 @@
  * @param {string} key
  * @return {mixed}
  */
-export const ObjectNotation = function (container, key) {
+export const ObjectNotation = function (container, key, $default = null) {
   /** regular expression test */
   let test = /\./gm;
   /** matches in key */
@@ -23,7 +23,7 @@ export const ObjectNotation = function (container, key) {
     if(container[key] !== undefined) {
       return container[key];
     }
-    return null;
+    return $default;
   }
   /**
    * splitting key
@@ -44,9 +44,9 @@ export const ObjectNotation = function (container, key) {
    */
   if(parentItem !== undefined && parentItem !== null) {
     let _joined = parts.join('.');
-    return ObjectNotation(parentItem, _joined);
+    return ObjectNotation(parentItem, _joined, $default);
   }
-  return null;
+  return $default;
 }
 
 /**

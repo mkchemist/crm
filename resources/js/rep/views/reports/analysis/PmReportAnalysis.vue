@@ -6,6 +6,10 @@
     </p>
     <div class="p-2">
       <div class="p-2">
+        <router-link to="/reports" class="btn btn-sm btn-dark">
+          <span><i class="fa fa-chevron-circle-left"></i></span>
+          <span>back</span>
+        </router-link>
         <button class="btn btn-sm btn-success" @click="exportTable">
           <span><i class="fa fa-file-excel"></i></span>
           <span>Export</span>
@@ -69,7 +73,7 @@
               v-for="(item, i) in reportData.report_params"
               :key="i + '_report'"
             >
-              {{ i }}
+              {{ i !== 'null' ? i : 'NN' }}
             </th>
           </tr>
         </thead>
