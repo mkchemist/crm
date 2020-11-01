@@ -48,6 +48,10 @@ export default {
         name: "specialty"
       },
       {
+        title: 'Parameter',
+        name: 'param'
+      },
+      {
         title: 'Frequency',
         name: 'freq'
       },

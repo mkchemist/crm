@@ -72,7 +72,7 @@ export default {
         icon: 'fa-chart-line'
       },{
         title: 'View plan analysis report',
-        link: '/reports/view/am',
+        link: '/reports/analysis/plan',
         icon: 'fa-chart-area'
       },{
         title: 'Time investment',

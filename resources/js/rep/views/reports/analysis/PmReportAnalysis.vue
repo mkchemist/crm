@@ -47,13 +47,13 @@
               :colspan="Object.keys(reportData.plan_params).length"
               class="bg-primary text-light"
             >
-              Plan Params
+              Plan Parameters
             </th>
             <th
               :colspan="Object.keys(reportData.report_params).length"
               class="bg-info text-light"
             >
-              Report Params
+              Report Parameters
             </th>
           </tr>
           <tr>
@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { filterData } from "../../../../helpers/helpers";
+import { ExportToExcel, filterData } from "../../../../helpers/helpers";
 export default {
   created() {
     this.$store.dispatch("reportGetAll");
@@ -160,13 +160,7 @@ export default {
   },
   methods: {
     exportTable(){
-      let table = document.getElementById('analysis-table');
-      let content = table.outerHTML;
-      let blob = new Blob([content]);
-      let link = document.createElement('a');
-      link.href= URL.createObjectURL(blob);
-      link.download = "PM report analysis.xls";
-      link.click();
+      ExportToExcel('#analysis-table', 'pm-report-analysis')
     }
   }
 };

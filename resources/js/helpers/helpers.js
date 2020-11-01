@@ -8,7 +8,7 @@
  * @param {string} key
  * @return {mixed}
  */
-export const ObjectNotation = function (container, key, $default = null) {
+export const ObjectNotation = function(container, key, $default = null) {
   /** regular expression test */
   let test = /\./gm;
   /** matches in key */
@@ -19,8 +19,8 @@ export const ObjectNotation = function (container, key, $default = null) {
    * to undefined
    * else it will return null
    */
-  if(!matches) {
-    if(container[key] !== undefined) {
+  if (!matches) {
+    if (container[key] !== undefined) {
       return container[key];
     }
     return $default;
@@ -30,7 +30,7 @@ export const ObjectNotation = function (container, key, $default = null) {
    *
    * forming array of notation levels
    */
-  let parts = key.split('.');
+  let parts = key.split(".");
   /**
    * set key at position 0 as a parent item
    */
@@ -42,12 +42,12 @@ export const ObjectNotation = function (container, key, $default = null) {
   /**
    * if parent item exists
    */
-  if(parentItem !== undefined && parentItem !== null) {
-    let _joined = parts.join('.');
+  if (parentItem !== undefined && parentItem !== null) {
+    let _joined = parts.join(".");
     return ObjectNotation(parentItem, _joined, $default);
   }
   return $default;
-}
+};
 
 /**
  * filter data
@@ -57,18 +57,23 @@ export const ObjectNotation = function (container, key, $default = null) {
  * @param {*} data
  * @param {*} condition
  */
-export function filterData(data, condition){
+export function filterData(data, param, check = true) {
   let res = {};
-  data.forEach((item) => {
-    let key = ObjectNotation(item, condition);
-    if (!res[key]) {
-      res[key] = [];
+  let checkQuery = () => true;
+  if (typeof check === "function") {
+    checkQuery = check;
+  }
+  data.forEach(item => {
+    if (checkQuery(item)) {
+      let key = ObjectNotation(item, param);
+      if (!res[key]) {
+        res[key] = [];
+      }
+      res[key].push(item);
     }
-    res[key].push(item);
   });
   return res;
 }
-
 
 /**
  * check if the given type is string
@@ -106,7 +111,8 @@ const isNull = v => v === null || v === "";
  * Exceptions
  */
 var INVALID_OBJECT_TYPE_ERROR = "sortBy method used with array of objects only";
-var INVALID_ITEM_TYPE_ERROR = "sortBy method compare only String and Number types";
+var INVALID_ITEM_TYPE_ERROR =
+  "sortBy method compare only String and Number types";
 
 /**
  * compare between the given values
@@ -119,36 +125,39 @@ var INVALID_ITEM_TYPE_ERROR = "sortBy method compare only String and Number type
  * @return {int}
  */
 function compare(a, b, item, factor) {
+  if (!isObject(a) || !isObject(b)) {
+    throw new Error(INVALID_OBJECT_TYPE_ERROR);
+  }
 
+  let val1 = a[item];
+  let val2 = b[item];
 
-    if(!isObject(a) || !isObject(b)) {
-        throw new Error(INVALID_OBJECT_TYPE_ERROR);
-    }
+  if (
+    !isString(val1) &&
+    !isString(val2) &&
+    !isNumber(val1) &&
+    !isNumber(val2)
+  ) {
+    throw new Error(INVALID_ITEM_TYPE_ERROR);
+  }
 
-    let val1 = a[item];
-    let val2 = b[item];
+  if (isString(val1)) {
+    val1 = val1.toUpperCase();
+  }
+  if (isString(val2)) {
+    val2 = val2.toUpperCase();
+  }
 
-    if(!isString(val1) && !isString(val2) && !isNumber(val1) && !isNumber(val2)) {
-        throw new Error(INVALID_ITEM_TYPE_ERROR);
-    }
+  var result = 0;
+  if (val1 > val2) {
+    result = 1 * factor;
+  }
 
-    if(isString(val1)) {
-        val1 = val1.toUpperCase();
-    }
-    if(isString(val2)) {
-        val2 = val2.toUpperCase();
-    }
+  if (val1 < val2) {
+    result = -1 * factor;
+  }
 
-    var result = 0;
-    if(val1 > val2) {
-        result =  1 * factor;
-    }
-
-    if(val1 < val2) {
-        result = -1 * factor;
-    }
-
-    return result;
+  return result;
 }
 
 /**
@@ -157,11 +166,28 @@ function compare(a, b, item, factor) {
  * @param {string} item     [key of sorting]
  * @param {string} dir      [Asc|Desc]
  */
-export function sortBy(arr, item, dir ="asc") {
-    let res = Array.from(arr);
-    let factor = dir.toUpperCase() === "ASC" ? 1 : -1;
-    return res.sort((a, b) => {
-        return compare(a, b, item, factor)
-    });
-
+export function sortBy(arr, item, dir = "asc") {
+  let res = Array.from(arr);
+  let factor = dir.toUpperCase() === "ASC" ? 1 : -1;
+  return res.sort((a, b) => {
+    return compare(a, b, item, factor);
+  });
 }
+
+/**
+ *
+ * @param {string} target
+ * @param {string} filename
+ * @return {void}
+ */
+export function ExportToExcel(target, filename = "download-file") {
+  let table = document.querySelector(target);
+  let content = table.outerHTML;
+  let blob = new Blob([content]);
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename+'.xlsx';
+  link.click();
+}
+
+

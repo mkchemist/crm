@@ -10,6 +10,7 @@ import EditPmReport from "../views/reports/EditPmReport";
 import EditAmReport from "../views/reports/EditAmReport";
 import EditPharmacyReport from "../views/reports/EditPharmacyReport";
 import PmReportAnalysis from "../views/reports/analysis/PmReportAnalysis";
+import PlanReportAnalysis from "../views/reports/analysis/PlanReportAnalysis";
 import ViewPlansReport from '../views/reports/ViewPlansReport';
 import PmPlansReport from '../views/reports/plans/PmPlansReport'
 import AmPlansReport from '../views/reports/plans/AmPlansReport'
@@ -75,6 +76,10 @@ export default {
     {
       path: 'analysis/pm',
       component: PmReportAnalysis
+    },
+    {
+      path: 'analysis/plan',
+      component: PlanReportAnalysis
     }
   ]
 }
