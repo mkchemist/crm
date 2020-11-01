@@ -28,6 +28,7 @@
     "dependencies": {
         "vee-validate": "^3.3.9",
         "vue-cal": "^3.6.6",
+        "vue-knob-control": "^1.6.0",
         "vue-loaders": "^4.1.0",
         "vue-router": "^3.4.3",
         "vue-toasted": "^1.1.28",
