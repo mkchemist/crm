@@ -24,9 +24,11 @@
           <thead>
             <tr>
               <th rowspan="2">Item</th>
+              <th rowspan="2">Total Planned days</th>
               <th rowspan="2">Total Frequency Sum</th>
               <th rowspan="2">Total Planned Visits</th>
               <th rowspan="2">%</th>
+              <th rowspan="2">Avg/day</th>
               <th rowspan="2">Total Frequency Customers</th>
               <th rowspan="2">Total Planned Customers</th>
               <th rowspan="2">%</th>
@@ -89,6 +91,7 @@
           <tbody>
             <tr>
               <td>Value</td>
+              <td>{{ Object.keys(analysisReport.total_planned_days).length }}</td>
               <td>{{ analysisReport.total_freq }}</td>
               <td>{{ analysisReport.total_plans }}</td>
               <td>
@@ -97,6 +100,13 @@
                     analysisReport.total_plans / analysisReport.total_freq
                   ).toFixed(2) * 100
                 }}%
+              </td>
+              <td>
+                {{
+                  (
+                    analysisReport.total_plans / Object.keys(analysisReport.total_planned_days).length
+                  )
+                }}
               </td>
               <td v-if="analysisReport.freq_customers">
                 {{ Object.keys(analysisReport.freq_customers).length }}
@@ -161,13 +171,18 @@ export default {
     httpCall
       .get("rep/v1/customers")
       .then(({ data }) => (this.customers = data.data))
-      .finally(() => {
-        this.processPlanData();
-      });
+      .then(() => {
+        httpCall.get('rep/v1/planner')
+        .then(({data}) => this.plans = data.data)
+        .finally(() => {
+          this.processPlanData();
+        });
+      })
   },
   data: () => ({
     analysisReport: {},
     customers: [],
+    plans: [],
     isProcessing: true
   }),
   methods: {
@@ -220,6 +235,7 @@ export default {
       this.analysisReport["freq_specialty"] = specialty_per_freq;
       this.analysisReport["total_freq"] = total_freq;
       this.analysisReport["total_plans"] = total_plans;
+      this.analysisReport['total_planned_days'] = filterData(this.plans, 'start');
       this.isProcessing = false;
     },
     exportToExcel() {

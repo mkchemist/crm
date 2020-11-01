@@ -24,13 +24,14 @@
           <tr>
             <th rowspan="2">Item</th>
             <th rowspan="2">Total Plans</th>
-            <th rowspan="2">Total Reports</th>
+            <th rowspan="2">Total Visits</th>
             <th rowspan="2">%</th>
             <th rowspan="2">Plan days</th>
             <th rowspan="2">Report days</th>
             <th rowspan="2">%</th>
-            <th rowspan="2">Plan Customers</th>
-            <th rowspan="2">Report Customers</th>
+            <th rowspan="2">Avg. visits/day</th>
+            <th rowspan="2">Plans Customers</th>
+            <th rowspan="2">Visits Customers</th>
             <th
               :colspan="Object.keys(reportData.plan_specialty).length"
               class="bg-primary text-light"
@@ -100,6 +101,9 @@
                 )
               }}
               %
+            </td>
+            <td>
+              {{ reportData.total_reports/reportData.report_days }}
             </td>
             <td>{{ reportData.plan_customers }}</td>
             <td>{{ reportData.report_customers }}</td>
