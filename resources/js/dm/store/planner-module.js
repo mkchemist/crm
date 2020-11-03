@@ -18,11 +18,13 @@ export default {
     }
   },
   actions: {
-    getPlans: ({state}) => {
-      httpCall.get('dm/v1/planner')
-      .then(({data}) => {
-        state.allPlans = [...data.data.coach, ...data.data.rep]
-      })
+    getPlans: ({state}, force) => {
+      if(!state.allPlans.length || force) {
+        httpCall.get('dm/v1/planner')
+        .then(({data}) => {
+          state.allPlans = [...data.data.coach, ...data.data.rep]
+        })
+      }
     }
   }
 }

@@ -22,17 +22,24 @@ export default new Vuex.Store({
   },
   state: {
     reps: [],
-    user
+    user,
+    isRepsFetched: false
   },
   getters: {
     allReps: state => state.reps,
-    user: state => state.user
+    dmReps: state => state.reps.filter(rep => rep.id !== state.user.id),
+    user: state => state.user,
+    isRepsFetched: state => state.isRepsFetched
   },
   actions: {
     getAllReps({ state }) {
+      this.isRepsFetched = false;
       return httpCall
         .get("dm/v1/reps")
-        .then(({ data }) => (state.reps = data.data));
+        .then(({ data }) => {
+          this.isRepsFetched = true;
+          state.reps = data.data
+        });
     }
   }
 });

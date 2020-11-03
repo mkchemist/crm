@@ -2407,12 +2407,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3899,6 +3893,217 @@ __webpack_require__.r(__webpack_exports__);
     return {
       heads: _helpers_constants__WEBPACK_IMPORTED_MODULE_1__["DM_CUSTOMERS_HEADS"]
     };
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/dm/views/planner/AddPlans.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/dm/views/planner/AddPlans.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../helpers/http-service */ "./resources/js/helpers/http-service.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    this.$store.commit('setCurrentUserId', this.$store.state.user.id);
+  },
+  data: function data() {
+    return {
+      selected_plan_rep: null,
+      selected_remove_rep: null
+    };
+  },
+  computed: {
+    reps: function reps() {
+      return this.$store.getters.dmReps;
+    },
+    isRepsFetched: function isRepsFetched() {
+      return this.$store.getters.isRepsFetched;
+    },
+    plans: function plans() {
+      var _this = this;
+
+      var plans = this.$store.getters.plans;
+      var dayPlans = [];
+      dayPlans = plans.filter(function (plan) {
+        return plan.start === _this.$attrs.date;
+      });
+      return dayPlans;
+    }
+  },
+  methods: {
+    /**
+     * select rep to add to plan
+     *
+     * @param {int} id
+     */
+    setSelectedPlanRep: function setSelectedPlanRep(id) {
+      var target = event.target;
+
+      if (target.checked) {
+        this.selected_plan_rep = id;
+        this.toggleSelectCheckbox('#reps_table', target);
+      } else {
+        this.selected_plan_rep = null;
+      }
+    },
+
+    /**
+     * store plan
+     *
+     * @return {void}
+     */
+    storePlan: function storePlan() {
+      var _this2 = this;
+
+      if (!this.selected_plan_rep) {
+        this.$toasted.error('No Rep. selected, select Rep. first', {
+          icon: 'exclamation'
+        });
+        return;
+      }
+
+      var data = {
+        rep_id: this.selected_plan_rep,
+        date: this.$attrs.date
+      };
+      _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].post('dm/v1/planner', data).then(function (_ref) {
+        var data = _ref.data;
+        data.message = "Plan added";
+
+        _this2.handleResponse(data, function (data) {
+          _this2.$store.dispatch('getPlans', true);
+        });
+      });
+    },
+
+    /**
+     * select plan to remove
+     *
+     * @param {int} id
+     */
+    setRemovePlanRep: function setRemovePlanRep(id) {
+      var target = event.target;
+
+      if (target.checked) {
+        this.selected_remove_rep = id;
+        this.toggleSelectCheckbox('#plans_table', target);
+      } else {
+        this.selected_remove_rep = null;
+      }
+    },
+
+    /**
+     * remove plan
+     *
+     * @retrun {void}
+     */
+    removePlan: function removePlan() {
+      var _this3 = this;
+
+      if (!this.selected_remove_rep) {
+        this.$toasted.error('No Plan selected, select plan first', {
+          icon: 'exclamation'
+        });
+        return;
+      }
+
+      var id = this.selected_remove_rep;
+      var data = {
+        _method: 'DELETE'
+      };
+      _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].post("dm/v1/planner/".concat(id), data).then(function (_ref2) {
+        var data = _ref2.data;
+        data.message = data.data;
+
+        _this3.handleResponse(data, function (data) {
+          _this3.$store.dispatch('getPlans', true);
+        });
+      });
+    },
+    toggleSelectCheckbox: function toggleSelectCheckbox(id, el) {
+      var inputs = document.querySelectorAll("".concat(id, " input[type=\"checkbox\"]"));
+      inputs.forEach(function (input) {
+        return input.checked = false;
+      });
+      el.checked = true;
+    }
   }
 });
 
@@ -6098,9 +6303,7 @@ var render = function() {
               }),
               0
             )
-          ]),
-          _vm._v(" "),
-          _vm._m(0)
+          ])
         ]),
         _vm._v(" "),
         _c(
@@ -6142,20 +6345,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group text-right" }, [
-      _c("button", { staticClass: "btn btn-sm btn-primary" }, [
-        _c("span", [_c("i", { staticClass: "fa fa-check-circle" })]),
-        _vm._v(" "),
-        _c("span", [_vm._v("view")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -7698,6 +7888,217 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/dm/views/planner/AddPlans.vue?vue&type=template&id=55a8a0bf&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/dm/views/planner/AddPlans.vue?vue&type=template&id=55a8a0bf& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "px-0 shadow bg-white mb-5 rounded" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "p-2", staticStyle: { "min-height": "400px" } }, [
+      _c("div", { staticClass: "row mx-auto" }, [
+        _c("div", { staticClass: "col-lg px-0" }, [
+          _c("div", { staticClass: "border px-0" }, [
+            _c("p", { staticClass: "mb-0 px-2 bg-dark text-light" }, [
+              _vm._v("Selected ")
+            ]),
+            _vm._v(" "),
+            _vm.reps
+              ? _c(
+                  "table",
+                  {
+                    staticClass: "table table-sm small",
+                    attrs: { id: "reps_table" }
+                  },
+                  [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.reps, function(rep) {
+                        return _c("tr", { key: rep.id }, [
+                          _c("td", [
+                            _c("input", {
+                              attrs: { type: "checkbox" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.setSelectedPlanRep(rep.id)
+                                }
+                              }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(rep.name))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(rep.area))])
+                        ])
+                      }),
+                      0
+                    )
+                  ]
+                )
+              : _vm._e()
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-lg" }, [
+          _c("p", { staticClass: "mb-0 px-2 bg-dark text-light" }, [
+            _vm._v(
+              "Total date " +
+                _vm._s(_vm.$attrs.date) +
+                " plans : " +
+                _vm._s(_vm.plans.length)
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "px-0 border" }, [
+            _c(
+              "table",
+              {
+                staticClass: "table table-sm small",
+                attrs: { id: "plans_table" }
+              },
+              [
+                _vm._m(2),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.plans, function(plan) {
+                    return _c("tr", { key: plan.id }, [
+                      _c("td", [
+                        _c("input", {
+                          attrs: { type: "checkbox" },
+                          on: {
+                            click: function($event) {
+                              return _vm.setRemovePlanRep(plan.id)
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(plan.title))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(plan.area))])
+                    ])
+                  }),
+                  0
+                )
+              ]
+            )
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "p-2 text-right" },
+        [
+          _c(
+            "router-link",
+            { staticClass: "btn btn-sm btn-dark", attrs: { to: "/planner" } },
+            [
+              _c("span", [
+                _c("i", { staticClass: "fa fa-chevron-circle-left" })
+              ]),
+              _vm._v(" "),
+              _c("span", [_vm._v("back")])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-success btn-sm",
+              on: { click: _vm.storePlan }
+            },
+            [_vm._m(3), _vm._v(" "), _c("span", [_vm._v("Add")])]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-danger btn-sm",
+              on: { click: _vm.removePlan }
+            },
+            [_vm._m(4), _vm._v(" "), _c("span", [_vm._v("Remove")])]
+          )
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "alert alert-success" }, [
+      _c("span", [_c("i", { staticClass: "fa fa-plus-circle" })]),
+      _vm._v(" "),
+      _c("span", [_vm._v("Add new plan")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_c("i", { staticClass: "fa fa-check" })]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Rep Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Area")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_c("i", { staticClass: "fa fa-check" })]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Rep Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Area")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("i", { staticClass: "fa fa-plus-circle" })])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("i", { staticClass: "fa fa-trash-alt" })])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/dm/views/planner/PlannerHome.vue?vue&type=template&id=5069ba6a&":
 /*!********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/dm/views/planner/PlannerHome.vue?vue&type=template&id=5069ba6a& ***!
@@ -9084,6 +9485,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _views_Planner_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../views/Planner.vue */ "./resources/js/dm/views/Planner.vue");
 /* harmony import */ var _views_planner_PlannerHome_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../views/planner/PlannerHome.vue */ "./resources/js/dm/views/planner/PlannerHome.vue");
+/* harmony import */ var _views_planner_AddPlans_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../views/planner/AddPlans.vue */ "./resources/js/dm/views/planner/AddPlans.vue");
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -9092,6 +9495,9 @@ __webpack_require__.r(__webpack_exports__);
   children: [{
     path: '',
     component: _views_planner_PlannerHome_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  }, {
+    path: 'add',
+    component: _views_planner_AddPlans_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   }]
 });
 
@@ -9240,22 +9646,35 @@ if (user) {
   },
   state: {
     reps: [],
-    user: user
+    user: user,
+    isRepsFetched: false
   },
   getters: {
     allReps: function allReps(state) {
       return state.reps;
     },
+    dmReps: function dmReps(state) {
+      return state.reps.filter(function (rep) {
+        return rep.id !== state.user.id;
+      });
+    },
     user: function user(state) {
       return state.user;
+    },
+    isRepsFetched: function isRepsFetched(state) {
+      return state.isRepsFetched;
     }
   },
   actions: {
     getAllReps: function getAllReps(_ref) {
+      var _this = this;
+
       var state = _ref.state;
+      this.isRepsFetched = false;
       return _helpers_http_service__WEBPACK_IMPORTED_MODULE_2__["httpCall"].get("dm/v1/reps").then(function (_ref2) {
         var data = _ref2.data;
-        return state.reps = data.data;
+        _this.isRepsFetched = true;
+        state.reps = data.data;
       });
     }
   }
@@ -9312,12 +9731,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     }
   },
   actions: {
-    getPlans: function getPlans(_ref) {
+    getPlans: function getPlans(_ref, force) {
       var state = _ref.state;
-      _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].get('dm/v1/planner').then(function (_ref2) {
-        var data = _ref2.data;
-        state.allPlans = [].concat(_toConsumableArray(data.data.coach), _toConsumableArray(data.data.rep));
-      });
+
+      if (!state.allPlans.length || force) {
+        _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].get('dm/v1/planner').then(function (_ref2) {
+          var data = _ref2.data;
+          state.allPlans = [].concat(_toConsumableArray(data.data.coach), _toConsumableArray(data.data.rep));
+        });
+      }
     }
   }
 });
@@ -10495,6 +10917,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InActiveCustomers_vue_vue_type_template_id_518cdd87___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InActiveCustomers_vue_vue_type_template_id_518cdd87___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/dm/views/planner/AddPlans.vue":
+/*!****************************************************!*\
+  !*** ./resources/js/dm/views/planner/AddPlans.vue ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AddPlans_vue_vue_type_template_id_55a8a0bf___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddPlans.vue?vue&type=template&id=55a8a0bf& */ "./resources/js/dm/views/planner/AddPlans.vue?vue&type=template&id=55a8a0bf&");
+/* harmony import */ var _AddPlans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddPlans.vue?vue&type=script&lang=js& */ "./resources/js/dm/views/planner/AddPlans.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AddPlans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AddPlans_vue_vue_type_template_id_55a8a0bf___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AddPlans_vue_vue_type_template_id_55a8a0bf___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/dm/views/planner/AddPlans.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/dm/views/planner/AddPlans.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/dm/views/planner/AddPlans.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPlans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddPlans.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/dm/views/planner/AddPlans.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPlans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/dm/views/planner/AddPlans.vue?vue&type=template&id=55a8a0bf&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/dm/views/planner/AddPlans.vue?vue&type=template&id=55a8a0bf& ***!
+  \***********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPlans_vue_vue_type_template_id_55a8a0bf___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddPlans.vue?vue&type=template&id=55a8a0bf& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/dm/views/planner/AddPlans.vue?vue&type=template&id=55a8a0bf&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPlans_vue_vue_type_template_id_55a8a0bf___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPlans_vue_vue_type_template_id_55a8a0bf___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

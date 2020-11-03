@@ -9,12 +9,6 @@
               <option :value="rep.id" v-for="rep in reps" :key="rep.id" >{{ rep.name }}</option>
             </select>
           </div>
-          <div class="form-group text-right">
-            <button class="btn btn-sm btn-primary">
-              <span><i class="fa fa-check-circle"></i></span>
-              <span>view</span>
-            </button>
-          </div>
         </div>
         <div class="my-2 bg-white date-picker">
           <vue-cal
