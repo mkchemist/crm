@@ -28,7 +28,8 @@ class RepPlannerResource extends JsonResource
           'freq'      =>  $freq,
           'param'     =>  $params,
           'plans_count' =>  count($this->customer->planner),
-          'customer_id' =>  $this->customer->id
+          'customer_id' =>  $this->customer->id,
+          'user_id'     =>  $this->user->id
         ];
     }
 }

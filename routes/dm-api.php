@@ -8,12 +8,16 @@ use Illuminate\Support\Facades\Route;
  *  start with prefix Admin/version/path
  */
 Route::prefix('v1')->group(function() {
+  // District Manager Reps
+  Route::get('/reps', "RepController@getAllRep");
   // Customers Routes
   Route::apiResource("customers", "CustomerController");
   // Workplace Routes
   Route::apiResource('workplaces','WorkplaceController');
   // Pharmacy Routes
   Route::apiResource('pharmacies', 'PharmacyController');
+  // Planner Routes
+  Route::apiResource("planner", "PlannerController");
   // Approval Routes
   Route::group(['prefix' => 'approval'], function() {
     Route::get('/frequency', 'ApprovalController@RequestCustomerFrequency');

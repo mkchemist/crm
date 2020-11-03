@@ -115,3 +115,20 @@ td,th {
   width:100%;
   height:100%;
 }
+
+
+.date-picker {
+
+  .vuecal__title-bar {
+    background-color: #38c172 !important;
+    color: white;
+  }
+}
+
+.rotated {
+  transition:.5s;
+}
+
+.rotateIcon180 {
+  transform: rotateZ(180deg) !important;
+}

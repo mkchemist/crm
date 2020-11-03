@@ -38,7 +38,7 @@
  *
  */
 import TodayPlan from "../components/TodayPlan";
-import KnobCard from "../components/KnobCard"
+import KnobCard from "../../components/KnobCard"
 export default {
   components: {
     TodayPlan,
