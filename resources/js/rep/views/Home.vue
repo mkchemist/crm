@@ -15,12 +15,12 @@
               <p class="lead text-center text-muted">Quick Analysis</p>
               <hr>
               <div class="border rounded p-2">
-                <knob-card :val="reportPercent" :max="100">
+                <knob-card :val="reportPercent" :max="100" v-if="reportPercent">
                   <p class="text-muted font-italic small">Plan achievment %</p>
                 </knob-card>
               </div>
               <div class="border rounded p-2 my-1">
-                <knob-card :val="planPercent" :max="planPercent > 100 ? 200 : 100">
+                <knob-card :val="planPercent" :max="planPercent > 100 ? 200 : 100" v-if="planPercent">
                   <p class="text-muted font-italic small">Plan versus Frequency %</p>
                 </knob-card>
               </div>
@@ -35,6 +35,7 @@
 /**
  * //TODO add notification module
  * //TODO add requests module that show eveny request state
+ * //FIXME remove console.log in planPercent
  *
  */
 import TodayPlan from "../components/TodayPlan";
@@ -62,7 +63,10 @@ export default {
       let freq = 0;
       this.$store.getters.all.map(customer => freq += customer.current_freq)
       let plans = this.$store.getters.plans;
-      return parseInt(((plans.length/freq)*100).toFixed(1));
+
+      let percent = parseInt(((plans.length/freq)*100).toFixed(1));
+      console.log(percent);
+      return percent;
     }
   }
 }

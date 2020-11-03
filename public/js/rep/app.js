@@ -2914,6 +2914,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * //TODO add notification module
  * //TODO add requests module that show eveny request state
+ * //FIXME remove console.log in planPercent
  *
  */
 
@@ -2945,7 +2946,9 @@ __webpack_require__.r(__webpack_exports__);
         return freq += customer.current_freq;
       });
       var plans = this.$store.getters.plans;
-      return parseInt((plans.length / freq * 100).toFixed(1));
+      var percent = parseInt((plans.length / freq * 100).toFixed(1));
+      console.log(percent);
+      return percent;
     }
   }
 });
@@ -14098,15 +14101,19 @@ var render = function() {
               "div",
               { staticClass: "border rounded p-2" },
               [
-                _c(
-                  "knob-card",
-                  { attrs: { val: _vm.reportPercent, max: 100 } },
-                  [
-                    _c("p", { staticClass: "text-muted font-italic small" }, [
-                      _vm._v("Plan achievment %")
-                    ])
-                  ]
-                )
+                _vm.reportPercent
+                  ? _c(
+                      "knob-card",
+                      { attrs: { val: _vm.reportPercent, max: 100 } },
+                      [
+                        _c(
+                          "p",
+                          { staticClass: "text-muted font-italic small" },
+                          [_vm._v("Plan achievment %")]
+                        )
+                      ]
+                    )
+                  : _vm._e()
               ],
               1
             ),
@@ -14115,20 +14122,24 @@ var render = function() {
               "div",
               { staticClass: "border rounded p-2 my-1" },
               [
-                _c(
-                  "knob-card",
-                  {
-                    attrs: {
-                      val: _vm.planPercent,
-                      max: _vm.planPercent > 100 ? 200 : 100
-                    }
-                  },
-                  [
-                    _c("p", { staticClass: "text-muted font-italic small" }, [
-                      _vm._v("Plan versus Frequency %")
-                    ])
-                  ]
-                )
+                _vm.planPercent
+                  ? _c(
+                      "knob-card",
+                      {
+                        attrs: {
+                          val: _vm.planPercent,
+                          max: _vm.planPercent > 100 ? 200 : 100
+                        }
+                      },
+                      [
+                        _c(
+                          "p",
+                          { staticClass: "text-muted font-italic small" },
+                          [_vm._v("Plan versus Frequency %")]
+                        )
+                      ]
+                    )
+                  : _vm._e()
               ],
               1
             )
