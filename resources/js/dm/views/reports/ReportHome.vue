@@ -49,19 +49,19 @@ export default {
         title: 'View Coach reports'
       },
       {
-        link: '/reports/view/am',
+        link: '/reports/view/pm',
         icon: 'fa-book-open',
         title: 'View PM reports'
       },
       {
-        link: '/reports/view/pm',
+        link: '/reports/view/am',
         icon: 'fa-book-open',
         title: 'View AM reports'
       },
       {
         link: '/reports/view/pharmacy',
         icon: 'fa-book-open',
-        title: 'View PM reports'
+        title: 'View Pharmacy report'
       },
       {
         link: '/reports/view/plans',

@@ -4,16 +4,16 @@ export default {
   state: {
     coaching_reports: [],
     is_coaching_reports_fetched: false,
-    rep_reports: [],
+    all_rep_reports: [],
     is_rep_reports_fetched: false,
-    select_report_rep: null
+    select_rep_id: null,
   },
   getters: {
     coachingReports: state => state.coaching_reports,
     isCoachingReportsFetched: state => state.is_coaching_reports_fetched,
-    repReports: state => state.rep_reports,
+    repReports: state => state.all_rep_reports,
     isRepReportsFetched: state => state.is_rep_reports_fetched,
-    selectedReportRep: state => state.selected_report_rep
+    selectedReportRep: state => state.selected_rep_id
   },
   mutations: {
 
@@ -26,6 +26,16 @@ export default {
         .then(({data}) => {
           state.is_coaching_reports_fetched = true;
           state.coaching_reports = data.data
+        })
+      }
+    },
+    getAllReports({state}, force) {
+      if(!state.all_rep_reports.length || force) {
+        state.is_rep_reports_fetched = false;
+        httpCall.get('dm/v1/reports/pm')
+        .then(({data}) => {
+          state.all_rep_reports = data.data;
+          state.is_rep_reports_fetched = true;
         })
       }
     }
