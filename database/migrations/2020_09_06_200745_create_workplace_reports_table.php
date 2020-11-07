@@ -13,6 +13,7 @@ class CreateWorkplaceReportsTable extends Migration
      */
     public function up()
     {
+        //FIXME edit product and add product columns
         Schema::create('workplace_reports', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('workplace_id')->unsigned();

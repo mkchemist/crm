@@ -33,6 +33,9 @@ Route::group([
   'prefix' => 'rep/v1',
   'namespace' => 'Api\V1\Rep'
 ], function() {
+
+  // coaches routes
+  Route::get('/coach', 'CoachController@index');
   // customers routes
   Route::apiResource('/customers','CustomerController');
   // customer frequency

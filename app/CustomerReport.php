@@ -28,4 +28,8 @@ class CustomerReport extends Model
   {
     return $this->belongsTo("App\User", "user_id", "id");
   }
+
+  public function coach() {
+    return $this->belongsTo('App\User', 'dual_with', 'id');
+  }
 }

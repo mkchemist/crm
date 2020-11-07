@@ -104,3 +104,17 @@ export const DM_CUSTOMERS_HEADS = [
     name: "address"
   }
 ];
+
+export const COACH_REPORT = {
+  "Pre-call planning" : {
+    "Feedback" : "",
+    "Samples" : "",
+    "Appearance": "",
+    "review previous notes about doctor": "",
+    "prepare a proper message for visit according to pharamcy feedback" : ""
+  },
+  "Opening": {
+    "Ask questions that related to visit message": "",
+    "Ask effective questions" : ""
+  }
+}

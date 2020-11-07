@@ -13,6 +13,8 @@ class CreateCustomerReportsTable extends Migration
      */
     public function up()
     {
+        //FIXME edit product and add product columns
+
         Schema::create('customer_reports', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();

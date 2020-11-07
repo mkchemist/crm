@@ -63,9 +63,7 @@ export default {
       let freq = 0;
       this.$store.getters.all.map(customer => freq += customer.current_freq)
       let plans = this.$store.getters.plans;
-
       let percent = parseInt(((plans.length/freq)*100).toFixed(1));
-      console.log(percent);
       return percent;
     }
   }

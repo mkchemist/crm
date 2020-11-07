@@ -5,7 +5,9 @@ import CustomersRoutes from "./customers-routes";
 import WorkplacesRoutes from "./workplaces-routes";
 import ApprovalRoutes from "./approval-routes";
 import PlannerRoutes from "./planner-routes";
+import ReportRoutes from './reports-routes';
 import ErrorPage from "../../components/ErrorPage";
+import ReportsRoutes from "./reports-routes";
 Vue.use(VueRouter);
 
 export default new VueRouter({
@@ -20,6 +22,7 @@ export default new VueRouter({
     WorkplacesRoutes,
     ApprovalRoutes,
     PlannerRoutes,
+    ReportsRoutes,
     {
       path: "*",
       component: ErrorPage

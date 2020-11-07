@@ -48,6 +48,7 @@
                   <span class="text-danger small" v-if="errors[0]">you must select a coach</span>
                   <select name="dual_with" id="dual_with" class="form-control form-control-sm" v-model="visit.dual_with">
                     <option value="">Select coach</option>
+                    <option :value="coach.id" v-for="coach in coaches" :key="coach.id">{{ coach.name }}</option>
                   </select>
                 </ValidationProvider>
               </div>
@@ -102,6 +103,7 @@ import VisitProducts from "../../components/VisitProducts";
 export default {
   created() {
     this.$store.dispatch('customerGetAll');
+    this.$store.dispatch('getCoaches')
     if(this.$route.params.id) {
       this.is_single_customer = true;
     }
@@ -154,6 +156,9 @@ export default {
       let id = parseInt(this.$route.params.id);
       this.visit.customer = id;
       return this.customers.filter(customer => customer.id === id)[0];
+    },
+    coaches() {
+      return this.$store.getters.coaches;
     }
   }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Rep;
 
+use App\CoachReport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\CustomerReport;
@@ -49,15 +50,27 @@ class CustomerReportController extends Controller
     if ($check) {
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
+    $user = Auth::user();
+    //return response($request->all());
     $visit = CustomerReport::create([
       'customer_id' =>  $request->customer,
-      'user_id'     =>  Auth::user()->id,
+      'user_id'     =>  $user->id,
       'visit_date'  =>  $request->date,
       'dual_with'   =>  $request->dual_with,
       'comment'     =>  $request->comment,
       'products'    =>  $request->products,
       'general_feedback'  =>  $request->general_feedback
     ]);
+
+    if($request->dual_with) {
+      CoachReport::create([
+        'rep_id' => $user->id,
+        'coach_id'=>$request->dual_with,
+        'visit_date'  =>  $request->date,
+        'customer_id' =>  $request->customer,
+        'data'        =>''
+      ]);
+    }
 
     return response()->json([
       'code'  =>  201,

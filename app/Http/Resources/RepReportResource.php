@@ -22,7 +22,7 @@ class RepReportResource extends JsonResource
         'customer_brick'    =>  $this->customer->brick,
         'customer_specialty'  =>  $this->customer->specialty,
         'date'        =>  $this->visit_date,
-        'dual_with'        =>  $this->dual_with,
+        'dual_with'        =>  $this->coach ? $this->coach->name: '',
         'user'        =>  $this->user->name,
         'comment'     =>  $this->comment,
         'products'    =>  json_decode($this->products),

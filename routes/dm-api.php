@@ -29,4 +29,8 @@ Route::prefix('v1')->group(function() {
     Route::get('/customers-details', 'ApprovalController@customerDetailsApproval');
     Route::post('/customers-details', 'ApprovalController@approveCustomerDetails');
   });
+  Route::group(['prefix' => 'reports'], function() {
+    Route::post('coach/submit', 'CoachingReportController@submitReport');
+    Route::apiResource('coach', 'CoachingReportController');
+  });
 });
