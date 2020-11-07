@@ -11,7 +11,7 @@ export default {
       component: ReportHome
     },
     {
-      path: 'add/coach-report',
+      path: 'view/coach-report',
       component: ViewCoachAssign
     },
     {

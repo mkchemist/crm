@@ -26,7 +26,6 @@ export default {
         .then(({data}) => {
           state.is_coaching_reports_fetched = true;
           state.coaching_reports = data.data
-          console.log(data)
         })
       }
     }

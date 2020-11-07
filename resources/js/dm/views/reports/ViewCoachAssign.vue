@@ -10,11 +10,11 @@
           <span><i class="fa fa-chevron-circle-left"></i></span>
           <span>back</span>
         </router-link>
-        <router-link to="/reports" class="btn btn-sm btn-primary">
-          <span><i class="fa fa-book-open"></i></span>
-          <span>View all reports</span>
-        </router-link>
-        <button class="btn btn-sm btn-success" :disabled="!submitted_reports.length" @click="submitReports">
+        <button
+          class="btn btn-sm btn-success"
+          :disabled="!submitted_reports.length"
+          @click="submitReports"
+        >
           <span><i class="fa fa-paper-plane"></i></span>
           <span>submit</span>
         </button>
@@ -28,7 +28,7 @@
           v-if="reports.length"
         >
           <template v-slot:head:before>
-            <th><input type="checkbox" @click="addAllToSubmiited"></th>
+            <th><input type="checkbox" @click="addAllToSubmiited" /></th>
             <th>Actions</th>
           </template>
           <template v-slot:head>
@@ -36,22 +36,37 @@
           </template>
           <template v-slot:body:before="{ item }">
             <td>
-              <input type="checkbox" @click="addReportToSubmitted(item.id)">
+              <input
+                type="checkbox"
+                @click="addReportToSubmitted(item.id)"
+                :disabled="item.coach_submit === 1"
+                :checked="item.coach_submit === 1"
+              />
             </td>
             <td>
-              <router-link :to="`/reports/add/coach-report/${item.id}`" class="btn btn-primary btn-sm">
-                <span><i class="fa fa-check"></i></span>
-                <span>Coach</span>
-              </router-link>
-              <router-link to="" class="btn btn-danger btn-sm">
-                <span><i class="fa fa-times"></i></span>
-                <span>Reject</span>
-              </router-link>
+              <div v-if="item.coach_submit === 0">
+                <router-link
+                  :to="`/reports/add/coach-report/${item.id}`"
+                  class="btn btn-primary btn-sm"
+                >
+                  <span><i class="fa fa-check"></i></span>
+                  <span>Coach</span>
+                </router-link>
+                <router-link to="" class="btn btn-danger btn-sm">
+                  <span><i class="fa fa-times"></i></span>
+                  <span>Reject</span>
+                </router-link>
+              </div>
+              <div v-else>
+                Submitted
+              </div>
             </td>
           </template>
-          <template v-slot:body="{item}">
+          <template v-slot:body="{ item }">
             <td class="text-center">
-              <span v-if="item.coach_submit"><i class="fa fa-check text-success"></i></span>
+              <span v-if="item.coach_submit"
+                ><i class="fa fa-check text-success"></i
+              ></span>
               <span v-else><i class="fa fa-times text-danger"></i></span>
             </td>
           </template>
@@ -68,7 +83,7 @@
 <script>
 import { filterData } from "../../../helpers/helpers";
 import TableComponent from "../../../components/TableComponent";
-import { httpCall } from '../../../helpers/http-service';
+import { httpCall } from "../../../helpers/http-service";
 export default {
   components: {
     TableComponent
@@ -104,7 +119,7 @@ export default {
         name: "customer_params"
       }
     ],
-    submitted_reports : []
+    submitted_reports: []
   }),
   created() {
     this.$store.dispatch("getCoachingReports");
@@ -135,10 +150,10 @@ export default {
      */
     addReportToSubmitted(id) {
       let checked = event.target.checked;
-      if(checked && !this.submitted_reports.includes(id)) {
-        this.submitted_reports.push(id)
+      if (checked && !this.submitted_reports.includes(id)) {
+        this.submitted_reports.push(id);
       } else {
-        if(this.submitted_reports.includes(id)) {
+        if (this.submitted_reports.includes(id)) {
           let index = this.submitted_reports.indexOf(id);
           this.submitted_reports.splice(index, 1);
         }
@@ -151,13 +166,27 @@ export default {
      */
     addAllToSubmiited() {
       let target = event.target;
-      let inputs = document.querySelectorAll('#coach-report-table input[type="checkbox"]');
-      if(target.checked) {
-        this.submitted_reports = this.reports.map(report => report.id);
-        inputs.forEach(input => input.checked = true);
+      let inputs = document.querySelectorAll(
+        '#coach-report-table input[type="checkbox"]'
+      );
+      if (target.checked) {
+        this.reports.map(report => {
+          if (!report.coach_submit) {
+            this.submitted_reports.push(report.id);
+          }
+        });
+        inputs.forEach(input => {
+          if (input.disabled === false) {
+            input.checked = true;
+          }
+        });
       } else {
         this.submitted_reports = [];
-        inputs.forEach(input => input.checked = false);
+        inputs.forEach(input => {
+          if (input.disabled === false) {
+            input.checked = false;
+          }
+        });
       }
     },
     /**
@@ -165,17 +194,16 @@ export default {
      *
      */
     submitReports() {
-      if(!this.submitted_reports.length) {
-        this.$toasted.error('No report selected');
+      if (!this.submitted_reports.length) {
+        this.$toasted.error("No report selected");
         return;
       }
       let data = {
         ids: JSON.stringify(this.submitted_reports)
-      }
-      httpCall.post('dm/v1/reports/coach/submit', data)
-      .then(({data}) => {
+      };
+      httpCall.post("dm/v1/reports/coach/submit", data).then(({ data }) => {
         this.handleResponse(data, data => {
-            this.$store.dispatch('getCoachingReports', true);
+          this.$store.dispatch("getCoachingReports", true);
         });
       });
     }
@@ -184,7 +212,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  tr,td,th {
-    vertical-align: middle !important;
-  }
+tr,
+td,
+th {
+  vertical-align: middle !important;
+}
 </style>

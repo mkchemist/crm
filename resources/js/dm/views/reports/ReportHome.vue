@@ -27,11 +27,6 @@ export default {
   data: () => ({
     add_links: [
       {
-        link: '/reports/add/coach-report',
-        icon : 'fa-plus-circle',
-        title: 'Add Coach report'
-      },
-      {
         link: '/reports/add/pm',
         icon: 'fa-plus-circle',
         title: 'Add PM Visit'
