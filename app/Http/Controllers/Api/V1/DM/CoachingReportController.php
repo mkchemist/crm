@@ -109,7 +109,18 @@ class CoachingReportController extends Controller
      */
     public function destroy($id)
     {
-        //
+      if(!is_numeric($id)) {
+        return response(ResponseHelper::BAD_REQUEST_INPUT);
+      }
+      $user = Auth::user();
+      $report = CoachReport::where([
+        'coach_id'  =>  $user->id,
+        'id'        =>  $id
+      ])->delete();
+      return response([
+        "code"  =>  200,
+        "message" =>  "Report rejected and deleted"
+      ], 200);
     }
 
     /**

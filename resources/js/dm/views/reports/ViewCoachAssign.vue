@@ -10,6 +10,10 @@
           <span><i class="fa fa-chevron-circle-left"></i></span>
           <span>back</span>
         </router-link>
+        <button class="btn btn-primary btn-sm" @click="$store.dispatch('getCoachingReports', true)">
+          <span><i class="fa fa-redo"></i></span>
+          <span>reload list</span>
+        </button>
         <button
           class="btn btn-sm btn-success"
           :disabled="!submitted_reports.length"
@@ -47,18 +51,27 @@
               <div v-if="item.coach_submit === 0">
                 <router-link
                   :to="`/reports/add/coach-report/${item.id}`"
-                  class="btn btn-primary btn-sm"
+                  class="badge badge-primary custom-btn"
                 >
                   <span><i class="fa fa-check"></i></span>
                   <span>Coach</span>
                 </router-link>
-                <router-link to="" class="btn btn-danger btn-sm">
+                <button
+                  class="badge badge-danger custom-btn"
+                  @click="openRejectModal(item.id)"
+                >
                   <span><i class="fa fa-times"></i></span>
                   <span>Reject</span>
-                </router-link>
+                </button>
               </div>
               <div v-else>
-                Submitted
+                <router-link
+                  :to="`/reports/add/coach-report/${item.id}`"
+                  class="badge badge-primary custom-btn"
+                >
+                  <span><i class="fa fa-book-open"></i></span>
+                  <span>View</span>
+                </router-link>
               </div>
             </td>
           </template>
@@ -77,6 +90,25 @@
         <loader-component v-else></loader-component>
       </div>
     </div>
+    <modal-fade :show="show_reject_modal" id="reject_modal_fade">
+      <template v-slot:header>
+        <span class="font-weight-bold text-danger">
+          Are you sure, you want to reject this report ?
+        </span>
+      </template>
+      <template v-slot:body>
+        <div class="text-center">
+          <button class="btn btn-danger btn-sm" @click="rejectCoachReport">
+            <span><i class="fa fa-trash"></i></span>
+            <span>reject</span>
+          </button>
+          <button class="btn btn-dark btn-sm" @click="show_reject_modal = false">
+            <span><i class="fa fa-chevron-circle-left"></i></span>
+            <span>cancel</span>
+          </button>
+        </div>
+      </template>
+    </modal-fade>
   </div>
 </template>
 
@@ -84,12 +116,18 @@
 import { filterData } from "../../../helpers/helpers";
 import TableComponent from "../../../components/TableComponent";
 import { httpCall } from "../../../helpers/http-service";
+import ModalFade from "../../../components/ModalFade";
 export default {
   components: {
-    TableComponent
+    TableComponent,
+    ModalFade
   },
   data: () => ({
     heads: [
+      {
+        title: "Rep",
+        name: "rep"
+      },
       {
         title: "Date",
         name: "date"
@@ -119,7 +157,9 @@ export default {
         name: "customer_params"
       }
     ],
-    submitted_reports: []
+    submitted_reports: [],
+    show_reject_modal : false,
+    rejected_report: false
   }),
   created() {
     this.$store.dispatch("getCoachingReports");
@@ -206,6 +246,28 @@ export default {
           this.$store.dispatch("getCoachingReports", true);
         });
       });
+    },
+    openRejectModal(id) {
+      this.show_reject_modal = true;
+      this.rejected_report = id;
+    },
+    rejectCoachReport() {
+      if(!this.rejected_report) {
+        return;
+      }
+      let id = this.rejected_report;
+      httpCall.post("dm/v1/reports/coach/"+id, {_method: 'DELETE'})
+      .then(res => {
+        let data = res.data;
+        this.handleResponse(data, data => {
+          this.rejected_report = false;
+          this.show_reject_modal = false;
+          this.$store.dispatch("getCoachingReports", true);
+        }, data => {
+          this.rejected_report = false;
+          this.show_reject_modal = false;
+        });
+      })
     }
   }
 };

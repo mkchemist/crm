@@ -132,3 +132,13 @@ td,th {
 .rotateIcon180 {
   transform: rotateZ(180deg) !important;
 }
+
+.custom-btn {
+  border:none;
+  font-size:100% !important;
+
+  &:focus {
+    outline: none !important;
+    opacity:.9;
+  }
+}

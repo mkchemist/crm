@@ -3,7 +3,7 @@
     <p class="alert alert-success">
       <span><i class="fa fa-plus-circle"></i></span>
       <span class="font-weight-bold"
-        >Finish Coach report
+        > {{ visit && visit.coach_submit === 1 ? 'View' : 'Finish' }} Coach report
         <span class="font-italic">{{
           visit ? visit.customer_name : ""
         }}</span></span
@@ -64,7 +64,7 @@
       </div>
       <!-- coach report -->
       <div class="my-2">
-        <table class="table table-sm small table-bordered">
+        <table class="table table-sm small table-bordered" v-if="visit">
           <thead>
             <tr class="bg-success text-light">
               <th>Item</th>
@@ -82,11 +82,13 @@
             >
               <td>{{ i }}</td>
               <td>
+                <span v-if="visit.coach_submit === 1">{{ coach_report[key][i] }}</span>
                 <select
                   name=""
                   id=""
                   v-model="coach_report[key][i]"
                   class="coach-select"
+                  v-else
                 >
                   <option value="">N</option>
                   <option value="S">S</option>
