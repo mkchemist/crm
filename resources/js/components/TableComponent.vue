@@ -20,7 +20,7 @@
         <tr v-for="(item, i) in rows" :key="i">
           <!-- <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td> -->
           <slot name="body:before" :item="item"></slot>
-          <td v-for="(head, i) in heads" :key="i">
+          <td v-for="(head, i) in heads" :key="i" :class="`${head.style ? head.style : ''}`">
             {{ _notation(item, head.name, head.fallback) }}
           </td>
           <slot name="body" :item="item"></slot>
@@ -43,7 +43,8 @@ export default {
     "onUnlink",
     "orderBy",
     "notResponsive",
-    "actionCell"
+    "actionCell",
+    "unselectable"
   ],
   data: () => ({
     table: null
@@ -78,6 +79,7 @@ export default {
       ];
       buttons = this.addFavoriteButton(buttons);
       buttons = this.addUnlinkButton(buttons);
+      let select = this.unselectable ? false : {style: 'single'}
       this.table = $("#data-table").DataTable({
         order: this.ordering(),
         language: {
@@ -86,9 +88,7 @@ export default {
         lengthMenu: [20, 50, 100],
         buttons,
         dom: "Bflrtip",
-        select: {
-          style: "single"
-        },
+        select,
         fixedHeader: {
           header: true,
           footer: true
