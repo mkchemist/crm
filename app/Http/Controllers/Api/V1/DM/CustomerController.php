@@ -49,7 +49,7 @@ class CustomerController extends Controller
   public function show($id)
   {
     $user = Auth::user();
-    $customer = Customer::with(['params', 'planner'])->where([
+    $customer = Customer::with(['params', 'planner', 'report.coach'])->where([
       'district' => $user->district,
       'id'       => $id
     ])->first();

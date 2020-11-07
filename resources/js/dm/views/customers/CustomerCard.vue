@@ -166,7 +166,7 @@
                     </ul>
                   </td>
                   <td>{{ report.comment ? report.comment : 'No comment' }}</td>
-                  <td>{{ report.dual_with ? report.dual_with : 'Single' }}</td>
+                  <td>{{ report.dual_with ? report.coach.name : 'Single' }}</td>
                   <td>{{ report.general_feedback ? report.general_feedback : 'No feedback' }}</td>
                 </tr>
               </tbody>
