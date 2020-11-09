@@ -8,28 +8,36 @@
       <div class="col-lg-3 bg-light p-2 rounded">
         <div class="border p-2 rounded bg-white">
           <label for="">Rep :</label>
-          <select name="" id="" class="form-control form-control-sm">
+          <select
+            name=""
+            id=""
+            class="form-control form-control-sm"
+            v-model="selected_rep"
+          >
             <option value="">All</option>
-            <option  v-for="rep in allReps" :key="rep.id" :value="rep.id">{{ rep.name }}</option>
+            <option v-for="rep in allReps" :key="rep.id" :value="rep.id">{{
+              rep.name
+            }}</option>
           </select>
-          <div class="text-right p-2">
-            <button class="btn btn-sm btn-secondary">select</button>
-          </div>
         </div>
 
         <div class="my-1 border p-2 rounded bg-white">
           <div class="form-group mb-0">
             <label for="">from</label>
-            <input type="date" class="form-control form-control-sm">
+            <input type="date" class="form-control form-control-sm" v-model="start_date" />
           </div>
           <div class="form-group mb-0">
             <label for="">to</label>
-            <input type="date" class="form-control form-control-sm">
+            <input type="date" class="form-control form-control-sm"  v-model="end_date" />
           </div>
           <div class="form-group text-right my-2">
-            <button class="btn btn-sm btn-primary">
+            <button class="btn btn-sm btn-primary" @click="filterReport">
               <span><i class="fa fa-filter"></i></span>
               <span>filter</span>
+            </button>
+            <button class="btn btn-sm btn-secondary">
+              <span><i class="fa fa-redo"></i></span>
+              <span>reset</span>
             </button>
           </div>
         </div>
@@ -46,16 +54,30 @@
         </div>
       </div>
       <div class="col-lg-9">
-        <div  v-if="reports.length">
-          <table-component :heads="heads" :data="reports"  headClass="bg-success text-light" :unselectable="true">
+        <div v-if="reportByRep.length">
+          <table-component
+            :heads="heads"
+            :data="reportByRep"
+            headClass="bg-success text-light"
+            :unselectable="true"
+          >
             <template v-slot:head>
               <th>Products</th>
             </template>
-            <template v-slot:body="{item}">
+            <template v-slot:body="{ item }">
               <td>
-                <ul v-for="(product, i) in JSON.parse(item.products)" :key="`product_${i}`" class="nav border-bottom">
-                  <li v-for="(val, key) in product" :key="`product_${i}_${key}`" class="nav-item col-12">
-                    <span>{{ key }}</span>:
+                <ul
+                  v-for="(product, i) in JSON.parse(item.products)"
+                  :key="`product_${i}`"
+                  class="nav border-bottom"
+                >
+                  <li
+                    v-for="(val, key) in product"
+                    :key="`product_${i}_${key}`"
+                    class="nav-item col-12"
+                  >
+                    <span>{{ key }}</span
+                    >:
                     <span class="font-weight-bold text-primary">{{ val }}</span>
                   </li>
                 </ul>
@@ -63,8 +85,12 @@
             </template>
           </table-component>
         </div>
-        <div v-else-if="isFetched">
-          <p class="text-center font-weight-bold">No data to show</p>
+        <div
+          v-else-if="isFetched"
+          class="lead d-flex align-items-center justify-content-center"
+          style="min-height:400px"
+        >
+          <p class="text-muted font-weight-bold">No data to show</p>
         </div>
         <loader-component v-else></loader-component>
       </div>
@@ -73,10 +99,11 @@
 </template>
 
 <script>
-import TableComponent from '../../../components/TableComponent';
+import TableComponent from "../../../components/TableComponent";
+import { sortBy } from "../../../helpers/helpers";
 export default {
   created() {
-    this.$store.dispatch('getAllReports');
+    this.$store.dispatch("getAllReports");
   },
   components: {
     TableComponent
@@ -89,67 +116,86 @@ export default {
       return this.$store.getters.isRepReportsFetched;
     },
     allReps() {
-      return this.$store.getters.allReps;
+      return sortBy(this.$store.getters.allReps, "name");
+    },
+    reportByRep() {
+      if (this.selected_rep === "" && !this.filter) {
+        return this.reports;
+      }
+      let reports = this.reports.filter(report => {
+        return report.user_id === this.selected_rep;
+      });
+      return reports;
     }
   },
   data: () => ({
     heads: [
       {
-        title: 'Rep',
-        name: 'user.name',
-        style: 'font-weight-bold'
+        title: "Rep",
+        name: "user.name",
+        style: "font-weight-bold"
       },
       {
-        title: 'Date',
-        name: 'visit_date',
-        style: 'font-weight-bold'
+        title: "Date",
+        name: "visit_date",
+        style: "font-weight-bold"
       },
       {
-        title: 'Customer',
-        name:'customer.name',
-        style: 'font-weight-bold'
+        title: "Customer",
+        name: "customer.name",
+        style: "font-weight-bold"
       },
       {
-        title: 'Specialty',
-        name:'customer.specialty',
-        style: 'font-weight-bold'
+        title: "Specialty",
+        name: "customer.specialty",
+        style: "font-weight-bold"
       },
       {
-        title: 'Parameter',
-        name: 'customer.params.0.current',
-        fallback: 'NN',
-        style: 'font-weight-bold'
+        title: "Parameter",
+        name: "customer.params.0.current",
+        fallback: "NN",
+        style: "font-weight-bold"
       },
       {
-        title: 'Area',
-        name: 'customer.area'
+        title: "Area",
+        name: "customer.area"
       },
       {
-        title: 'Brick',
-        name: 'customer.brick'
+        title: "Brick",
+        name: "customer.brick"
       },
       {
-        title: 'Address',
-        name: 'customer.address'
+        title: "Address",
+        name: "customer.address"
       },
       {
-        title: 'Comment',
-        name: 'comment'
+        title: "Comment",
+        name: "comment"
       },
       {
-        title: 'Coach',
-        name: 'coach.name',
-        fallback: '----'
+        title: "Coach",
+        name: "coach.name",
+        fallback: "----"
       },
       {
-        title: 'Feedback',
-        name:'general_feedback'
+        title: "Feedback",
+        name: "general_feedback"
       }
-    ]
-  })
-}
+    ],
+    selected_rep: "",
+    start_date: '',
+    end_date : '',
+    filter: false
+  }),
+  methods: {
+    filterReport() {
+      this.filter = true;
+    },
+    reset() {
+      this.filter = false;
+    }
+  }
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
