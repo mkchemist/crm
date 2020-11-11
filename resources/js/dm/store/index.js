@@ -4,7 +4,8 @@ import { httpCall } from "../../helpers/http-service";
 import CustomersModule from "./customers-module";
 import WorkplaceModule from "./workplace-module";
 import PlannerModule from "./planner-module";
-import ReportModule from './reports-module'
+import ReportModule from './reports-module';
+import CoachModule from './coach-module';
 Vue.use(Vuex);
 
 let user = document.getElementById("user");
@@ -20,7 +21,8 @@ export default new Vuex.Store({
     CustomersModule,
     WorkplaceModule,
     PlannerModule,
-    ReportModule
+    ReportModule,
+    CoachModule
   },
   state: {
     reps: [],

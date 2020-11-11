@@ -186,8 +186,55 @@ export function ExportToExcel(target, filename = "download-file") {
   let blob = new Blob([content]);
   let link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = filename+'.xlsx';
+  link.download = filename + ".xlsx";
   link.click();
 }
 
+const initialDateRange = {
+  start: null,
+  end: null
+};
 
+/**
+ *
+ * @param {array} data
+ * @param {string} prop
+ * @param {object} range
+ * @return {Promise}
+ */
+export function filterByDate(data, prop, range = initialDateRange) {
+  return new Promise((res, err) => {
+    let { start, end } = range;
+    if (!start && !end) {
+      return err("Start and End date is undefined");
+    }
+    let result = data;
+    if (start) {
+      start = new Date(start).getTime();
+      result = result.filter(item => new Date(item[prop]).getTime() >= start);
+    }
+
+    if (end) {
+      end = new Date(end).getTime();
+      result = result.filter(item => new Date(item[prop]) <= end);
+    }
+    res(result);
+  });
+}
+
+/**
+ *
+ * @param {object} data
+ * @param {string} prop
+ * @param {mixed} condition
+ * @return {Promise}
+ */
+export function filterBy(data, prop, condition) {
+  return new Promise((res, err) => {
+    if(condition === null) {
+      res(data);
+    }
+    let result= data.filter(item => item[prop] === condition);
+    res(result);
+  });
+}

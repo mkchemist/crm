@@ -28,7 +28,8 @@ class CoachReportResource extends JsonResource
           'date'        =>  $this->visit_date,
           'report'      =>  $this->data,
           'coach_submit' => $this->coach_submit,
-          'rep_submit'  =>  $this->rep_submit
+          'rep_submit'  =>  $this->rep_submit,
+          "rep_id"       => $this->rep->id
         ];
     }
 }

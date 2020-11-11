@@ -131,15 +131,23 @@ class CoachingReportController extends Controller
      */
     public function submitReport(Request $request)
     {
-      $validator = Validator::make($request->all(), ['ids' => 'required']);
+      $validator = Validator::make($request->all(), ['ids' => 'required', 'state' => 'required']);
       if($validator->fails()) {
         return response(ResponseHelper::validationErrorResponse($validator));
       }
       $ids = json_decode($request->ids);
-      CoachReport::whereIn('id', $ids)->update(['coach_submit'=> true]);
-      return response([
-        'code'  =>  200,
-        'message'  =>  'Reports submitted and will be sent to reps'
-      ],200);
+      if($request->state === 'approved') {
+        CoachReport::whereIn('id', $ids)->update(['coach_submit'=> true]);
+        return response([
+          'code'  =>  200,
+          'message'  =>  'Reports submitted and will be sent to reps'
+        ],200);
+      } elseif($request->state === 'rejected') {
+        CoachReport::whereIn('id', $ids) ->delete();
+        return response([
+          'code'  =>  200,
+          'message'  =>  'Reports rejected successfully'
+        ],200);
+      }
     }
 }

@@ -87,7 +87,7 @@ export default {
         },
         lengthMenu: [20, 50, 100],
         buttons,
-        dom: "Bflrtip",
+        dom: "Bflirtp",
         select,
         fixedHeader: {
           header: true,
