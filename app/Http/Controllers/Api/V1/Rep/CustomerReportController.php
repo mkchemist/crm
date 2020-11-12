@@ -20,7 +20,9 @@ class CustomerReportController extends Controller
    */
   public function index()
   {
-    $visits = CustomerReport::with(['customer', 'customer.params', 'customer.frequency', 'customer.planner','user'])
+    $visits = CustomerReport::with([
+      'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach'
+      ])
       ->where(['user_id' => Auth::user()->id])->get();
     return response()->json([
       'code'  =>  201,
@@ -62,13 +64,13 @@ class CustomerReportController extends Controller
       'general_feedback'  =>  $request->general_feedback
     ]);
 
-    if($request->dual_with) {
+    if ($request->dual_with) {
       CoachReport::create([
         'rep_id' => $user->id,
-        'coach_id'=>$request->dual_with,
+        'coach_id' => $request->dual_with,
         'visit_date'  =>  $request->date,
         'customer_id' =>  $request->customer,
-        'data'        =>''
+        'data'        => ''
       ]);
     }
 
@@ -109,7 +111,7 @@ class CustomerReportController extends Controller
   public function update(Request $request, $id)
   {
 
-    if(!is_numeric($id)) {
+    if (!is_numeric($id)) {
       return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
 
@@ -124,7 +126,7 @@ class CustomerReportController extends Controller
 
     $visit = $this->getVisitById($id);
 
-    if(!$visit) {
+    if (!$visit) {
       return response()->json(ResponseHelper::INVALID_ID);
     }
     $visit->dual_with = $request->dual_with;
