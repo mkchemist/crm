@@ -20,7 +20,7 @@ class PlannerController extends Controller
      */
     public function index()
     {
-      $plans = Planner::with(['customer', 'customer.frequency', 'customer.planner', 'customer.params'])->where([
+      $plans = Planner::with(['customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user'])->where([
         'user_id' =>  Auth::user()->id
       ])->orderBy('plan_date', 'asc')->get();
       if(count($plans) === 0) {

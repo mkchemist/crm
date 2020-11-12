@@ -29,7 +29,11 @@ class RepPlannerResource extends JsonResource
           'param'     =>  $params,
           'plans_count' =>  count($this->customer->planner),
           'customer_id' =>  $this->customer->id,
-          'user_id'     =>  $this->user->id
+          'user_id'     =>  $this->user->id,
+          'area'        =>  $this->customer->area,
+          'brick'       =>  $this->customer->brick,
+          'user_name'   =>  $this->user->name,
+          'address'     =>  $this->customer->address
         ];
     }
 }
