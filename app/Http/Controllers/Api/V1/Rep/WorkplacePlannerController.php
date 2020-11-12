@@ -65,17 +65,6 @@ class WorkplacePlannerController extends Controller
        * for the given workplace id
        *
        */
-      /* $check = $this->getPlanByWorkplaceId($id, $request->date);
-      if ($check) {
-        $rejected[] = "Workplace {$check->workplace->name} is already planned";
-      } else {
-        $plan = WorkplacePlanner::create([
-          'workplace_id'  =>  $id,
-          'user_id'       =>  Auth::user()->id,
-          'plan_date'     =>  $request->date
-        ]);
-        $accepted[] = "Workplace {$plan->workplace->name} is planned successfully";
-      } */
       $state = WorkplacePlanner::updateOrCreate([
         'workplace_id'  =>  $id,
         'user_id'       =>  Auth::id(),
