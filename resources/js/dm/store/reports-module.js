@@ -5,12 +5,18 @@ export default {
   state: {
     reports: [],
     fetched: false,
-    repReports: []
+    repReports: [],
+    allHospitalReports: [],
+    allRepHospitalReports:[],
+    isHospitalReportsFetched : false
   },
   getters: {
     repPmReports: state => state.repReports,
     isRepPmReportsFetched: state => state.fetched,
-    allRepPmReports : state => state.reports
+    allRepPmReports : state => state.reports,
+    allHospitalReports: state => state.allHospitalReports,
+    allRepHospitalReports: state => state.allRepHospitalReports,
+    isHospitalReportsFetched : state=>state.isHospitalReportsFetched
   },
   mutations: {
     setRepPmReports(state, data) {
@@ -24,6 +30,9 @@ export default {
       }
       state.repReports = [];
       asyncReset().then(data => state.repReports = data);
+    },
+    setRepHospitalsReports(state, data) {
+      state.allRepHospitalReports = data;
     }
   },
   actions: {
@@ -36,6 +45,17 @@ export default {
             state.reports = data.data;
             state.fetched = true;
           });
+        });
+      }
+    },
+    getAllHospitalReports({state}, force) {
+      if(!state.allHospitalReports.length || force) {
+        state.isHospitalReportsFetched = false;
+        return httpCall.get('dm/v1/reports/workplaces/hospitals')
+        .then(({data}) => {
+          state.allRepHospitalReports = data.data;
+          state.allHospitalReports = data.data;
+          state.isHospitalReportsFetched = true;
         });
       }
     }

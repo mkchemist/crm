@@ -29,9 +29,16 @@ Route::prefix('v1')->group(function() {
     Route::get('/customers-details', 'ApprovalController@customerDetailsApproval');
     Route::post('/customers-details', 'ApprovalController@approveCustomerDetails');
   });
+  // Reports Routes
   Route::group(['prefix' => 'reports'], function() {
+    // PM reports
     Route::apiResource('/pm', 'CustomerReportController');
+    // Coach Reports
     Route::post('coach/submit', 'CoachingReportController@submitReport');
     Route::apiResource('coach', 'CoachingReportController');
+    // Workplace reports
+    Route::group(['prefix' => 'workplaces'], function() {
+      Route::get('/hospitals', 'WorkplaceReportController@hospitalsReports');
+    });
   });
 });
