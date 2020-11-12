@@ -26,4 +26,13 @@ class WorkplaceReport extends Model
   {
     return $this->belongsTo('App\Workplace', 'workplace_id', 'id');
   }
+
+  public function user()
+  {
+    return $this->belongsTo('App\User');
+  }
+
+  public function coach() {
+    return $this->belongsTo('App\User','dual_with', 'id');
+  }
 }
