@@ -67,11 +67,11 @@ export default {
       this.onReset();
     },
     filterByDate() {
-      let rep_reports = filterBy(this.data, this.keys.rep, this.rep);
+      let repItems = filterBy(this.data, this.keys.rep, this.rep);
       if(!this.start && !this.end) {
-        this.onUpdate(rep_reports);
+        this.onUpdate(repItems);
       } else {
-        rep_reports.then(repData => {
+        repItems.then(repData => {
           let range = {start: this.start, end: this.end};
           let res = filterByDate(repData, this.keys.date, range);
           this.onUpdate(res);

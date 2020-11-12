@@ -6,11 +6,14 @@ export default {
     fetched: false,
     currentUserId: [],
     selectedUserPlans: [],
+    repPlans: [],
+    coachPlans: []
   },
   getters: {
     plans: state => state.allPlans.filter(plan => plan.user_id === state.currentUserId),
     isPlanFetched : state => state.fetched,
-    currentUserId: state => state.currentUserId
+    currentUserId: state => state.currentUserId,
+    repPlans: state => state.repPlans
   },
   mutations: {
     setCurrentUserId(state, id) {
@@ -20,8 +23,12 @@ export default {
   actions: {
     getPlans: ({state}, force) => {
       if(!state.allPlans.length || force) {
-        httpCall.get('dm/v1/planner')
+        state.fetched = false;
+        return httpCall.get('dm/v1/planner')
         .then(({data}) => {
+          state.fetched = true;
+          state.repPlans = data.data.rep;
+          state.coachPlans = data.data.coach;
           state.allPlans = [...data.data.coach, ...data.data.rep]
         })
       }

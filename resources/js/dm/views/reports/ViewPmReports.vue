@@ -8,7 +8,12 @@
       <div class="row mx-auto">
         <!-- filter section -->
         <div class="col-lg-3">
-          <data-filter :data="$store.getters.allRepPmReports" :onUpdate="onUpdate" :onReset="onReset" :keys="{rep: 'user_id', date: 'visit_date'}"/>
+          <data-filter
+            :data="$store.getters.allRepPmReports"
+            :onUpdate="onUpdate"
+            :onReset="onReset"
+            :keys="{ rep: 'user_id', date: 'visit_date' }"
+          />
           <div class="my-2">
             <router-link
               to="/reports/view/coach-report"
@@ -72,7 +77,7 @@
 <script>
 import TableComponent from "../../../components/TableComponent";
 import { sortBy } from "../../../helpers/helpers";
-import DataFilter from '../../components/DataFilter';
+import DataFilter from "../../components/DataFilter";
 export default {
   created() {
     this.$store.dispatch("getAllRepPmReports");
@@ -147,13 +152,13 @@ export default {
   }),
   methods: {
     onUpdate(res) {
-      this.$store.commit('setRepPmReports', []);
+      this.$store.commit("setRepPmReports", []);
       res.then(data => {
-        this.$store.commit('setRepPmReports', data);
-      })
+        this.$store.commit("setRepPmReports", data);
+      });
     },
     onReset() {
-      this.$store.commit('resetRepPmReports')
+      this.$store.commit("resetRepPmReports");
     }
   }
 };
