@@ -22,7 +22,9 @@ class PlannerController extends Controller
     public function index()
     {
       $user = Auth::user();
-      $repPlans = Planner::with(['customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user'])
+      $repPlans = Planner::with([
+        'customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user'
+        ])
       ->whereIn('user_id', function ($query) use($user) {
         $query->select('id')->from('users')
         ->where(['district' => $user->district, 'line' => $user->line])->get();
