@@ -19,7 +19,8 @@ class WorkplaceReportController extends Controller
    */
   public function index()
   {
-    $visits = WorkplaceReport::where([
+    $visits = WorkplaceReport::with(['customer', 'workplace'])
+    ->where([
       'user_id' =>  Auth::user()->id
     ])->orderBy('visit_date', 'asc')->get();
 
