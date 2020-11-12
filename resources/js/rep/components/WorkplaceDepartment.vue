@@ -19,7 +19,7 @@
             >
               <span><i class="fa fa-edit"></i></span>
             </button>
-            <button class="btn btn-danger btn-sm">
+            <button class="btn btn-danger btn-sm" @click="deleteDepartment(depart.id)">
               <span><i class="fa fa-trash"></i></span>
             </button>
           </td>
@@ -75,6 +75,9 @@ export default {
     editDepartment() {
       this.$emit("onEdit", this.selected);
       this.show_edit_modal = false;
+    },
+    deleteDepartment(id) {
+      this.$emit('onDelete', id)
     }
   },
   data: () => ({
