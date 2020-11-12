@@ -82,4 +82,13 @@ class WorkplaceDepartmentController extends Controller
       'data'  =>  'Department edit successfully'
     ]);
   }
+
+  public function delete($id)
+  {
+    WorkplaceDepartment::destroy($id);
+    return response([
+      'code'  =>  200,
+      'message' =>  'Department deleted'
+    ], 200);
+  }
 }
