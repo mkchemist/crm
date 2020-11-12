@@ -50,6 +50,7 @@ Route::group([
     Route::get('/all/{id}', 'WorkplaceDepartmentController@getWorkplaceDepartment');
     Route::post('/', 'WorkplaceDepartmentController@store');
     Route::put('/{id}','WorkplaceDepartmentController@update');
+    Route::delete('/{id}', 'WorkplaceDepartmentController@delete');
   });
   // planner routes
   Route::delete('planner/delete','PlannerController@groupDelete');
