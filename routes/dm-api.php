@@ -39,6 +39,7 @@ Route::prefix('v1')->group(function() {
     // Workplace reports
     Route::group(['prefix' => 'workplaces'], function() {
       Route::get('/hospitals', 'WorkplaceReportController@hospitalsReports');
+      Route::get('/pharmacies', 'WorkplaceReportController@pharmaciesReports');
     });
   });
 });

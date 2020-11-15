@@ -18,4 +18,9 @@ class PharmacyReport extends Model
   {
     return $this->belongsTo('App\Pharmacy', 'pharmacy_id', 'id');
   }
+
+  public function user()
+  {
+    return $this->belongsTo('App\User');
+  }
 }
