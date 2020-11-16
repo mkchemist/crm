@@ -186,7 +186,7 @@ export function ExportToExcel(target, filename = "download-file") {
   let blob = new Blob([content]);
   let link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = filename + ".xlsx";
+  link.download = filename + ".xls";
   link.click();
 }
 

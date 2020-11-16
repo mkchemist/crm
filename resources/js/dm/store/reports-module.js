@@ -55,7 +55,7 @@ export default {
     getAllRepPmReports({ state }, force) {
       if (!state.reports.length || force) {
         state.fetched = false;
-        httpCall.get("dm/v1/reports/pm").then(({ data }) => {
+        return httpCall.get("dm/v1/reports/pm").then(({ data }) => {
           ResponseHandler.methods.handleResponse(data, data => {
             state.repReports = data.data;
             state.reports = data.data;

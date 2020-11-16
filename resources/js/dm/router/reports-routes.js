@@ -6,6 +6,7 @@ import ViewPmReports from '../views/reports/ViewPmReports.vue';
 import ViewPlanReports from '../views/reports/ViewPlanReports.vue';
 import ViewHospitalReport from '../views/reports/ViewHospitalReport.vue'
 import ViewPharmacyReport from '../views/reports/VIewPharmacyReport.vue';
+import ViewPmAnalysis from '../views/reports/analysis/ViewPmAnalysis.vue';
 
 
 export default {
@@ -39,6 +40,10 @@ export default {
     {
       path: 'view/pharmacy',
       component: ViewPharmacyReport
+    },
+    {
+      path: 'analysis/pm',
+      component: ViewPmAnalysis
     }
   ]
 }
