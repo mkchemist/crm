@@ -183,13 +183,14 @@ export function sortBy(arr, item, dir = "asc") {
  * @return {void}
  */
 export function ExportToExcel(target, filename = "download-file") {
-  let table = document.querySelector(target);
-  let content = table.outerHTML;
-  let blob = new Blob([content]);
-  let link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = filename + ".xls";
-  link.click();
+  var uri = 'data:application/vnd.ms-excel;base64,'
+    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+    target = document.querySelector(target)
+    var ctx = {worksheet: filename || 'Worksheet', table: target.innerHTML}
+    window.location.href = uri + base64(format(template, ctx))
+
 }
 
 const initialDateRange = {

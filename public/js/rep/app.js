@@ -27017,13 +27017,24 @@ function sortBy(arr, item) {
 
 function ExportToExcel(target) {
   var filename = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "download-file";
-  var table = document.querySelector(target);
-  var content = table.outerHTML;
-  var blob = new Blob([content]);
-  var link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = filename + ".xls";
-  link.click();
+
+  var uri = 'data:application/vnd.ms-excel;base64,',
+      template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+      base64 = function base64(s) {
+    return window.btoa(unescape(encodeURIComponent(s)));
+  },
+      format = function format(s, c) {
+    return s.replace(/{(\w+)}/g, function (m, p) {
+      return c[p];
+    });
+  };
+
+  target = document.querySelector(target);
+  var ctx = {
+    worksheet: filename || 'Worksheet',
+    table: target.innerHTML
+  };
+  window.location.href = uri + base64(format(template, ctx));
 }
 var initialDateRange = {
   start: null,

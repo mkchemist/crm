@@ -16,6 +16,10 @@
         </div>
         <div v-else class="p-2">
           <div class="p-2">
+            <router-link to="/reports" class="btn btn-sm btn-dark">
+              <span><i class="fa fa-chevron-circle-left"></i></span>
+              <span>back</span>
+            </router-link>
             <button class="btn btn-sm btn-success" @click="exportToExcel">
               <span><i class="fa fa-file-excel"></i></span>
               <span>Export</span>
@@ -32,7 +36,7 @@
                 <th rowspan="2">total report visits</th>
                 <th rowspan="2">%</th>
                 <th rowspan="2">total planned Customers</th>
-                <th rowspan="2">total visited Custiners</th>
+                <th rowspan="2">total visited Customers</th>
                 <th rowspan="2">%</th>
                 <th :colspan="sp_list.size" class="bg-secondary text-light">
                   Planned Specialty
