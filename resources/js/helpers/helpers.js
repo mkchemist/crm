@@ -63,7 +63,8 @@ export function filterData(data, param, check = true) {
   if (typeof check === "function") {
     checkQuery = check;
   }
-  data.forEach(item => {
+  for(let i in data) {
+    let item = data[i];
     if (checkQuery(item)) {
       let key = ObjectNotation(item, param);
       if (!res[key]) {
@@ -71,7 +72,8 @@ export function filterData(data, param, check = true) {
       }
       res[key].push(item);
     }
-  });
+  }
+
   return res;
 }
 
