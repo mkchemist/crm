@@ -1,7 +1,12 @@
 <template>
   <div class="bg-dark">
     <div class="d-flex justify-content-center align-items-center p-3 bg-white">
-      <p class="bg-success text-light rounded-circle d-flex align-items-center justify-content-center display-4" style="width:200px;height:200px">Admin</p>
+      <p
+        class="bg-success text-light rounded-circle d-flex align-items-center justify-content-center display-4"
+        style="width:200px;height:200px"
+      >
+        Admin
+      </p>
     </div>
     <div class="list-group list-group-flush">
       <router-link
@@ -29,6 +34,11 @@ export default {
         path: "/"
       },
       {
+        name: "Users",
+        icon: "fa-users",
+        path: "/users"
+      },
+      {
         name: "Customers",
         icon: "fa-user-md",
         path: "/customers"
@@ -43,17 +53,17 @@ $green-color: #38c172;
 $grey-color: #ebe6e6;
 
 .list-group-item {
-  transition:.2s;
-  &:hover{
+  transition: 0.2s;
+  &:hover {
     border-left: 5px solid $green-color;
   }
 }
 
 .active-page {
-  background-color: $green-color  !important;
+  background-color: $green-color !important;
   color: white;
-  transition:.2s;
-  &:hover{
+  transition: 0.2s;
+  &:hover {
     background-color: $grey-color !important;
     border-left: 5px solid $green-color;
   }

@@ -38,17 +38,6 @@ export default {
     .then(({data}) => {
       if(data.code === 201) {
         this.customers = data.data;
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
-        this.customers = [...this.customers, ...data.data];
         this.fetched = true;
       }
     }).finally(() => {

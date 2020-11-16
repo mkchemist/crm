@@ -1,0 +1,133 @@
+<template>
+  <div class="p-2">
+    <div class="px-0 shadow pb-5">
+      <p class="alert alert-success">
+        <span><i class="fa fa-plus-circle"></i></span>
+        <span class="font-weight-bold">Add new users</span>
+      </p>
+      <div class="p-2">
+        <ValidationObserver v-slot="{ handleSubmit }">
+          <form @submit.prevent="handleSubmit(saveUser)">
+            <!-- user personal info -->
+            <div class="row mx-auto">
+              <div class="form-group col-lg">
+                <label for="name" class="text-muted small">Name</label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  name="name"
+                  rules="required"
+                >
+                  <span class="small text-danger">{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    v-model="user.name"
+                    name="name"
+                    :class="`form-control form-control-sm ${errors[0] ? 'border-danger': ''}`"
+                    placeholder="Enter user fullname"
+                  />
+                </ValidationProvider>
+              </div>
+              <div class="form-group col-lg">
+                <label for="email" class="text-muted small">E-mail</label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  name="email"
+                  rules="required"
+                >
+                  <span class="small text-danger">{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    v-model="user.email"
+                    name="email"
+                    :class="`form-control form-control-sm ${errors[0] ? 'border-danger': ''}`"
+                    placeholder="Enter user email"
+                  />
+                </ValidationProvider>
+              </div>
+            </div>
+
+            <!-- user account info -->
+            <div class="row mx-auto">
+              <div class="form-group col-lg">
+                <label for="name" class="text-muted small">Username</label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="username"
+                >
+                  <span v-if="errors" class="small text-danger">{{
+                    errors[0]
+                  }}</span>
+                  <input
+                    type="text"
+                    v-model="user.username"
+                    name="username"
+                    :class="`form-control form-control-sm ${errors[0] ? 'border-danger': ''}`"
+                    placeholder="Enter username"
+                  />
+                </ValidationProvider>
+              </div>
+              <div class="form-group col-lg">
+                <label for="email" class="text-muted small">Password</label>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="password"
+                >
+                  <span v-if="errors" class="small text-danger">{{
+                    errors[0]
+                  }}</span>
+                  <input
+                    type="text"
+                    v-model="user.password"
+                    name="password"
+                    :class="`form-control form-control-sm ${errors[0] ? 'border-danger': ''}`"
+                    placeholder="Enter user password"
+                  />
+                </ValidationProvider>
+              </div>
+            </div>
+
+            <hr />
+            <div class="form-group text-right">
+              <router-link to="/users" class="btn btn-sm btn-dark">
+                <span><i class="fa fa-chevron-circle-left"></i></span>
+                <span>back</span>
+              </router-link>
+              <button class="btn btn-sm btn-success">
+                <span><i class="fa fa-save"></i></span>
+                <span>save</span>
+              </button>
+            </div>
+          </form>
+        </ValidationObserver>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data: () => ({
+    user: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+      line: "",
+      role: "",
+      area: "",
+      district: "",
+      territory: "",
+      region: ""
+    }
+  }),
+  methods: {
+    saveUser() {
+      console.log(this.user);
+    }
+  }
+};
+</script>
+
+<style></style>
