@@ -148,7 +148,11 @@ class CustomerReportController extends Controller
    */
   public function destroy($id)
   {
-    //
+    CustomerReport::destroy($id);
+    return response([
+      'code'  =>  200,
+    'message' => 'Report removed'
+    ], 200);
   }
 
   /**

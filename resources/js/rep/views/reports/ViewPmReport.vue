@@ -23,10 +23,26 @@
             v-if="visits.length"
             head-class="bg-success text-light"
           >
+            <template v-slot:head:before>
+              <th>Actions</th>
+            </template>
+            <template v-slot:body:before="{item}">
+              <td>
+                <router-link
+                  :to="`/reports/edit/pm/${item.id}`"
+                  class="btn btn-sm btn-warning"
+                >
+                  <span><i class="fa fa-edit"></i></span>
+                </router-link>
+
+                <button class="btn btn-sm btn-danger" @click="removeReport(item.id)">
+                  <span><i class="fa fa-trash"></i></span>
+                </button>
+              </td>
+            </template>
             <template v-slot:head>
               <th class="text-center">Products</th>
               <th>General Feedback</th>
-              <th>Actions</th>
             </template>
             <template v-slot:body="{ item }">
               <td>
@@ -65,14 +81,7 @@
                 </ul>
               </td>
               <td>{{ item.general_feedback }}</td>
-              <td>
-                <router-link
-                  :to="`/reports/edit/pm/${item.id}`"
-                  class="btn btn-sm btn-warning"
-                >
-                  <span><i class="fa fa-edit"></i></span>
-                </router-link>
-              </td>
+
             </template>
           </table-component>
           <div
@@ -101,6 +110,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
+import { httpCall } from '../../../helpers/http-service';
 export default {
   created() {
     this.$store.dispatch("reportGetAll");
@@ -119,6 +129,10 @@ export default {
         title: "ID",
         name: "id"
       },
+        {
+          title: "Date",
+          name: "date"
+        },
       {
         title: "Name",
         name: "customer_name"
@@ -141,19 +155,26 @@ export default {
         name: "customer.brick"
       },
       {
-        title: "Date",
-        name: "date"
-      },
-      {
         title: "Coach",
-        name: "dual_with"
+        name: "dual_with_name"
       },
       {
         title: "Comment",
         name: "comment"
       }
     ]
-  })
+  }),
+  methods: {
+    removeReport(id) {
+      httpCall.post('rep/v1/reports/pm/'+id, {
+        _method: 'DELETE'
+      }).then(({data}) => {
+        this.handleResponse(data, data => {
+          this.$store.dispatch('reportGetAll', true);
+        })
+      })
+    }
+  }
 };
 </script>
 
