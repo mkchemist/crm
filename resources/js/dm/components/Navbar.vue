@@ -3,6 +3,8 @@
     <nav class="navbar navbar-expand-lg navbar-light">
       <router-link to="/" class="navbar-brand">
         <img :src="base_url+'images/logo.png'" alt="NPMT logo">
+        <br>
+        <span class="px-2 text-muted">Welcome {{ $store.state.user.name }}</span>
       </router-link>
       <button class="navbar-toggler" data-toggle="collapse" data-target="#navbar">
         <span class="navbar-toggler-icon"></span>
