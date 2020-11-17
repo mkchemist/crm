@@ -24,9 +24,32 @@
           :with-favorite="true"
         >
           <template v-slot:head>
+            <th>Missed</th>
+            <th>Status</th>
+            <th>Address</th>
+            <th>Brick</th>
+            <th>Area</th>
             <th>Actions</th>
           </template>
           <template v-slot:body="{ item }">
+            <td>
+              {{ item.plans - item.reports }}
+            </td>
+            <td class="font-weight-bold">
+              <span v-if="item.plans - item.reports  > 0" class="bg-danger p-1 text-light">Missed</span>
+              <span v-else-if="item.plans !== 0 && item.plans - item.reports  === 0" class="bg-success p-1 text-light">Accomplished</span>
+              <span v-else-if="item.plans - item.reports  < 0" class="bg-primary p-1 text-light">Over</span>
+              <span v-else-if="item.plans === 0 && item.plans - item.reports   === 0" class="bg-dark p-1 text-light">Not targeted</span>
+            </td>
+            <td>
+              {{ item.address }}
+            </td>
+             <td>
+              {{ item.brick }}
+            </td>
+             <td>
+              {{ item.area }}
+            </td>
             <td>
               <router-link :to="`/customers/view/${item.id}`" class="btn btn-sm btn-info">
                 <span><i class="fa fa-eye"></i></span>

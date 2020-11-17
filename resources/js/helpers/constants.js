@@ -44,18 +44,7 @@ export const CUSTOMERS_TABLE_HEADS = [
     title: "Visits",
     name: "reports"
   },
-  {
-    title: "Address",
-    name: "address"
-  },
-  {
-    title: "Brick",
-    name: "brick"
-  },
-  {
-    title: "Area",
-    name: "area"
-  }
+
 ];
 
 export const DM_CUSTOMERS_HEADS = [
