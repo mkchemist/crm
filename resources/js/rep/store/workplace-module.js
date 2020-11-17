@@ -12,6 +12,7 @@ export default {
      * is customer fetched
      */
     fetched: false,
+    isPharmacyFetched: false,
     /**
      * customer pharmacies
      *
@@ -25,7 +26,9 @@ export default {
     },
     pharmacies: state => {
       return state.pharmacies;
-    }
+    },
+    isWorkplacesFetched: state => state.fetched,
+    isPharmacyFetched : state => state.isPharmacyFetched
   },
   actions: {
     /**
@@ -35,7 +38,8 @@ export default {
      */
     workplaceGetAll: ({ state }, force) => {
       if (!state.all.length || force) {
-        httpCall.get("rep/v1/workplaces").then(({ data }) => {
+        state.fetched = false;
+        return httpCall.get("rep/v1/workplaces").then(({ data }) => {
           if (data.code === 201) {
             state.fetched = true;
             state.all = data.data;
@@ -54,10 +58,12 @@ export default {
      */
     pharmacyGetAll: ({state}, force) => {
       if(!state.pharmacies.length || force) {
-        httpCall.get('rep/v1/pharmacies')
+        state.isPharmacyFetched = false;
+        return httpCall.get('rep/v1/pharmacies')
         .then(({data}) => {
           if(data.code === 201) {
             state.pharmacies = data.data;
+            state.isPharmacyFetched = true;
             Vue.toasted.show('Pharmacies list loaded', {
               type: 'success',
               icon: 'check'

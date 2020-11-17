@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="px-0 shadow">
+    <div class="px-0 shadow pb-5">
       <p class="alert alert-success">
         <span><i class="fa fa-list-alt"></i></span>
         <span class="font-weight-bold">Hospital list</span>
@@ -29,6 +29,13 @@
           </template>
         </table-component>
       </div>
+      <div class="text-center" v-else-if="fetched">
+        <p class="font-weight-bold">no data to show</p>
+        <router-link to="/workplaces/add-hospital" class="btn btn-primary btn-sm">
+          <span><i class="fa fa-plus-circle"></i></span>
+          <span>Add new Hospital</span>
+        </router-link>
+      </div>
       <loader-component v-else />
     </div>
   </div>
@@ -43,6 +50,9 @@ export default {
   computed: {
     all() {
       return this.$store.getters.allWorkplaces;
+    },
+    fetched() {
+      return this.$store.getters.isWorkplacesFetched;
     }
   },
   components: {
