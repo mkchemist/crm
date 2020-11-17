@@ -12,7 +12,18 @@
           :notResponsive="true"
           headClass="bg-success text-light"
           orderBy='Date,asc'
-        ></table-component>
+        >
+        <template v-slot:head>
+          <th>Unplanned</th>
+          <th>Status</th>
+          <th>Type</th>
+        </template>
+        <template v-slot:body="{item}">
+          <td>{{ item.freq - item.plans_count }}</td>
+          <td :class="unplannedStatus(item).style">{{ unplannedStatus(item).title }}</td>
+          <td>{{ item.type }}</td>
+        </template>
+        </table-component>
       </div>
       <div v-else-if="isFetched" class="text-center">
         <p class="text-muted">No plans found</p>
@@ -59,10 +70,6 @@ export default {
         title: 'Planned',
         name: 'plans_count'
       },
-      {
-        title: "Type",
-        name: "type"
-      }
     ]
   }),
   computed: {
@@ -71,6 +78,36 @@ export default {
     },
     plans() {
       return this.$store.getters.plans;
+    }
+  },
+  methods: {
+    unplannedStatus(item) {
+      let freq = item.freq,
+          plans = item.plans_count;
+      let res = {};
+      if(freq - plans > 0) {
+        res = {
+          style: 'bg-danger text-light',
+          title: 'Missed'
+        }
+      } else if(freq === 0 && freq-plans === 0) {
+        res = {
+          style : 'bg-dark text-light',
+          title: 'not targeted'
+        }
+      } else if(freq !== 0 && freq - plans === 0) {
+        res = {
+          style: 'bg-success text-light',
+          title: 'accomplished'
+        }
+      } else if(freq - plans < 0) {
+        res = {
+          style: 'bg-primary text-light',
+          title: 'over'
+        }
+      }
+
+      return res;
     }
   }
 };
