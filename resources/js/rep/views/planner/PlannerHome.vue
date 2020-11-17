@@ -14,6 +14,10 @@
         <span><i class="fa fa-hospital-alt"></i></span>
         <span>Add Am Plans</span>
       </router-link>
+      <button class="btn btn-sm btn-primary" @click="exportToPDF">
+        <span><i class="fa fa-file-pdf"></i></span>
+        <span>Export to PDF</span>
+      </button>
       <button class="btn btn-success btn-sm">
         <span><i class="fa  fa-calendar-minus"></i></span>
         <span>Submit</span>
@@ -348,6 +352,12 @@ export default {
       } else {
         this.summery_icon = "fa-chevron-circle-down";
       }
+    },
+    exportToPDF() {
+      let plans = this.plans;
+      let planPerDay = filterData(plans, 'start');
+      let exported = window.open('','_blank');
+      console.log(exported.document);
     }
   },
   computed: {
