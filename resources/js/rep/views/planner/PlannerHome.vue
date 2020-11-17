@@ -372,7 +372,7 @@ export default {
       let amPlans = this.$store.getters.amPlans;
       let pmPlans = this.$store.getters.plans;
       let workplaces = filterData(amPlans, "workplace.name");
-      let customers = filterData(pmPlans, "customer.name");
+      let customers = filterData(pmPlans, "title");
       let days = filterData(this.plans, "start");
       return {
         workplaces,
