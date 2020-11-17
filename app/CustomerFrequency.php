@@ -11,7 +11,8 @@ class CustomerFrequency extends Model
       "customer_id",
       "current",
       "next",
-      "locked"
+      "locked",
+      "state"
     ];
 
     public function customer()

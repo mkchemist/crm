@@ -151,11 +151,10 @@ class CustomerController extends Controller
       ]
     );
 
-    CustomerFrequency::updateOrCreate(
+    $x = CustomerFrequency::updateOrCreate(
       ['user_id' => $user->id, 'locked' => false, 'customer_id'  =>  $customer->id],
-      ['next' => $request->next_freq, 'locked' => false]
+      ['next' => $request->next_freq, 'locked' => false, 'state' => 'updated']
     );
-
     return response()->json([
       "code"  =>  201,
       "data"  =>  'customer updated successfully',
