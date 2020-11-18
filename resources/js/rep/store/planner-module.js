@@ -18,6 +18,10 @@ export default {
      *
      */
     workplacePlans: [],
+    /**
+     * is workplaces plans fetched
+     *
+     */
     isWorkplacePlansFetched: false
   },
   getters: {

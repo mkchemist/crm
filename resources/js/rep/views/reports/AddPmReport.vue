@@ -37,21 +37,23 @@
                       v-model="visit.customer"
                     />
                   </div>
-                  <select
-                    name="customer"
-                    id="customer"
-                    v-model="visit.customer"
-                    class="form-control form-control-sm"
-                    v-else
-                  >
-                    <option value="">Select customer</option>
-                    <option
-                      v-for="customer in customers"
-                      :key="customer.id"
-                      :value="customer.id"
-                      >{{ customer.name }}</option
+                  <div v-else class="row mx-auto">
+                    <select
+                      name="customer"
+                      id="customer"
+                      v-model="visit.customer"
+                      class="form-control form-control-sm col-lg-8"
                     >
-                  </select>
+                      <option value="">Select customer</option>
+                      <option
+                        v-for="customer in customers"
+                        :key="customer.id"
+                        :value="customer.id"
+                        >{{ customer.name }}</option
+                      >
+                    </select>
+              <customer-select-filter :data="$store.getters.active" class="col-lg-4"></customer-select-filter>
+                  </div>
                 </ValidationProvider>
                 <div class="text-center" v-else>
                   <div class="spinner-border text-success"></div>
@@ -169,6 +171,7 @@
  */
 import { httpCall } from "../../../helpers/http-service";
 import VisitProducts from "../../components/VisitProducts";
+import CustomerSelectFilter from '../../components/CustomerSelectFilter';
 export default {
   created() {
     this.$store.dispatch("customerGetAll");
@@ -178,7 +181,8 @@ export default {
     }
   },
   components: {
-    VisitProducts
+    VisitProducts,
+    CustomerSelectFilter
   },
   data: () => ({
     visit: {
@@ -216,7 +220,7 @@ export default {
   },
   computed: {
     customers() {
-      return this.$store.getters.all;
+      return this.$store.getters.customerFilter;
     },
     customer() {
       let customers = this.customers;

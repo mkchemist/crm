@@ -19,6 +19,12 @@ export default {
      *
      */
     fetched: false,
+    /**
+     * filtered customer list
+     *
+     *
+     */
+    customerFilter: []
   },
   mutations: {
     updateCustomerInStore: (state,{id, payload}) => {
@@ -26,6 +32,9 @@ export default {
       for(let key in payload) {
         customer[key] = payload[key];
       }
+    },
+    setCustomerFilter(state, customers) {
+      state.customerFilter = customers;
     }
   },
   getters: {
@@ -53,7 +62,7 @@ export default {
     fetched: state => {
       return state.fetched;
     },
-
+    customerFilter: state => state.customerFilter
   },
   actions: {
     /**
@@ -70,6 +79,7 @@ export default {
           ResponseHandler.methods.handleResponse(data, (data) => {
             state.all = data.data
             state.fetched = true;
+            state.customerFilter = data.data.filter(c => !["NN","XX"].includes(c.parameter))
           })
         });
       }

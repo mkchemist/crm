@@ -15,11 +15,8 @@
             >
               Selected : {{ selected_customers.length }}
             </p>
-            <div class="d-flex">
-              <div>
-                <input type="checkbox" @click="toggleInactiveCustomers" />
-                <span class="small">Inactive customers</span>
-              </div>
+            <div class="d-flex flex-column mb-1">
+              <customer-select-filter :data="$store.getters.active"></customer-select-filter>
             </div>
             <div
               v-if="customers.length"
@@ -32,6 +29,7 @@
                   <th></th>
                   <th>Name</th>
                   <th>Specialty</th>
+                  <th>Param</th>
                   <th>Freq</th>
                   <th>Plans</th>
                 </thead>
@@ -47,6 +45,7 @@
                     <td>
                       {{ customer.specialty }}
                     </td>
+                    <td>{{ customer.parameter }}</td>
                     <td>{{ customer.current_freq }}</td>
                     <td>{{ customer.plans }}</td>
                   </tr>
@@ -146,12 +145,16 @@
  *
  */
 import { httpCall } from "../../../helpers/http-service";
+import CustomerSelectFilter from '../../components/CustomerSelectFilter';
 export default {
   data: () => ({
     selected_customers: [],
     deleted_customers: [],
     withInactiveCustomers: false
   }),
+  components: {
+    CustomerSelectFilter
+  },
   computed: {
     /**
      * get current date plans
@@ -166,10 +169,8 @@ export default {
      * get customers
      */
     customers() {
-      if (this.withInactiveCustomers) {
-        return this.$store.getters.all;
-      }
-      return this.$store.getters.active;
+
+      return this.$store.getters.customerFilter;
     },
     isFetched() {
       return this.$store.getters.fetched;
@@ -276,17 +277,6 @@ export default {
             });
         });
       });
-    },
-    /**
-     * toggle inactive customers
-     *
-     */
-    toggleInactiveCustomers() {
-      if (this.withInactiveCustomers) {
-        this.withInactiveCustomers = false;
-      } else {
-        this.withInactiveCustomers = true;
-      }
     }
   }
 };
