@@ -354,10 +354,34 @@ export default {
       }
     },
     exportToPDF() {
-      let plans = this.plans;
-      let planPerDay = filterData(plans, 'start');
-      let exported = window.open('','_blank');
-      console.log(exported.document);
+      let plans = filterData(this.plans, "start");
+      let exported = window.open("", "_blank");
+      exported.document.head.innerHTML = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous"><title>${this.$store.state.AppModule.user.name}_planner</title>`;
+      let exportTable = document.createElement("div");
+      exportTable.classList.add("row", "mx-auto", "my-2");
+      Object.keys(plans).forEach(day => {
+        let container = document.createElement("div");
+        container.classList.add("col-lg-4", "px-0", "border", "mx-1");
+        container.innerHTML = `<p class="px-0 bg-dark text-light">${day}</p>`;
+        plans[day].forEach(plan => {
+          container.innerHTML += `<div class="row mx-auto small border">
+            <span class="col-3">${plan.class}</span>
+            <span class="col-3">${plan.title}</span>
+            <span class="col-3">${
+              plan.specialty ? plan.specialty : "-----"
+            }</span>
+            <span class="col-3">${
+              plan.brick ? plan.brick : plan.workplace.brick
+            }</span>
+          </div>`;
+        });
+        exportTable.append(container);
+        setTimeout(() => {
+          exported.print();
+          exported.close();
+        }, 500);
+      });
+      exported.document.body.append(exportTable);
     }
   },
   computed: {
