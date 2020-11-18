@@ -37,6 +37,13 @@
             </tbody>
           </table>
         </div>
+        <div v-else-if="isWorkplaceFetched" class="text-center pt-5">
+          <p class="font-weight-bold">No workplaces found</p>
+          <router-link to="/workplaces/add-hospital" class="btn btn-sm btn-primary">
+            <span><i class="fa fa-plus-circle"></i></span>
+            <span>add workplace</span>
+          </router-link>
+        </div>
         <div
           class="d-flex justify-content-center align-items-center h-100"
           v-else
@@ -119,7 +126,14 @@ export default {
       return data;
     },
     workplaces() {
+      return [];
       return this.$store.getters.allWorkplaces;
+    },
+    isPlansFetched() {
+      return this.$store.getters.isAmPlansFetched;
+    },
+    isWorkplaceFetched() {
+      return this.$store.getters.isWorkplacesFetched;
     }
   },
   methods: {

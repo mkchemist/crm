@@ -17,7 +17,8 @@ export default {
      * am plans container
      *
      */
-    workplacePlans: []
+    workplacePlans: [],
+    isWorkplacePlansFetched: false
   },
   getters: {
     /**
@@ -42,7 +43,8 @@ export default {
     },
     allPlans: state => {
       return [...state.workplacePlans, ...state.plans];
-    }
+    },
+    isAmPlansFetched: state => state.isWorkplacePlansFetched
   },
   mutations: {
 
@@ -74,10 +76,10 @@ export default {
      */
     getWorkplacePlanner({state}, force) {
       if(!state.workplacePlans.length || force) {
-        this.fetched = false;
+        this.isWorkplacePlansFetched = false;
         httpCall.get('rep/v1/workplace-planner')
         .then(({data}) => {
-          this.fetched = true;
+          this.isWorkplacePlansFetched = true;
           if(data.code === 201) {
             Vue.toasted.show('Workplace planner loaded successfully', {
               type: 'success',
