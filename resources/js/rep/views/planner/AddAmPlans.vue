@@ -126,7 +126,6 @@ export default {
       return data;
     },
     workplaces() {
-      return [];
       return this.$store.getters.allWorkplaces;
     },
     isPlansFetched() {
