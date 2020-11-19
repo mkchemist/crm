@@ -13,7 +13,7 @@ class CoachReport extends Model
       'customer_id',
       'data',
       'coach_submit',
-      'rep_submit'
+      'rep_submit',
     ];
 
     public function rep() {

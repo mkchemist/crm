@@ -133,6 +133,11 @@ export default {
           title: "Date",
           name: "date"
         },
+        {
+          title: 'Visit Type',
+          name:'visit_type',
+          style: 'text-uppercase font-weight-bold'
+        },
       {
         title: "Name",
         name: "customer_name"

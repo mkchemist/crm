@@ -16,7 +16,8 @@ class CustomerReport extends Model
     'dual_with',
     'comment',
     'products',
-    'general_feedback'
+    'general_feedback',
+    'visit_type'
   ];
 
   public function customer()

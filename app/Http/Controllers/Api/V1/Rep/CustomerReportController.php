@@ -53,7 +53,6 @@ class CustomerReportController extends Controller
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
     $user = Auth::user();
-    //return response($request->all());
     $visit = CustomerReport::create([
       'customer_id' =>  $request->customer,
       'user_id'     =>  $user->id,
@@ -61,7 +60,8 @@ class CustomerReportController extends Controller
       'dual_with'   =>  $request->dual_with,
       'comment'     =>  $request->comment,
       'products'    =>  $request->products,
-      'general_feedback'  =>  $request->general_feedback
+      'general_feedback'  =>  $request->general_feedback,
+      'visit_type'      =>  $request->visit_type
     ]);
 
     if ($request->dual_with) {
@@ -133,6 +133,7 @@ class CustomerReportController extends Controller
     $visit->comment = $request->comment;
     $visit->products = $request->products;
     $visit->general_feedback = $request->general_feedback;
+    $visit->visit_type = $request->visit_type;
     $visit->save();
     return response()->json([
       'code'  =>  201,

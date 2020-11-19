@@ -27,7 +27,8 @@ class RepReportResource extends JsonResource
         'user'        =>  $this->user->name,
         'comment'     =>  $this->comment,
         'products'    =>  json_decode($this->products),
-        'general_feedback'  =>  $this->general_feedback
+        'general_feedback'  =>  $this->general_feedback,
+        'visit_type'      =>  $this->visit_type
        ];
     }
 }

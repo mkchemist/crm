@@ -80,16 +80,22 @@
             <!-- end of customer and date -->
             <!-- visit coach -->
             <div class="row mx-auto my-2 border rounded p-2">
-              <div class="col-lg">
-                <input type="checkbox" v-model="visit.dual" />
-                <span class="small">Dual visit with</span>
+
+              <div class="col-lg-6">
+                <label for="" class="text-muted small">Visit type</label>
+                <select name="visit_type" id=""  v-model="visit.visit_type" class="form-control form-control-sm" @change="handleVisitType">
+                  <option value="single">Single</option>
+                  <option value="sample visit">Sample Visit</option>
+                  <option value="double visit">Double visit</option>
+                </select>
               </div>
-              <div class="col-lg" v-if="visit.dual">
+              <div class="col-lg-6" v-if="visit.dual">
                 <ValidationProvider
                   name="dual_with"
                   rules="required"
                   v-slot="{ errors }"
                 >
+                  <label for="" class="text-muted small">Select Coach</label>
                   <span class="text-danger small" v-if="errors[0]"
                     >you must select a coach</span
                   >
@@ -192,7 +198,8 @@ export default {
       dual_with: "",
       comment: "",
       products: [],
-      general_feedback: ""
+      general_feedback: "",
+      visit_type: "single"
     },
     is_single_customer: false
   }),
@@ -216,6 +223,13 @@ export default {
           }
         });
       });
+    },
+    handleVisitType() {
+      if(this.visit.visit_type === 'double visit') {
+        this.visit.dual = true;
+      } else{
+        this.visit.dual = false;
+      }
     }
   },
   computed: {
