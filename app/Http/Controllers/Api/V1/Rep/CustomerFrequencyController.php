@@ -80,7 +80,6 @@ class CustomerFrequencyController extends Controller
     ])
     ->whereIn('customer_id', function($query) use($user) {
       $query->from('customer_parameters')->select('customer_id')
-      ->whereNotIn('current', ['NN','XX'])
       ->where('user_id', $user->id)->get();
     })->update(['submitted' => true, "state" => "requested"]);
     return response()->json([
