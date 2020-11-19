@@ -90,7 +90,7 @@
             name="plans"
             id=""
             class="form-control form-control-sm"
-            v-model="filter.param"
+            v-model="filter.plan"
           >
             <option value="">All</option>
             <option
@@ -185,6 +185,7 @@ export default {
         res = res.filter(c => c.current_freq === parseInt(freq));
       }
       if (plan !== "") {
+        console.log(plan)
         res = res.filter(c => c.plans === parseInt(plan));
       }
       if (report !== "") {
