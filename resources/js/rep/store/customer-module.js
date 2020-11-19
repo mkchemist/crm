@@ -14,6 +14,9 @@ export default {
      *
      */
     all: [],
+    activeCustomers: [],
+    inactiveCustomers: [],
+    allCustomers: [],
     /**
      * is customers fetched
      *
@@ -24,7 +27,7 @@ export default {
      *
      *
      */
-    customerFilter: []
+    customerFilter: [],
   },
   mutations: {
     updateCustomerInStore: (state,{id, payload}) => {
@@ -35,6 +38,13 @@ export default {
     },
     setCustomerFilter(state, customers) {
       state.customerFilter = customers;
+    },
+    filterCustomers(state, payload) {
+      let asyncSetCustomer = () => new Promise((resolve, reject) => {
+        resolve(payload.data);
+      });
+      state[payload.name] = [];
+      asyncSetCustomer().then(data => state[payload.name] = data);
     }
   },
   getters: {
@@ -43,14 +53,14 @@ export default {
      * with parameters [HH,HM,HL,MH,MM,ML,LH,LM,LL]
      */
     active: state => {
-      return state.all.filter(customer => !["NN","XX"].includes(customer.parameter))
+      return state.activeCustomers
     },
     /**
      * get only inactive customers
      * with parameters [NN,XX]
      */
     inactive: state => {
-      return state.all.filter(customer => ["NN","XX"].includes(customer.parameter));
+      return state.inactiveCustomers
     },
     /**
      * return all customers
@@ -59,6 +69,7 @@ export default {
     all: state => {
       return state.all;
     },
+    allCustomers: state => state.allCustomers,
     fetched: state => {
       return state.fetched;
     },
@@ -78,8 +89,11 @@ export default {
           data.message = "Customer list loaded";
           ResponseHandler.methods.handleResponse(data, (data) => {
             state.all = data.data
+            state.allCustomers = data.data;
             state.fetched = true;
             state.customerFilter = data.data.filter(c => !["NN","XX"].includes(c.parameter))
+            state.activeCustomers =data.data.filter(c => !["NN","XX"].includes(c.parameter))
+            state.inactiveCustomers =data.data.filter(c => ["NN","XX"].includes(c.parameter))
           })
         });
       }

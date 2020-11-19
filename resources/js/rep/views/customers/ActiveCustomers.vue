@@ -1,6 +1,13 @@
 <template>
   <div>
     <div class="px-0">
+      <customer-filter
+        :data="customers"
+        v-if="showFilter"
+        :onClose="closeFilterModal"
+        :onFilter="onFilter"
+        :onReset="onReset"
+      />
       <p class="alert alert-success">
         <span><i class="fa fa-list"></i></span>
         <span class="font-weight-bold">Active Customer List</span>
@@ -14,13 +21,17 @@
           <span><i class="fa fa-redo"></i></span>
           <span>refresh list</span>
         </button>
+        <button class="btn btn-sm btn-secondary" type="button" @click="showFilterModal">
+          <span><i class="fa fa-filter"></i></span>
+          <span>Filter</span>
+        </button>
       </div>
       <div class="p-2">
         <table-component
           :heads = "heads"
-          :data = "activeCustomers"
+          :data = "customers"
           headClass="bg-success text-light"
-          v-if="activeCustomers.length"
+          v-if="customers.length"
           :with-favorite="true"
         >
           <template v-slot:head>
@@ -71,10 +82,11 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
-import {CUSTOMERS_TABLE_HEADS} from "../../../helpers/constants"
+import {CUSTOMERS_TABLE_HEADS} from "../../../helpers/constants";
+import CustomerFilter from '../../components/CustomerFilter';
 export default {
   computed: {
-    activeCustomers() {
+    customers() {
       return this.$store.getters.active;
     },
     fetched() {
@@ -82,10 +94,29 @@ export default {
     }
   },
   data: () => ({
-    heads: CUSTOMERS_TABLE_HEADS
+    heads: CUSTOMERS_TABLE_HEADS,
+    showFilter: false
   }),
   components: {
-    TableComponent
+    TableComponent,
+    CustomerFilter
+  },
+  methods: {
+    closeFilterModal() {
+      this.showFilter = false;
+    },
+    showFilterModal() {
+      this.showFilter = true;
+    },
+    onFilter(data) {
+      this.$store.commit('filterCustomers', {name: 'activeCustomers', data});
+      this.showFilter = false;
+    },
+    onReset() {
+      let data = this.$store.getters.all.filter(c => !['NN','XX'].includes(c.parameter));
+      this.$store.commit('filterCustomers', {name: 'activeCustomers', data});
+      this.showFilter = false;
+    }
   }
 };
 </script>

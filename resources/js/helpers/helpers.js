@@ -66,11 +66,25 @@ export function filterData(data, param, check = true) {
   for(let i in data) {
     let item = data[i];
     if (checkQuery(item)) {
-      let key = ObjectNotation(item, param);
-      if (!res[key]) {
-        res[key] = [];
+      if(typeof param === 'string') {
+        let key = ObjectNotation(item, param);
+        if (!res[key]) {
+          res[key] = [];
+        }
+        res[key].push(item);
+      } else if(param instanceof Array) {
+        for(let index in param) {
+          let paramName = param[index];
+          if(!res[paramName]) {
+            res[paramName] = {};
+          }
+          let key = ObjectNotation(item, paramName);
+          if(!res[paramName][key]) {
+            res[paramName][key] = [];
+          }
+          res[paramName][key].push(item);
+        }
       }
-      res[key].push(item);
     }
   }
 

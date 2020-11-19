@@ -1,9 +1,16 @@
 <template>
   <div>
     <div class="px-0">
+      <customer-filter
+        :data="customers"
+        v-if="showFilter"
+        :onClose="closeFilterModal"
+        :onFilter="onFilter"
+        :onReset="onReset"
+      />
       <p class="alert alert-success">
         <span><i class="fa fa-list"></i></span>
-        <span class="font-weight-bold">Inactive Customer List</span>
+        <span class="font-weight-bold">All Customer List</span>
       </p>
       <div class="p-2 text-right">
         <router-link to="/customers/new" class="btn btn-sm btn-success">
@@ -17,12 +24,16 @@
           <span><i class="fa fa-redo"></i></span>
           <span>refresh list</span>
         </button>
+        <button class="btn btn-sm btn-secondary" type="button" @click="showFilterModal">
+          <span><i class="fa fa-filter"></i></span>
+          <span>Filter</span>
+        </button>
       </div>
       <div class="p-2">
         <table-component
           :heads="heads"
-          :data="inactiveCustomers"
-          v-if="inactiveCustomers.length"
+          :data="customers"
+          v-if="customers.length"
           headClass="bg-success text-light"
           :with-favorite="true"
         >
@@ -40,7 +51,7 @@
             </td>
             <td>
               <span v-if="item.plans - item.reports  > 0" class="bg-danger p-1 text-light">Missed</span>
-            <span v-else-if="item.plans !== 0 && item.plans - item.reports  === 0" class="bg-success p-1 text-light">Accomplished</span>
+               <span v-else-if="item.plans !== 0 && item.plans - item.reports  === 0" class="bg-success p-1 text-light">Accomplished</span>
               <span v-else-if="item.plans - item.reports  < 0" class="bg-primary p-1 text-light">Over</span>
               <span v-else-if="item.plans === 0 && item.plans - item.reports   === 0" class="bg-dark p-1 text-light">Not targeted</span>
             </td>
@@ -81,9 +92,11 @@
 <script>
 import TableComponent from "../../../components/TableComponent";
 import { CUSTOMERS_TABLE_HEADS } from "../../../helpers/constants";
+import CustomerFilter from '../../components/CustomerFilter';
+
 export default {
   computed: {
-    inactiveCustomers() {
+    customers() {
       return this.$store.getters.inactive;
     },
     fetched() {
@@ -91,10 +104,31 @@ export default {
     }
   },
   data: () => ({
-    heads: CUSTOMERS_TABLE_HEADS
+    heads: CUSTOMERS_TABLE_HEADS,
+    showFilter: false
+
   }),
   components: {
-    TableComponent
+    TableComponent,
+    CustomerFilter
+
+  },
+  methods: {
+    closeFilterModal() {
+      this.showFilter = false;
+    },
+    showFilterModal() {
+      this.showFilter = true;
+    },
+    onFilter(data) {
+      this.$store.commit('filterCustomers', {name: 'inactiveCustomers', data});
+      this.showFilter = false;
+    },
+    onReset() {
+      let data = this.$store.getters.all.filter(c => ['NN', 'XX'].includes(c.parameter));
+      this.$store.commit('filterCustomers', {name: 'inactiveCustomers', data});
+      this.showFilter = false;
+    }
   }
 };
 </script>

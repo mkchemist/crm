@@ -1,6 +1,13 @@
 <template>
   <div>
     <div class="px-0">
+      <customer-filter
+        :data="customers"
+        v-if="showFilter"
+        :onClose="closeFilterModal"
+        :onFilter="onFilter"
+        :onReset="onReset"
+      />
       <p class="alert alert-success">
         <span><i class="fa fa-list"></i></span>
         <span class="font-weight-bold">All Customer List</span>
@@ -17,12 +24,16 @@
           <span><i class="fa fa-redo"></i></span>
           <span>refresh list</span>
         </button>
+        <button class="btn btn-sm btn-secondary" type="button" @click="showFilterModal">
+          <span><i class="fa fa-filter"></i></span>
+          <span>Filter</span>
+        </button>
       </div>
       <div class="p-2">
         <table-component
           :heads="heads"
-          :data="allCustomers"
-          v-if="allCustomers.length"
+          :data="customers"
+          v-if="customers.length"
           headClass="bg-success text-light"
           :with-favorite="true"
         >
@@ -81,20 +92,43 @@
 <script>
 import TableComponent from "../../../components/TableComponent";
 import { CUSTOMERS_TABLE_HEADS } from "../../../helpers/constants";
+import CustomerFilter from '../../components/CustomerFilter';
+
 export default {
   computed: {
-    allCustomers() {
-      return this.$store.getters.all;
+    customers() {
+      return this.$store.getters.allCustomers;
     },
     fetched() {
       return this.$store.getters.fetched;
     }
   },
   data: () => ({
-    heads: CUSTOMERS_TABLE_HEADS
+    heads: CUSTOMERS_TABLE_HEADS,
+    showFilter: false
+
   }),
   components: {
-    TableComponent
+    TableComponent,
+    CustomerFilter
+
+  },
+  methods: {
+    closeFilterModal() {
+      this.showFilter = false;
+    },
+    showFilterModal() {
+      this.showFilter = true;
+    },
+    onFilter(data) {
+      this.$store.commit('filterCustomers', {name: 'allCustomers', data});
+      this.showFilter = false;
+    },
+    onReset() {
+      let data = this.$store.getters.all;
+      this.$store.commit('filterCustomers', {name: 'allCustomers', data});
+      this.showFilter = false;
+    }
   }
 };
 </script>
