@@ -189,7 +189,11 @@ export function ExportToExcel(target, filename = "download-file") {
     , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
     target = document.querySelector(target)
     var ctx = {worksheet: filename+'.xls' || 'Worksheet', table: target.innerHTML}
-    window.location.href = uri + base64(format(template, ctx))
+    let link = document.createElement('a');
+    link.download = filename+new Date().toLocaleDateString('en-gb')+'.xls';
+    link.href=uri + base64(format(template, ctx));
+    link.click();
+    //window.location.href = uri + base64(format(template, ctx))
 
 }
 
