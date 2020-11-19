@@ -188,7 +188,7 @@ export function ExportToExcel(target, filename = "download-file") {
     , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
     , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
     target = document.querySelector(target)
-    var ctx = {worksheet: filename || 'Worksheet', table: target.innerHTML}
+    var ctx = {worksheet: filename+'.xls' || 'Worksheet', table: target.innerHTML}
     window.location.href = uri + base64(format(template, ctx))
 
 }
