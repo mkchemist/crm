@@ -63,23 +63,23 @@ export function filterData(data, param, check = true) {
   if (typeof check === "function") {
     checkQuery = check;
   }
-  for(let i in data) {
+  for (let i in data) {
     let item = data[i];
     if (checkQuery(item)) {
-      if(typeof param === 'string') {
+      if (typeof param === "string") {
         let key = ObjectNotation(item, param);
         if (!res[key]) {
           res[key] = [];
         }
         res[key].push(item);
-      } else if(param instanceof Array) {
-        for(let index in param) {
+      } else if (param instanceof Array) {
+        for (let index in param) {
           let paramName = param[index];
-          if(!res[paramName]) {
+          if (!res[paramName]) {
             res[paramName] = {};
           }
           let key = ObjectNotation(item, paramName);
-          if(!res[paramName][key]) {
+          if (!res[paramName][key]) {
             res[paramName][key] = [];
           }
           res[paramName][key].push(item);
@@ -197,19 +197,31 @@ export function sortBy(arr, item, dir = "asc") {
  * @return {void}
  */
 export function ExportToExcel(target, filename = "download-file") {
-  var uri = 'data:application/vnd.ms-excel;base64,'
-    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
-    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-    target = document.querySelector(target)
-    var ctx = {worksheet: filename+'.xls' || 'Worksheet', table: target.innerHTML}
-    let link = document.createElement('a');
-    link.download = filename+new Date().toLocaleDateString('en-gb')+'.xls';
-    link.href=uri + base64(format(template, ctx));
-    link.click();
-    //window.location.href = uri + base64(format(template, ctx))
-
+  var uri = "data:application/vnd.ms-excel;base64,",
+    template =
+      '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+    base64 = function(s) {
+      return window.btoa(unescape(encodeURIComponent(s)));
+    },
+    format = function(s, c) {
+      return s.replace(/{(\w+)}/g, function(m, p) {
+        return c[p];
+      });
+    };
+  target = document.querySelector(target);
+  var ctx = {
+    worksheet: filename + ".xls" || "Worksheet",
+    table: target.innerHTML
+  };
+  let link = document.createElement("a");
+  link.download = filename + new Date().toLocaleDateString("en-gb") + ".xls";
+  link.href = uri + base64(format(template, ctx));
+  link.click();
+  //window.location.href = uri + base64(format(template, ctx))
 }
+
+
+
 
 const initialDateRange = {
   start: null,
@@ -252,10 +264,10 @@ export function filterByDate(data, prop, range = initialDateRange) {
  */
 export function filterBy(data, prop, condition) {
   return new Promise((res, err) => {
-    if(condition === null) {
+    if (condition === null) {
       res(data);
     }
-    let result= data.filter(item => item[prop] === condition);
+    let result = data.filter(item => item[prop] === condition);
     res(result);
   });
 }
