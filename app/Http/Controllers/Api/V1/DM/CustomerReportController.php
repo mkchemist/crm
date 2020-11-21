@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\DM;
 
 use App\CustomerReport;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DM\CustomerReportResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +29,7 @@ class CustomerReportController extends Controller
 
       return response([
         'code'  =>  200,
-        'data'  =>  $reports
+        'data'  =>  CustomerReportResource::collection($reports)
       ]);
     }
 

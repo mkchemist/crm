@@ -12,7 +12,7 @@
             :data="$store.getters.allRepPmReports"
             :onUpdate="onUpdate"
             :onReset="onReset"
-            :keys="{ rep: 'user_id', date: 'visit_date' }"
+            :keys="{ rep: 'user_id', date: 'date' }"
           />
           <div class="my-2">
             <router-link
@@ -98,45 +98,45 @@ export default {
     heads: [
       {
         title: "Date",
-        name: "visit_date"
+        name: "date"
       },
       {
         title: "Rep",
-        name: "user.name",
+        name: "user_name",
         style: "font-weight-bold"
       },
       {
         title: "Coach",
-        name: "coach.name",
+        name: "coach",
         fallback: "-----"
       },
       {
         title: "Customer",
-        name: "customer.name",
+        name: "customer",
         style: "font-weight-bold"
       },
       {
         title: "Specialty",
-        name: "customer.specialty",
+        name: "specialty",
         style: "font-weight-bold"
       },
       {
         title: "Params",
-        name: "customer.params.0.current",
+        name: "param",
         fallback: "NN",
         style: "font-weight-bold"
       },
       {
         title: "Adress",
-        name: "customer.address"
+        name: "address"
       },
       {
         title: "Brick",
-        name: "customer.brick"
+        name: "brick"
       },
       {
         title: "Area",
-        name: "customer.area"
+        name: "area"
       },
       {
         title: "Comment",
@@ -145,7 +145,7 @@ export default {
       },
       {
         title: "Feedback",
-        name: "general_feedback",
+        name: "feedback",
         fallback: "--------"
       }
     ]
