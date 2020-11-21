@@ -1,7 +1,20 @@
 <template>
   <div class="row mx-auto">
-    <div class="col-lg-3"></div>
-    <div class="col-lg-9 px-0">
+    <div class="col-lg-3">
+      <data-filter
+        :data="$store.getters.repPlans"
+        :keys="{ rep: 'user_nae', date: 'date' }"
+        :onUpdate="handlePlansFitler"
+        :onReset="handlePlansReset"
+      ></data-filter>
+      <div class="my-2 border p-2 rounded">
+        <router-link to="/reports" class="btn btn-sm btn-block btn-dark">
+          <span><i class="fa fa-chevron-circle-left"></i></span>
+          <span>back</span>
+        </router-link>
+      </div>
+    </div>
+    <div class="col-lg-9 px-0 shadow">
       <p class="alert alert-success">
         <span><i class="fa fa-book-reader"></i></span>
         <span class="font-weight-bold">View Plan analysis report</span>
@@ -103,18 +116,27 @@
 
 <script>
 import { ExportToExcel, filterData } from "../../../../helpers/helpers";
+import DataFilter from "../../../components/DataFilter";
 export default {
   mounted() {
     this.$store.dispatch("getPlans");
+  },
+  components: {
+    DataFilter
   },
   data: () => ({
     specialtiesList: [],
     paramsList: [],
     freqsList: [],
-    plansCountList: []
+    plansCountList: [],
+    isFiltered: false,
+    filteredPlans: []
   }),
   computed: {
     plans() {
+      if (this.isFiltered) {
+        return this.filteredPlans;
+      }
       return this.$store.getters.repPlans;
     },
     fetched() {
@@ -160,10 +182,28 @@ export default {
       });
     },
     exportToExcel() {
-      ExportToExcel('#plan_analysis', `${this.$store.state.user.name} rep plans analysis`);
+      ExportToExcel(
+        "#plan_analysis",
+        `${this.$store.state.user.name} rep plans analysis`
+      );
+    },
+    handlePlansFitler(resolve) {
+      resolve.then(d => this.filteredPlans = d)
+      .finally(() => {
+        this.isFiltered = true;
+      })
+    },
+    handlePlansReset() {
+      this.isFiltered = false;
+      this.filteredPlans = [];
     }
   }
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+  th, tr, td {
+    vertical-align: middle !important;
+    text-align: center;
+  }
+</style>

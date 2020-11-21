@@ -33,7 +33,8 @@ class RepPlannerResource extends JsonResource
           'area'        =>  $this->customer->area,
           'brick'       =>  $this->customer->brick,
           'user_name'   =>  $this->user->name,
-          'address'     =>  $this->customer->address
+          'address'     =>  $this->customer->address,
+          'date'        =>  $this->plan_date
         ];
     }
 }

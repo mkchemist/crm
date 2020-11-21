@@ -236,23 +236,21 @@ const initialDateRange = {
  * @return {Promise}
  */
 export function filterByDate(data, prop, range = initialDateRange) {
-  return new Promise((res, err) => {
-    let { start, end } = range;
-    if (!start && !end) {
-      return err("Start and End date is undefined");
-    }
-    let result = data;
-    if (start) {
-      start = new Date(start).getTime();
-      result = result.filter(item => new Date(item[prop]).getTime() >= start);
-    }
+  let { start, end } = range;
+  if (!start && !end) {
+    return err("Start and End date is undefined");
+  }
+  let result = data;
+  if (start) {
+    start = new Date(start).getTime();
+    result = result.filter(item => new Date(item[prop]).getTime() >= start);
+  }
 
-    if (end) {
-      end = new Date(end).getTime();
-      result = result.filter(item => new Date(item[prop]) <= end);
-    }
-    res(result);
-  });
+  if (end) {
+    end = new Date(end).getTime();
+    result = result.filter(item => new Date(item[prop]) <= end);
+  }
+  return result;
 }
 
 /**
@@ -263,11 +261,12 @@ export function filterByDate(data, prop, range = initialDateRange) {
  * @return {Promise}
  */
 export function filterBy(data, prop, condition) {
-  return new Promise((res, err) => {
-    if (condition === null) {
-      res(data);
+  try {
+    if(condition === null) {
+      return data;
     }
-    let result = data.filter(item => item[prop] === condition);
-    res(result);
-  });
+    return data.filter(item => item[prop] === condition );
+  }catch(e) {
+    throw new Error(e.message);
+  }
 }
