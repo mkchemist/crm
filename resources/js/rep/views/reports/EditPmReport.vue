@@ -55,10 +55,19 @@
             <div class="row mx-auto my-2 border rounded p-2">
               <div class="col-lg-6">
                 <label for="" class="text-muted small">Visit type</label>
-                <select name="visit_type" id=""  v-model="visit.visit_type" class="form-control form-control-sm" @change="handleVisitType">
-                  <option value="single">Single</option>
-                  <option value="sample visit">Sample Visit</option>
-                  <option value="double visit">Double visit</option>
+                <select
+                  name="visit_type"
+                  id=""
+                  v-model="visit.visit_type"
+                  class="form-control form-control-sm"
+                  @change="handleVisitType"
+                >
+                  <option
+                    :value="type"
+                    v-for="(type, i) in $store.state.AppModule.visitTypes"
+                    :key="`visit_type_${i}`"
+                    >{{ type | capital }}</option
+                  >
                 </select>
               </div>
               <div class="col-lg-6" v-if="visit.dual">
@@ -161,7 +170,7 @@ export default {
       this.handleResponse(data, data => {
         this.visit = data.data;
         this.visit.dual = false;
-        if(data.data.visit_type === 'double visit') {
+        if (data.data.visit_type === "double visit") {
           this.visit.dual = true;
         }
       });
@@ -195,16 +204,23 @@ export default {
         });
       });
     },
-     handleVisitType() {
-      if(this.visit.visit_type === 'double visit') {
+    handleVisitType() {
+      if (this.visit.visit_type === "double visit") {
         this.visit.dual = true;
-      } else{
+      } else {
         this.visit.dual = false;
       }
     }
   },
   components: {
     VisitProducts
+  },
+  filters: {
+    capital: v => {
+      if (!v) return "";
+      v = v.toString();
+      return v.toUpperCase();
+    }
   }
 };
 </script>

@@ -84,9 +84,8 @@
               <div class="col-lg-6">
                 <label for="" class="text-muted small">Visit type</label>
                 <select name="visit_type" id=""  v-model="visit.visit_type" class="form-control form-control-sm" @change="handleVisitType">
-                  <option value="single">Single</option>
-                  <option value="sample visit">Sample Visit</option>
-                  <option value="double visit">Double visit</option>
+                  <option :value="type" v-for="(type, i) in $store.state.AppModule.visitTypes" :key="`visit_type_${i}`">{{ type | capital }}</option>
+
                 </select>
               </div>
               <div class="col-lg-6" v-if="visit.dual">
@@ -244,6 +243,13 @@ export default {
     },
     coaches() {
       return this.$store.getters.coaches;
+    }
+  },
+  filters: {
+    capital : v => {
+      if(!v) return '';
+      v = v.toString();
+      return v.toUpperCase()
     }
   }
 };
