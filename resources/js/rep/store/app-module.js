@@ -84,8 +84,10 @@ export default  {
      *
      */
     visitTypes:[
-      'Single',
-      'Coach'
+      'pm face to face',
+      'am face to face',
+      'sample visit',
+      'double visit'
     ],
     /**
      * products
@@ -131,6 +133,7 @@ export default  {
      *
      */
     visit_actions: [
+      'Remind message',
       'Thanking visit',
       'Sharpen Commitment',
       'Demonstrate a new message',
