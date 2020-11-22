@@ -17,7 +17,7 @@
               v-for="(item, i) in Object.keys(pharmacyFilterItems)"
               :key="`brick_${i}`"
               :value="item"
-              >{{ item }}</option
+              >{{ item }} ({{ pharmacyFilterItems[item].length }}) </option
             >
           </select>
         </div>
