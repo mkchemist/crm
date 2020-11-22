@@ -76,7 +76,11 @@
         <div class="form-group my-2 d-flex">
           <div class="col">
             <input type="checkbox" v-model="withInactive">
-            <span class="ml-1 small">with inactive customers</span>
+            <span class="small">Inactive customers</span>
+          </div>
+          <div class="col">
+            <input type="checkbox" v-model="onlyFavoriteList" @change="handleFavoriteList">
+            <span class="small">Favorite list</span>
           </div>
           <div class="text-right col">
            <button class="btn btn-sm btn-primary" @click="reset" type="button">
@@ -98,6 +102,7 @@
 <script>
 import ModalFade from "../../components/ModalFade";
 import { filterData } from "../../helpers/helpers";
+import { httpCall } from '../../helpers/http-service';
 export default {
   components: {
     ModalFade
@@ -105,6 +110,9 @@ export default {
   data: () => ({
     showFilter: false,
     withInactive: false,
+    onlyFavoriteList: false,
+    favoriteList: [],
+    isFavoriteListFetched: false,
     filter: {
       brick: '',
       specialty: '',
@@ -126,6 +134,9 @@ export default {
     customers() {
       if(this.withInactive) {
         return this.$store.getters.all;
+      }
+      if(this.onlyFavoriteList && this.isFavoriteListFetched) {
+        return this.favoriteList;
       }
       return this.data;
     }
@@ -160,6 +171,25 @@ export default {
     reset(){
       this.$store.commit('setCustomerFilter', this.data);
       this.showFilter = false;
+    },
+    getFavoriteList(force) {
+      if(!this.favoriteList.length || force) {
+        this.isFavoriteListFetched = false;
+        httpCall.get('customers-favorite-list')
+        .then(({data}) => {
+          this.favoriteList = data.data;
+          this.isFavoriteListFetched = true;
+        });
+      }
+    },
+    handleFavoriteList() {
+      let checked = event.target.checked;
+      if(checked) {
+        this.getFavoriteList();
+        this.onlyFavoriteList = true;
+      } else {
+        this.onlyFavoriteList = false;
+      }
     }
   }
 };

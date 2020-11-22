@@ -2609,6 +2609,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_ModalFade__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../components/ModalFade */ "./resources/js/components/ModalFade.vue");
 /* harmony import */ var _helpers_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../helpers/helpers */ "./resources/js/helpers/helpers.js");
+/* harmony import */ var _helpers_http_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../helpers/http-service */ "./resources/js/helpers/http-service.js");
 //
 //
 //
@@ -2706,6 +2707,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2716,6 +2722,9 @@ __webpack_require__.r(__webpack_exports__);
     return {
       showFilter: false,
       withInactive: false,
+      onlyFavoriteList: false,
+      favoriteList: [],
+      isFavoriteListFetched: false,
       filter: {
         brick: '',
         specialty: '',
@@ -2738,6 +2747,10 @@ __webpack_require__.r(__webpack_exports__);
     customers: function customers() {
       if (this.withInactive) {
         return this.$store.getters.all;
+      }
+
+      if (this.onlyFavoriteList && this.isFavoriteListFetched) {
+        return this.favoriteList;
       }
 
       return this.data;
@@ -2789,6 +2802,28 @@ __webpack_require__.r(__webpack_exports__);
     reset: function reset() {
       this.$store.commit('setCustomerFilter', this.data);
       this.showFilter = false;
+    },
+    getFavoriteList: function getFavoriteList(force) {
+      var _this = this;
+
+      if (!this.favoriteList.length || force) {
+        this.isFavoriteListFetched = false;
+        _helpers_http_service__WEBPACK_IMPORTED_MODULE_2__["httpCall"].get('customers-favorite-list').then(function (_ref) {
+          var data = _ref.data;
+          _this.favoriteList = data.data;
+          _this.isFavoriteListFetched = true;
+        });
+      }
+    },
+    handleFavoriteList: function handleFavoriteList() {
+      var checked = event.target.checked;
+
+      if (checked) {
+        this.getFavoriteList();
+        this.onlyFavoriteList = true;
+      } else {
+        this.onlyFavoriteList = false;
+      }
     }
   }
 });
@@ -15095,8 +15130,56 @@ var render = function() {
                       }
                     }),
                     _vm._v(" "),
-                    _c("span", { staticClass: "ml-1 small" }, [
-                      _vm._v("with inactive customers")
+                    _c("span", { staticClass: "small" }, [
+                      _vm._v("Inactive customers")
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.onlyFavoriteList,
+                          expression: "onlyFavoriteList"
+                        }
+                      ],
+                      attrs: { type: "checkbox" },
+                      domProps: {
+                        checked: Array.isArray(_vm.onlyFavoriteList)
+                          ? _vm._i(_vm.onlyFavoriteList, null) > -1
+                          : _vm.onlyFavoriteList
+                      },
+                      on: {
+                        change: [
+                          function($event) {
+                            var $$a = _vm.onlyFavoriteList,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = null,
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  (_vm.onlyFavoriteList = $$a.concat([$$v]))
+                              } else {
+                                $$i > -1 &&
+                                  (_vm.onlyFavoriteList = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
+                              }
+                            } else {
+                              _vm.onlyFavoriteList = $$c
+                            }
+                          },
+                          _vm.handleFavoriteList
+                        ]
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("span", { staticClass: "small" }, [
+                      _vm._v("Favorite list")
                     ])
                   ]),
                   _vm._v(" "),
