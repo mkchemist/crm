@@ -5,7 +5,7 @@
       <span class="font-weight-bold">AM Plans</span>
     </p>
     <div class="p-2">
-      <div class="p-2" v-if="plans">
+      <div class="p-2" v-if="plans.length">
         <table-component
           :heads="heads"
           :data="plans"
@@ -16,7 +16,10 @@
       </div>
       <div v-else-if="fetched" class="text-center">
         <p class="text-muted">No plans found</p>
-        <router-link to="/planner/add-am"></router-link>
+        <router-link to="/planner/add-am" class="btn btn-sm btn-primary">
+          <span><i class="fa fa-paper-plane"></i></span>
+          <span>New AM visit</span>
+        </router-link>
       </div>
     </div>
   </div>
