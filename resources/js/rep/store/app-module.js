@@ -134,6 +134,7 @@ export default  {
      */
     visit_actions: [
       'Remind message',
+      'Competitor attack',
       'Thanking visit',
       'Sharpen Commitment',
       'Demonstrate a new message',

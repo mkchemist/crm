@@ -11,6 +11,10 @@
         <span>Filter Customers</span>
       </template>
       <template v-slot:body>
+        <p class="alert alert-warning small" v-if="error">
+          <span><i class="fa fa-exclamation-triangle"></i></span>
+          <span>No Customers found</span>
+        </p>
         <div class="px-2 small text-muted">
           total customers : {{ customers.length }}
         </div>
@@ -119,6 +123,7 @@ export default {
       param: '',
       freq: '',
     },
+    error: null
   }),
   props: ["data"],
   computed: {
@@ -144,6 +149,10 @@ export default {
   methods: {
     updateCustomers() {
         let customers = this.filterCustomers();
+        if(!customers.length) {
+          this.error = true;
+          return;
+        }
         this.$store.commit('setCustomerFilter', customers);
         this.showFilter = false;
     },
@@ -170,6 +179,7 @@ export default {
     },
     reset(){
       this.$store.commit('setCustomerFilter', this.data);
+      this.error = false;
       this.showFilter = false;
     },
     getFavoriteList(force) {
@@ -189,6 +199,9 @@ export default {
         this.onlyFavoriteList = true;
       } else {
         this.onlyFavoriteList = false;
+        if(this.error) {
+          this.error = false
+        }
       }
     }
   }

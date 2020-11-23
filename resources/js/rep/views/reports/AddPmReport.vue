@@ -52,9 +52,15 @@
                         >{{ customer.name }}</option
                       >
                     </select>
-              <customer-select-filter :data="$store.getters.active" class="col-lg-4"></customer-select-filter>
+                    <customer-select-filter
+                      :data="$store.getters.active"
+                      class="col-lg-4"
+                    ></customer-select-filter>
                   </div>
                 </ValidationProvider>
+                <div v-else-if="fetched">
+                  <p class="text-center">No customers found</p>
+                </div>
                 <div class="text-center" v-else>
                   <div class="spinner-border text-success"></div>
                 </div>
@@ -80,12 +86,21 @@
             <!-- end of customer and date -->
             <!-- visit coach -->
             <div class="row mx-auto my-2 border rounded p-2">
-
               <div class="col-lg-6">
                 <label for="" class="text-muted small">Visit type</label>
-                <select name="visit_type" id=""  v-model="visit.visit_type" class="form-control form-control-sm" @change="handleVisitType">
-                  <option :value="type" v-for="(type, i) in $store.state.AppModule.visitTypes" :key="`visit_type_${i}`">{{ type | capital }}</option>
-
+                <select
+                  name="visit_type"
+                  id=""
+                  v-model="visit.visit_type"
+                  class="form-control form-control-sm"
+                  @change="handleVisitType"
+                >
+                  <option
+                    :value="type"
+                    v-for="(type, i) in $store.state.AppModule.visitTypes"
+                    :key="`visit_type_${i}`"
+                    >{{ type | capital }}</option
+                  >
                 </select>
               </div>
               <div class="col-lg-6" v-if="visit.dual">
@@ -156,7 +171,7 @@
                 <span><i class="fa fa-chevron-circle-left"></i></span>
                 <span class="font-weight-bold">back</span>
               </router-link>
-              <button class="btn btn-sm btn-success">
+              <button class="btn btn-sm btn-success" :disabled="!visit.customer">
                 <span><i class="fa fa-save"></i></span>
                 <span class="font-weight-bold">save</span>
               </button>
@@ -176,7 +191,7 @@
  */
 import { httpCall } from "../../../helpers/http-service";
 import VisitProducts from "../../components/VisitProducts";
-import CustomerSelectFilter from '../../components/CustomerSelectFilter';
+import CustomerSelectFilter from "../../components/CustomerSelectFilter";
 export default {
   created() {
     this.$store.dispatch("customerGetAll");
@@ -207,6 +222,12 @@ export default {
      * save report
      */
     saveReport() {
+      if(!this.visit.customer) {
+        this.$toasted.error('No customer selected', {
+          icon: 'exclamation-triangle'
+        });
+        return;
+      }
       let data = {};
       Object.assign(data, this.visit);
       data.products = JSON.stringify(data.products);
@@ -224,9 +245,9 @@ export default {
       });
     },
     handleVisitType() {
-      if(this.visit.visit_type === 'double visit') {
+      if (this.visit.visit_type === "double visit") {
         this.visit.dual = true;
-      } else{
+      } else {
         this.visit.dual = false;
       }
     }
@@ -243,13 +264,16 @@ export default {
     },
     coaches() {
       return this.$store.getters.coaches;
+    },
+    fetched() {
+      return this.$store.getters.fetched;
     }
   },
   filters: {
-    capital : v => {
-      if(!v) return '';
+    capital: v => {
+      if (!v) return "";
       v = v.toString();
-      return v.toUpperCase()
+      return v.toUpperCase();
     }
   }
 };
