@@ -208,14 +208,15 @@
 
 <script>
 import TableComponent from "../../../../components/TableComponent";
-import { ExportToExcel, filterData, sortBy } from "../../../../helpers/helpers";
+import { ExportToExcel, filterData, sortBy, sortDates } from "../../../../helpers/helpers";
 import DataFilter from "../../../components/DataFilter";
 import Chart from "chart.js/dist/Chart.bundle";
 export default {
   mounted() {
     this.$store.dispatch("getAllRepPmReports").finally(() => {
       this.$store.dispatch("getPlans").finally(() => {});
-      let planDates = this.plan_days;
+      let planDates = sortDates(this.plan_days);
+      let reportDates = sortDates(this.report_days);
       this.planChart = {
         type: "line",
         data: {
@@ -237,7 +238,7 @@ export default {
       this.reportChart = {
         type: "line",
         data: {
-          labels: planDates,
+          labels: reportDates,
           datasets: []
         },
         options: {
@@ -281,10 +282,13 @@ export default {
         return {};
       }
       let data = this.processRepReport();
+      //sortDates(this.plan_days);
+      //sortDates(this.report_days)
       let planPerDayCanvas = document.getElementById("visitPerPlan");
       let planPerDayCtx = new Chart(planPerDayCanvas, this.planChart);
       let reportPerDayCanvas = document.getElementById("visitPerReport");
       let reportPerDayCtx = new Chart(reportPerDayCanvas, this.reportChart);
+
       return data;
     }
   },
@@ -409,10 +413,17 @@ export default {
     createRepPlanChart(plans, rep, color) {
       plans = filterData(plans, "start");
       let planPerDay = [];
-      for (let day in plans) {
+      /* for (let day in plans) {
         let length = plans[day].length;
         planPerDay.push(length);
-      }
+      } */
+      this.plan_days.map(day => {
+        if(plans[day]) {
+          planPerDay.push(plans[day].length)
+        } else {
+          planPerDay.push(0)
+        }
+      })
       let chartData = {
         data: planPerDay,
         label: rep,
@@ -427,10 +438,17 @@ export default {
     createRepReportChart(reports, rep, color) {
       reports = filterData(reports, "date");
       let reportPerDay = [];
-      for (let day in reports) {
+      /* for (let day in reports) {
         let length = reports[day].length;
         reportPerDay.push(length);
-      }
+      } */
+      this.report_days.map(day => {
+        if(reports[day]) {
+          reportPerDay.push(reports[day].length)
+        } else {
+          reportPerDay.push(0)
+        }
+      })
       let chartData = {
         data: reportPerDay,
         label: rep,

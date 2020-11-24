@@ -190,6 +190,31 @@ export function sortBy(arr, item, dir = "asc") {
   });
 }
 
+
+function compareDates(a, b, factor) {
+  a = new Date(a);
+  b = new Date(b);
+  var result = 0;
+  if(a > b) {
+    result =  1 * factor;
+  }
+  if(a < b) {
+    result =  -1 * factor
+  }
+  return result;
+}
+
+export function sortDates(arr, dir = "asc") {
+  let factor = 1
+  if(dir !== "asc") {
+    factor = -1
+  }
+  let res = arr.sort((a, b) => {
+    return compareDates(a, b, factor);
+  })
+  return res
+}
+
 /**
  *
  * @param {string} target
