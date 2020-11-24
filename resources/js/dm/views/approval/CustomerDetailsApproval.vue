@@ -54,6 +54,10 @@ export default {
     request_state: null,
     heads: [
       {
+        title: 'Rep',
+        name: 'user.name'
+      },
+      {
         title: 'Name',
         name: 'customer.name'
       },
