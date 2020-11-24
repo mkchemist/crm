@@ -38,9 +38,26 @@
               head-class="bg-success text-light"
             >
               <template v-slot:head>
+                <th>Plans</th>
+                <th>Visits</th>
+                <th>Diff</th>
+                <th>State</th>
+                <th>Comment</th>
+                <th>Feedback</th>
                 <th>Products</th>
+                <th>Address</th>
+                <th>Brick</th>
+                <th>Area</th>
               </template>
               <template v-slot:body="{ item }">
+                <td>{{ item.plans }}</td>
+                <td>{{ item.reports }}</td>
+                <td>{{ item.plans-item.reports }}</td>
+                <td>
+                  <span :class="customerState(item).style">{{ customerState(item).state }}</span>
+                </td>
+                <td>{{ item.comment }}</td>
+                <td>{{ item.feedback }}</td>
                 <td>
                   <ul
                     class="nav"
@@ -59,6 +76,9 @@
                     </li>
                   </ul>
                 </td>
+                <td>{{ item.address }}</td>
+                <td>{{ item.brick }}</td>
+                <td>{{ item.area }}</td>
               </template>
             </table-component>
           </div>
@@ -125,28 +145,6 @@ export default {
         name: "param",
         fallback: "NN",
         style: "font-weight-bold"
-      },
-      {
-        title: "Adress",
-        name: "address"
-      },
-      {
-        title: "Brick",
-        name: "brick"
-      },
-      {
-        title: "Area",
-        name: "area"
-      },
-      {
-        title: "Comment",
-        name: "comment",
-        fallback: "--------"
-      },
-      {
-        title: "Feedback",
-        name: "feedback",
-        fallback: "--------"
       }
     ]
   }),
@@ -159,6 +157,31 @@ export default {
     },
     onReset() {
       this.$store.commit("resetRepPmReports");
+    },
+    customerState(item) {
+      let diff = item.plans - item.reports;
+      if(diff > 0) {
+        return {
+          state: 'Missed',
+          style: 'bg-danger text-light p-1'
+        }
+      } else if(diff < 0) {
+        return {
+          state : 'Over',
+          style: 'bg-primary text-light p-1'
+        }
+      } else if(diff === 0 && item.plans ===0) {
+        return {
+          state: 'Not targeted',
+          style : 'bg-dark text-light p-1',
+        }
+        return 'Not targeted';
+      } else {
+        return {
+          state : 'Accomplished',
+          style: 'bg-success text-light p-1'
+        }
+      }
     }
   }
 };

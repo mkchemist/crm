@@ -87,10 +87,6 @@ export const DM_CUSTOMERS_HEADS = [
   {
     title: "Reports",
     name: "reports"
-  },
-  {
-    title: "Address",
-    name: "address"
   }
 ];
 

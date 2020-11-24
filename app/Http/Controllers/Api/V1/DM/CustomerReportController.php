@@ -10,71 +10,71 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerReportController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-      $user = Auth::user();
-      $reports = CustomerReport::with(['customer', 'user', 'customer.params','coach'])
-      ->whereIn('user_id', function($query) use($user) {
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index()
+  {
+    $user = Auth::user();
+    $reports = CustomerReport::with(['customer', 'user', 'customer.params', 'coach', 'customer.planner', 'customer.report'])
+      ->whereIn('user_id', function ($query) use ($user) {
         $query->select('id')->from('users')
-        ->where([
-          'district'  =>  $user->district,
-          'line'      =>  $user->line
-        ])->get();
+          ->where([
+            'district'  =>  $user->district,
+            'line'      =>  $user->line
+          ])->get();
       })->get();
 
-      return response([
-        'code'  =>  200,
-        'data'  =>  CustomerReportResource::collection($reports)
-      ]);
-    }
+    return response([
+      'code'  =>  200,
+      'data'  =>  CustomerReportResource::collection($reports)
+    ]);
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function store(Request $request)
+  {
+    //
+  }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+  /**
+   * Display the specified resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function show($id)
+  {
+    //
+  }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function update(Request $request, $id)
+  {
+    //
+  }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function destroy($id)
+  {
+    //
+  }
 }
