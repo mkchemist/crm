@@ -50,6 +50,10 @@
                     <th rowspan="2">total planned visits</th>
                     <th rowspan="2">total report visits</th>
                     <th rowspan="2">%</th>
+                    <th rowspan="2">Total Planned days</th>
+                    <th rowspan="2">Total report days</th>
+                    <th rowspan="2">Plans avg. visit/day</th>
+                    <th rowspan="2">Report avg. visit/day</th>
                     <th rowspan="2">total planned Customers</th>
                     <th rowspan="2">total visited Customers</th>
                     <th rowspan="2">%</th>
@@ -110,8 +114,16 @@
                     <td>{{ rep.total_visits }}</td>
                     <td>
                       {{
-                        (rep.total_visits / rep.total_planned).toFixed(2) * 100
+                        (rep.total_visits / rep.total_planned).toFixed(1) * 100
                       }}
+                    </td>
+                    <td>{{ rep.planner_days }}</td>
+                    <td>{{ rep.report_days }}</td>
+                    <td>
+                      {{ (rep.total_planned / rep.planner_days).toFixed(1) }}
+                    </td>
+                    <td>
+                      {{ (rep.total_visits / rep.report_days).toFixed(1) }}
                     </td>
                     <td>{{ rep.planned_customers }}</td>
                     <td>{{ rep.visits_customers }}</td>
@@ -178,6 +190,17 @@
             <loader-component></loader-component>
           </div>
         </div>
+        <hr />
+        <div class="p-2">
+          <div class="p-4 shadow">
+            <p class="lead text-center">Plan Per Day</p>
+            <canvas id="visitPerPlan"></canvas>
+          </div>
+          <div class="p-4 shadow my-2">
+            <p class="lead text-center">Visit Per Day</p>
+            <canvas id="visitPerReport"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -187,10 +210,48 @@
 import TableComponent from "../../../../components/TableComponent";
 import { ExportToExcel, filterData, sortBy } from "../../../../helpers/helpers";
 import DataFilter from "../../../components/DataFilter";
+import Chart from "chart.js/dist/Chart.bundle";
 export default {
   mounted() {
     this.$store.dispatch("getAllRepPmReports").finally(() => {
       this.$store.dispatch("getPlans").finally(() => {});
+      let planDates = this.plan_days;
+      this.planChart = {
+        type: "line",
+        data: {
+          labels: planDates,
+          datasets: []
+        },
+        options: {
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                }
+              }
+            ]
+          }
+        }
+      };
+      this.reportChart = {
+        type: "line",
+        data: {
+          labels: planDates,
+          datasets: []
+        },
+        options: {
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                }
+              }
+            ]
+          }
+        }
+      };;
     });
   },
   computed: {
@@ -220,6 +281,10 @@ export default {
         return {};
       }
       let data = this.processRepReport();
+      let planPerDayCanvas = document.getElementById("visitPerPlan");
+      let planPerDayCtx = new Chart(planPerDayCanvas, this.planChart);
+      let reportPerDayCanvas = document.getElementById("visitPerReport");
+      let reportPerDayCtx = new Chart(reportPerDayCanvas, this.reportChart);
       return data;
     }
   },
@@ -230,6 +295,10 @@ export default {
   data: () => ({
     params_list: new Set(),
     sp_list: new Set(),
+    plan_days: [],
+    report_days: [],
+    planChart: {},
+    reportChart: {},
     filteredData: {
       reports: [],
       plans: []
@@ -241,7 +310,7 @@ export default {
       try {
         let repsData = this.collectRepData();
         let analysis = {};
-        Object.keys(repsData).forEach(rep => {
+        Object.keys(repsData).forEach((rep, i) => {
           if (!analysis[rep]) {
             analysis[rep] = {};
           }
@@ -250,34 +319,57 @@ export default {
             "customer",
             "specialty",
             "param",
-            "coach"
+            "coach",
+            "date"
           ]);
-          let plans = filterData(data.plans, ["title", "specialty", "param"]);
+          let plans = filterData(data.plans, [
+            "title",
+            "specialty",
+            "param",
+            "start"
+          ]);
           analysis[rep] = {
             total_visits: data.reports.length,
             total_planned: data.plans.length,
-            planned_customers: plans.title ? Object.keys(plans.title).length : 0,
-            visits_customers: reports.customer ? Object.keys(reports.customer).length:0,
-            planned_params:  plans.param || {},
+            planned_customers: plans.title
+              ? Object.keys(plans.title).length
+              : 0,
+            visits_customers: reports.customer
+              ? Object.keys(reports.customer).length
+              : 0,
+            planner_days: Object.keys(plans.start).length,
+            report_days: Object.keys(reports.date).length,
+            planned_params: plans.param || {},
             report_params: reports.param || {},
-            coach_visits: reports.coach ? Object.keys(reports.coach).length: 0,
+            coach_visits: reports.coach ? Object.keys(reports.coach).length : 0,
             planned_specialty: plans.specialty || {},
-            report_specialty : reports.specialty|| {}
-          }
+            report_specialty: reports.specialty || {}
+          };
           for (let i in data.plans) {
             let item = data.plans[i];
             this.sp_list.add(item.specialty);
             this.params_list.add(item.param);
+            if (!this.plan_days.includes(item.start)) {
+              this.plan_days.push(item.start);
+            }
           }
           for (let i in data.reports) {
             let item = data.reports[i];
             this.sp_list.add(item.customer.specialty);
+            if (!this.report_days.includes(item.date)) {
+              this.report_days.push(item.date);
+            }
             if (item.customer.current) {
               this.params_list.add(item.current[0].param);
             }
           }
           this.params_list.add("NN");
+          let colors = ["red", "royalblue", "green", "black", "seagreen"];
+          this.createRepPlanChart(data.plans, rep, colors[i]);
+          this.createRepReportChart(data.reports, rep, colors[i]);
+          colors.shift();
         });
+
         return analysis;
       } catch (e) {
         console.log(e);
@@ -313,14 +405,52 @@ export default {
         reports: [],
         plans: []
       };
+    },
+    createRepPlanChart(plans, rep, color) {
+      plans = filterData(plans, "start");
+      let planPerDay = [];
+      for (let day in plans) {
+        let length = plans[day].length;
+        planPerDay.push(length);
+      }
+      let chartData = {
+        data: planPerDay,
+        label: rep,
+        borderWidth: 1,
+        fill: false,
+        borderColor: color
+      };
+      if (this.planChart.data) {
+        this.planChart.data.datasets.push(chartData);
+      }
+    },
+    createRepReportChart(reports, rep, color) {
+      reports = filterData(reports, "date");
+      let reportPerDay = [];
+      for (let day in reports) {
+        let length = reports[day].length;
+        reportPerDay.push(length);
+      }
+      let chartData = {
+        data: reportPerDay,
+        label: rep,
+        borderWidth: 1,
+        fill: false,
+        borderColor: color
+      };
+      if (this.reportChart.data) {
+        this.reportChart.data.datasets.push(chartData);
+      }
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-th, tr, td {
-    vertical-align: middle !important;
-    text-align: center;
-  }
+th,
+tr,
+td {
+  vertical-align: middle !important;
+  text-align: center;
+}
 </style>
