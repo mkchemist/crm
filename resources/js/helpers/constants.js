@@ -91,15 +91,38 @@ export const DM_CUSTOMERS_HEADS = [
 ];
 
 export const COACH_REPORT = {
-  "Pre-call planning" : {
-    "Feedback" : "",
-    "Samples" : "",
-    "Appearance": "",
-    "review previous notes about doctor": "",
-    "prepare a proper message for visit according to pharamcy feedback" : ""
+  "Pre-call Planning" : {
+    "Review notes, call history,prescribing information and the profile for each Customer prior" : "",
+    "Sets pre-call objectives per product per customer" : "",
+    "Pre-plans a customized opening, prob responses for expected objection and close for the call": "",
   },
   "Opening": {
-    "Ask questions that related to visit message": "",
-    "Ask effective questions" : ""
+    "Results in the customer giving full and undivided attention for FSR": "",
+    "Is less than one minute" : "",
+    "Applies information from pervious call": ""
+  },
+  "Initial Probe": {
+    "Uses direct and indirect questions to verify customer needs,concerns and buying habits": "",
+    "Selects the right questions for the customer at the proper time during the call": "",
+    "Engages customer in dialogue and understands non verbal communications skills": "",
+  },
+  "Promotional Plan": {
+    "Communicates product knowledge in response to customer cue": "",
+    "Delivers key product messages according to market strategy": "",
+    "Reinforce product message using references and visual": "",
+    "Uses knowledge of competitive product information to compare": ""
+  },
+  "Handling of Objections": {
+    "Listens actively to customer objection with no interruptions": "",
+    "Understands the type of objection and clarifies the customer need" : "",
+    "Responds smartly, covers the customer need and check for understand": "",
+  },
+  "Close": {
+    "Reviews uses information and summarizes with agreed upon points": "",
+    "Asks for action-oriented commitment": "",
+  },
+  "Post Call Analysis": {
+    "Analyzes new information to determine next objective": "",
+    "provides all information on time and in a legible manner": ""
   }
 }
