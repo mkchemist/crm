@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas :id="id"></canvas>
+    <canvas :id="id? id : 'chart_view'"></canvas>
   </div>
 </template>
 
@@ -23,14 +23,18 @@ export default {
       required: true
     }
   },
-  mounted() {
-    return;
-    if(!this.id) {
-      this.id = "chart_view";
-    }
+  created() {
 
-    this.generateChartOptions(this.type, this.labels, this.chartData);
-    let ctx = document.getElementById(this.id);
+  },
+  mounted() {
+    let id = "chart_view";
+    if(this.id) {
+      id = this.id
+    }
+    let type = this.type || 'line';
+    this.generateChartOptions(type, this.labels, this.chartData);
+    let ctx = document.getElementById(id);
+    console.log(this.chart)
     let chart = new Chart(ctx, this.chart);
   },
   data:() => ({

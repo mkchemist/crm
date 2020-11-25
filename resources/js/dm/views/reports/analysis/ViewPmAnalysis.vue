@@ -37,7 +37,10 @@
                 <span>Export</span>
               </button>
             </div>
-            <table class="table table-bordered rounded table-responsive table-sm small" id="analysis-tbl">
+            <table
+              class="table table-bordered rounded table-responsive table-sm small"
+              id="analysis-tbl"
+            >
               <thead>
                 <tr>
                   <th rowspan="2">Rep</th>
@@ -49,10 +52,30 @@
                   <th rowspan="2">Plan visit/day</th>
                   <th rowspan="2">Report visit/day</th>
                   <th rowspan="2">Coaching visits</th>
-                  <th :colspan="specialtyCollection.length" class="bg-secondary text-light">Plan Specialites</th>
-                  <th :colspan="specialtyCollection.length" class="bg-primary text-light">Report Specialites</th>
-                  <th :colspan="parameterCollection.length" class="bg-secondary text-light">Plan Parameters</th>
-                  <th :colspan="parameterCollection.length" class="bg-primary text-light">Plan Parameters</th>
+                  <th
+                    :colspan="specialtyCollection.length"
+                    class="bg-secondary text-light"
+                  >
+                    Plan Specialites
+                  </th>
+                  <th
+                    :colspan="specialtyCollection.length"
+                    class="bg-primary text-light"
+                  >
+                    Report Specialites
+                  </th>
+                  <th
+                    :colspan="parameterCollection.length"
+                    class="bg-secondary text-light"
+                  >
+                    Plan Parameters
+                  </th>
+                  <th
+                    :colspan="parameterCollection.length"
+                    class="bg-primary text-light"
+                  >
+                    Plan Parameters
+                  </th>
                 </tr>
                 <tr>
                   <th
@@ -117,30 +140,58 @@
                     v-for="(item, index) in specialtyCollection"
                     :key="`plan_rep_specialty_collection_${index}`"
                   >
-                    {{ data.plans.specialty[item] ? data.plans.specialty[item].length: 0 }}
+                    {{
+                      data.plans.specialty[item]
+                        ? data.plans.specialty[item].length
+                        : 0
+                    }}
                   </td>
                   <td
                     v-for="(item, index) in specialtyCollection"
                     :key="`report_rep_specialty_collection_${index}`"
                   >
-                    {{ data.reports.specialty[item] ? data.reports.specialty[item].length: 0 }}
+                    {{
+                      data.reports.specialty[item]
+                        ? data.reports.specialty[item].length
+                        : 0
+                    }}
                   </td>
                   <td
                     v-for="(item, index) in parameterCollection"
                     :key="`plan_rep_parameter_collection_${index}`"
                   >
-                    {{ data.plans.param[item] ? data.plans.param[item].length: 0 }}
+                    {{
+                      data.plans.param[item] ? data.plans.param[item].length : 0
+                    }}
                   </td>
                   <td
                     v-for="(item, index) in parameterCollection"
                     :key="`report_rep_parameter_collection_${index}`"
                   >
-                    {{ data.reports.param[item] ? data.reports.param[item].length: 0 }}
+                    {{
+                      data.reports.param[item]
+                        ? data.reports.param[item].length
+                        : 0
+                    }}
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
+          <div class="p-2">
+            <button
+              class="btn btn-sm btn-primary"
+              @click="generatePerformanceChart"
+            >
+              <span v-if="!showPerformanceChart">Draw performance chart</span>
+              <span v-else>Hide performance chart</span>
+            </button>
+          </div>
+          <chart-view
+            v-if="showPerformanceChart"
+            :chart-data="chartData"
+            :labels="dateCollection"
+          />
         </div>
         <div v-else-if="isPlanFetched && isReportsFetched">
           <p class="text-center">No data to show</p>
@@ -152,11 +203,17 @@
 </template>
 
 <script>
-import { ExportToExcel, filterData, sortDates } from "../../../../helpers/helpers";
+import {
+  ExportToExcel,
+  filterData,
+  sortDates
+} from "../../../../helpers/helpers";
 import DataFilter from "../../../components/DataFilter";
+import ChartView from "../../../../components/ChartView"
 export default {
   components: {
-    DataFilter
+    DataFilter,
+    ChartView
   },
   mounted() {
     this.$store.dispatch("getAllRepPmReports").finally(() => {
@@ -170,19 +227,21 @@ export default {
     kpiReport: {},
     specialtyCollection: new Set(),
     parameterCollection: new Set(),
-    dateCollection: new Set(),
+    dateCollection: [],
     customPlans: [],
-    customReports: []
+    customReports: [],
+    chartData: [],
+    showPerformanceChart: false
   }),
   computed: {
     reports() {
-      if(this.customReports.length) {
+      if (this.customReports.length) {
         return this.customReports;
       }
       return this.$store.getters.allRepPmReports;
     },
     plans() {
-      if(this.customPlans.length) {
+      if (this.customPlans.length) {
         return this.customPlans;
       }
       return this.$store.getters.repPlans;
@@ -196,12 +255,14 @@ export default {
   },
   methods: {
     handleFilterUpdate(res) {
-      res.then(data => {
-        this.customReports = data.reports;
-        this.customPlans = data.plans;
-      }).finally(() => {
-        this.generateAnalysisReport();
-      });
+      res
+        .then(data => {
+          this.customReports = data.reports;
+          this.customPlans = data.plans;
+        })
+        .finally(() => {
+          this.generateAnalysisReport();
+        });
     },
     handleFilterReset() {
       this.customReports = [];
@@ -215,22 +276,29 @@ export default {
       this.plans.map(plan => {
         this.specialtyCollection.add(plan.specialty);
         this.parameterCollection.add(plan.param);
-        this.dateCollection.add(plan.start);
+        if(!this.dateCollection.includes(plan.start)) {
+          this.dateCollection.push(plan.start);
+        }
       });
       this.reports.map(report => {
         this.specialtyCollection.add(report.specialty);
         this.parameterCollection.add(report.param);
-        this.dateCollection.add(report.date);
+        if(!this.dateCollection.includes(report.date)) {
+          this.dateCollection.push(report.date);
+        }
       });
+      this.dateCollection = sortDates(this.dateCollection);
     },
     generateAnalysisReport() {
       this.isLoading = true;
+      this.chartData = [];
+      this.generateDataCollection();
       let getData = () =>
         new Promise((res, rej) => {
           let kpi = {};
           let plans = this.getDataByRep(this.plans, "user_name");
           let reports = this.getDataByRep(this.reports, "user_name");
-          Object.keys(plans).forEach(rep => {
+          Object.keys(plans).forEach((rep,i) => {
             let processingData = () =>
               new Promise((resolve, reject) => {
                 try {
@@ -251,7 +319,6 @@ export default {
                     item => item.coach !== ""
                   );
                   repReports["total"] = reports[rep].length;
-                  this.generateDataCollection();
                   resolve({ plans: repPlans, reports: repReports });
                 } catch (e) {
                   reject(e);
@@ -261,6 +328,22 @@ export default {
               .then(data => {
                 kpi[rep] = {};
                 kpi[rep] = data;
+                let repDailyPerformance = [];
+                this.dateCollection.forEach(date=> {
+                  let len = 0;
+                  if(data.reports.date[date]) {
+                    len = data.reports.date[date].length
+                  }
+                  repDailyPerformance.push(len)
+                });
+                let colors = ['#4caf50', '#9c27b0', '#ff9800', ,'#009688','black', '#6c757d', '#ffed4a'];
+                this.chartData.push({
+                  label: rep,
+                  data: repDailyPerformance,
+                  borderColor: colors[i],
+                  borderWidth:2,
+                  fill: false
+                })
                 res(kpi);
               })
               .catch(err => {
@@ -274,7 +357,14 @@ export default {
         .catch(err => console.log(err));
     },
     exportTable() {
-      ExportToExcel('#analysis-tbl', 'rep-pm-analysis-'+new Date());
+      ExportToExcel("#analysis-tbl", "rep-pm-analysis-" + new Date());
+    },
+    generatePerformanceChart() {
+      if(this.showPerformanceChart) {
+        this.showPerformanceChart = false;
+      } else {
+        this.showPerformanceChart = true;
+      }
     }
   }
 };
