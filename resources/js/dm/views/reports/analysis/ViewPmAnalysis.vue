@@ -3,471 +3,281 @@
     <div class="col-lg-3">
       <data-filter
         :data="{
-          reports: $store.getters.allRepPmReports,
-          plans: $store.getters.repPlans
+          plans: $store.getters.repPlans,
+          reports: $store.getters.allRepPmReports
         }"
         :keys="{ rep: 'user_id', date: 'date' }"
-        :onUpdate="handlePerformanceFilter"
-        :onReset="handlePerformanceReset"
-      ></data-filter>
-      <div class="my-2 border p-2 rounded">
-        <router-link to="/reports" class="btn btn-sm btn-block btn-dark">
+        :on-update="handleFilterUpdate"
+        :on-reset="handleFilterReset"
+      />
+      <div class="p-2 my-2 border rounded">
+        <router-link to="/reports" class="btn btn-sm btn-dark btn-block">
           <span><i class="fa fa-chevron-circle-left"></i></span>
           <span>back</span>
         </router-link>
       </div>
     </div>
-    <div class="col-lg-9">
-      <div class="px-0 shadow">
-        <p class="alert alert-success">
-          <span><i class="fa fa-book-reader"></i></span>
-          <span class="font-weight-bold">View Pm report analysis </span>
-        </p>
-        <div class="p-2">
-          <div class="p-2" v-if="reports.length && plans.length">
-            <div
-              v-if="Object.keys(analysisReport).length === 0"
-              class="d-flex flex-column justify-content-center align-items-center"
-              style="min-height:250px"
-            >
-              <div class="spinner-grow"></div>
-              <span class="lead">Processing data</span>
+    <!-- end of side bar -->
+    <!-- start of main section -->
+    <div class="col-lg-9 px-0 shadow rounded pb-5">
+      <p class="alert alert-success">
+        <span><i class="fa fa-book-reader"></i></span>
+        <span>PM report analysis</span>
+      </p>
+      <div class="p-2">
+        <div v-if="reports.length && plans.length">
+          <div v-if="isLoading" class="text-center">
+            <p class="spinner-grow"></p>
+            <p>Processing data</p>
+          </div>
+          <div v-else class="p-2">
+            <div class="p-2">
+              <button class="btn btn-sm btn-success" @click="exportTable">
+                <span><i class="fa fa-file-excel"></i></span>
+                <span>Export</span>
+              </button>
             </div>
-            <div v-else class="p-2">
-              <div class="p-2">
-                <button class="btn btn-sm btn-success" @click="exportToExcel">
-                  <span><i class="fa fa-file-excel"></i></span>
-                  <span>Export</span>
-                </button>
-              </div>
-              <table
-                class="table table-sm small table-responsive table-bordered"
-                id="pm_analysis_report"
-              >
-                <thead>
-                  <tr>
-                    <th rowspan="2">Rep</th>
-                    <th rowspan="2">total planned visits</th>
-                    <th rowspan="2">total report visits</th>
-                    <th rowspan="2">%</th>
-                    <th rowspan="2">Total Planned days</th>
-                    <th rowspan="2">Total report days</th>
-                    <th rowspan="2">Plans avg. visit/day</th>
-                    <th rowspan="2">Report avg. visit/day</th>
-                    <th rowspan="2">total planned Customers</th>
-                    <th rowspan="2">total visited Customers</th>
-                    <th rowspan="2">%</th>
-                    <th :colspan="sp_list.size" class="bg-secondary text-light">
-                      Planned Specialty
-                    </th>
-                    <th :colspan="sp_list.size" class="bg-light">
-                      Reported Specialty
-                    </th>
-                    <th
-                      :colspan="params_list.size"
-                      class="bg-secondary text-light"
-                    >
-                      Planned Parameters
-                    </th>
-                    <th :colspan="params_list.size" class="bg-light">
-                      Reported Parameters
-                    </th>
-                  </tr>
-                  <tr>
-                    <th
-                      v-for="(item, i) in sp_list"
-                      :key="`planned_specialty_${i}`"
-                      class="bg-secondary text-light"
-                    >
-                      {{ item }}
-                    </th>
-                    <th
-                      v-for="(item, i) in sp_list"
-                      :key="`reported_specialty_${i}`"
-                      class="bg-light"
-                    >
-                      {{ item }}
-                    </th>
-                    <th
-                      v-for="(item, i) in params_list"
-                      :key="`planned_parameters_${i}`"
-                      class="bg-secondary text-light"
-                    >
-                      {{ item }}
-                    </th>
-                    <th
-                      v-for="(item, i) in params_list"
-                      :key="`reported_parameters_${i}`"
-                      class="bg-light"
-                    >
-                      {{ item }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(rep, name) in analysisReport"
-                    :key="`${name}_analysis_data`"
+            <table class="table table-bordered rounded table-responsive table-sm small" id="analysis-tbl">
+              <thead>
+                <tr>
+                  <th rowspan="2">Rep</th>
+                  <th rowspan="2">Total Planned</th>
+                  <th rowspan="2">Total Achieved</th>
+                  <th rowspan="2">%</th>
+                  <th rowspan="2">Planned days</th>
+                  <th rowspan="2">Achieved days</th>
+                  <th rowspan="2">Plan visit/day</th>
+                  <th rowspan="2">Report visit/day</th>
+                  <th rowspan="2">Coaching visits</th>
+                  <th :colspan="specialtyCollection.length" class="bg-secondary text-light">Plan Specialites</th>
+                  <th :colspan="specialtyCollection.length" class="bg-primary text-light">Report Specialites</th>
+                  <th :colspan="parameterCollection.length" class="bg-secondary text-light">Plan Parameters</th>
+                  <th :colspan="parameterCollection.length" class="bg-primary text-light">Plan Parameters</th>
+                </tr>
+                <tr>
+                  <th
+                    v-for="(item, index) in specialtyCollection"
+                    :key="`plan_specialty_collection_${index}`"
+                    class="bg-secondary text-light"
                   >
-                    <td>{{ name }}</td>
-                    <td>{{ rep.total_planned }}</td>
-                    <td>{{ rep.total_visits }}</td>
-                    <td>
-                      {{
-                        (rep.total_visits / rep.total_planned).toFixed(1) * 100
-                      }}
-                    </td>
-                    <td>{{ rep.planner_days }}</td>
-                    <td>{{ rep.report_days }}</td>
-                    <td>
-                      {{ (rep.total_planned / rep.planner_days).toFixed(1) }}
-                    </td>
-                    <td>
-                      {{ (rep.total_visits / rep.report_days).toFixed(1) }}
-                    </td>
-                    <td>{{ rep.planned_customers }}</td>
-                    <td>{{ rep.visits_customers }}</td>
-                    <td>
-                      {{
-                        (rep.visits_customers / rep.planned_customers).toFixed(
-                          2
-                        ) * 100
-                      }}
-                    </td>
-                    <td
-                      v-for="(sp, i) in sp_list"
-                      :key="`${name}_planned_sp_${sp}_${i}`"
-                    >
-                      {{
-                        rep.planned_specialty[sp]
-                          ? rep.planned_specialty[sp].length
-                          : 0
-                      }}
-                    </td>
-                    <td
-                      v-for="(sp, i) in sp_list"
-                      :key="`${name}_report_sp_${sp}_${i}`"
-                    >
-                      {{
-                        rep.report_specialty[sp]
-                          ? rep.report_specialty[sp].length
-                          : 0
-                      }}
-                    </td>
-                    <td
-                      v-for="(param, i) in params_list"
-                      :key="`${name}_planned_param_${param}_${i}`"
-                    >
-                      {{
-                        rep.planned_params[param]
-                          ? rep.planned_params[param].length
-                          : 0
-                      }}
-                    </td>
-                    <td
-                      v-for="(param, i) in params_list"
-                      :key="`${name}_report_param_${param}_${i}`"
-                    >
-                      {{
-                        rep.report_params[param]
-                          ? rep.report_params[param].length
-                          : 0
-                      }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div
-            v-else-if="fetched"
-            style="min-height:250px"
-            class="d-flex justify-content-center align-items-center"
-          >
-            <p class="font-weight-bold">No data to show</p>
-          </div>
-          <div v-else>
-            <loader-component></loader-component>
-          </div>
-        </div>
-        <hr />
-        <div class="p-2">
-          <div class="p-4 shadow">
-            <p class="lead text-center">Plan Per Day</p>
-            <canvas id="visitPerPlan"></canvas>
-          </div>
-          <div class="p-4 shadow my-2">
-            <p class="lead text-center">Visit Per Day</p>
-            <canvas id="visitPerReport"></canvas>
+                    {{ item }}
+                  </th>
+                  <th
+                    v-for="(item, index) in specialtyCollection"
+                    :key="`report_specialty_collection_${index}`"
+                    class="bg-primary text-light"
+                  >
+                    {{ item }}
+                  </th>
+                  <th
+                    v-for="(item, index) in parameterCollection"
+                    :key="`plan_parameter_collection_${index}`"
+                    class="bg-secondary text-light"
+                  >
+                    {{ item }}
+                  </th>
+                  <th
+                    v-for="(item, index) in parameterCollection"
+                    :key="`report_parameter_collection_${index}`"
+                    class="bg-primary text-light"
+                  >
+                    {{ item }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(data, rep) in kpiReport" :key="`rep_${rep}_kpi`">
+                  <td>{{ rep }}</td>
+                  <td>{{ data.plans.total }}</td>
+                  <td>{{ data.reports.total }}</td>
+                  <td>
+                    {{
+                      (data.reports.total / data.plans.total).toFixed(3) * 100
+                    }}
+                  </td>
+                  <td>{{ Object.keys(data.plans.start).length }}</td>
+                  <td>{{ Object.keys(data.reports.date).length }}</td>
+                  <td>
+                    {{
+                      (
+                        data.plans.total / Object.keys(data.plans.start).length
+                      ).toFixed(2)
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      (
+                        data.reports.total /
+                        Object.keys(data.reports.date).length
+                      ).toFixed(2)
+                    }}
+                  </td>
+                  <td>{{ data.reports.coach.length }}</td>
+                  <td
+                    v-for="(item, index) in specialtyCollection"
+                    :key="`plan_rep_specialty_collection_${index}`"
+                  >
+                    {{ data.plans.specialty[item] ? data.plans.specialty[item].length: 0 }}
+                  </td>
+                  <td
+                    v-for="(item, index) in specialtyCollection"
+                    :key="`report_rep_specialty_collection_${index}`"
+                  >
+                    {{ data.reports.specialty[item] ? data.reports.specialty[item].length: 0 }}
+                  </td>
+                  <td
+                    v-for="(item, index) in parameterCollection"
+                    :key="`plan_rep_parameter_collection_${index}`"
+                  >
+                    {{ data.plans.param[item] ? data.plans.param[item].length: 0 }}
+                  </td>
+                  <td
+                    v-for="(item, index) in parameterCollection"
+                    :key="`report_rep_parameter_collection_${index}`"
+                  >
+                    {{ data.reports.param[item] ? data.reports.param[item].length: 0 }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+        <div v-else-if="isPlanFetched && isReportsFetched">
+          <p class="text-center">No data to show</p>
+        </div>
+        <loader-component v-else></loader-component>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import TableComponent from "../../../../components/TableComponent";
-import { ExportToExcel, filterData, sortBy, sortDates } from "../../../../helpers/helpers";
+import { ExportToExcel, filterData, sortDates } from "../../../../helpers/helpers";
 import DataFilter from "../../../components/DataFilter";
-import Chart from "chart.js/dist/Chart.bundle";
 export default {
+  components: {
+    DataFilter
+  },
   mounted() {
     this.$store.dispatch("getAllRepPmReports").finally(() => {
-      this.$store.dispatch("getPlans").finally(() => {});
-      let planDates = sortDates(this.plan_days);
-      let reportDates = sortDates(this.report_days);
-      this.planChart = {
-        type: "line",
-        data: {
-          labels: planDates,
-          datasets: []
-        },
-        options: {
-          scales: {
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: true,
-                }
-              }
-            ]
-          }
-        }
-      };
-      this.reportChart = {
-        type: "line",
-        data: {
-          labels: reportDates,
-          datasets: []
-        },
-        options: {
-          scales: {
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: true,
-                }
-              }
-            ]
-          }
-        }
-      };;
+      this.$store.dispatch("getPlans").finally(() => {
+        this.generateAnalysisReport();
+      });
     });
   },
+  data: () => ({
+    isLoading: false,
+    kpiReport: {},
+    specialtyCollection: new Set(),
+    parameterCollection: new Set(),
+    dateCollection: new Set(),
+    customPlans: [],
+    customReports: []
+  }),
   computed: {
     reports() {
-      if (!this.isFiltered) {
-        return this.$store.getters.allRepPmReports;
+      if(this.customReports.length) {
+        return this.customReports;
       }
-      return this.filteredData.reports;
+      return this.$store.getters.allRepPmReports;
     },
-    fetched() {
+    plans() {
+      if(this.customPlans.length) {
+        return this.customPlans;
+      }
+      return this.$store.getters.repPlans;
+    },
+    isReportsFetched() {
       return this.$store.getters.isRepPmReportsFetched;
     },
     isPlanFetched() {
       return this.$store.getters.isPlanFetched;
-    },
-    reps() {
-      return sortBy(this.$store.getters.allReps, "name", "asc");
-    },
-    plans() {
-      if (!this.isFiltered) {
-        return this.$store.getters.repPlans;
-      }
-      return this.filteredData.plans;
-    },
-    analysisReport() {
-      if (!this.fetched || !this.isPlanFetched) {
-        return {};
-      }
-      let data = this.processRepReport();
-      console.log(data);
-      let planPerDayCanvas = document.getElementById("visitPerPlan");
-      let planPerDayCtx = new Chart(planPerDayCanvas, this.planChart);
-      let reportPerDayCanvas = document.getElementById("visitPerReport");
-      let reportPerDayCtx = new Chart(reportPerDayCanvas, this.reportChart);
-
-      return data;
     }
   },
-  components: {
-    TableComponent,
-    DataFilter
-  },
-  data: () => ({
-    params_list: new Set(),
-    sp_list: new Set(),
-    plan_days: [],
-    report_days: [],
-    planChart: {},
-    reportChart: {},
-    filteredData: {
-      reports: [],
-      plans: []
-    },
-    isFiltered: false
-  }),
   methods: {
-    processRepReport() {
-      try {
-        let repsData = this.collectRepData();
-        let analysis = {};
-        Object.keys(repsData).forEach((rep, i) => {
-          if (!analysis[rep]) {
-            analysis[rep] = {};
-          }
-          let data = repsData[rep];
-          let reports = filterData(data.reports, [
-            "customer",
-            "specialty",
-            "param",
-            "coach",
-            "date"
-          ]);
-          let plans = filterData(data.plans, [
-            "title",
-            "specialty",
-            "param",
-            "start"
-          ]);
-          analysis[rep] = {
-            total_visits: data.reports.length,
-            total_planned: data.plans.length,
-            planned_customers: plans.title
-              ? Object.keys(plans.title).length
-              : 0,
-            visits_customers: reports.customer
-              ? Object.keys(reports.customer).length
-              : 0,
-            planner_days: Object.keys(plans.start).length,
-            report_days: Object.keys(reports.date).length,
-            planned_params: plans.param || {},
-            report_params: reports.param || {},
-            coach_visits: reports.coach ? Object.keys(reports.coach).length : 0,
-            planned_specialty: plans.specialty || {},
-            report_specialty: reports.specialty || {}
-          };
-          for (let i in data.plans) {
-            let item = data.plans[i];
-            this.sp_list.add(item.specialty);
-            this.params_list.add(item.param);
-            if (!this.plan_days.includes(item.start)) {
-              this.plan_days.push(item.start);
-            }
-          }
-          for (let i in data.reports) {
-            let item = data.reports[i];
-            this.sp_list.add(item.customer.specialty);
-            if (!this.report_days.includes(item.date)) {
-              this.report_days.push(item.date);
-            }
-            if (item.customer.current) {
-              this.params_list.add(item.current[0].param);
-            }
-          }
-          this.params_list.add("NN");
-          let colors = ["red", "royalblue", "green", "black", "seagreen"];
-          this.createRepPlanChart(data.plans, rep, colors[i]);
-          this.createRepReportChart(data.reports, rep, colors[i]);
-          colors.shift();
+    handleFilterUpdate(res) {
+      res.then(data => {
+        this.customReports = data.reports;
+        this.customPlans = data.plans;
+      }).finally(() => {
+        this.generateAnalysisReport();
+      });
+    },
+    handleFilterReset() {
+      this.customReports = [];
+      this.customPlans = [];
+      this.generateAnalysisReport();
+    },
+    getDataByRep(data, key) {
+      return filterData(data, key);
+    },
+    generateDataCollection() {
+      this.plans.map(plan => {
+        this.specialtyCollection.add(plan.specialty);
+        this.parameterCollection.add(plan.param);
+        this.dateCollection.add(plan.start);
+      });
+      this.reports.map(report => {
+        this.specialtyCollection.add(report.specialty);
+        this.parameterCollection.add(report.param);
+        this.dateCollection.add(report.date);
+      });
+    },
+    generateAnalysisReport() {
+      this.isLoading = true;
+      let getData = () =>
+        new Promise((res, rej) => {
+          let kpi = {};
+          let plans = this.getDataByRep(this.plans, "user_name");
+          let reports = this.getDataByRep(this.reports, "user_name");
+          Object.keys(plans).forEach(rep => {
+            let processingData = () =>
+              new Promise((resolve, reject) => {
+                try {
+                  let repPlans = filterData(plans[rep], [
+                    "specialty",
+                    "title",
+                    "start",
+                    "param"
+                  ]);
+                  repPlans["total"] = plans[rep].length;
+                  let repReports = filterData(reports[rep], [
+                    "specialty",
+                    "customer",
+                    "date",
+                    "param"
+                  ]);
+                  repReports["coach"] = reports[rep].filter(
+                    item => item.coach !== ""
+                  );
+                  repReports["total"] = reports[rep].length;
+                  this.generateDataCollection();
+                  resolve({ plans: repPlans, reports: repReports });
+                } catch (e) {
+                  reject(e);
+                }
+              });
+            processingData()
+              .then(data => {
+                kpi[rep] = {};
+                kpi[rep] = data;
+                res(kpi);
+              })
+              .catch(err => {
+                rej(err);
+              });
+          });
         });
-
-        return analysis;
-      } catch (e) {
-        console.log(e);
-      }
+      getData()
+        .then(data => (this.kpiReport = data))
+        .finally(() => (this.isLoading = false))
+        .catch(err => console.log(err));
     },
-    collectRepData() {
-      let analysis = {};
-      this.reps.forEach(rep => {
-        if (rep.id !== this.$store.state.user.id) {
-          analysis[rep.name] = {};
-          let plans = filterData(this.plans, "user_name");
-          let reports = filterData(this.reports, "user_name");
-          analysis[rep.name].plans = plans[rep.name] ? plans[rep.name] : [];
-          analysis[rep.name].reports = reports[rep.name]
-            ? reports[rep.name]
-            : [];
-        }
-      });
-      return analysis;
-    },
-    exportToExcel() {
-      ExportToExcel("#pm_analysis_report", "rep-pm-analysis");
-    },
-    handlePerformanceFilter(resolve) {
-      resolve.then(data => {
-        this.filteredData = data;
-        this.isFiltered = true;
-      });
-    },
-    handlePerformanceReset() {
-      this.isFiltered = false;
-      this.filteredData = {
-        reports: [],
-        plans: []
-      };
-    },
-    createRepPlanChart(plans, rep, color) {
-      plans = filterData(plans, "start");
-      let planPerDay = [];
-      /* for (let day in plans) {
-        let length = plans[day].length;
-        planPerDay.push(length);
-      } */
-      this.plan_days.map(day => {
-        if(plans[day]) {
-          planPerDay.push(plans[day].length)
-        } else {
-          planPerDay.push(0)
-        }
-      })
-      let chartData = {
-        data: planPerDay,
-        label: rep,
-        borderWidth: 1,
-        fill: false,
-        borderColor: color
-      };
-      if (this.planChart.data) {
-        this.planChart.data.datasets.push(chartData);
-      }
-    },
-    createRepReportChart(reports, rep, color) {
-      reports = filterData(reports, "date");
-      let reportPerDay = [];
-      /* for (let day in reports) {
-        let length = reports[day].length;
-        reportPerDay.push(length);
-      } */
-      this.report_days.map(day => {
-        if(reports[day]) {
-          reportPerDay.push(reports[day].length)
-        } else {
-          reportPerDay.push(0)
-        }
-      })
-      let chartData = {
-        data: reportPerDay,
-        label: rep,
-        borderWidth: 1,
-        fill: false,
-        borderColor: color
-      };
-      if (this.reportChart.data) {
-        this.reportChart.data.datasets.push(chartData);
-      }
+    exportTable() {
+      ExportToExcel('#analysis-tbl', 'rep-pm-analysis-'+new Date());
     }
   }
 };
 </script>
 
-<style lang="scss" scoped>
-th,
-tr,
-td {
-  vertical-align: middle !important;
-  text-align: center;
-}
-</style>
+<style></style>
