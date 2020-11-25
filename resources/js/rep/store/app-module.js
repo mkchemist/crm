@@ -6,52 +6,57 @@
  *
  */
 
-let user = document.getElementById('user');
-if(user) {
+let user = document.getElementById("user");
+if (user) {
   user = JSON.parse(user.value);
 } else {
-  user : null
+  user: null;
 }
 
-export default  {
+export default {
   state: {
     // customers specialty
     specialties: [
-      'Gyna',
-      'Ortho',
-      'Ped',
-      'Physo',
-      'IM',
-      'GP',
-      'Derma',
-      'Uro',
-      'Optha',
-      'Ent',
-      'Chest',
-      'Dent'
+      "Gynaecology",
+      "Asthma",
+      "Cardiology",
+      "Cardiothoracic/Thoracic Surger",
+      "Dermatology",
+      "Diabetology",
+      "Endocrinology",
+      "ENT",
+      "Family Medicine",
+      "Gastroenterological Surgery",
+      "Gastroenterology",
+      "General Practice",
+      "General Surgery",
+      "Gyna",
+      "Gynaecology",
+      "Haematology",
+      "Hepatology",
+      "Infectious Diseases",
+      "Internal Medicine",
+      "Neonatology",
+      "Nephrology",
+      "Neurology",
+      "Neuropsychiatry",
+      "Neurosurgery",
+      "Nutrition Medicine",
+      "Oncology",
+      "Ophthalmology",
+      "Orthopaedics",
+      "Otorhinolaryngology",
+      "Paediatrics",
+      "Physiotherapy",
+      "Pneumology",
+      "Rheumatology",
+      "Surgical Oncology",
+      "Tropical Medicine",
     ],
     // customer titles
-    titles: [
-      'Assistant',
-      'Resident',
-      'Specialist',
-      'Physician',
-      'Prof'
-    ],
+    titles: ["Assistant", "Resident", "Specialist", "Physician", "Prof"],
     // customer parameters
-    params: [
-      'HH',
-      'HM',
-      'HL',
-      'MH',
-      'MM',
-      'ML',
-      'LH',
-      'LM',
-      'LL',
-      'NN',
-      'XX'
-    ],
+    params: ["HH", "HM", "HL", "MH", "MM", "ML", "LH", "LM", "LL", "NN", "XX"],
     user,
     /**
      * workplace hospitals type
@@ -59,97 +64,88 @@ export default  {
      * i.e MOH hospital, polyclinic, Family healthcare unit
      */
     hospitalTypes: [
-      'MOH hospital',
-      'PolyClinic',
-      'Health unit',
-      'Company',
-      'Private hospital',
-      'Tender',
-      'Military hospital'
+      "MOH hospital",
+      "PolyClinic",
+      "Health unit",
+      "Company",
+      "Private hospital",
+      "Tender",
+      "Military hospital"
     ],
     /**
      * pharmacy types
      *
      *
      */
-    pharmacyTypes: [
-      'Private',
-      'Company',
-      'Tender',
-      'Chain'
-    ],
+    pharmacyTypes: ["Private", "Company", "Tender", "Chain"],
     /**
      * Visit types
      *
      *
      */
-    visitTypes:[
-      'pm face to face',
-      'am face to face',
-      'sample visit',
-      'double visit'
+    visitTypes: [
+      "pm face to face",
+      "am face to face",
+      "sample visit",
+      "double visit"
     ],
     /**
      * products
      */
     products: [
-      'Ferrotron',
-      'Calcitron',
-      'Ferrotron Sachets',
-      'Calcitron Sachets',
-      'Octatron',
-      'Chromitron',
-      'Zinctron',
-      'Trib Gold',
-      'After Meals',
-      'Hi-potency',
-      'Syno',
-      'Rocha',
-      'Ivoreen',
-      'herbolin',
-      'Peopospan',
-      'Peopobruf tablets',
-      'Peopobruf drops',
-      'Chemicetrizine',
-      'Quinofloxachem',
-      'Aceliofenaz',
+      "Ferrotron",
+      "Calcitron",
+      "Ferrotron Sachets",
+      "Calcitron Sachets",
+      "Octatron",
+      "Chromitron",
+      "Zinctron",
+      "Trib Gold",
+      "After Meals",
+      "Hi-potency",
+      "Syno",
+      "Rocha",
+      "Ivoreen",
+      "herbolin",
+      "Peopospan",
+      "Peopobruf tablets",
+      "Peopobruf drops",
+      "Chemicetrizine",
+      "Quinofloxachem",
+      "Aceliofenaz"
     ],
     /**
      * lader of adaption
      *
      */
     lader_of_adaption: [
-      'Never heared',
-      'Aware and not use',
-      'Tried in a few Rx',
-      'Sharing with competitor',
-      '2nd line Rx',
-      '1st line Rx',
-      '1st in all Rx',
-      'Advocator'
+      "Never heared",
+      "Aware and not use",
+      "Tried in a few Rx",
+      "Sharing with competitor",
+      "2nd line Rx",
+      "1st line Rx",
+      "1st in all Rx",
+      "Advocator"
     ],
     /**
      * visit actions
      *
      */
     visit_actions: [
-      'Remind message',
-      'Competitor attack',
-      'Thanking visit',
-      'Sharpen Commitment',
-      'Demonstrate a new message',
-      'Handle Objections',
-      'Make a deal',
-      'Finding new needs'
+      "Remind message",
+      "Competitor attack",
+      "Thanking visit",
+      "Sharpen Commitment",
+      "Demonstrate a new message",
+      "Handle Objections",
+      "Make a deal",
+      "Finding new needs"
     ]
   },
-  actions: {
-
-  },
-  mutations: {
-
-  },
-  getters:{
+  actions: {},
+  mutations: {},
+  getters: {
     specialty: state => {
       return state.specialties;
     },
@@ -160,7 +156,7 @@ export default  {
       return state.params;
     },
     hospitalTypes: state => {
-      return state.hospitalTypes
+      return state.hospitalTypes;
     },
     pharmacyTypes: state => {
       return state.pharmacyTypes;
@@ -178,4 +174,4 @@ export default  {
       return state.visit_actions;
     }
   }
-}
+};

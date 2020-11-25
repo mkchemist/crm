@@ -282,8 +282,7 @@ export default {
         return {};
       }
       let data = this.processRepReport();
-      //sortDates(this.plan_days);
-      //sortDates(this.report_days)
+      console.log(data);
       let planPerDayCanvas = document.getElementById("visitPerPlan");
       let planPerDayCtx = new Chart(planPerDayCanvas, this.planChart);
       let reportPerDayCanvas = document.getElementById("visitPerReport");
