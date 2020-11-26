@@ -1822,8 +1822,8 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var chart_js_dist_Chart_bundle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chart.js/dist/Chart.bundle */ "./node_modules/chart.js/dist/Chart.bundle.js");
-/* harmony import */ var chart_js_dist_Chart_bundle__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(chart_js_dist_Chart_bundle__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var chart_js_dist_Chart_bundle__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chart.js/dist/Chart.bundle */ "./node_modules/chart.js/dist/Chart.bundle.js");
+/* harmony import */ var chart_js_dist_Chart_bundle__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(chart_js_dist_Chart_bundle__WEBPACK_IMPORTED_MODULE_1__);
 //
 //
 //
@@ -1860,7 +1860,7 @@ __webpack_require__.r(__webpack_exports__);
     this.generateChartOptions(type, this.labels, this.chartData);
     var ctx = document.getElementById(id);
     console.log(this.chart);
-    var chart = new chart_js_dist_Chart_bundle__WEBPACK_IMPORTED_MODULE_0___default.a(ctx, this.chart);
+    var chart = new chart_js_dist_Chart_bundle__WEBPACK_IMPORTED_MODULE_1___default.a(ctx, this.chart);
   },
   data: function data() {
     return {
@@ -27592,7 +27592,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nbody{\n  background-color: #38c172;\n}\n", ""]);
+exports.push([module.i, "\nbody{\r\n  background-color: #38c172;\n}\r\n", ""]);
 
 // exports
 
@@ -38669,7 +38669,7 @@ var ResponseHandler = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /opt/lampp/htdocs/projects/crm/resources/js/dm/dm.js */"./resources/js/dm/dm.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\projects\crm\resources\js\dm\dm.js */"./resources/js/dm/dm.js");
 
 
 /***/ })

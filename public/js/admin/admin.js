@@ -2424,23 +2424,19 @@ __webpack_require__.r(__webpack_exports__);
     saveUser: function saveUser() {
       var _this = this;
 
-      try {
-        _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].post('admin/v1/users', this.user).then(function (_ref) {
-          var data = _ref.data;
+      _helpers_http_service__WEBPACK_IMPORTED_MODULE_0__["httpCall"].post('admin/v1/users', this.user).then(function (_ref) {
+        var data = _ref.data;
 
-          if (data.code !== 200) {
-            _this.$toasted.error('Error something wrong happend', {
-              icon: 'exclamation-triangle'
-            });
-          } else {
-            _this.$toasted.success('User added');
-          }
-        })["catch"](function (err) {
-          return console.log(err);
+        _this.handleResponse(data, function (data) {
+          _this.$router.push("/users");
+
+          _this.$store.dispatch("getAllUsers", true);
         });
-      } catch (e) {
-        console.log(e);
-      }
+      })["catch"](function (err) {
+        console.log(err);
+
+        _this.$toasted.error('Something wrong happend');
+      });
     }
   }
 });
@@ -5900,6 +5896,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vee-validate/dist/rules */ "./node_modules/vee-validate/dist/rules.js");
 /* harmony import */ var vee_validate_dist_locale_en_json__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vee-validate/dist/locale/en.json */ "./node_modules/vee-validate/dist/locale/en.json");
 var vee_validate_dist_locale_en_json__WEBPACK_IMPORTED_MODULE_9___namespace = /*#__PURE__*/__webpack_require__.t(/*! vee-validate/dist/locale/en.json */ "./node_modules/vee-validate/dist/locale/en.json", 1);
+/* harmony import */ var _helpers_response_handler__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../helpers/response-handler */ "./resources/js/helpers/response-handler.js");
 
 
 
@@ -5910,6 +5907,8 @@ var vee_validate_dist_locale_en_json__WEBPACK_IMPORTED_MODULE_9___namespace = /*
 
 
 
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.mixin(_helpers_response_handler__WEBPACK_IMPORTED_MODULE_10__["ResponseHandler"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_toasted__WEBPACK_IMPORTED_MODULE_6___default.a, {
   duration: 4000,
   iconPack: 'fontawesome',
@@ -7193,6 +7192,64 @@ httpCall.post = function (path, data) {
 
 /***/ }),
 
+/***/ "./resources/js/helpers/response-handler.js":
+/*!**************************************************!*\
+  !*** ./resources/js/helpers/response-handler.js ***!
+  \**************************************************/
+/*! exports provided: ResponseHandler */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ResponseHandler", function() { return ResponseHandler; });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+
+var ResponseHandler = {
+  methods: {
+    /**
+     * handle ajax calls response
+     *
+     *
+     * @param {object} data
+     * @param {CallableFunction} onSuccess
+     * @param {CallableFunction} onErr
+     */
+    handleResponse: function handleResponse(data) {
+      var onSuccess = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var onErr = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+      if (data.code === 400 || data.code === 204 || data.code === 409) {
+        Object.keys(data.data).forEach(function (key) {
+          var errors = data.data[key];
+          errors.forEach(function (err) {
+            vue__WEBPACK_IMPORTED_MODULE_0___default.a.toasted.show(err, {
+              icon: 'exclamation',
+              duration: 5000,
+              type: 'error'
+            });
+
+            if (onErr && typeof onErr === 'function') {
+              onErr(data);
+            }
+          });
+        });
+      } else {
+        vue__WEBPACK_IMPORTED_MODULE_0___default.a.toasted.show(data.message, {
+          type: 'success',
+          icon: 'check'
+        });
+
+        if (onSuccess && typeof onSuccess === 'function') {
+          onSuccess(data);
+        }
+      }
+    }
+  }
+};
+
+/***/ }),
+
 /***/ 1:
 /*!*******************************************!*\
   !*** multi ./resources/js/admin/admin.js ***!
@@ -7200,7 +7257,7 @@ httpCall.post = function (path, data) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /opt/lampp/htdocs/projects/crm/resources/js/admin/admin.js */"./resources/js/admin/admin.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\projects\crm\resources\js\admin\admin.js */"./resources/js/admin/admin.js");
 
 
 /***/ })

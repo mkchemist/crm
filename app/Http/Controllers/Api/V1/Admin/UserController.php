@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserRequest;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -17,7 +19,7 @@ class UserController extends Controller
     public function index()
     {
       $users = User::orderBy('district','asc')
-      ->orderBy('area', 'asc')
+      ->orderBy('name', 'asc')
       ->get();
       return response([
         'code'  =>  200,
@@ -31,28 +33,44 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $user)
+    public function store(Request $request)
     {
-      if($user->validated()) {
-        $check = User::where([
-          'name'  =>  $user->name,
-          'email' =>  $user->email
-        ])->first();
-        if($check) {
-          return response([
-            'code'  =>  409,
-            'data'  =>  'Item Already Exists'
-          ]);
-        }
-        $created = User::create($user);
-        return response([
-          'code'  =>  '200',
-          'data'  =>  $created
-        ], 200);
+      $validator = Validator::make($request->all(), [
+        'name'      =>  'required',
+        'email'     =>  'required|email',
+        'password'  => 'required|min:4',
+        'username'  =>  'required',
+        'role'      =>  'required',
+        'line'      =>  'required',
+        'area'      =>  'required',
+        'district'  =>  'required',
+        'territory' =>  'required',
+        'region'    =>  'required'
+      ]);
+      if($validator->fails()) {
+        return response(ResponseHelper::validationErrorResponse($validator));
       }
+      $check = $this->checkIfUserExist($request->username, $request->email);
+      if($check) {
+        return response(ResponseHelper::ITEM_ALREADY_EXIST);
+      }
+      $user = User::create([
+        'name'      =>  $request->name,
+        'email'     =>  $request->email,
+        'username'  =>  $request->username,
+        'password'  =>  Hash::make($request->password),
+        'role'      =>  $request->role,
+        'line'      =>  $request->line,
+        'area'      =>  $request->area,
+        'district'  =>  $request->district,
+        'territory' =>  $request->territory,
+        'region'    =>  $request->region
+      ]);
+
       return response([
-        "code"  =>  422,
-        "data"  =>  $user->errors()
+        "code"    =>  200,
+        "data"    =>  $user,
+        "message" =>  "User $user->name added successfully"
       ]);
     }
 
@@ -88,5 +106,15 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    private function checkIfUserExist(string $username, string $email)
+    {
+      return User::where([
+        "username"  =>  $username,
+        "email"     =>  $email
+      ])->first();
+
     }
 }

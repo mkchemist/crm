@@ -8,7 +8,9 @@ import Toasted from "vue-toasted";
 import {extend, localize, ValidationObserver, ValidationProvider} from "vee-validate"
 import * as rules from "vee-validate/dist/rules"
 import en from "vee-validate/dist/locale/en.json";
+import { ResponseHandler } from "../helpers/response-handler"
 
+Vue.mixin(ResponseHandler);
 
 Vue.use(Toasted, {
   duration: 4000,

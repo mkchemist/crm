@@ -291,20 +291,17 @@ export default {
   }),
   methods: {
     saveUser() {
-      try {
-        httpCall.post('admin/v1/users', this.user)
-        .then(({data}) => {
-          if(data.code !== 200) {
-            this.$toasted.error('Error something wrong happend', {
-              icon: 'exclamation-triangle'
-            })
-          } else {
-            this.$toasted.success('User added');
-          }
-        }).catch(err => console.log(err))
-      }catch(e) {
-        console.log(e)
-      }
+      httpCall.post('admin/v1/users', this.user)
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.$router.push("/users");
+          this.$store.dispatch("getAllUsers", true);
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        this.$toasted.error('Something wrong happend');
+      })
     }
   }
 };
