@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -30,9 +31,29 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $user)
     {
-        //
+      if($user->validated()) {
+        $check = User::where([
+          'name'  =>  $user->name,
+          'email' =>  $user->email
+        ])->first();
+        if($check) {
+          return response([
+            'code'  =>  409,
+            'data'  =>  'Item Already Exists'
+          ]);
+        }
+        $created = User::create($user);
+        return response([
+          'code'  =>  '200',
+          'data'  =>  $created
+        ], 200);
+      }
+      return response([
+        "code"  =>  422,
+        "data"  =>  $user->errors()
+      ]);
     }
 
     /**

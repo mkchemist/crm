@@ -1,1 +1,6 @@
-td,th,tr{white-space:nowrap}
+tr,
+td,
+th {
+  white-space: nowrap;
+}
+

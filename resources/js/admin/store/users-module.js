@@ -15,7 +15,6 @@ export default {
         state.allUsersFetched = false;
         return httpCall.get('admin/v1/users')
         .then(({data}) => {
-          console.log(data);
           state.users = data.data;
           state.allUsersFetched = true;
         })

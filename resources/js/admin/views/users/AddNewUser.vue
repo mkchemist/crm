@@ -22,7 +22,11 @@
                     type="text"
                     v-model="user.name"
                     name="name"
-                    :class="`form-control form-control-sm ${errors[0] ? 'border-danger': ''}`"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border-danger' : ''
+                      }`
+                    "
                     placeholder="Enter user fullname"
                   />
                 </ValidationProvider>
@@ -32,14 +36,18 @@
                 <ValidationProvider
                   v-slot="{ errors }"
                   name="email"
-                  rules="required"
+                  rules="required|email"
                 >
                   <span class="small text-danger">{{ errors[0] }}</span>
                   <input
                     type="text"
                     v-model="user.email"
                     name="email"
-                    :class="`form-control form-control-sm ${errors[0] ? 'border-danger': ''}`"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border-danger' : ''
+                      }`
+                    "
                     placeholder="Enter user email"
                   />
                 </ValidationProvider>
@@ -62,7 +70,11 @@
                     type="text"
                     v-model="user.username"
                     name="username"
-                    :class="`form-control form-control-sm ${errors[0] ? 'border-danger': ''}`"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border-danger' : ''
+                      }`
+                    "
                     placeholder="Enter username"
                   />
                 </ValidationProvider>
@@ -81,7 +93,11 @@
                     type="text"
                     v-model="user.password"
                     name="password"
-                    :class="`form-control form-control-sm ${errors[0] ? 'border-danger': ''}`"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border-danger' : ''
+                      }`
+                    "
                     placeholder="Enter user password"
                   />
                 </ValidationProvider>
@@ -92,9 +108,21 @@
             <div class="row mx-auto">
               <div class="form-group col-lg">
                 <label for="line" class="text-muted small">Line</label>
-                <ValidationProvider v-slot="{errors}" rules="required" name="line">
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="line"
+                >
                   <span class="text-danger small">{{ errors[0] }}</span>
-                  <select name="line" v-model="user.line" :class="`form-control form-contorl-sm ${errors[0] ? 'border-danger border' : ''}`">
+                  <select
+                    name="line"
+                    v-model="user.line"
+                    :class="
+                      `form-control form-contorl-sm ${
+                        errors[0] ? 'border-danger border' : ''
+                      }`
+                    "
+                  >
                     <option value="">Select Line</option>
                     <option value="line1">Line 1</option>
                     <option value="line2">Line 1</option>
@@ -105,9 +133,21 @@
 
               <div class="form-group col-lg">
                 <label for="role" class="text-muted small">Role</label>
-                <ValidationProvider v-slot="{errors}" rules="required" name="role">
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="role"
+                >
                   <span class="text-danger small">{{ errors[0] }}</span>
-                  <select name="role" v-model="user.role" :class="`form-control form-contorl-sm ${errors[0] ? 'border-danger border' : ''}`">
+                  <select
+                    name="role"
+                    v-model="user.role"
+                    :class="
+                      `form-control form-contorl-sm ${
+                        errors[0] ? 'border-danger border' : ''
+                      }`
+                    "
+                  >
                     <option value="">Select Role</option>
                     <option value="admin">Admin</option>
                     <option value="dm">District Manager</option>
@@ -119,7 +159,100 @@
               </div>
             </div>
 
-
+            <!-- area and location info -->
+            <div class="row mx-auto">
+              <div class="col-lg">
+                <label for="area" class="text-muted small">Area</label>
+                <ValidationProvider
+                  name="area"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    :class="
+                      `form-control form-contorl-sm ${
+                        errors[0] ? 'border-danger border' : ''
+                      }`
+                    "
+                    name="area"
+                    id="area"
+                    v-model="user.area"
+                    placeholder="Enter user area"
+                  />
+                </ValidationProvider>
+              </div>
+              <div class="col-lg">
+                <label for="district" class="text-muted small">District</label>
+                <ValidationProvider
+                  name="district"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    :class="
+                      `form-control form-contorl-sm ${
+                        errors[0] ? 'border-danger border' : ''
+                      }`
+                    "
+                    name="district"
+                    id="district"
+                    v-model="user.district"
+                    placeholder="Enter user district"
+                  />
+                </ValidationProvider>
+              </div>
+              <div class="col-lg">
+                <label for="territory" class="text-muted small"
+                  >Territory</label
+                >
+                <ValidationProvider
+                  name="territory"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    :class="
+                      `form-control form-contorl-sm ${
+                        errors[0] ? 'border-danger border' : ''
+                      }`
+                    "
+                    name="territory"
+                    id="territory"
+                    v-model="user.territory"
+                    placeholder="Enter user territory"
+                  />
+                </ValidationProvider>
+              </div>
+              <div class="col-lg">
+                <label for="region" class="text-muted small">Region</label>
+                <ValidationProvider
+                  name="region"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    :class="
+                      `form-control form-contorl-sm ${
+                        errors[0] ? 'border-danger border' : ''
+                      }`
+                    "
+                    name="region"
+                    id="region"
+                    v-model="user.region"
+                    placeholder="Enter user region"
+                  />
+                </ValidationProvider>
+              </div>
+            </div>
+            <!-- end of area and location info -->
             <hr />
             <div class="form-group text-right">
               <router-link to="/users" class="btn btn-sm btn-dark">
@@ -139,7 +272,9 @@
 </template>
 
 <script>
+import { httpCall } from "../../../helpers/http-service";
 export default {
+  mounted() {},
   data: () => ({
     user: {
       name: "",
@@ -156,7 +291,20 @@ export default {
   }),
   methods: {
     saveUser() {
-      console.log(this.user);
+      try {
+        httpCall.post('admin/v1/users', this.user)
+        .then(({data}) => {
+          if(data.code !== 200) {
+            this.$toasted.error('Error something wrong happend', {
+              icon: 'exclamation-triangle'
+            })
+          } else {
+            this.$toasted.success('User added');
+          }
+        }).catch(err => console.log(err))
+      }catch(e) {
+        console.log(e)
+      }
     }
   }
 };
