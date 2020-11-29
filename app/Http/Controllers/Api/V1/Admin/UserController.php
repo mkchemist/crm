@@ -139,7 +139,19 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+       $user = User::find($id);
+       $user->coach->each->delete();
+       $user->coach_rep->each->delete();
+       $user->customer_validation->each->delete();
+       $user->coach_report->each->delete();
+       $user->coach_report_rep->each->delete();
+
+       $user->delete();
+        return response([
+          "code"  =>  200,
+          "message" =>  "User deleted"
+        ]);
+
     }
 
 
@@ -150,5 +162,20 @@ class UserController extends Controller
         "email"     =>  $email
       ])->first();
 
+    }
+
+    /**
+     * de-active user
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deaActiveUser($id)
+    {
+      User::where(['id' => $id])->update(['active' => false]);
+      return response([
+        "code" => 200,
+        "message" =>  "User de-activated"
+      ]);
     }
 }

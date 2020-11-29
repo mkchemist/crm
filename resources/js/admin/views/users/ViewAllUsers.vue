@@ -21,9 +21,6 @@
                 <router-link :to="`/users/edit/${item.id}`" class="btn btn-sm btn-warning">
                   <span><i class="fa fa-edit"></i></span>
                 </router-link>
-                <router-link :to="`/users/remove/${item.id}`" class="btn btn-sm btn-danger mx-1">
-                  <span><i class="fa fa-trash"></i></span>
-                </router-link>
               </td>
             </template>
             <template v-slot:head>

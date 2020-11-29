@@ -66,7 +66,6 @@
 <script>
 export default {
   mounted() {
-    this.$store.dispatch("getAllUsers");
   },
   computed: {
     users() {
