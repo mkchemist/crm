@@ -22,9 +22,9 @@ class CreateCoachReportsTable extends Migration
             $table->longText('data');
             $table->boolean('coach_submit')->default(false);
             $table->boolean('rep_submit')->default(false);
-            $table->foreign('rep_id')->references('id')->on('users');
-            $table->foreign('coach_id')->references('id')->on('users');
-            $table->foreign('customer_id')->references('id')->on('customers');
+            $table->foreign('rep_id')->references('id')->on('users')->onDelete("cascade");
+            $table->foreign('coach_id')->references('id')->on('users')->onDelete("cascade");
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete("cascade");
             $table->timestamps();
         });
     }

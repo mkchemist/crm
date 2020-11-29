@@ -140,12 +140,6 @@ class UserController extends Controller
     public function destroy($id)
     {
        $user = User::find($id);
-       $user->coach->each->delete();
-       $user->coach_rep->each->delete();
-       $user->customer_validation->each->delete();
-       $user->coach_report->each->delete();
-       $user->coach_report_rep->each->delete();
-
        $user->delete();
         return response([
           "code"  =>  200,

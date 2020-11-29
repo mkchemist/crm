@@ -19,8 +19,8 @@ class CreateCoachPlannersTable extends Migration
             $table->bigInteger('coach_id')->unsigned();
             $table->bigInteger('rep_id')->unsigned();
             $table->boolean('submitted')->default(false);
-            $table->foreign('coach_id')->references('id')->on('users');
-            $table->foreign('rep_id')->references('id')->on('users');
+            $table->foreign('coach_id')->references('id')->on('users')->onDelete("cascade");
+            $table->foreign('rep_id')->references('id')->on('users')->onDelete("cascade");
             $table->timestamps();
         });
     }

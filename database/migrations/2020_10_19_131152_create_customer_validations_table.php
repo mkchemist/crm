@@ -21,11 +21,11 @@ class CreateCustomerValidationsTable extends Migration
             $table->string('title')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
-            $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('workplace_id')->references('id')->on('workplaces');
-            $table->foreign('user_id')->references('id')->on('users');
             $table->boolean('approved')->default(false);
             $table->bigInteger('approved_by')->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete("cascade");
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete("cascade");
+            $table->foreign('workplace_id')->references('id')->on('workplaces');
             $table->foreign('approved_by')->references('id')->on('users');
             $table->timestamps();
         });

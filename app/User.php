@@ -45,24 +45,4 @@ class User extends Authenticatable
     protected $casts = [
     'email_verified_at' => 'datetime',
   ];
-
-  public function coach() {
-    return $this->hasMany("App\CoachReport","coach_id", "id");
-  }
-
-  public function coach_rep() {
-    return $this->hasMany("App\CoachReport", "rep_id", "id");
-  }
-
-  public function customer_validation() {
-    return $this->hasMany("App\CustomerValidation");
-  }
-
-  public function coach_report() {
-    return $this->hasMany("App\CoachReport","coach_id", "id");
-  }
-
-  public function coach_report_rep() {
-    return $this->hasMany("App\CoachReport","rep_id", "id");
-  }
 }

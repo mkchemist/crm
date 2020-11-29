@@ -19,10 +19,10 @@ class CreateWorkplaceValidationsTable extends Migration
             $table->bigInteger('workplace_id')->unsigned();
             $table->string('type')->nullable();
             $table->string('address')->nullable();
-            $table->foreign('workplace_id')->references('id')->on('workplaces');
-            $table->foreign('user_id')->references('id')->on('users');
             $table->boolean('approved')->default(false);
             $table->bigInteger('approved_by')->unsigned()->nullable();
+            $table->foreign('workplace_id')->references('id')->on('workplaces')->onDelete("cascade");
+            $table->foreign('user_id')->references('id')->on('users')->onDelete("cascade");
             $table->foreign('approved_by')->references('id')->on('users');
             $table->timestamps();
         });
