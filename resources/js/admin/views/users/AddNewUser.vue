@@ -125,8 +125,8 @@
                   >
                     <option value="">Select Line</option>
                     <option value="line1">Line 1</option>
-                    <option value="line2">Line 1</option>
-                    <option value="line3">Line 1</option>
+                    <option value="line2">Line 2</option>
+                    <option value="line3">Line 3</option>
                   </select>
                 </ValidationProvider>
               </div>
@@ -291,17 +291,18 @@ export default {
   }),
   methods: {
     saveUser() {
-      httpCall.post('admin/v1/users', this.user)
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.$router.push("/users");
-          this.$store.dispatch("getAllUsers", true);
+      httpCall
+        .post("admin/v1/users", this.user)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.$router.push("/users");
+            this.$store.dispatch("getAllUsers", true);
+          });
         })
-      })
-      .catch(err => {
-        console.log(err)
-        this.$toasted.error('Something wrong happend');
-      })
+        .catch(err => {
+          console.log(err);
+          this.$toasted.error("Something wrong happend");
+        });
     }
   }
 };

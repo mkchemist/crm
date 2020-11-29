@@ -82,7 +82,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+      $user = User::find($id);
+      return response([
+        "code"  =>  200,
+        "data"  =>  $user
+      ], 200);
     }
 
     /**
@@ -94,7 +98,37 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      $validator = Validator::make($request->all(), [
+        'name'      =>  'required',
+        'email'     =>  'required|email',
+        'username'  =>  'required',
+        'role'      =>  'required',
+        'line'      =>  'required',
+        'area'      =>  'required',
+        'district'  =>  'required',
+        'territory' =>  'required',
+        'region'    =>  'required'
+      ]);
+      if($validator->fails()) {
+        return response(ResponseHelper::validationErrorResponse($validator));
+      }
+      $user = User::find($id);
+      $check = User::where(['email' => $request->email])->first();
+      if($check && $check->email !== $user->email) {
+        return response(ResponseHelper::ITEM_ALREADY_EXIST);
+      }
+      $userData = $request->all();
+      if($request->password !== null) {
+        $userData['password'] = Hash::make($request->password);
+      } else {
+        unset($userData['password']);
+      }
+      //return response($userData);
+      $user->update($userData);
+      return response([
+        "code"  =>  200,
+        "message" =>  "User $user->name updated"
+      ], 200);
     }
 
     /**
