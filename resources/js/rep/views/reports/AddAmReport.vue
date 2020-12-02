@@ -262,6 +262,7 @@ export default {
         data.message = data.data;
         this.handleResponse(data, data => {
           this.$router.replace("/reports/view/am");
+          this.$store.dispatch('amGetAll', true);
         });
       });
     },

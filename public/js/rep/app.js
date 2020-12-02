@@ -2927,27 +2927,65 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-var base_url = document.getElementById('APP_API_URL').value.replace('api/', '');
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var base_url = document.getElementById("APP_API_URL").value.replace("api/", "");
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {},
   data: function data() {
     return {
       base_url: base_url,
       links: [{
-        title: 'Home',
-        path: '/'
+        title: "Home",
+        path: "/"
       }, {
-        title: 'Customers',
-        path: '/customers'
+        title: "Customers",
+        path: "/customers"
       }, {
-        title: 'Workplaces',
-        path: '/workplaces'
+        title: "Workplaces",
+        path: "/workplaces"
       }, {
-        title: 'Planner',
-        path: '/planner'
+        title: "Planner",
+        path: "/planner"
       }, {
-        title: 'Reports',
-        path: '/reports'
+        title: "Reports",
+        path: "/reports"
       }]
     };
   }
@@ -6637,6 +6675,8 @@ __webpack_require__.r(__webpack_exports__);
 
         _this3.handleResponse(data, function (data) {
           _this3.$router.replace("/reports/view/am");
+
+          _this3.$store.dispatch('amGetAll', true);
         });
       });
     },
@@ -8085,6 +8125,34 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_TableComponent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../components/TableComponent */ "./resources/js/components/TableComponent.vue");
+/* harmony import */ var _components_ModalFade__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../components/ModalFade */ "./resources/js/components/ModalFade.vue");
+/* harmony import */ var _helpers_http_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../helpers/http-service */ "./resources/js/helpers/http-service.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -8173,6 +8241,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     this.$store.dispatch("amGetAll");
@@ -8183,7 +8253,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   components: {
-    TableComponent: _components_TableComponent__WEBPACK_IMPORTED_MODULE_0__["default"]
+    TableComponent: _components_TableComponent__WEBPACK_IMPORTED_MODULE_0__["default"],
+    ModalFade: _components_ModalFade__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
@@ -8205,8 +8276,47 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         title: "Brick",
         name: "workplace.brick"
-      }]
+      }],
+      selectedReportId: null,
+      showDeleteModal: false
     };
+  },
+  methods: {
+    openDeleteModal: function openDeleteModal() {
+      this.showDeleteModal = true;
+    },
+    closeDeleteModal: function closeDeleteModal() {
+      this.showDeleteModal = false;
+      this.selectReportId = null;
+    },
+    selectReport: function selectReport(id) {
+      this.selectedReportId = id;
+      this.openDeleteModal();
+    },
+    deleteReport: function deleteReport() {
+      var _this = this;
+
+      if (!this.selectedReportId) {
+        this.$toasted.error('Select Report first', {
+          icon: 'exclamation'
+        });
+        return;
+      }
+
+      var id = this.selectedReportId;
+      _helpers_http_service__WEBPACK_IMPORTED_MODULE_2__["httpCall"].post('rep/v1/reports/am/' + id, {
+        _method: 'DELETE'
+      }).then(function (_ref) {
+        var data = _ref.data;
+
+        _this.handleResponse(data, function (data) {
+          _this.$store.dispatch("amGetAll", true);
+
+          _this.showDeleteModal = false;
+          _this.selectedReportId = null;
+        });
+      });
+    }
   }
 });
 
@@ -15318,15 +15428,9 @@ var render = function() {
           _vm._v(" "),
           _c("br"),
           _vm._v(" "),
-          _c(
-            "span",
-            { staticClass: "small text-muted font-italic d-none d-lg-block" },
-            [
-              _vm._v(
-                "Welcome Dr " + _vm._s(_vm.$store.state.AppModule.user.name)
-              )
-            ]
-          )
+          _c("span", { staticClass: "small text-muted d-none d-lg-block" }, [
+            _vm._v("Welcome " + _vm._s(_vm.$store.state.AppModule.user.name))
+          ])
         ]),
         _vm._v(" "),
         _vm._m(0),
@@ -24632,210 +24736,306 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "px-0 shadow" }, [
-      _vm._m(0),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "p-2 text-right" },
-        [
-          _c(
-            "router-link",
-            { staticClass: "btn btn-sm btn-dark", attrs: { to: "/reports" } },
-            [
-              _c("span", [
-                _c("i", { staticClass: "fa fa-chevron-circle-left" })
-              ]),
-              _vm._v(" "),
-              _c("span", [_vm._v("back")])
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "router-link",
-            {
-              staticClass: "btn btn-sm btn-success",
-              attrs: { to: "/reports/add/am" }
-            },
-            [
-              _c("span", [_c("i", { staticClass: "fa fa-plus-circle" })]),
-              _vm._v(" "),
-              _c("span", [_vm._v("new")])
-            ]
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "p-2" },
-        [
-          _vm.visits.length
-            ? _c("table-component", {
-                attrs: {
-                  data: _vm.visits,
-                  heads: _vm.headers,
-                  "head-class": "bg-success text-light",
-                  "order-by": "Date,asc|Customer Name,asc"
-                },
-                scopedSlots: _vm._u(
-                  [
-                    {
-                      key: "head",
-                      fn: function() {
-                        return [
-                          _c("th", [_vm._v("Products")]),
-                          _vm._v(" "),
-                          _c("th", [_vm._v("Comment")]),
-                          _vm._v(" "),
-                          _c("th", [_vm._v("Geneal Feedback")]),
-                          _vm._v(" "),
-                          _c("th", [_vm._v("Action")])
-                        ]
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "px-0 shadow" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "p-2 text-right" },
+          [
+            _c(
+              "router-link",
+              { staticClass: "btn btn-sm btn-dark", attrs: { to: "/reports" } },
+              [
+                _c("span", [
+                  _c("i", { staticClass: "fa fa-chevron-circle-left" })
+                ]),
+                _vm._v(" "),
+                _c("span", [_vm._v("back")])
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "router-link",
+              {
+                staticClass: "btn btn-sm btn-success",
+                attrs: { to: "/reports/add/am" }
+              },
+              [
+                _c("span", [_c("i", { staticClass: "fa fa-plus-circle" })]),
+                _vm._v(" "),
+                _c("span", [_vm._v("new")])
+              ]
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "p-2" },
+          [
+            _vm.visits.length
+              ? _c("table-component", {
+                  attrs: {
+                    data: _vm.visits,
+                    heads: _vm.headers,
+                    "head-class": "bg-success text-light",
+                    "order-by": "Date,asc|Customer Name,asc"
+                  },
+                  scopedSlots: _vm._u(
+                    [
+                      {
+                        key: "head:before",
+                        fn: function() {
+                          return [_c("th", [_vm._v("Action")])]
+                        },
+                        proxy: true
                       },
-                      proxy: true
-                    },
-                    {
-                      key: "body",
-                      fn: function(ref) {
-                        var item = ref.item
-                        return [
-                          _c("td", [
+                      {
+                        key: "body:before",
+                        fn: function(ref) {
+                          var item = ref.item
+                          return [
                             _c(
-                              "ul",
-                              { staticClass: "nav" },
-                              _vm._l(item.products, function(p, i) {
-                                return _c(
-                                  "li",
-                                  { key: i, staticClass: "nav-item col-12" },
+                              "td",
+                              [
+                                _c(
+                                  "router-link",
+                                  {
+                                    staticClass: "btn btn-sm btn-warning",
+                                    attrs: { to: "/reports/edit/am/" + item.id }
+                                  },
                                   [
                                     _c("span", [
-                                      _vm._v("Product :\n                  "),
-                                      _c(
-                                        "span",
-                                        { staticClass: "font-weight-bold" },
-                                        [_vm._v(_vm._s(p.name))]
-                                      )
-                                    ]),
-                                    _vm._v(
-                                      "\n                |\n                "
-                                    ),
+                                      _c("i", { staticClass: "fa fa-edit" })
+                                    ])
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-sm btn-danger",
+                                    attrs: { type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.selectReport(item.id)
+                                      }
+                                    }
+                                  },
+                                  [
                                     _c("span", [
-                                      _vm._v("Lader :\n                  "),
-                                      _c(
-                                        "span",
-                                        { staticClass: "font-weight-bold" },
-                                        [_vm._v(_vm._s(p.lader))]
-                                      )
-                                    ]),
-                                    _vm._v(
-                                      "\n                |\n                "
-                                    ),
-                                    _c("span", [
-                                      _vm._v("Action :\n                  "),
-                                      _c(
-                                        "span",
-                                        { staticClass: "font-weight-bold" },
-                                        [_vm._v(_vm._s(p.action))]
-                                      )
-                                    ]),
-                                    _vm._v(
-                                      "\n                |\n                "
-                                    ),
-                                    _c("span", [
-                                      _vm._v(
-                                        "Competitor :\n                  "
-                                      ),
-                                      _c(
-                                        "span",
-                                        { staticClass: "font-weight-bold" },
-                                        [_vm._v(_vm._s(p.competitor))]
-                                      )
+                                      _c("i", { staticClass: "fa fa-times" })
                                     ])
                                   ]
                                 )
-                              }),
-                              0
+                              ],
+                              1
                             )
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(item.comment))]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(item.general_feedback))]),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            [
+                          ]
+                        }
+                      },
+                      {
+                        key: "head",
+                        fn: function() {
+                          return [
+                            _c("th", [_vm._v("Products")]),
+                            _vm._v(" "),
+                            _c("th", [_vm._v("Comment")]),
+                            _vm._v(" "),
+                            _c("th", [_vm._v("Geneal Feedback")])
+                          ]
+                        },
+                        proxy: true
+                      },
+                      {
+                        key: "body",
+                        fn: function(ref) {
+                          var item = ref.item
+                          return [
+                            _c("td", [
                               _c(
-                                "router-link",
-                                {
-                                  staticClass: "btn btn-sm btn-warning",
-                                  attrs: { to: "/reports/edit/am/" + item.id }
-                                },
-                                [
-                                  _c("span", [
-                                    _c("i", { staticClass: "fa fa-edit" })
-                                  ])
-                                ]
+                                "ul",
+                                { staticClass: "nav" },
+                                _vm._l(item.products, function(p, i) {
+                                  return _c(
+                                    "li",
+                                    { key: i, staticClass: "nav-item col-12" },
+                                    [
+                                      _c("span", [
+                                        _vm._v("Product :\n                  "),
+                                        _c(
+                                          "span",
+                                          { staticClass: "font-weight-bold" },
+                                          [_vm._v(_vm._s(p.name))]
+                                        )
+                                      ]),
+                                      _vm._v(
+                                        "\n                |\n                "
+                                      ),
+                                      _c("span", [
+                                        _vm._v("Lader :\n                  "),
+                                        _c(
+                                          "span",
+                                          { staticClass: "font-weight-bold" },
+                                          [_vm._v(_vm._s(p.lader))]
+                                        )
+                                      ]),
+                                      _vm._v(
+                                        "\n                |\n                "
+                                      ),
+                                      _c("span", [
+                                        _vm._v("Action :\n                  "),
+                                        _c(
+                                          "span",
+                                          { staticClass: "font-weight-bold" },
+                                          [_vm._v(_vm._s(p.action))]
+                                        )
+                                      ]),
+                                      _vm._v(
+                                        "\n                |\n                "
+                                      ),
+                                      _c("span", [
+                                        _vm._v(
+                                          "Competitor :\n                  "
+                                        ),
+                                        _c(
+                                          "span",
+                                          { staticClass: "font-weight-bold" },
+                                          [_vm._v(_vm._s(p.competitor))]
+                                        )
+                                      ])
+                                    ]
+                                  )
+                                }),
+                                0
                               )
-                            ],
-                            1
-                          )
-                        ]
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(item.comment))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(item.general_feedback))])
+                          ]
+                        }
                       }
-                    }
+                    ],
+                    null,
+                    false,
+                    3468983125
+                  )
+                })
+              : _vm.$store.getters.fetchedReports
+              ? _c(
+                  "div",
+                  {
+                    staticClass: "text-center",
+                    staticStyle: { "min-height": "100px" }
+                  },
+                  [
+                    _c(
+                      "p",
+                      { staticClass: "lead font-weight-bold text-danger" },
+                      [_vm._v("No am reports found")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "router-link",
+                      {
+                        staticClass: "btn btn-sm btn-primary",
+                        attrs: { to: "/reports/add/am" }
+                      },
+                      [
+                        _c("span", [
+                          _c("i", { staticClass: "fa fa-plus-circle" })
+                        ]),
+                        _vm._v(" "),
+                        _c("span", [_vm._v("add new am report")])
+                      ]
+                    )
                   ],
-                  null,
-                  false,
-                  1349944117
+                  1
                 )
-              })
-            : _vm.$store.getters.fetchedReports
-            ? _c(
-                "div",
-                {
-                  staticClass: "text-center",
-                  staticStyle: { "min-height": "100px" }
-                },
-                [
-                  _c(
-                    "p",
-                    { staticClass: "lead font-weight-bold text-danger" },
-                    [_vm._v("No am reports found")]
-                  ),
+              : _c(
+                  "div",
+                  {
+                    staticClass:
+                      "d-flex justify-content-center align-items-center"
+                  },
+                  [_c("div", { staticClass: "spinner-border" })]
+                )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c("modal-fade", {
+        attrs: { id: "delete_modal_fade", show: _vm.showDeleteModal },
+        on: { onClose: _vm.closeDeleteModal },
+        scopedSlots: _vm._u([
+          {
+            key: "body",
+            fn: function() {
+              return [
+                _c("p", { staticClass: "text-center" }, [
+                  _c("span", [
+                    _c("i", {
+                      staticClass: "fa fa-exclamation-triangle text-danger"
+                    })
+                  ]),
                   _vm._v(" "),
+                  _c("span", { staticClass: "text-muted" }, [
+                    _vm._v("Are you sure, you want to delete this report")
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("hr"),
+                _vm._v(" "),
+                _c("div", { staticClass: "my-1 text-center" }, [
                   _c(
-                    "router-link",
+                    "button",
                     {
-                      staticClass: "btn btn-sm btn-primary",
-                      attrs: { to: "/reports/add/am" }
+                      staticClass: "btn btn-sm btn-secondary",
+                      attrs: { type: "button" },
+                      on: { click: _vm.closeDeleteModal }
                     },
                     [
                       _c("span", [
-                        _c("i", { staticClass: "fa fa-plus-circle" })
+                        _c("i", { staticClass: "fa fa-chevron-circle-left" })
                       ]),
                       _vm._v(" "),
-                      _c("span", [_vm._v("add new am report")])
+                      _c("span", [_vm._v("Cancel")])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-danger",
+                      attrs: { type: "button" },
+                      on: { click: _vm.deleteReport }
+                    },
+                    [
+                      _c("span", [
+                        _c("i", { staticClass: "fa fa-times-circle" })
+                      ]),
+                      _vm._v(" "),
+                      _c("span", [_vm._v("Delete")])
                     ]
                   )
-                ],
-                1
-              )
-            : _c(
-                "div",
-                {
-                  staticClass:
-                    "d-flex justify-content-center align-items-center"
-                },
-                [_c("div", { staticClass: "spinner-border" })]
-              )
-        ],
-        1
-      )
-    ])
-  ])
+                ])
+              ]
+            },
+            proxy: true
+          }
+        ])
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {

@@ -127,7 +127,16 @@ class WorkplaceReportController extends Controller
    */
   public function destroy($id)
   {
-    //
+    $user = Auth::user();
+    $report = WorkplaceReport::where([
+      'id'    =>  $id,
+      'user_id'  =>  $user->id
+    ])->first();
+    $report->delete();
+    return response([
+      "code"  =>  200,
+      "message" =>  "Workplace report deleted"
+    ]);
   }
 
   /**
