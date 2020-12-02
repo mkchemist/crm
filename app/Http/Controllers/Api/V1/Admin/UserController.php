@@ -172,4 +172,13 @@ class UserController extends Controller
         "message" =>  "User de-activated"
       ]);
     }
+
+    public function reActivateUser($id)
+    {
+      User::where(['id' => $id])->update(['active' => true]);
+      return response([
+        "code"  =>  200,
+        "message" =>  "User Activated"
+      ]);
+    }
 }

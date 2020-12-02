@@ -27,7 +27,8 @@ class UserController extends Controller
         // user credentials
         $credentials = [
             'username'  =>  $request->username,
-            'password'  =>  $request->password
+            'password'  =>  $request->password,
+            "active"    =>  1
         ];
 
         // user login

@@ -42,6 +42,11 @@ export default {
         name: "Customers",
         icon: "fa-user-md",
         path: "/customers"
+      },
+      {
+        name: 'Validation',
+        icon: 'fa-check-circle',
+        path: '/validation'
       }
     ]
   })

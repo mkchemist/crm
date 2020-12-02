@@ -159,7 +159,9 @@ class ApprovalController extends Controller
   public function newCustomerApprovals()
   {
     $user = Auth::user();
-    $customers = Customer::without(['planner', 'report','params', 'frequency', 'workplace'])->where([
+    $customers = Customer::without([
+      'planner', 'report','params', 'frequency', 'workplace'
+      ])->where([
       'district'  =>  $user->district,
       'state'     =>  'new'
     ])->orderBy('name')->get();
@@ -183,7 +185,7 @@ class ApprovalController extends Controller
       Customer::where('district',$user->district)
       ->whereIn('id', $ids)
       ->update([
-        'state' => 'approved',
+        'state' => "approved by $user->name",
         'approved'  =>  true,
         'approved_by' =>  $user->id
       ]);

@@ -32,7 +32,7 @@
             </router-link>
           </li>
           <li class="nav-item mx-lg-1">
-            <router-link to="/users/delete" class="btn btn-sm btn-success">
+            <router-link to="/users/activate" class="btn btn-sm btn-success">
               <span><i class="fa fa-user-slash"></i></span>
               <span>activate</span>
             </router-link>

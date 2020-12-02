@@ -10,7 +10,7 @@
       <div class="p-2 my-2 border bg-dark text-light rounded pb-5" v-if="user">
         <p class="lead text-center">Are you sure to delete {{ user.name }} from users, instead you can de-active this user ?</p>
         <div class="text-center">
-          <button class="btn btn-sm btn-light">
+          <button class="btn btn-sm btn-light" @click="$router.back()">
             <span><i class="fa fa-chevron-circle-left"></i></span>
             <span>back</span>
           </button>

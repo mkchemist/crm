@@ -17,15 +17,23 @@
         <span>select</span>
       </button>
     </div>
+    <div v-else-if="isFetched" class="py-5">
+      <p class="text-center">No data to show</p>
+    </div>
     <loader-component v-else></loader-component>
   </div>
 </template>
 
 <script>
 export default {
+  props: ['users-filter'],
   computed: {
     users() {
-      return this.$store.getters.users;
+      let users = this.$store.getters.users;
+      if(this.usersFilter) {
+        return this.usersFilter(users);
+      }
+      return users;
     },
     isFetched() {
       return this.$store.getters.allUsersFetched;

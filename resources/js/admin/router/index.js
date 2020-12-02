@@ -4,6 +4,7 @@ import HomePage from "../views/Home.vue";
 import CustomersPage from "../views/Customers"
 import ErrorPage from "../../components/ErrorPage.vue";
 import UsersRoutes from './users-routes';
+import ValidationRoutes from "./validation-routes"
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,7 @@ export default new VueRouter({
       component: HomePage
     },
     UsersRoutes,
+    ValidationRoutes,
     {
       path: '/customers',
       component: CustomersPage
