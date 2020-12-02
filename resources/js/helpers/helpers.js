@@ -50,12 +50,13 @@ export const ObjectNotation = function(container, key, $default = null) {
 };
 
 /**
- * filter data
+ * filter data the given data by the given parameter|s
  *
  *
  *
- * @param {*} data
- * @param {*} condition
+ * @param {array} data
+ * @param {string|array} param [parameter of filter]
+ * @param {CallableFunction} check [conditional function that return boolean]
  */
 export function filterData(data, param, check = true) {
   let res = {};
@@ -190,32 +191,38 @@ export function sortBy(arr, item, dir = "asc") {
   });
 }
 
-
 function compareDates(a, b, factor) {
   a = new Date(a);
   b = new Date(b);
   var result = 0;
-  if(a > b) {
-    result =  1 * factor;
+  if (a > b) {
+    result = 1 * factor;
   }
-  if(a < b) {
-    result =  -1 * factor
+  if (a < b) {
+    result = -1 * factor;
   }
   return result;
 }
 
+/**
+ * sort the given data
+ *
+ * @param {array} arr [data container]
+ * @param {string} dir [sort direction : asc|desc]
+ */
 export function sortDates(arr, dir = "asc") {
-  let factor = 1
-  if(dir !== "asc") {
-    factor = -1
+  let factor = 1;
+  if (dir !== "asc") {
+    factor = -1;
   }
   let res = arr.sort((a, b) => {
     return compareDates(a, b, factor);
-  })
-  return res
+  });
+  return res;
 }
 
 /**
+ * Export Table to Excel
  *
  * @param {string} target
  * @param {string} filename
@@ -245,15 +252,13 @@ export function ExportToExcel(target, filename = "download-file") {
   //window.location.href = uri + base64(format(template, ctx))
 }
 
-
-
-
 const initialDateRange = {
   start: null,
   end: null
 };
 
 /**
+ * filter data by the given date interval
  *
  * @param {array} data
  * @param {string} prop
@@ -279,6 +284,7 @@ export function filterByDate(data, prop, range = initialDateRange) {
 }
 
 /**
+ * filter data by the given condition
  *
  * @param {object} data
  * @param {string} prop
@@ -287,11 +293,27 @@ export function filterByDate(data, prop, range = initialDateRange) {
  */
 export function filterBy(data, prop, condition) {
   try {
-    if(condition === null) {
+    if (condition === null) {
       return data;
     }
-    return data.filter(item => item[prop] === condition );
-  }catch(e) {
+    return data.filter(item => item[prop] === condition);
+  } catch (e) {
     throw new Error(e.message);
   }
+}
+
+
+
+export const checkerSelect = (data = [], item, event) => {
+  if(event.target.checked) {
+    if(!data.includes(item)) {
+      data.push(item)
+    }
+  } else {
+    if(data.includes(item)) {
+      let index = data.indexOf(item);
+      data.splice(index, 1);
+    }
+  }
+  return data;
 }

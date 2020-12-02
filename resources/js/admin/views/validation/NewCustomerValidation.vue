@@ -5,7 +5,19 @@
         <span class="font-weight-bold">New customers validation</span>
       </p>
       <div class="p-2 pb-5">
-        <div v-if="customers.length">
+        <div v-if="customers.length" id="validation-data">
+          <div class="p-2 text-right">
+            <button class="btn btn-primary btn-sm" :disabled="!this.validated.length" @click="approveRequest">
+              <span><i class="fa fa-check-circle"></i></span>
+              <span>Approve</span>
+              <span class="badge badge-light">{{ this.validated.length }}</span>
+            </button>
+            <button class="btn btn-secondary btn-sm" :disabled="!this.validated.length" @click="rejectRequest">
+              <span><i class="fa fa-times-circle"></i></span>
+              <span>Reject</span>
+              <span class="badge badge-light">{{ this.validated.length }}</span>
+            </button>
+          </div>
           <table-component
             :heads="heads"
             :data="customers"
@@ -13,14 +25,14 @@
           >
             <template v-slot:head:before>
               <th>
-                <input type="checkbox">
+                <input type="checkbox" @click="selectAll">
               </th>
               <th>Approved</th>
               <th>State</th>
             </template>
             <template v-slot:body:before="{item}">
               <td>
-                <input type="checkbox">
+                <input type="checkbox" @click="selectCustomer(item.id)">
               </td>
               <td>
                 <span>{{ item.approved === 1 ? 'Approved' : 'Not approved' }}</span>
@@ -31,6 +43,10 @@
             </template>
           </table-component>
         </div>
+        <div v-else-if="fetched">
+          <p class="text-center">no data to show</p>
+        </div>
+        <loader-component v-else></loader-component>
       </div>
   </div>
 </template>
@@ -38,6 +54,7 @@
 <script>
 import { httpCall } from '../../../helpers/http-service';
 import TableComponent from "../../../components/TableComponent";
+import { checkerSelect } from '../../../helpers/helpers';
 export default {
   mounted() {
     this.getNewCustomers();
@@ -48,6 +65,8 @@ export default {
   data: () =>({
     customers: [],
     fetched: false,
+    validated:[],
+    requestState: null,
     heads: [
       {
         title: 'Area',
@@ -80,6 +99,10 @@ export default {
     ]
   }),
   methods: {
+    /**
+     * get all new customers
+     *
+     */
     getNewCustomers() {
       this.fetched = false;
       httpCall.get('admin/v1/validation/new-customers')
@@ -89,6 +112,70 @@ export default {
           this.customers = data.data;
         });
       })
+    },
+    /**
+     * select customer
+     *
+     * @param {int} id [customer id]
+     */
+    selectCustomer(id) {
+      this.validated  = checkerSelect(this.validated, id, event);
+    },
+    /**
+     * select all customers
+     *
+     */
+    selectAll() {
+      if(event.target.checked) {
+        this.toggleAllInputs(true);
+        this.validated = this.customers.map(customer => customer.id);
+      } else {
+        this.toggleAllInputs(false);
+        this.validated = [];
+      }
+    },
+    /**
+     * toggle select all inputs
+     *
+     * @param {boolean} check
+     */
+    toggleAllInputs(check) {
+      if(undefined === check) {
+        throw new Error('check value must be a boolean value');
+      }
+      let inputs = document.querySelectorAll('#validation-data input[type="checkbox"]');
+      if(check) {
+        inputs.forEach(input => input.checked = true);
+      } else {
+        inputs.forEach(input => input.checked = false);
+      }
+    },
+    approveRequest() {
+      this.requestState = "approved";
+      this.sendRequest();
+    },
+    rejectRequest() {
+      this.requestState = "rejected";
+      this.sendRequest();
+    },
+    sendRequest() {
+      if(!this.validated.length) {
+        this.$toasted.error('No customer selected', {
+          icon: 'exclamation'
+        })
+      }
+      httpCall.post('admin/v1/validation/new-customers',{
+        state: this.requestState,
+        ids: JSON.stringify(this.validated)
+      })
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.getNewCustomers();
+          this.requestState = null;
+          this.validated = [];
+          this.toggleAllInputs(false);
+        });
+      });
     }
   }
 }
