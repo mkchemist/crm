@@ -22,10 +22,22 @@
           order-by="Date,asc|Name,asc"
           head-class="bg-success text-light"
         >
+        <template v-slot:head:before>
+            <th>Action</th>
+          </template>
+          <template v-slot:body:before="{item}">
+            <td>
+              <router-link :to="`/reports/edit/am/${item.id}`" class="btn btn-sm btn-warning">
+                <span><i class="fa fa-edit"></i></span>
+              </router-link>
+              <button type="button" class="btn btn-sm btn-danger" @click="selectReport(item.id)">
+                <span><i class="fa fa-times"></i></span>
+              </button>
+            </td>
+          </template>
           <template v-slot:head>
             <th>Products</th>
             <th>Feedback</th>
-            <th>Action</th>
           </template>
           <template v-slot:body="{ item }">
             <td>
@@ -66,13 +78,7 @@
               </ul>
             </td>
             <td>{{ item.general_feedback }}</td>
-            <td>
-              <router-link
-                :to="`/reports/edit/pharmacy/${item.id}`"
-                class="btn btn-sm btn-warning"
-                ><span><i class="fa fa-edit"></i></span
-              ></router-link>
-            </td>
+
           </template>
         </table-component>
       </div>
@@ -97,11 +103,32 @@
         <div class="spinner-border"></div>
       </div>
     </div>
+     <modal-fade id="delete_modal_fade" :show="showDeleteModal" @onClose="closeDeleteModal">
+      <template v-slot:body>
+        <p class="text-center">
+          <span><i class="fa fa-exclamation-triangle text-danger"></i></span>
+          <span class="text-muted">Are you sure, you want to delete this report</span>
+        </p>
+        <hr>
+        <div class="my-1 text-center">
+          <button type="button" class="btn btn-sm btn-secondary" @click="closeDeleteModal">
+            <span><i class="fa fa-chevron-circle-left"></i></span>
+            <span>Cancel</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-danger" @click="deleteReport">
+            <span><i class="fa fa-times-circle"></i></span>
+            <span>Delete</span>
+          </button>
+        </div>
+      </template>
+    </modal-fade>
   </div>
 </template>
 
 <script>
 import TableComponent from "../../../components/TableComponent";
+import ModalFade from "../../../components/ModalFade";
+import { httpCall } from '../../../helpers/http-service';
 export default {
   created() {
     this.$store.dispatch("pharmacyReportGetAll");
@@ -137,10 +164,37 @@ export default {
         title: "Brick",
         name: "pharmacy.brick"
       }
-    ]
+    ],
+    selectedReport: null,
+    showDeleteModal: false,
   }),
   components: {
-    TableComponent
+    TableComponent,
+    ModalFade
+  },
+  methods: {
+    openDeleteModal() {
+      this.showDeleteModal = true;
+    },
+    closeDeleteModal() {
+      this.showDeleteModal = false;
+      this.selectedReport = null;
+    },
+    selectReport(id) {
+      this.selectedReport = id;
+      this.showDeleteModal = true;
+    },
+    deleteReport() {
+      let id = this.selectedReport;
+      httpCall.post('rep/v1/reports/pharmacy/'+id, {_method: 'DELETE'})
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.$store.dispatch("pharmacyReportGetAll", true);
+          this.showDeleteModal=false;
+          this.selectedReport = null;
+        })
+      })
+    }
   }
 };
 </script>

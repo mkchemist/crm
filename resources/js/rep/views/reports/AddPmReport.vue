@@ -88,20 +88,23 @@
             <div class="row mx-auto my-2 border rounded p-2">
               <div class="col-lg-6">
                 <label for="" class="text-muted small">Visit type</label>
-                <select
-                  name="visit_type"
-                  id=""
-                  v-model="visit.visit_type"
-                  class="form-control form-control-sm"
-                  @change="handleVisitType"
-                >
-                  <option
-                    :value="type"
-                    v-for="(type, i) in $store.state.AppModule.visitTypes"
-                    :key="`visit_type_${i}`"
-                    >{{ type | capital }}</option
+                <ValidationProvider rules="required" name="visit_type" v-slot="{errors}">
+                  <span>{{ errors[0] }}</span>
+                  <select
+                    name="visit_type"
+                    id=""
+                    v-model="visit.visit_type"
+                    :class="`form-control form-control-sm ${errors[0] ? 'border border-danger' : ''}`"
+                    @change="handleVisitType"
                   >
-                </select>
+                    <option
+                      :value="type"
+                      v-for="(type, i) in $store.state.AppModule.visitTypes"
+                      :key="`visit_type_${i}`"
+                      >{{ type | capital }}</option
+                    >
+                  </select>
+                </ValidationProvider>
               </div>
               <div class="col-lg-6" v-if="visit.dual">
                 <ValidationProvider
@@ -213,7 +216,7 @@ export default {
       comment: "",
       products: [],
       general_feedback: "",
-      visit_type: "single"
+      visit_type: "pm face to face"
     },
     is_single_customer: false
   }),
@@ -224,6 +227,12 @@ export default {
     saveReport() {
       if(!this.visit.customer) {
         this.$toasted.error('No customer selected', {
+          icon: 'exclamation-triangle'
+        });
+        return;
+      }
+      if(!this.visit.products.length) {
+        this.$toasted.error('You must add one product at least', {
           icon: 'exclamation-triangle'
         });
         return;

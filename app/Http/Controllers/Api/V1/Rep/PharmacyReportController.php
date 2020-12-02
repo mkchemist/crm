@@ -136,7 +136,16 @@ class PharmacyReportController extends Controller
      */
     public function destroy($id)
     {
-        //
+      $user = Auth::user();
+      $report = PharmacyReport::where([
+        'id'  =>  $id,
+        'user_id' =>  $user->id
+      ])->first();
+      $report->delete();
+      return response([
+        'code'  =>  200,
+        'message' =>  'Pharmacy report deleted'
+      ]);
     }
 
     /**

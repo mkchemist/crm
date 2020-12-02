@@ -108,7 +108,7 @@
                     @click="selectPharmacy"
                   >
                     <span><i class="fa fa-check-circle"></i></span>
-                    <span>select</span>
+                    <span>view</span>
                   </button>
                   <button
                     type="button"
