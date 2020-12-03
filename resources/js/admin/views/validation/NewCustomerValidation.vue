@@ -44,10 +44,7 @@
           </table-component>
         </div>
         <div v-else-if="fetched" class="text-center">
-          <p>
-            <span class="fa fa-check-circle fa-4x text-success"></span>
-          </p>
-          <p class="text-muted">No waiting requests</p>
+          <no-data-to-show title="No waiting response" />
         </div>
         <loader-component v-else></loader-component>
       </div>
@@ -58,12 +55,14 @@
 import { httpCall } from '../../../helpers/http-service';
 import TableComponent from "../../../components/TableComponent";
 import { checkerSelect } from '../../../helpers/helpers';
+import NoDataToShow from "../../../components/NoDataToShow";
 export default {
   mounted() {
     this.getNewCustomers();
   },
   components: {
-    TableComponent
+    TableComponent,
+    NoDataToShow
   },
   data: () =>({
     customers: [],
