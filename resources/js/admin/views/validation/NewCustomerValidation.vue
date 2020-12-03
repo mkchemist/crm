@@ -1,5 +1,5 @@
 <template>
-  <div class="px-0 shadow">
+  <div class="px-0 shadow pb-5">
       <p class="alert alert-success">
         <span><i class="fa fa-check-circle"></i></span>
         <span class="font-weight-bold">New customers validation</span>
@@ -43,8 +43,11 @@
             </template>
           </table-component>
         </div>
-        <div v-else-if="fetched">
-          <p class="text-center">no data to show</p>
+        <div v-else-if="fetched" class="text-center">
+          <p>
+            <span class="fa fa-check-circle fa-4x text-success"></span>
+          </p>
+          <p class="text-muted">No waiting requests</p>
         </div>
         <loader-component v-else></loader-component>
       </div>
@@ -70,19 +73,35 @@ export default {
     heads: [
       {
         title: 'Area',
-        name: 'area'
+        name: 'area',
+        style: 'font-weight-bold'
       },
       {
         title: 'Customer',
-        name: 'name'
+        name: 'name',
+        style: 'font-weight-bold'
       },
       {
         title: 'Specialty',
-        name: 'specialty'
+        name: 'specialty',
+        style: 'font-weight-bold'
+
+      },
+      {
+        title: 'Title',
+        name: 'title'
       },
       {
         title: 'Address',
         name: 'address'
+      },
+      {
+        title: 'Phone',
+        name: 'phone'
+      },
+      {
+        title: 'Brick',
+        name: 'brick'
       },
       {
         title: 'District',

@@ -16,7 +16,10 @@ Route::prefix('v1')->group(function() {
       'prefix' => 'validation',
       'namespace' => 'Approvals'
     ], function () {
-      Route::get('/new-customers', 'NewCustomerValidation@getNewCustomers');
-      Route::post('/new-customers', 'NewCustomerValidation@approveNewCustomers');
+      Route::get('/new-customers', 'NewCustomerValidationController@getNewCustomers');
+      Route::post('/new-customers', 'NewCustomerValidationController@approveNewCustomers');
+      Route::get('/customers', 'CustomerValidationController@index');
+      Route::put('/customers', 'CustomerValidationController@update');
+      Route::delete("/customers/clear-rejected", "CustomerValidationController@clearRejectedRequests");
     });
 });

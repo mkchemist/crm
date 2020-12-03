@@ -6,33 +6,33 @@
     </p>
     <div class="my-2 p-2">
       <section class="p-2">
-        <nav class="nav justify-content-center">
+        <nav class="nav justify-content-center nav-tabs">
           <li class="nav-item mx-lg-1">
-            <router-link to="/users" class="btn btn-sm btn-success">
+            <router-link to="/users" class="nav-link small" active-class="bg-primary text-light" exact>
               <span><i class="fa fa-users"></i></span>
               <span>All</span>
             </router-link>
           </li>
           <li class="nav-item mx-lg-1">
-            <router-link to="/users/add" class="btn btn-sm btn-success">
+            <router-link to="/users/add" class="nav-link small" active-class="bg-primary text-light" exact>
               <span><i class="fa fa-user-plus"></i></span>
               <span>add</span>
             </router-link>
           </li>
           <li class="nav-item mx-lg-1">
-            <router-link to="/users/view" class="btn btn-sm btn-success">
+            <router-link to="/users/view" class="nav-link small" active-class="bg-primary text-light" exact>
               <span><i class="fa fa-user-edit"></i></span>
               <span>view</span>
             </router-link>
           </li>
           <li class="nav-item mx-lg-1">
-            <router-link to="/users/delete" class="btn btn-sm btn-success">
+            <router-link to="/users/delete" class="nav-link small" active-class="bg-primary text-light" exact>
               <span><i class="fa fa-trash"></i></span>
               <span>remove</span>
             </router-link>
           </li>
           <li class="nav-item mx-lg-1">
-            <router-link to="/users/activate" class="btn btn-sm btn-success">
+            <router-link to="/users/activate" class="nav-link small" active-class="bg-primary text-light" exact>
               <span><i class="fa fa-user-slash"></i></span>
               <span>activate</span>
             </router-link>
