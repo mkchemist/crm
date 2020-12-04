@@ -130,9 +130,7 @@ export default {
           data.message = 'hospital added successfully';
           this.handleResponse(data, data => {
             this.$store.dispatch("workplaceGetAll", true).then(() => {
-              setTimeout(() => {
-                this.$router.replace("/workplaces");
-              }, 2000)
+              this.$router.replace("/workplaces");
             });
           })
         })
