@@ -20,7 +20,8 @@ class WorkplaceController extends Controller
   public function index()
   {
     $workplaces = Workplace::with(['departs'])->where([
-      'area'  =>  Auth::user()->area
+      'area'  =>  Auth::user()->area,
+      'state' =>  'approved'
     ])->orderBy('name', 'asc')->get();
     return response()->json([
       'code'  =>  201,

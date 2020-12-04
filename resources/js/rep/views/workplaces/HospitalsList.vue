@@ -6,23 +6,36 @@
         <span class="font-weight-bold">Hospital list</span>
       </p>
       <div class="p-2 text-right">
-        <router-link to="/workplaces/add-hospital" class="btn btn-sm btn-success">
+        <router-link
+          to="/workplaces/add-hospital"
+          class="btn btn-sm btn-success"
+        >
           <span><i class="fa fa-plus-circle"></i></span>
           <span>new</span>
         </router-link>
       </div>
       <div v-if="all.length" class="p-2">
         <!-- <hospital-table :data="all" /> -->
-        <table-component :heads="heads" :data="all" head-class="bg-success text-light">
+        <table-component
+          :heads="heads"
+          :data="all"
+          head-class="bg-success text-light"
+        >
           <template v-slot:head>
             <th>Actions</th>
           </template>
           <template v-slot:body="{ item }">
             <td>
-              <router-link :to="`/workplaces/hospital/view/${item.id}`" class="btn btn-sm btn-info">
+              <router-link
+                :to="`/workplaces/hospital/view/${item.id}`"
+                class="btn btn-sm btn-info"
+              >
                 <span><i class="fa fa-eye"></i></span>
               </router-link>
-               <router-link :to="`/workplaces/hospital/edit/${item.id}`" class="btn btn-sm btn-warning">
+              <router-link
+                :to="`/workplaces/hospital/edit/${item.id}`"
+                class="btn btn-sm btn-warning"
+              >
                 <span><i class="fa fa-edit"></i></span>
               </router-link>
             </td>
@@ -30,11 +43,15 @@
         </table-component>
       </div>
       <div class="text-center" v-else-if="fetched">
-        <p class="font-weight-bold">no data to show</p>
-        <router-link to="/workplaces/add-hospital" class="btn btn-primary btn-sm">
-          <span><i class="fa fa-plus-circle"></i></span>
-          <span>Add new Hospital</span>
-        </router-link>
+        <no-data-to-show title="No hospitals found">
+          <router-link
+            to="/workplaces/add-hospital"
+            class="btn btn-success btn-sm"
+          >
+            <span><i class="fa fa-plus-circle"></i></span>
+            <span>Add new Hospital</span>
+          </router-link>
+        </no-data-to-show>
       </div>
       <loader-component v-else />
     </div>
@@ -43,9 +60,10 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
+import NoDataToShow from "../../../components/NoDataToShow";
 export default {
-  created(){
-    this.$store.dispatch('workplaceGetAll')
+  mounted() {
+    this.$store.dispatch("workplaceGetAll");
   },
   computed: {
     all() {
@@ -56,46 +74,46 @@ export default {
     }
   },
   components: {
-    TableComponent
+    TableComponent,
+    NoDataToShow
   },
   data: () => ({
     heads: [
       {
-        title: 'ID',
-        name: 'id'
+        title: "ID",
+        name: "id"
       },
       {
-        title: 'Name',
-        name: 'name'
+        title: "Name",
+        name: "name"
       },
       {
-        title: 'Type',
-        name: 'type'
+        title: "Type",
+        name: "type"
       },
       {
-        title: 'Address',
-        name: 'address'
+        title: "Address",
+        name: "address"
       },
       {
-        title: 'Phone',
-        name: 'phone'
+        title: "Phone",
+        name: "phone"
       },
       {
-        title: 'Brick',
-        name: 'brick'
+        title: "Brick",
+        name: "brick"
       },
       {
-        title: 'Area',
-        name: 'area'
+        title: "Area",
+        name: "area"
       },
       {
-        title: 'State',
-        name: 'state'
+        title: "State",
+        name: "state"
       }
     ]
   })
 };
 </script>
 
-<style>
-</style>
+<style></style>
