@@ -131,7 +131,7 @@ export default {
       this.requests = [];
       this.fetched = false;
       httpCall
-        .get("/admin/v1/validation/frequency")
+        .get("admin/v1/validation/frequency")
         .then(({ data }) => {
           this.handleResponse(data, data => {
             this.requests = data.data;
