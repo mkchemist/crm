@@ -38,16 +38,6 @@ export default {
         title: 'Customers Details Approval',
         icon: 'fa-user-check',
         link: '/approval/customer-details'
-      },
-      {
-        title: 'Workplaces Approval',
-        icon : 'fa-hospital-alt',
-        link: '/approval/workplaces'
-      },
-      {
-        title: 'Pharmacies Approval',
-        icon : 'fa-store-alt',
-        link: '/approval/pharmacies'
       }
     ]
   })
