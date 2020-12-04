@@ -61,6 +61,7 @@
               <th>Submitted</th>
               <th>Freqeuncy state</th>
               <th>Address</th>
+              <th>Last update</th>
             </template>
             <template v-slot:body="{ item }">
               <td>
@@ -104,6 +105,7 @@
                 {{ item.freq && item.freq.state ? item.freq.state : null }}
               </td>
               <td>{{ item.address }}</td>
+              <td>{{ item.last_freq_update }}</td>
             </template>
           </table-component>
         </div>

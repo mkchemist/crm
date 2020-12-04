@@ -23,5 +23,7 @@ Route::prefix('v1')->group(function () {
         Route::delete("/customers/clear-rejected", "CustomerValidationController@clearRejectedRequests");
         Route::get('/parameters', 'ParameterValidationController@index');
         Route::put('/parameters', 'ParameterValidationController@update');
+        Route::get('/frequency', 'FrequencyValidationController@index');
+        Route::put('/frequency', 'FrequencyValidationController@update');
     });
 });
