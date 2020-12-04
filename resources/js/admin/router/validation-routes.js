@@ -4,7 +4,7 @@ import NewCustomerValidation from "../views/validation/NewCustomerValidation.vue
 import PharmaciesValidation from "../views/validation/PharmacyValidation";
 import ParameterValidation from "../views/validation/ParameterValidation";
 import FrequencyValidation from "../views/validation/FrequencyValidation.vue";
-import WorkplaceValidation from "../views/validation/WorkplaceValidation";
+import NewWorkplaceValidation from "../views/validation/NewWorkplaceValidation.vue"
 export default {
   path: '/validation',
   component: Validation,
@@ -27,7 +27,8 @@ export default {
     },
     {
       path: "workplaces",
-      component: WorkplaceValidation
+      component: NewWorkplaceValidation,
+
     },
     {
       path: "pharmacies",

@@ -144,6 +144,7 @@ export default {
      *
      */
     selectAll() {
+      this.validated = [];
       if(event.target.checked) {
         this.toggleAllInputs(true);
         this.validated = this.customers.map(customer => customer.id);

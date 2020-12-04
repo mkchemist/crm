@@ -1,1 +1,16 @@
-td,th,tr{white-space:nowrap}.user-info-waiting{height:300px;display:flex;flex-direction:row;justify-content:center;align-items:center;border:1px solid rgba(17,17,17,.2);border-radius:5px}
+tr,
+td,
+th {
+  white-space: nowrap;
+}
+
+.user-info-waiting {
+  height: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #1113;
+  border-radius: 5px;
+}
+
