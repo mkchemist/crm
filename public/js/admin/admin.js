@@ -1900,6 +1900,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4201,7 +4204,7 @@ __webpack_require__.r(__webpack_exports__);
 
       this.requests = [];
       this.fetched = false;
-      _helpers_http_service__WEBPACK_IMPORTED_MODULE_2__["httpCall"].get("admin/v1/validation/workplaces/new").then(function (_ref) {
+      _helpers_http_service__WEBPACK_IMPORTED_MODULE_2__["httpCall"].get("admin/v1/validation/workplaces").then(function (_ref) {
         var data = _ref.data;
 
         _this.handleResponse(data, function (data) {
@@ -4250,13 +4253,18 @@ __webpack_require__.r(__webpack_exports__);
     sendRequests: function sendRequests() {
       var _this2 = this;
 
+      if (!this.validated.length) {
+        this.$toasted.show('You must pick one request at least');
+        return;
+      }
+
       var request = {
         _method: 'PUT',
         ids: JSON.stringify(this.validated),
         state: this.requestState
       };
       console.log(request, this.requestState);
-      _helpers_http_service__WEBPACK_IMPORTED_MODULE_2__["httpCall"].post("admin/v1/validation/workplaces/new", request).then(function (_ref2) {
+      _helpers_http_service__WEBPACK_IMPORTED_MODULE_2__["httpCall"].post("admin/v1/validation/workplaces", request).then(function (_ref2) {
         var data = _ref2.data;
         console.log(data);
 
@@ -4522,13 +4530,219 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_NoDataToShow_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../components/NoDataToShow.vue */ "./resources/js/components/NoDataToShow.vue");
+/* harmony import */ var _components_TableComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../components/TableComponent */ "./resources/js/components/TableComponent.vue");
+/* harmony import */ var _helpers_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../helpers/helpers */ "./resources/js/helpers/helpers.js");
+/* harmony import */ var _helpers_http_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../helpers/http-service */ "./resources/js/helpers/http-service.js");
 //
 //
 //
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mounted: function mounted() {
+    this.getRequests();
+  },
+  components: {
+    TableComponent: _components_TableComponent__WEBPACK_IMPORTED_MODULE_1__["default"],
+    NoDataToShow: _components_NoDataToShow_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: function data() {
+    return {
+      requests: [],
+      fetched: false,
+      validated: [],
+      requestState: null,
+      heads: [{
+        title: "Area",
+        name: "area"
+      }, {
+        title: "Pharmacy",
+        name: "name"
+      }, {
+        title: "type",
+        name: 'type'
+      }, {
+        title: 'Address',
+        name: "address"
+      }, {
+        title: "Brick",
+        name: "brick"
+      }, {
+        title: 'District',
+        name: 'district'
+      }, {
+        title: 'Territory',
+        name: 'territory'
+      }, {
+        title: 'Region',
+        name: 'region'
+      }]
+    };
+  },
+  methods: {
+    /**
+     * get all requests
+     */
+    getRequests: function getRequests() {
+      var _this = this;
+
+      this.fetched = false;
+      this.requests = [];
+      _helpers_http_service__WEBPACK_IMPORTED_MODULE_3__["httpCall"].get("admin/v1/validation/pharmacies").then(function (_ref) {
+        var data = _ref.data;
+
+        _this.handleResponse(data, function (data) {
+          _this.requests = data.data;
+          _this.fetched = true;
+        });
+      })["catch"](function (err) {
+        _this.$toasted.error("Something went wrong", {
+          icon: "sad"
+        });
+
+        console.log(err);
+      });
+    },
+
+    /**
+     * select requrest
+     *
+     * @param {int} id [requrest id]
+     */
+    selectRequest: function selectRequest(id) {
+      this.validated = Object(_helpers_helpers__WEBPACK_IMPORTED_MODULE_2__["checkerSelect"])(this.validated, id, event);
+    },
+
+    /**
+     * select all requests
+     *
+     */
+    selectAll: function selectAll() {
+      this.validated = [];
+
+      if (event.target.checked) {
+        this.validated = this.requests.map(function (request) {
+          return request.id;
+        });
+        this.toggleCheckboxes(true);
+      } else {
+        this.validated = [];
+        this.toggleCheckboxes(false);
+      }
+    },
+
+    /**
+     * toggle checkboxes
+     *
+     * @param {bool} check
+     */
+    toggleCheckboxes: function toggleCheckboxes(check) {
+      var inputs = document.querySelectorAll('#validation-data input[type="checkbox"]');
+      inputs.forEach(function (input) {
+        return input.checked = check;
+      });
+    },
+
+    /**
+     * approve requests
+     */
+    approveRequests: function approveRequests() {
+      this.requestState = "approved";
+      this.sendRequests();
+    },
+
+    /**
+     * reject requests
+     */
+    rejectRequests: function rejectRequests() {
+      this.requestState = "rejected";
+      this.sendRequests();
+    },
+
+    /**
+     * send requests
+     */
+    sendRequests: function sendRequests() {
+      var _this2 = this;
+
+      if (!this.validated.length) {
+        this.$toasted.show("You must pick one request at least");
+        return;
+      }
+
+      var request = {
+        state: this.requestState,
+        ids: JSON.stringify(this.validated),
+        _method: "PUT"
+      };
+      _helpers_http_service__WEBPACK_IMPORTED_MODULE_3__["httpCall"].post("admin/v1/validation/pharmacies", request).then(function (_ref2) {
+        var data = _ref2.data;
+
+        _this2.handleResponse(data, function (data) {
+          _this2.validated = [];
+          _this2.requestState = null;
+
+          _this2.getRequests();
+        });
+      })["catch"](function (err) {
+        console.log(err);
+
+        _this2.$toasted.error("Something went wrong when validate this requests", {
+          icon: "sad"
+        });
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -6052,7 +6266,24 @@ var render = function() {
           )
         ]),
         _vm._v(" "),
-        _vm._m(2),
+        _c("li", { staticClass: "nav-item dropdown" }, [
+          _vm._m(2),
+          _vm._v(" "),
+          _c("div", { staticClass: "dropdown-menu dropdown-menu-right" }, [
+            _c(
+              "a",
+              {
+                staticClass: "dropdown-item small",
+                attrs: { href: _vm.base_url + "change-password" }
+              },
+              [
+                _c("span", { staticClass: "fa fa-lock" }),
+                _vm._v(" "),
+                _c("span", [_vm._v("change password")])
+              ]
+            )
+          ])
+        ]),
         _vm._v(" "),
         _vm._m(3)
       ])
@@ -6080,26 +6311,18 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("li", { staticClass: "nav-item dropdown" }, [
-      _c(
-        "a",
-        {
-          staticClass: "nav-link text-light dropdown-toggle",
-          attrs: { href: "", "data-toggle": "dropdown" }
-        },
-        [
-          _c("span", [_c("i", { staticClass: "fa fa-cogs" })]),
-          _vm._v(" "),
-          _c("span", [_vm._v("Actions")])
-        ]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "dropdown-menu dropdown-menu-right" }, [
-        _c("a", { staticClass: "dropdown-item", attrs: { href: "" } }, [
-          _vm._v("link")
-        ])
-      ])
-    ])
+    return _c(
+      "a",
+      {
+        staticClass: "nav-link text-light dropdown-toggle",
+        attrs: { href: "", "data-toggle": "dropdown" }
+      },
+      [
+        _c("span", [_c("i", { staticClass: "fa fa-cogs" })]),
+        _vm._v(" "),
+        _c("span", [_vm._v("Actions")])
+      ]
+    )
   },
   function() {
     var _vm = this
@@ -10232,14 +10455,133 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "px-0 pb-5 shadow border" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "p-2" },
+      [
+        _vm.requests.length
+          ? _c(
+              "div",
+              { attrs: { id: "validation-data" } },
+              [
+                _c("div", { staticClass: "p-2 text-right" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-primary",
+                      attrs: { disable: !_vm.validated.length },
+                      on: { click: _vm.approveRequests }
+                    },
+                    [
+                      _c("span", { staticClass: "fa fa-check-circle" }),
+                      _vm._v(" "),
+                      _c("span", [_vm._v("approve")]),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "badge badge-light" }, [
+                        _vm._v(_vm._s(_vm.validated.length))
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-secondary",
+                      attrs: { disable: !_vm.validated.length },
+                      on: { click: _vm.rejectRequests }
+                    },
+                    [
+                      _c("span", { staticClass: "fa fa-times-circle" }),
+                      _vm._v(" "),
+                      _c("span", [_vm._v("reject")]),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "badge badge-light" }, [
+                        _vm._v(_vm._s(_vm.validated.length))
+                      ])
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("table-component", {
+                  attrs: {
+                    data: _vm.requests,
+                    heads: _vm.heads,
+                    "head-class": "bg-success text-light"
+                  },
+                  scopedSlots: _vm._u(
+                    [
+                      {
+                        key: "head:before",
+                        fn: function() {
+                          return [
+                            _c("th", [
+                              _c("input", {
+                                attrs: { type: "checkbox" },
+                                on: { click: _vm.selectAll }
+                              })
+                            ])
+                          ]
+                        },
+                        proxy: true
+                      },
+                      {
+                        key: "body:before",
+                        fn: function(ref) {
+                          var item = ref.item
+                          return [
+                            _c("td", [
+                              _c("input", {
+                                attrs: { type: "checkbox" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.selectRequest(item.id)
+                                  }
+                                }
+                              })
+                            ])
+                          ]
+                        }
+                      }
+                    ],
+                    null,
+                    false,
+                    1480161378
+                  )
+                })
+              ],
+              1
+            )
+          : _vm.fetched
+          ? _c(
+              "div",
+              [
+                _c("no-data-to-show", {
+                  attrs: { title: "No waiting requests" }
+                })
+              ],
+              1
+            )
+          : _c("loader-component")
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [_c("h1", [_vm._v("Pharmacies Validation")])])
+    return _c("p", { staticClass: "alert alert-success" }, [
+      _c("span", { staticClass: "fa fa-check-circle" }),
+      _vm._v(" "),
+      _c("span", { staticClass: "font-weight-bold" }, [
+        _vm._v("Pharmacy Validation")
+      ])
+    ])
   }
 ]
 render._withStripped = true

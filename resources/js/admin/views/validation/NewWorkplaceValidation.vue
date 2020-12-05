@@ -109,7 +109,7 @@ export default {
       this.requests = [];
       this.fetched = false;
       httpCall
-        .get("admin/v1/validation/workplaces/new")
+        .get("admin/v1/validation/workplaces")
         .then(({ data }) => {
           this.handleResponse(data, data => {
             this.requests = data.data;
@@ -154,6 +154,10 @@ export default {
       this.sendRequests();
     },
     sendRequests() {
+      if(!this.validated.length) {
+        this.$toasted.show('You must pick one request at least');
+        return;
+      }
       let request = {
         _method: 'PUT',
         ids: JSON.stringify(this.validated),
@@ -161,7 +165,7 @@ export default {
       }
       console.log(request, this.requestState);
       httpCall
-        .post("admin/v1/validation/workplaces/new", request)
+        .post("admin/v1/validation/workplaces", request)
         .then(({ data }) => {
           console.log(data);
           this.handleResponse(data, data => {

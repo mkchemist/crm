@@ -15737,7 +15737,7 @@ var render = function() {
                       staticClass: "nav-link dropdown-toggle",
                       attrs: { href: "#user_menu", "data-toggle": "dropdown" }
                     },
-                    [_vm._v("user")]
+                    [_vm._v("User")]
                   ),
                   _vm._v(" "),
                   _c(

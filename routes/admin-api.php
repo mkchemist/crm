@@ -25,7 +25,9 @@ Route::prefix('v1')->group(function () {
         Route::put('/parameters', 'ParameterValidationController@update');
         Route::get('/frequency', 'FrequencyValidationController@index');
         Route::put('/frequency', 'FrequencyValidationController@update');
-        Route::get('/workplaces/new', 'WorkplaceValidationController@index');
-        Route::put('/workplaces/new', 'WorkplaceValidationController@update');
+        Route::get('/workplaces', 'WorkplaceValidationController@index');
+        Route::put('/workplaces', 'WorkplaceValidationController@update');
+        Route::get('/pharmacies', 'PharmacyValidationController@index');
+        Route::put('/pharmacies', 'PharmacyValidationController@update');
     });
 });
