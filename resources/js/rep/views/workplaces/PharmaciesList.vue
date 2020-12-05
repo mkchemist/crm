@@ -17,41 +17,43 @@
         </div>
         <!--pharmacies table --->
         <!-- <pharmacies-table v-if="pharmacies.length" :data="pharmacies" /> -->
-        <table-component
-          v-if="pharmacies.length"
-          :data="pharmacies"
-          :heads="heads"
-          head-class="bg-success text-light"
-        >
-          <template v-slot:head>
-            <th>Actions</th>
-          </template>
-          <template v-slot:body="{ item }">
-            <td>
-              <router-link
-                :to="`/workplaces/pharmacy/view/${item.id}`"
-                class="btn btn-sm btn-info"
-              >
-                <span><i class="fa fa-eye"></i></span>
-              </router-link>
-              <router-link
-                :to="`/workplaces/pharmacy/edit/${item.id}`"
-                class="btn btn-sm btn-warning"
-              >
-                <span><i class="fa fa-edit"></i></span>
-              </router-link>
-            </td>
-          </template>
-        </table-component>
-        <div class="text-center" v-else-if="fetched">
-          <p class="font-weight-bold">no data to show</p>
-          <router-link
-            to="/workplaces/add-pharmacy"
-            class="btn btn-primary btn-sm"
+        <div class="p-2" v-if="pharmacies.length">
+          <table-component
+            :data="pharmacies"
+            :heads="heads"
+            head-class="bg-success text-light"
           >
-            <span><i class="fa fa-plus-circle"></i></span>
-            <span>Add new Pharmacy</span>
-          </router-link>
+            <template v-slot:head>
+              <th>Actions</th>
+            </template>
+            <template v-slot:body="{ item }">
+              <td>
+                <router-link
+                  :to="`/workplaces/pharmacy/view/${item.id}`"
+                  class="btn btn-sm btn-info"
+                >
+                  <span><i class="fa fa-eye"></i></span>
+                </router-link>
+                <router-link
+                  :to="`/workplaces/pharmacy/edit/${item.id}`"
+                  class="btn btn-sm btn-warning"
+                >
+                  <span><i class="fa fa-edit"></i></span>
+                </router-link>
+              </td>
+            </template>
+          </table-component>
+        </div>
+        <div class="text-center" v-else-if="fetched">
+          <no-data-to-show>
+            <router-link
+              to="/workplaces/add-pharmacy"
+              class="btn btn-success btn-sm"
+            >
+              <span><i class="fa fa-plus-circle"></i></span>
+              <span>Add new Pharmacy</span>
+            </router-link>
+          </no-data-to-show>
         </div>
         <loader-component v-else />
       </div>
@@ -61,12 +63,14 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
+import NoDataToShow from "../../../components/NoDataToShow";
 export default {
   created() {
     this.$store.dispatch("pharmacyGetAll");
   },
   components: {
-    TableComponent
+    TableComponent,
+    NoDataToShow
   },
   computed: {
     pharmacies() {

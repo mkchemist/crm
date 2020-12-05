@@ -39,28 +39,33 @@
               <span>report</span>
             </router-link>
           </div>
-          <table class="table table-sm small">
-            <thead class="bg-success text-light">
-              <tr>
-                <th>Date</th>
-                <th>Products</th>
-                <th>Feedback</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="report in reports" :key="report.id">
-                <td>{{ report.visit_date }}</td>
-                <td>
-                  <ul v-for="(product,i) in JSON.parse(report.products)" :key="i" class="nav">
-                    <li class="nav-item col-12" v-for="(val, key) in product" :key="`${key}-${i}`">
-                      <span>{{ key.toUpperCase() }}</span> : <span class="font-weight-bold text-primary">{{ val }}</span>
-                    </li>
-                  </ul>
-                </td>
-                <td>{{ report.general_feedback }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-if="reports.length">
+            <table class="table table-sm small">
+              <thead class="bg-success text-light">
+                <tr>
+                  <th>Date</th>
+                  <th>Products</th>
+                  <th>Feedback</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="report in reports" :key="report.id">
+                  <td>{{ report.visit_date }}</td>
+                  <td>
+                    <ul v-for="(product,i) in JSON.parse(report.products)" :key="i" class="nav">
+                      <li class="nav-item col-12" v-for="(val, key) in product" :key="`${key}-${i}`">
+                        <span>{{ key.toUpperCase() }}</span> : <span class="font-weight-bold text-primary">{{ val }}</span>
+                      </li>
+                    </ul>
+                  </td>
+                  <td>{{ report.general_feedback }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-else>
+            <no-data-to-show title="No reports found" />
+          </div>
         </div>
       </div>
       <loader-component v-else />
@@ -70,6 +75,8 @@
 
 <script>
 import { httpCall } from '../../../helpers/http-service';
+import NoDataToShow from "../../../components/NoDataToShow";
+
 export default {
   created() {
     this.loadPharmacy()
@@ -93,7 +100,10 @@ export default {
   data: () => ({
     pharmacy: null,
     reports: []
-  })
+  }),
+  components: {
+    NoDataToShow
+  }
 }
 </script>
 

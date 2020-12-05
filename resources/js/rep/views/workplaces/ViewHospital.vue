@@ -105,12 +105,18 @@
             <p class="lead">{{ departments_error }}</p>
           </div>
           <div v-else-if="fetched">
-            <p class="text-center text-muted">No Departments found</p>
+            <no-data-to-show />
           </div>
           <loader-component v-else />
         </div>
         <div class="my-2 border p-2 rounded">
           <p class="lead text-muted">Hospital Plans</p>
+          <div class="p-2 text-right">
+            <router-link to="/planner/add-am" class="btn btn-sm btn-primary">
+              <span class="fa fa-plus-circle"></span>
+              <span>Add</span>
+            </router-link>
+          </div>
           <div class="p-2">
             <table class="table table-sm small" v-if="plans.length">
               <thead>
@@ -127,7 +133,7 @@
               </tbody>
             </table>
             <div v-else-if="fetched">
-              <p class="text-muted text-center">No data to show</p>
+              <no-data-to-show />
             </div>
             <loader-component v-else></loader-component>
           </div>
@@ -199,7 +205,7 @@
             </table>
           </div>
           <div class="p-2" v-else-if="fetched">
-            <p class="text-center text-muted">No reports found</p>
+            <no-data-to-show />
           </div>
           <loader-component v-else></loader-component>
         </div>
@@ -213,7 +219,7 @@
 import { httpCall } from "../../../helpers/http-service";
 import WorkplaceDepartmentComponent from "../../components/WorkplaceDepartment";
 import AddWorkplaceDepartment from "../../components/AddWorkplaceDepartment";
-
+import NoDataToShow from "../../../components/NoDataToShow";
 export default {
   created() {
     this.getHospital();
@@ -230,7 +236,8 @@ export default {
   }),
   components: {
     WorkplaceDepartmentComponent,
-    AddWorkplaceDepartment
+    AddWorkplaceDepartment,
+    NoDataToShow
   },
   methods: {
     /**

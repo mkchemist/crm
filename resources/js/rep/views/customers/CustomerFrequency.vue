@@ -7,7 +7,7 @@
         :onFilter="onFilter"
         :onReset="onReset"
       />
-    <div class="px-0 shadow">
+    <div class="px-0 shadow rounded">
       <div class="custom-loader" v-if="isLoading">
         <div class="spinner-border"></div>
       </div>
@@ -110,9 +110,7 @@
           </table-component>
         </div>
         <div v-else-if="isFetched">
-          <p class="text-center">
-            You must have a active customers to update frequencies
-          </p>
+          <no-data-to-show />
         </div>
         <div v-else>
           <loader-component />
@@ -127,7 +125,7 @@
 import TableComponent from "../../../components/TableComponent";
 import { httpCall } from "../../../helpers/http-service";
 import CustomerFilter from '../../components/CustomerFilter';
-
+import NoDataToShow from "../../../components/NoDataToShow";
 
 /**
  * updated object item
@@ -142,8 +140,8 @@ let updateObject = {
 export default {
   components: {
     TableComponent,
-    CustomerFilter
-
+    CustomerFilter,
+    NoDataToShow
   },
   computed: {
     customers() {
