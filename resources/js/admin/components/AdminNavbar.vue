@@ -21,7 +21,10 @@
             <span>Actions</span>
           </a>
           <div class="dropdown-menu dropdown-menu-right">
-            <a href="" class="dropdown-item">link</a>
+            <a :href="`${base_url}change-password`" class="dropdown-item small">
+              <span class="fa fa-lock"></span>
+              <span>change password</span>
+            </a>
           </div>
         </li>
         <li class="nav-item dropdown">

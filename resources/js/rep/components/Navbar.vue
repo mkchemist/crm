@@ -81,7 +81,7 @@
               href="#user_menu"
               class="nav-link dropdown-toggle"
               data-toggle="dropdown"
-              >user</a
+              >User</a
             >
             <div class="dropdown-menu dropdown-menu-right" id="user_menu">
               <a
