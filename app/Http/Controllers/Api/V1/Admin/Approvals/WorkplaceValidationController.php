@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Api\V1\Admin\Approvals;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Workplace;
-use App\WorkplaceValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 
 class WorkplaceValidationController extends Controller
 {
 
+    /**
+     * get all workplace validation requests
+     *
+     * @return \Illuminate\Http\Response;
+     */
     public function index()
     {
 
@@ -26,6 +30,13 @@ class WorkplaceValidationController extends Controller
         ]);
     }
 
+    /**
+     * handle requests approval or rejection
+     *
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -45,20 +56,20 @@ class WorkplaceValidationController extends Controller
         $user = Auth::user()->id;
         if ($state === 'approved') {
             DB::table('workplaces as w')
-            ->crossJoin('workplaces as wj', 'w.id', '=', 'wj.id')
-            ->whereIn('w.id', $ids)
-            ->update([
-              'w.state' =>  'approved',
-              'w.approved'  =>  true,
-              'w.approved_by' =>  $user
-            ]);
+                ->crossJoin('workplaces as wj', 'w.id', '=', 'wj.id')
+                ->whereIn('w.id', $ids)
+                ->update([
+                    'w.state' => 'approved',
+                    'w.approved' => true,
+                    'w.approved_by' => $user,
+                ]);
         } else {
-          DB::table('workplaces')->whereIn('id', $ids)->delete();
+            DB::table('workplaces')->whereIn('id', $ids)->delete();
         }
 
         return response([
-          'code'  =>  200,
-          'message' => "Requests $state"
+            'code' => 200,
+            'message' => "Requests $state",
         ]);
     }
 }
