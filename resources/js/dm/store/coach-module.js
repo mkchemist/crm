@@ -29,6 +29,8 @@ export default {
   actions: {
     getAllCoachReports({state}, force = false) {
       if(!state.reports.length || force) {
+        state.reports = [];
+        state.filteredReports = [];
         state.fetched = false;
         httpCall.get('dm/v1/reports/coach')
         .then(({data}) => {

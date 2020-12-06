@@ -68,5 +68,8 @@ Route::group([
     Route::apiResource('am','WorkplaceReportController');
     // Report pharmacy routes
     Route::apiResource('pharmacy', 'PharmacyReportController');
+    // Coaching reports routes
+    Route::get('/coaching', 'CoachReportsController@index');
+    Route::get('/coaching/{id}', 'CoachReportsController@show');
   });
 });

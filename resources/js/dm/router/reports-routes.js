@@ -8,6 +8,7 @@ import ViewHospitalReport from '../views/reports/ViewHospitalReport.vue'
 import ViewPharmacyReport from '../views/reports/VIewPharmacyReport.vue';
 import ViewPmAnalysis from '../views/reports/analysis/ViewPmAnalysis.vue';
 import ViewPlanAnalysis from "../views/reports/analysis/ViewPlanAnalysis.vue"
+import CreateCoachReport from "../views/reports/CreateCoachReport.vue";
 
 export default {
   path: '/reports',
@@ -48,6 +49,10 @@ export default {
     {
       path: 'analysis/plans',
       component: ViewPlanAnalysis
+    },
+    {
+      path: 'add/coach',
+      component: CreateCoachReport
     }
   ]
 }

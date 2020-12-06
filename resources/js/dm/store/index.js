@@ -37,11 +37,11 @@ export default new Vuex.Store({
   },
   actions: {
     getAllReps({ state }) {
-      this.isRepsFetched = false;
+      state.isRepsFetched = false;
       return httpCall
         .get("dm/v1/reps")
         .then(({ data }) => {
-          this.isRepsFetched = true;
+          state.isRepsFetched = true;
           state.reps = data.data
         });
     }
