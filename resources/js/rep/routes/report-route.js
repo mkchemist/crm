@@ -14,7 +14,8 @@ import PlanReportAnalysis from "../views/reports/analysis/PlanReportAnalysis";
 import ViewPlansReport from '../views/reports/ViewPlansReport';
 import PmPlansReport from '../views/reports/plans/PmPlansReport'
 import AmPlansReport from '../views/reports/plans/AmPlansReport'
-
+import CoachingReport from "../views/reports/CoachingReport.vue";
+import SingleCoachReport from "../views/reports/SingleCoachReport.vue";
 export default {
   path: "/reports",
   component:Report,
@@ -48,6 +49,14 @@ export default {
           component: AmPlansReport
         }
       ]
+    },
+    {
+      path: 'view/coaching-report',
+      component: CoachingReport
+    },
+    {
+      path: 'view/coaching-report/:id',
+      component: SingleCoachReport
     },
     {
       path: "add/am/:id?",
