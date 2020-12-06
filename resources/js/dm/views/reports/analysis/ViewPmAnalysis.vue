@@ -53,25 +53,25 @@
                   <th rowspan="2">Report visit/day</th>
                   <th rowspan="2">Coaching visits</th>
                   <th
-                    :colspan="specialtyCollection.length"
+                    :colspan="specialtyCollection.size"
                     class="bg-secondary text-light"
                   >
                     Plan Specialites
                   </th>
                   <th
-                    :colspan="specialtyCollection.length"
+                    :colspan="specialtyCollection.size"
                     class="bg-primary text-light"
                   >
                     Report Specialites
                   </th>
                   <th
-                    :colspan="parameterCollection.length"
+                    :colspan="parameterCollection.size"
                     class="bg-secondary text-light"
                   >
                     Plan Parameters
                   </th>
                   <th
-                    :colspan="parameterCollection.length"
+                    :colspan="parameterCollection.size"
                     class="bg-primary text-light"
                   >
                     Plan Parameters
