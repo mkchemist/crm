@@ -157,7 +157,11 @@ export default {
             if (data.data instanceof Array === false) {
               throw new TypeError("Cycle must be a valid array");
             }
-            this.cycles = sortBy(data.data, "name");
+            if(data.data) {
+              this.cycles = sortBy(data.data, "name");
+            }else {
+              this.cycles = [];
+            }
             this.isCyclesFetched = true;
           } catch (e) {
             console.log(e);
