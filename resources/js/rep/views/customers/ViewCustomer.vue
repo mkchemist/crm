@@ -189,7 +189,7 @@
                 <tbody>
                   <tr v-for="report in reports" :key="report.id">
                     <td>{{ report.visit_date }}</td>
-                    <td>{{ report.dual_with?report.dual_with: 'Single' }}</td>
+                    <td>{{ report.dual_with?'Double visit': 'Single visit' }}</td>
                     <td>{{ report.comment ? report.comment : '-----' }}</td>
                     <td>
                       <ul
