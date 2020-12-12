@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\CustomerReport;
 use App\Helpers\ResponseHelper;
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Resources\RepReportResource as ReportResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -20,13 +21,19 @@ class CustomerReportController extends Controller
    */
   public function index()
   {
+    $activeCycle = new ActiveCycleSetting;
+    $activeCycle = $activeCycle->all();
+
     $visits = CustomerReport::with([
       'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach'
       ])
-      ->where(['user_id' => Auth::user()->id])->get();
+      ->where(['user_id' => Auth::user()->id])
+      ->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end])
+      ->get();
     return response()->json([
       'code'  =>  201,
-      'data'  =>  ReportResource::collection($visits)
+      'data'  =>  ReportResource::collection($visits),
+      'cycle' =>  $activeCycle
     ]);
   }
 
