@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Rep;
 
 use App\Helpers\ResponseHelper;
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,10 +20,22 @@ class WorkplaceReportController extends Controller
    */
   public function index()
   {
-    $visits = WorkplaceReport::with(['customer', 'workplace'])
-    ->where([
-      'user_id' =>  Auth::user()->id
-    ])->orderBy('visit_date', 'asc')->get();
+    $cycle = new ActiveCycleSetting;
+    $date = $cycle->all();
+    if($date) {
+      $visits = WorkplaceReport::with(['customer', 'workplace'])
+      ->where([
+        'user_id' =>  Auth::user()->id
+      ])->whereBetween('visit_date', [$date->start, $date->end])
+      ->orderBy('visit_date', 'asc')->get();
+
+    } else {
+      $visits = WorkplaceReport::with(['customer', 'workplace'])
+      ->where([
+        'user_id' =>  Auth::user()->id
+      ])->orderBy('visit_date', 'asc')->get();
+
+    }
 
     return response()->json([
       'code'  =>  201,

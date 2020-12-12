@@ -23,13 +23,21 @@ class CustomerReportController extends Controller
   {
     $activeCycle = new ActiveCycleSetting;
     $activeCycle = $activeCycle->all();
+    if($activeCycle) {
+      $visits = CustomerReport::with([
+        'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach'
+        ])
+        ->where(['user_id' => Auth::user()->id])
+        ->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end])
+        ->get();
 
-    $visits = CustomerReport::with([
-      'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach'
-      ])
-      ->where(['user_id' => Auth::user()->id])
-      ->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end])
-      ->get();
+    } else {
+      $visits = CustomerReport::with([
+        'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach'
+        ])
+        ->where(['user_id' => Auth::user()->id])
+        ->get();
+    }
     return response()->json([
       'code'  =>  201,
       'data'  =>  ReportResource::collection($visits),

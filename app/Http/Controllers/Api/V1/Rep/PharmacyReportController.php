@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Rep;
 
 use App\Helpers\ResponseHelper;
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Controllers\Controller;
 use App\PharmacyReport;
 use Illuminate\Http\Request;
@@ -19,10 +20,21 @@ class PharmacyReportController extends Controller
      */
     public function index()
     {
-      $visits = PharmacyReport::with(['pharmacy'])
-      ->where([
-        'user_id' =>  Auth::user()->id
-      ])->get();
+      $cycle = new ActiveCycleSetting;
+      $date = $cycle->all();
+      if($date) {
+        $visits = PharmacyReport::with(['pharmacy'])
+        ->where([
+          'user_id' =>  Auth::user()->id
+        ])->whereBetween('visit_date', [$date->start, $date->end])
+        ->orderBy('visit_date')->get();
+
+      } else {
+        $visits = PharmacyReport::with(['pharmacy'])
+        ->where([
+          'user_id' =>  Auth::user()->id
+        ])->orderBy('visit_date')->get();
+      }
 
       return response()->json([
         'code'  =>  201,
