@@ -18,7 +18,7 @@ class CoachController extends Controller
 
       $user = Auth::user();
 
-      $coaches = User::whereIn('role', ['dm','tm','rm'])
+      $coachs = User::whereIn('role', ['dm','tm','rm', 'am'])
       ->whereIn('district', ['all', $user->district])
       ->whereIn('territory', ['all', $user->territory])
       ->whereIn('region', [$user->region])
@@ -26,7 +26,7 @@ class CoachController extends Controller
 
       return response([
         'code'  =>  201,
-        'data'  =>  $coaches
+        'data'  =>  $coachs
       ], 201);
     }
 }
