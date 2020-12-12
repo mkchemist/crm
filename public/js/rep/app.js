@@ -3611,9 +3611,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /**
- * //TODO add plans reports page
- * //TODO add pm report sanalysis module
- * //TODO add plan report analysis module
  * //TODO add time investment module
  */
 /* harmony default export */ __webpack_exports__["default"] = ({});
@@ -20227,8 +20224,8 @@ var render = function() {
                                     _vm._v(
                                       _vm._s(
                                         report.dual_with
-                                          ? report.dual_with
-                                          : "Single"
+                                          ? "Double visit"
+                                          : "Single visit"
                                       )
                                     )
                                   ]),
@@ -32631,7 +32628,7 @@ if (user) {
      * visit actions
      *
      */
-    visit_actions: ["Remind message", "Finding new needs", "Competitor attack", "Thanking visit", "Sharpen Commitment", "Demonstrate a new message", "Handle Objections", "Make a deal", "Finding new needs"]
+    visit_actions: ["Remind message", "Finding new indication", "Competitor attack", "Thanking visit", "Sharpen Commitment", "Demonstrate a new message", "Handle Objections", "Make a deal", "Finding new needs"]
   },
   actions: {},
   mutations: {},
@@ -36176,10 +36173,10 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\projects\crm\resources\js\rep\app.js */"./resources/js/rep/app.js");
-__webpack_require__(/*! C:\xampp\htdocs\projects\crm\resources\sass\rep\app.scss */"./resources/sass/rep/app.scss");
-__webpack_require__(/*! C:\xampp\htdocs\projects\crm\resources\sass\admin\app.scss */"./resources/sass/admin/app.scss");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\projects\crm\resources\sass\dm\app.scss */"./resources/sass/dm/app.scss");
+__webpack_require__(/*! C:\php7\htdocs\projects\crm\resources\js\rep\app.js */"./resources/js/rep/app.js");
+__webpack_require__(/*! C:\php7\htdocs\projects\crm\resources\sass\rep\app.scss */"./resources/sass/rep/app.scss");
+__webpack_require__(/*! C:\php7\htdocs\projects\crm\resources\sass\admin\app.scss */"./resources/sass/admin/app.scss");
+module.exports = __webpack_require__(/*! C:\php7\htdocs\projects\crm\resources\sass\dm\app.scss */"./resources/sass/dm/app.scss");
 
 
 /***/ })

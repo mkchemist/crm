@@ -30,4 +30,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/pharmacies', 'PharmacyValidationController@index');
         Route::put('/pharmacies', 'PharmacyValidationController@update');
     });
+    Route::group([
+      'prefix'  =>  'setting',
+      'namespace' => 'Setting'
+    ], function() {
+      Route::get('/cycles', 'CycleController@index');
+      Route::post('/cycles', 'CycleController@store');
+      Route::get('/active-cycle', 'ActiveCycleController@index');
+      Route::post('/active-cycle', 'ActiveCycleController@store');
+    });
 });

@@ -49,9 +49,9 @@ export default {
         path: '/validation'
       },
       {
-        name: 'Settings',
+        name: 'Setting',
         icon: 'fa-cog',
-        path: '/settings'
+        path: '/setting'
       }
     ]
   })

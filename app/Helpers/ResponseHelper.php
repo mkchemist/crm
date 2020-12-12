@@ -50,4 +50,16 @@ class ResponseHelper
       'data'  =>  $validator->errors()
     ];
   }
+
+  public static function outActiveCycleDateRange($start, $end)
+  {
+    return [
+      'code'  =>  400,
+      'data'  =>  [
+        'errors'  =>  [
+          "Date must be between $start and $end"
+        ]
+      ]
+        ];
+  }
 }
