@@ -47,6 +47,11 @@ export default {
         name: 'Validation',
         icon: 'fa-check-circle',
         path: '/validation'
+      },
+      {
+        name: 'Setting',
+        icon: 'fa-cog',
+        path: '/setting'
       }
     ]
   })

@@ -77,6 +77,7 @@ class ParameterValidationController extends Controller
             ->whereIn('cp.id', $ids)
             ->update([
                 'cp.current' => DB::raw('c.next'),
+                'cp.next'     =>  null,
                 'cp.state'    =>  'approved',
                 'cp.approved' =>  true,
                 'cp.approved_by'  =>  $user

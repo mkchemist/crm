@@ -124,6 +124,7 @@
                     "
                   >
                     <option value="">Select Line</option>
+                    <option value="all">All</option>
                     <option value="line1">Line 1</option>
                     <option value="line2">Line 2</option>
                     <option value="line3">Line 3</option>

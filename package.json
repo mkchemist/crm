@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "chart.js": "^2.9.4",
+        "eslint": "^7.15.0",
         "vee-validate": "^3.3.9",
         "vue-cal": "^3.6.6",
         "vue-knob-control": "^1.6.0",

@@ -7,7 +7,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\CustomerReport;
 use App\Helpers\ResponseHelper;
+use App\Helpers\Setting\ActiveCycleSetting;
+use App\Helpers\Setting\ReportIntervalSetting;
 use App\Http\Resources\RepReportResource as ReportResource;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,13 +23,27 @@ class CustomerReportController extends Controller
    */
   public function index()
   {
-    $visits = CustomerReport::with([
-      'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach'
-      ])
-      ->where(['user_id' => Auth::user()->id])->get();
+    $activeCycle = new ActiveCycleSetting;
+    $activeCycle = $activeCycle->all();
+    if($activeCycle) {
+      $visits = CustomerReport::with([
+        'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach'
+        ])
+        ->where(['user_id' => Auth::user()->id])
+        ->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end])
+        ->get();
+
+    } else {
+      $visits = CustomerReport::with([
+        'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach'
+        ])
+        ->where(['user_id' => Auth::user()->id])
+        ->get();
+    }
     return response()->json([
       'code'  =>  201,
-      'data'  =>  ReportResource::collection($visits)
+      'data'  =>  ReportResource::collection($visits),
+      'cycle' =>  $activeCycle
     ]);
   }
 
@@ -47,7 +64,13 @@ class CustomerReportController extends Controller
     if ($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
-
+    $interval = new ReportIntervalSetting;
+    if(!$interval->isBeforeToday($request->date)) {
+      return response(ResponseHelper::dateAfterTodayError());
+    }
+    if(!$interval->isValidDateInterval($request->date)) {
+      return response(ResponseHelper::InvalidDateRange($request->date, $interval->all()));
+    }
     $check = $this->getVisitByCustomerIdAndDate($request->customer, $request->date);
     if ($check) {
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
@@ -123,7 +146,6 @@ class CustomerReportController extends Controller
     if ($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
-
     $visit = $this->getVisitById($id);
 
     if (!$visit) {
