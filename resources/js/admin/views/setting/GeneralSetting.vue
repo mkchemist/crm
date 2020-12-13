@@ -21,12 +21,15 @@
               name="app_report_interval"
               min="0"
               placeholder="Number of days"
+              v-model="reportInterval"
+              v-if="reportInterval"
             />
+            <loader-component v-else></loader-component>
           </div>
         </div>
         <hr />
         <div class="p-2 text-right">
-          <button class="btn btn-sm btn-primary">
+          <button class="btn btn-sm btn-primary" @click="saveReportInterval">
             <span class="fa fa-save"></span>
             <span>Save</span>
           </button>
@@ -85,7 +88,10 @@ import { httpCall } from "../../../helpers/http-service";
 export default {
   mounted() {
     this.getActiveCycle().then(() => {
-      this.getCycles();
+      this.getCycles()
+      .then(() => {
+        this.getReportInterval();
+      })
     });
   },
   data: () => ({
@@ -94,7 +100,7 @@ export default {
     cycles: [],
     isCyclesFetched: false,
     reportInterval: null,
-    isReportIntervalFetched: false
+    isReportIntervalFetched: false,
   }),
   methods: {
     /**
@@ -117,11 +123,6 @@ export default {
           this.$toasted.error(err.message);
         });
     },
-    /**
-     * get report interval
-     *
-     */
-    getReportInterval() {},
     /**
      * get all cycles
      *
@@ -154,6 +155,22 @@ export default {
         });
     },
     /**
+     * get report interval
+     *
+     */
+    getReportInterval() {
+      this.reportInterval = null;
+      this.isReportIntervalFetched = false;
+      return httpCall.get('admin/v1/setting/report-interval')
+      .then(({data}) => {
+        this.reportInterval = data.data;
+        this.isReportIntervalFetched = true;
+      }).catch(err => {
+        console.log(err);
+        this.$toasted.error('Something went wrong');
+      })
+    },
+    /**
      * Saving active cycle setting
      *
      *
@@ -179,6 +196,23 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    /**
+     * save report interval
+     */
+    saveReportInterval() {
+      let request = {
+        interval : this.reportInterval
+      };
+      httpCall.post('admin/v1/setting/report-interval', request)
+      .then(({data}) => {
+        this.handleResponse(data , data => {
+          this.getReportInterval();
+        })
+      }).catch(err => {
+        console.log(err);
+        this.$toasted.error('Something went wrong');
+      });
     }
   }
 };

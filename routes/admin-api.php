@@ -38,5 +38,7 @@ Route::prefix('v1')->group(function () {
       Route::post('/cycles', 'CycleController@store');
       Route::get('/active-cycle', 'ActiveCycleController@index');
       Route::post('/active-cycle', 'ActiveCycleController@store');
+      Route::get('/report-interval', 'ReportIntervalController@index');
+      Route::post('/report-interval', 'ReportIntervalController@store');
     });
 });
