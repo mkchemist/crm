@@ -7438,11 +7438,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
-/**
- * //TODO add coach field
- *
- */
-
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -26015,7 +26010,9 @@ var render = function() {
                                   "router-link",
                                   {
                                     staticClass: "btn btn-sm btn-warning",
-                                    attrs: { to: "/reports/edit/am/" + item.id }
+                                    attrs: {
+                                      to: "/reports/edit/pharmacy/" + item.id
+                                    }
                                   },
                                   [
                                     _c("span", [
@@ -26135,7 +26132,7 @@ var render = function() {
                     ],
                     null,
                     false,
-                    2103745795
+                    963993106
                   )
                 })
               ],

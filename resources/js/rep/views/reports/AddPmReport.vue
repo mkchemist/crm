@@ -188,10 +188,6 @@
 </template>
 
 <script>
-/**
- * //TODO add coach field
- *
- */
 import { httpCall } from "../../../helpers/http-service";
 import VisitProducts from "../../components/VisitProducts";
 import CustomerSelectFilter from "../../components/CustomerSelectFilter";

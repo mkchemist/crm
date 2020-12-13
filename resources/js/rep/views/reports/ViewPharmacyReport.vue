@@ -27,7 +27,7 @@
           </template>
           <template v-slot:body:before="{item}">
             <td>
-              <router-link :to="`/reports/edit/am/${item.id}`" class="btn btn-sm btn-warning">
+              <router-link :to="`/reports/edit/pharmacy/${item.id}`" class="btn btn-sm btn-warning">
                 <span><i class="fa fa-edit"></i></span>
               </router-link>
               <button type="button" class="btn btn-sm btn-danger" @click="selectReport(item.id)">

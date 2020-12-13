@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Rep;
 
 use App\Helpers\ResponseHelper;
 use App\Helpers\Setting\ActiveCycleSetting;
+use App\Helpers\Setting\ReportIntervalSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +60,13 @@ class WorkplaceReportController extends Controller
     ]);
     if ($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
+    }
+    $interval = new ReportIntervalSetting;
+    if(!$interval->isBeforeToday($request->date)) {
+      return response(ResponseHelper::dateAfterTodayError());
+    }
+    if(!$interval->isValidDateInterval($request->date)) {
+      return response(ResponseHelper::InvalidDateRange($request->date, $interval->all()));
     }
     $user = Auth::user();
     $ids = json_decode($request->customers);

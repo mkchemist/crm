@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use App\CustomerReport;
 use App\Helpers\ResponseHelper;
 use App\Helpers\Setting\ActiveCycleSetting;
+use App\Helpers\Setting\ReportIntervalSetting;
 use App\Http\Resources\RepReportResource as ReportResource;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -62,7 +64,13 @@ class CustomerReportController extends Controller
     if ($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
-
+    $interval = new ReportIntervalSetting;
+    if(!$interval->isBeforeToday($request->date)) {
+      return response(ResponseHelper::dateAfterTodayError());
+    }
+    if(!$interval->isValidDateInterval($request->date)) {
+      return response(ResponseHelper::InvalidDateRange($request->date, $interval->all()));
+    }
     $check = $this->getVisitByCustomerIdAndDate($request->customer, $request->date);
     if ($check) {
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
@@ -138,7 +146,6 @@ class CustomerReportController extends Controller
     if ($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
     }
-
     $visit = $this->getVisitById($id);
 
     if (!$visit) {

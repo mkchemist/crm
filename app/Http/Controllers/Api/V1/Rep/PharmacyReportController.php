@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Rep;
 
 use App\Helpers\ResponseHelper;
 use App\Helpers\Setting\ActiveCycleSetting;
+use App\Helpers\Setting\ReportIntervalSetting;
 use App\Http\Controllers\Controller;
 use App\PharmacyReport;
 use Illuminate\Http\Request;
@@ -60,7 +61,13 @@ class PharmacyReportController extends Controller
       if($validator->fails()) {
         return response()->json(ResponseHelper::validationErrorResponse($validator));
       }
-
+      $interval = new ReportIntervalSetting;
+      if(!$interval->isBeforeToday($request->date)) {
+        return response(ResponseHelper::dateAfterTodayError());
+      }
+      if(!$interval->isValidDateInterval($request->date)) {
+        return response(ResponseHelper::InvalidDateRange($request->date, $interval->all()));
+      }
       $check = $this->getVisitByPharmacyId($request->pharmacy_id, $request->date);
 
       if($check) {
@@ -118,7 +125,13 @@ class PharmacyReportController extends Controller
       if(!is_numeric($id)) {
         return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
       }
-
+      $interval = new ReportIntervalSetting;
+      if(!$interval->isBeforeToday($request->date)) {
+        return response(ResponseHelper::dateAfterTodayError());
+      }
+      if(!$interval->isValidDateInterval($request->date)) {
+        return response(ResponseHelper::InvalidDateRange($request->date, $interval->all()));
+      }
       $visit = $this->getVisitById($id);
       if(!$visit) {
         return response()->json(ResponseHelper::INVALID_ID);
