@@ -7,16 +7,22 @@
     <div class="p-2">
       <nav>
         <ul class="nav nav-tabs">
-          <li class="nav-item border">
-            <router-link to="/setting" class="nav-link">
+          <li class="nav-item border" >
+            <router-link to="/setting" class="nav-link" active-class="bg-success text-light" exact>
               <span class="fa fa-cogs"></span>
               <span>General</span>
             </router-link>
           </li>
           <li class="nav-item border">
-            <router-link to="/setting/cycle" class="nav-link">
+            <router-link to="/setting/cycle" class="nav-link" active-class="bg-success text-light" exact>
               <span class="fa fa-hourglass-start"></span>
               <span>Cycle</span>
+            </router-link>
+          </li>
+          <li class="nav-item border">
+            <router-link to="/setting/lines" class="nav-link" active-class="bg-success text-light" exact>
+              <span class="fa fa-users"></span>
+              <span>Lines</span>
             </router-link>
           </li>
         </ul>

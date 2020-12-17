@@ -6,6 +6,7 @@
           <div class="form-group">
             <label for="rep" class="small text-muted p-1">Planner of :</label>
             <select name="rep" id="rep" class="form-control form-control-sm" v-model="plannerUser" @change="getUserPlanner">
+              <option :value="$store.state.user.id">{{ $store.state.user.name }}</option>
               <option :value="rep.id" v-for="rep in reps" :key="rep.id" >{{ rep.name }}</option>
             </select>
           </div>

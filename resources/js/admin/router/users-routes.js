@@ -5,6 +5,7 @@ import EditUser from '../views/users/EditUser.vue';
 import ViewUser from "../views/users/ViewUser.vue";
 import DeleteUser from "../views/users/DeleteUser.vue";
 import ActivateUser from "../views/users/ActivateUser.vue";
+import UserRelation from '../views/users/UserRelations.vue';
 export default {
   path: '/users',
   component: UsersPage,
@@ -32,6 +33,10 @@ export default {
     {
       path: 'activate',
       component: ActivateUser
+    },
+    {
+      path: 'relations',
+      component: UserRelation
     }
   ]
 }

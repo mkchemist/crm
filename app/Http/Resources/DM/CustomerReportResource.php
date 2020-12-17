@@ -26,7 +26,7 @@ class CustomerReportResource extends JsonResource
           'area'        =>  $this->customer->area,
           'comment'     =>  $this->comment,
           'feedback'    =>  $this->general_feedback,
-          'products'     =>  $this->products,
+          'products'     =>  json_decode($this->products),
           'user_id'     =>  $this->user_id,
           'plans'       =>  count($this->customer->planner),
           'reports'     =>  count($this->customer->report)

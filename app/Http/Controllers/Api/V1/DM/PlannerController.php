@@ -22,13 +22,13 @@ class PlannerController extends Controller
     public function index()
     {
       $user = Auth::user();
+      $relations = json_decode($user->user_relations);
+      $reps = $relations->reps;
       $repPlans = Planner::with([
         'customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user'
         ])
-      ->whereIn('user_id', function ($query) use($user) {
-        $query->select('id')->from('users')
-        ->where(['district' => $user->district, 'line' => $user->line])->get();
-      })->get();
+      ->whereIn('user_id', $reps)
+      ->get();
 
       $coach = CoachPlanner::with(['rep', 'coach'])
       ->where(['coach_id' => $user->id])->get();

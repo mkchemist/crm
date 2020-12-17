@@ -6,6 +6,8 @@
  *
  */
 
+import { httpCall } from "../../helpers/http-service";
+
 let user = document.getElementById("user");
 if (user) {
   user = JSON.parse(user.value);
@@ -142,9 +144,25 @@ export default {
       "Handle Objections",
       "Make a deal",
       "Finding new needs"
-    ]
+    ],
+    userLocations: [],
+    isUserLocationsFetched: false
   },
-  actions: {},
+  actions: {
+    getUserLocations({state}, force) {
+      if(!state.userLocations.length || force) {
+        state.userLocations = [];
+        state.isUserLocationsFetched = false;
+        return httpCall.get('rep/v1/locations')
+        .then(({data}) => {
+          state.userLocations = data.data;
+          state.isUserLocationsFetched = true;
+        }).catch(err => {
+          console.log(err)
+        });
+      }
+    }
+  },
   mutations: {},
   getters: {
     specialty: state => {
@@ -173,6 +191,12 @@ export default {
     },
     visitActions: state => {
       return state.visit_actions;
+    },
+    userLocations: state => {
+      return state.userLocations
+    },
+    isUserLocationsFetched: state => {
+      return state.isUserLocationsFetched;
     }
   }
 };

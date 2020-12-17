@@ -9,9 +9,31 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
+use App\Helpers\Traits\UserWithAssignment;
 
 class WorkplaceController extends Controller
 {
+  use UserWithAssignment;
+  /**
+     * current auth user
+     *
+     * @var User
+     */
+    public $user;
+
+    /**
+     * CustomerController constructor
+     *
+     *
+     */
+    public function __construct()
+    {
+      $this->middleware(function($request, $next) {
+        $this->user= Auth::user();
+        return $next($request);
+      });
+    }
+
   /**
    * Display a listing of the resource.
    *
@@ -20,13 +42,14 @@ class WorkplaceController extends Controller
   public function index()
   {
     $workplaces = Workplace::with(['departs'])->where([
-      'area'  =>  Auth::user()->area,
       'state' =>  'approved'
-    ])->orderBy('name', 'asc')->get();
+    ]);
+    $workplaces = $this->getQueryWithAssignment($this->user, $workplaces);
+
+    $workplaces = $workplaces->orderBy('name', 'asc')->get();
     return response()->json([
       'code'  =>  201,
       'data'  =>  WorkplaceResource::collection($workplaces)
-      //'data'  =>  $workplaces
     ], 201);
   }
 
@@ -44,7 +67,8 @@ class WorkplaceController extends Controller
     $validator = Validator::make($request->all(),[
       'name'  =>  'required',
       'brick' =>  'required',
-      'type'  =>  'required'
+      'type'  =>  'required',
+      'address' => 'required'
     ]);
     // if validation error
     // return response with code 203
@@ -61,12 +85,13 @@ class WorkplaceController extends Controller
     if($check) {
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
-    $hospital = Workplace::create(array_merge($request->all(),[
+    /* $hospital = Workplace::create(array_merge($request->all(),[
       'area'      =>  Auth::user()->area,
       'district'  =>  Auth::user()->district,
       'territory' =>  Auth::user()->territory,
       'region'    =>  Auth::user()->region
-    ]));
+    ])); */
+    $hospital = Workplace::create($request->all());
     return response()->json([
       'code'  =>  201,
       'data'  =>  $hospital
@@ -85,9 +110,10 @@ class WorkplaceController extends Controller
       return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
     $workplace = Workplace::with(['reports', 'reports.customer'])->where([
-      'area'  =>  Auth::user()->area,
       'id'    =>  $id
-    ])->first();
+    ]);
+    $workplace = $this->getQueryWithAssignment($this->user, $workplace);
+    $workplace = $workplace->first();
 
     if (!$workplace) {
       return response()->json(ResponseHelper::INVALID_ID);
@@ -111,9 +137,10 @@ class WorkplaceController extends Controller
   public function update(Request $request, $id)
   {
     $validator = Validator::make($request->all(), [
-      'name'  =>  'required',
-      'type'  =>  'required',
-      'brick' =>  'required'
+      'name'  =>  'required|string',
+      'type'  =>  'required|string',
+      'brick' =>  'required|string',
+      'address' =>  'required|string'
     ]);
     if($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
@@ -122,9 +149,10 @@ class WorkplaceController extends Controller
       return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
     $workplace = Workplace::where([
-      'area'  =>  Auth::user()->area,
       'id'    =>  $id
-    ])->first();
+    ]);
+    $workplace = $this->getQueryWithAssignment($this->user, $workplace);
+    $workplace = $workplace->first();
 
     if (!$workplace) {
       return response()->json(ResponseHelper::INVALID_ID);

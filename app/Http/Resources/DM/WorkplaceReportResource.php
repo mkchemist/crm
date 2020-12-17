@@ -25,7 +25,7 @@ class WorkplaceReportResource extends JsonResource
           'area'        =>  $this->workplace->area,
           'comment'     =>  $this->comment,
           'dual_with'   =>  $this->coach ? $this->coach->name: '',
-          'products'    =>  $this->products,
+          'products'    =>  json_decode($this->products),
           'feedback'    =>  $this->general_feedback,
           'customer_name'    =>  $this->customer->name,
           'customer_specialty'      => $this->customer->specialty

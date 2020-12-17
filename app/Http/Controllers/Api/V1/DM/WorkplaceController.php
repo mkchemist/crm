@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\DM;
 
 use App\Helpers\ResponseHelper;
+use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use App\Workplace;
 use Illuminate\Http\Request;
@@ -11,6 +12,18 @@ use Whoops\Handler\XmlResponseHandler;
 
 class WorkplaceController extends Controller
 {
+    use UserWithAssignment;
+
+    public $user;
+
+
+    public function __construct()
+    {
+      $this->middleware(function($request, $next) {
+        $this->user = Auth::user();
+        return $next($request);
+      });
+    }
 
     /**
      * Display a listing of the resource.
@@ -19,9 +32,9 @@ class WorkplaceController extends Controller
      */
     public function index()
     {
-      $workplaces = Workplace::where([
-        'district'  =>  Auth::user()->district
-      ])->get();
+      $workplaces = Workplace::where('state', 'approved');
+      $workplaces = $this->getQueryWithAssignment($this->user, $workplaces);
+      $workplaces = $workplaces->get();
       return response([
         'code'  =>  201,
         'data'  =>  $workplaces,
@@ -50,11 +63,11 @@ class WorkplaceController extends Controller
       if(!is_numeric($id)) {
         return response(ResponseHelper::BAD_REQUEST_INPUT,200);
       }
-      $user = Auth::user();
       $workplace = Workplace::with('departs')->where([
         'id'  =>  $id,
-        'district'  =>  $user->district
-      ])->first();
+      ]);
+      $workplace = $this->getQueryWithAssignment($this->user, $workplace);
+      $workplace = $workplace->first();
 
       if(!$workplace) {
         return response(ResponseHelper::INVALID_ID, 200);

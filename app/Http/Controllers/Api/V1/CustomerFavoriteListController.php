@@ -120,4 +120,16 @@ class CustomerFavoriteListController extends Controller
       }
       return false;
     }
+
+    public function clearAllList(Request $request)
+    {
+      $user = Auth::user();
+      CustomerFavoriteList::where([
+        'user_id' =>  $user->id
+      ])->delete();
+      return response([
+        'code'  =>  200,
+        'message' =>  'Favorite list cleared'
+      ]);
+    }
 }

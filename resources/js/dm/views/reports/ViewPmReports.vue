@@ -32,7 +32,7 @@
         <div class="col-lg-9 my-lg-0 my-2 shadow p-2 pb-5">
           <div v-if="reports.length">
             <table-component
-              :heads="heads"
+              :heads="reportHeaders"
               :data="reports"
               :unselectable="true"
               head-class="bg-success text-light"
@@ -44,7 +44,6 @@
                 <th>State</th>
                 <th>Comment</th>
                 <th>Feedback</th>
-                <th>Products</th>
                 <th>Address</th>
                 <th>Brick</th>
                 <th>Area</th>
@@ -58,24 +57,6 @@
                 </td>
                 <td>{{ item.comment }}</td>
                 <td>{{ item.feedback }}</td>
-                <td>
-                  <ul
-                    class="nav"
-                    v-for="(product, i) in JSON.parse(item.products)"
-                    :key="`product_${i}`"
-                  >
-                    <li
-                      v-for="(val, key) in product"
-                      :key="`product_${i}_${key}`"
-                      class="col-12"
-                    >
-                      <span>{{ key }}</span> :
-                      <span class="font-weight-bold text-primary">{{
-                        val
-                      }}</span>
-                    </li>
-                  </ul>
-                </td>
                 <td>{{ item.address }}</td>
                 <td>{{ item.brick }}</td>
                 <td>{{ item.area }}</td>
@@ -112,10 +93,43 @@ export default {
     },
     fetched() {
       return this.$store.getters.isRepPmReportsFetched;
+    },
+    reportHeaders() {
+      let products = [];
+      let noOfProductsInReport = 0;
+      if (this.reports) {
+        this.reports.map(visit => {
+          let visitProducts = visit.products;
+          let count = visitProducts.length;
+          if (count > noOfProductsInReport) {
+            noOfProductsInReport = count;
+          }
+        });
+      }
+      let headers = [...this.headers];
+      for (let i = 0; i < noOfProductsInReport; i++) {
+        headers.push({
+          title: `Product ${i + 1}`,
+          name: `products.${i}.name`
+        });
+        headers.push({
+          title: `Product ${i + 1} action`,
+          name: `products.${i}.action`
+        });
+        headers.push({
+          title: `Product ${i + 1} Lader of adaption`,
+          name: `products.${i}.lader`
+        });
+        headers.push({
+          title: `Product ${i + 1} competitor`,
+          name: `products.${i}.competitor`
+        });
+      }
+      return headers;
     }
   },
   data: () => ({
-    heads: [
+    headers: [
       {
         title: "Date",
         name: "date"

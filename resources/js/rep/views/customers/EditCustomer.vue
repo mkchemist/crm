@@ -86,14 +86,17 @@
                 <!-- customer address -->
                 <div class="form-group col-lg">
                   <label for="specialty" class="text-muted">Address</label>
-                  <input
-                    type="text"
-                    id="address"
-                    name="address"
-                    class="form-control form-control-sm"
-                    placeholder="Enter customer address"
-                    v-model="customer.address"
-                  />
+                  <ValidationProvider name="address" rules="required" v-slot="{errors}">
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                    <input
+                      type="text"
+                      id="address"
+                      name="address"
+                      class="form-control form-control-sm"
+                      placeholder="Enter customer address"
+                      v-model="customer.address"
+                    />
+                  </ValidationProvider>
                 </div>
                 <!-- customer phone -->
                 <div class="form-group col-lg">
@@ -224,10 +227,6 @@ export default {
           data.message = "Customer updated successfully";
           this.handleResponse(data, (data) => {
             this.$router.back()
-          }, (data) => {
-            this.loading = false;
-            this.error = true;
-            this.error_code = data.code;
           });
         }).finally(() => {
           this.$store.dispatch('customerGetAll', true)

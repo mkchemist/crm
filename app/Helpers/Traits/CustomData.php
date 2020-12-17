@@ -6,31 +6,17 @@ use Illuminate\Support\Facades\Auth;
 
 
 trait CustomData {
-  private $user;
 
-  public function getDataUser()
-  {
-    if(!isset($this->user)) {
-      $this->setDataUser();
-    }
-    return $this->user;
-  }
-
-  public function setDataUser()
-  {
-    $this->user = Auth::user();
-  }
 
 
   public function getRelatedUserData($model)
   {
-    $user = $this->getDataUser();
+    $user = Auth::user();
     return $model->whereIn('user_id', function($query) use($user) {
       $query->from('users')->select('id')
-      ->where([
-        'line'  =>  $user->line,
-        'district'  =>  $user->district
-      ])->get();
+      /* ->whereIn('line', json_decode($user->line)) */
+      /* ->whereIn('district', json_decode($user->district)) */
+      ->get();
     });
   }
 }

@@ -18,13 +18,13 @@ class RepController extends Controller
     public function getAllRep()
     {
       $user = Auth::user();
-      $reps = User::where([
-        'district'  =>  $user->district,
-        'line'      =>  $user->line,
-      ])->get();
+      $relations = json_decode($user->user_relations);
+      $reps = $relations->reps;
+      $reps = User::whereIn('id', $reps)->get();
+
       return response([
         'code'  =>  200,
-        'data'  =>  DistrictRepResource::collection($reps)
+        'data'  =>  DistrictRepResource::collection($reps),
       ],200);
     }
 }

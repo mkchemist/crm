@@ -1,5 +1,5 @@
 <template>
-  <div class="px-0 shadow">
+  <div class="px-0 shadow bg-white">
     <p class="alert alert-success">
       <span><i class="fa fa-book-reader"></i></span>
       <span class="font-weight-bold">View all pharmacies reports</span>
@@ -22,30 +22,22 @@
             </router-link>
           </div>
         </div>
-        <div class="col-lg-9 shadow my-lg-0 my-2 p-2">
+        <div class="col-lg-9 shadow bg-white my-lg-0 my-2 p-2">
           <div class="p-2" v-if="reports.length">
             <table-component
-              :heads="heads"
+              :heads="reportHeaders"
               :data="reports"
               :unselectable="true"
               sort-by="Date,asc|Pharmacy,asc"
               head-class="bg-success text-light"
             >
-              <template v-slot:head>
-                <th>Products</th>
-              </template>
-              <template v-slot:body="{item}">
-                <td>
-                  <ul class="nav border-bottom my-1" v-for="(product, i) in JSON.parse(item.products)" :key="`product_${i}`">
-                    <li class="nav-item col-12" v-for="(val, key) in product" :key="`product_${i}_${key}`">
-                      <span>{{ key }}</span>: <span class="font-weight-bold text-primary">{{ val }}</span>
-                    </li>
-                  </ul>
-                </td>
-              </template>
             </table-component>
           </div>
-          <div class="p-2 d-flex align-items-center justify-content-center" v-else-if="fetched" style="min-height:300px">
+          <div
+            class="p-2 d-flex align-items-center justify-content-center"
+            v-else-if="fetched"
+            style="min-height:300px"
+          >
             <p class="text-center font-weight-bold">No data to show</p>
           </div>
           <loader-component v-else></loader-component>
@@ -63,7 +55,7 @@ export default {
     TableComponent,
     DataFilter
   },
-  created() {
+  mounted() {
     this.$store.dispatch("getAllPharmaciesReports");
   },
   computed: {
@@ -72,10 +64,43 @@ export default {
     },
     fetched() {
       return this.$store.getters.isPharmaciesReportsFetched;
+    },
+    reportHeaders() {
+      let products = [];
+      let noOfProductsInReport = 0;
+      if (this.reports) {
+        this.reports.map(visit => {
+          let visitProducts = visit.products;
+          let count = visitProducts.length;
+          if (count > noOfProductsInReport) {
+            noOfProductsInReport = count;
+          }
+        });
+      }
+      let headers = [...this.headers];
+      for (let i = 0; i < noOfProductsInReport; i++) {
+        headers.push({
+          title: `Product ${i + 1}`,
+          name: `products.${i}.name`
+        });
+        headers.push({
+          title: `Product ${i + 1} rate`,
+          name: `products.${i}.rate`
+        });
+        headers.push({
+          title: `Product ${i + 1} competitor`,
+          name: `products.${i}.competitor`
+        });
+        headers.push({
+          title: `Product ${i + 1} Competitor rate`,
+          name: `products.${i}.competitor_rate`
+        });
+      }
+      return headers;
     }
   },
   data: () => ({
-    heads: [
+    headers: [
       {
         title: "Rep",
         name: "rep_name"
@@ -112,15 +137,18 @@ export default {
   }),
   methods: {
     onUpdate(resolve) {
-      this.$store.commit('setRepPharmaciesReports', []);
-      resolve.then(data => this.$store.commit('setRepPharmaciesReports', data));
+      this.$store.commit("setRepPharmaciesReports", []);
+      resolve.then(data => this.$store.commit("setRepPharmaciesReports", data));
     },
     onReset() {
-      let asyncReset = () => new Promise((resolve, reject) => {
-        resolve(this.$store.getters.allPharmaciesReports);
-      });
-      this.$store.commit('setRepPharmaciesReports', []);
-      asyncReset().then(data => this.$store.commit('setRepPharmaciesReports', data));
+      let asyncReset = () =>
+        new Promise((resolve, reject) => {
+          resolve(this.$store.getters.allPharmaciesReports);
+        });
+      this.$store.commit("setRepPharmaciesReports", []);
+      asyncReset().then(data =>
+        this.$store.commit("setRepPharmaciesReports", data)
+      );
     }
   }
 };

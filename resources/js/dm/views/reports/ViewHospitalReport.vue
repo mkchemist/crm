@@ -30,24 +30,16 @@
           </div>
           <div class="p-2" v-if="reports.length">
             <table-component
-              :heads="heads"
+              :heads="reportHeaders"
               :data="reports"
               :unselectable="true"
               head-class="bg-success text-light"
               sort-by="Date,asc|Hospital,asc"
             >
             <template v-slot:head>
-              <th>Products</th>
               <th>Feedback</th>
             </template>
             <template v-slot:body="{item}">
-              <td>
-                <ul class="nav" v-for="(product, i) in JSON.parse(item.products)" :key="`product_${i}`">
-                  <li class="nav-item col-12" v-for="(val, key) in product" :key="`product_${i}_${key}`">
-                    <span>{{ key }}</span> : <span class="font-weight-bold text-primary">{{ val }}</span>
-                  </li>
-                </ul>
-              </td>
               <td>{{ item.feedback ? item.feedback : '--------' }}</td>
             </template>
             </table-component>
@@ -74,7 +66,7 @@ export default {
     this.$store.dispatch('getAllHospitalReports');
   },
   data: () => ({
-    heads: [
+    headers: [
       {
         title: "Rep",
         name: "user_name"
@@ -124,6 +116,39 @@ export default {
     },
     fetched() {
       return this.$store.getters.isHospitalReportsFetched;
+    },
+    reportHeaders() {
+      let products = [];
+      let noOfProductsInReport = 0;
+      if (this.reports) {
+        this.reports.map(visit => {
+          let visitProducts = visit.products;
+          let count = visitProducts.length;
+          if (count > noOfProductsInReport) {
+            noOfProductsInReport = count;
+          }
+        });
+      }
+      let headers = [...this.headers];
+      for (let i = 0; i < noOfProductsInReport; i++) {
+        headers.push({
+          title: `Product ${i + 1}`,
+          name: `products.${i}.name`
+        });
+        headers.push({
+          title: `Product ${i + 1} action`,
+          name: `products.${i}.action`
+        });
+        headers.push({
+          title: `Product ${i + 1} Lader of adaption`,
+          name: `products.${i}.lader`
+        });
+        headers.push({
+          title: `Product ${i + 1} competitor`,
+          name: `products.${i}.competitor`
+        });
+      }
+      return headers;
     }
   },
   methods: {

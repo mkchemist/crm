@@ -144,12 +144,10 @@ export default {
     },
     approveRequests() {
       this.requestState = "approved";
-      console.log(this.requestState)
       this.sendRequests();
     },
     rejectRequests() {
       this.requestState = "rejected";
-      console.log(this.requestState)
 
       this.sendRequests();
     },
@@ -167,7 +165,6 @@ export default {
       httpCall
         .post("admin/v1/validation/workplaces", request)
         .then(({ data }) => {
-          console.log(data);
           this.handleResponse(data, data => {
             this.validated = [];
             this.requests = [];

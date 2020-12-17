@@ -20,7 +20,7 @@ class PharmacyReportResource extends JsonResource
           'date'            =>  $this->visit_date,
           'pharmacy_name'   =>  $this->pharmacy->name,
           'type'            =>  $this->pharmacy->type,
-          'products'        =>  $this->products,
+          'products'        =>  json_decode($this->products),
           'feedback'        =>  $this->general_feedback,
           'address'         =>  $this->pharmacy->address,
           'brick'           =>  $this->pharmacy->brick,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\DM;
 
 use App\Customer;
+use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DM\CustomerResource;
 use Illuminate\Http\Request;
@@ -10,6 +11,28 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
+  use UserWithAssignment;
+
+   /**
+     * current auth user
+     *
+     * @var User
+     */
+    public $user;
+
+    /**
+     * CustomerController constructor
+     *
+     *
+     */
+    public function __construct()
+    {
+      $this->middleware(function($request, $next) {
+        $this->user= Auth::user();
+        return $next($request);
+      });
+    }
+
   /**
    * Display a listing of the resource.
    *
@@ -19,10 +42,10 @@ class CustomerController extends Controller
   {
     $customers = Customer::with([
       'params', 'report', 'frequency', 'planner', 'workplace'
-      ])->where([
-        'district'  =>  Auth::user()->district
-      ])
-      ->orderBy('name', 'asc')->get();
+      ])->where('state', 'approved');
+      $customers = $this->getQueryWithAssignment($this->user, $customers);
+      $customers = $customers->orderBy('name', 'asc')->get();
+
     return response([
       "code"  =>  201,
       "data"  =>  CustomerResource::collection($customers),
@@ -48,11 +71,11 @@ class CustomerController extends Controller
    */
   public function show($id)
   {
-    $user = Auth::user();
     $customer = Customer::with(['params', 'planner', 'report.coach'])->where([
-      'district' => $user->district,
       'id'       => $id
-    ])->first();
+    ]);
+    $customer = $this->getQueryWithAssignment($this->user, $customer);
+    $customer = $customer->first();
     return response([
       'code'  =>  201,
       'data'  =>  [

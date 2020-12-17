@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1\Admin\Setting;
+
+use App\Helpers\Setting\LineSetting;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class LineSettingController extends Controller
+{
+    /**
+     * get all lines
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+      $lines = new LineSetting;
+      return response([
+        'code'  =>  200,
+        'data'  =>  $lines->all()
+      ]);
+    }
+
+    /**
+     * store or update lines data
+     *
+     * @param \Illuminate\Http\Request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+      $lines = new LineSetting;
+      $data = json_decode($request->lines);
+      foreach($data as $item) {
+        $item->products = json_decode($item->products);
+        $item->specialties = json_decode($item->specialties);
+      }
+      $lines->save($data);
+      return response([
+        'code'  =>  200,
+        'message' =>  'Lines updated'
+      ]);
+    }
+
+    public function show($id)
+    {
+      $lines = new LineSetting;
+      $data = $lines->all();
+      return response([
+        'code'  =>  200,
+        'data'  =>  $data[$id]
+      ]);
+    }
+
+    public function destroy($id) {
+      $lines = new LineSetting;
+      $data = $lines->all();
+      unset($data[$id]);
+      $lines->save($data);
+      return response([
+      'code'  =>200,
+      'data' => $data
+      ]);
+    }
+}

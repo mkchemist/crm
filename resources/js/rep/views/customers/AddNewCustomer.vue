@@ -21,12 +21,18 @@
                   v-model="customer.title"
                 >
                   <option value="">Select title</option>
-                  <option v-for="(item, i) in title" :key="i" :value="item">{{ item }}</option>
+                  <option v-for="(item, i) in title" :key="i" :value="item">{{
+                    item
+                  }}</option>
                 </select>
               </div>
               <div class="form-group col-lg">
                 <label for="name" class="text-muted">Name</label>
-                <ValidationProvider name="name" rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  name="name"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
                   <span class="text-danger small">{{ errors[0] }}</span>
                   <input
                     type="text"
@@ -43,17 +49,26 @@
             <div class="row mx-auto">
               <div class="form-group col-lg">
                 <label for="specialty" class="text-muted">Specialty</label>
-                <ValidationProvider name="specialty" rules="required" v-slot="{ errors }">
-                <span class="text-danger small">{{  errors[0]  }}</span>
-                <select
+                <ValidationProvider
                   name="specialty"
-                  id="specialty"
-                  class="form-control form-control-sm"
-                  v-model="customer.specialty"
+                  rules="required"
+                  v-slot="{ errors }"
                 >
-                  <option value="">Select specialty</option>
-                  <option v-for="(item,i) in specialty"  :key="i" :value="item">{{ item }}</option>
-                </select>
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <select
+                    name="specialty"
+                    id="specialty"
+                    class="form-control form-control-sm"
+                    v-model="customer.specialty"
+                  >
+                    <option value="">Select specialty</option>
+                    <option
+                      v-for="(item, i) in specialty"
+                      :key="i"
+                      :value="item"
+                      >{{ item }}</option
+                    >
+                  </select>
                 </ValidationProvider>
               </div>
               <div class="form-group col-lg">
@@ -66,51 +81,85 @@
                 >
                   <option value="">Select workplace</option>
                   <option
-                      v-for="workplace in workplaces"
-                      :key="workplace.id"
-                      :value="workplace.id"
-                      >{{ workplace.name }}</option
-                    >
+                    v-for="workplace in workplaces"
+                    :key="workplace.id"
+                    :value="workplace.id"
+                    >{{ workplace.name }}</option
+                  >
                 </select>
               </div>
               <div class="form-group col-lg">
                 <label for="brick" class="text-muted">Brick</label>
-                <ValidationProvider name="brick" rules="required" v-slot="{ errors }">
-                  <span class="text-danger small">{{  errors[0]  }}</span>
-                  <input
+                <ValidationProvider
+                  name="brick"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <select
                     type="text"
                     name="brick"
                     id="brick"
                     class="form-control form-control-sm"
                     placeholder="Enter customer brick"
-                    v-model="customer.brick"
-                  />
+                    v-model="customerLocation"
+                  >
+                    <option value="">select brick</option>
+                    <option
+                      v-for="(val, key) in userLocations"
+                      :key="`brick_${key}`"
+                      :value="val"
+                      >{{ val.brick }}</option
+                    >
+                  </select>
                 </ValidationProvider>
               </div>
             </div>
 
             <div class="row mx-auto">
               <div class="form-group col-lg">
-                <label for="specialty" class="text-muted">Address</label>
-                <input
-                  type="text"
-                  id="address"
+                <label for="address" class="text-muted">Address</label>
+                <ValidationProvider
                   name="address"
-                  class="form-control form-control-sm"
-                  placeholder="Enter customer address"
-                  v-model="customer.address"
-                />
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border border-danger' : ''
+                      }`
+                    "
+                    placeholder="Enter customer address"
+                    v-model="customer.address"
+                  />
+                </ValidationProvider>
               </div>
               <div class="form-group col-lg">
                 <label for="phone" class="text-muted">Phone</label>
-                <input
-                  type="phone"
-                  id="phone"
+                <ValidationProvider
                   name="phone"
-                  class="form-control form-control-sm"
-                  placeholder="Enter customer phone"
-                  v-model="customer.phone"
-                />
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <input
+                    type="phone"
+                    id="phone"
+                    name="phone"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border border-danger' : ''
+                      }`
+                    "
+                    placeholder="Enter customer phone"
+                    v-model="customer.phone"
+                  />
+                </ValidationProvider>
               </div>
             </div>
 
@@ -133,7 +182,7 @@
 </template>
 
 <script>
-
+import { httpCall } from "../../../helpers/http-service";
 export default {
   data: () => ({
     customer: {
@@ -143,16 +192,14 @@ export default {
       workplace_id: "",
       brick: "",
       address: "",
-      phone: "",
-    }
+      phone: ""
+    },
+    customerLocation: {}
   }),
-  methods: {
-    onSubmit() {
-      this.$store.dispatch('addNewCustomer',this.customer);
-    }
-  },
-  created(){
-    this.$store.dispatch("workplaceGetAll");
+  mounted() {
+    this.$store.dispatch("getUserLocations").then(() => {
+      this.$store.dispatch("workplaceGetAll");
+    });
   },
   computed: {
     specialty() {
@@ -164,8 +211,17 @@ export default {
     title() {
       return this.$store.getters.title;
     },
-     workplaces() {
+    workplaces() {
       return this.$store.getters.allWorkplaces;
+    },
+    userLocations() {
+      return this.$store.getters.userLocations;
+    }
+  },
+  methods: {
+    onSubmit() {
+      let customer = { ...this.customer, ...this.customerLocation };
+      this.$store.dispatch("addNewCustomer", customer);
     }
   }
 };

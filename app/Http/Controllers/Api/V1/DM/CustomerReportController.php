@@ -18,18 +18,17 @@ class CustomerReportController extends Controller
   public function index()
   {
     $user = Auth::user();
+    $relations = json_decode($user->user_relations);
+    $reps = $relations->reps;
     $reports = CustomerReport::with(['customer', 'user', 'customer.params', 'coach', 'customer.planner', 'customer.report'])
-      ->whereIn('user_id', function ($query) use ($user) {
-        $query->select('id')->from('users')
-          ->where([
-            'district'  =>  $user->district,
-            'line'      =>  $user->line
-          ])->get();
+      ->whereIn('user_id', function ($query) use ($reps) {
+        $query->select('id')->from('users')->whereIn('id', $reps)->get();
       })->get();
 
     return response([
       'code'  =>  200,
-      'data'  =>  CustomerReportResource::collection($reports)
+      'data'  =>  CustomerReportResource::collection($reports),
+      'reps'  =>  $reps
     ]);
   }
 

@@ -54,14 +54,17 @@
             <div class="row mx-auto my-1">
               <div class="col-lg">
                 <label for="address" class="text-muted">Address</label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  class="form-control form-control-sm"
-                  placeholder="Enter Hospital address"
-                  v-model="hospital.address"
-                />
+                <ValidationProvider name="address" rules="required" v-slot="{errors}">
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    :class="`form-control form-control-sm ${errors[0]?'border border-danger':''}`"
+                    placeholder="Enter Hospital address"
+                    v-model="hospital.address"
+                  />
+                </ValidationProvider>
               </div>
               <div class="col-lg">
                 <label for="brick" class="text-muted">Brick</label>
@@ -71,14 +74,18 @@
                   v-slot="{ errors }"
                 >
                   <span class="text-danger small">{{ errors[0] }}</span>
-                  <input
+                  <!-- <input
                     type="text"
                     id="brick"
                     name="brick"
                     class="form-control form-control-sm"
                     placeholder="Enter hospital brick"
                     v-model="hospital.brick"
-                  />
+                  /> -->
+                  <select name="brick" id="brick" v-model="hospitalLocation" :class="`form-control form-control-sm ${errors[0] ? 'border border-danger': ''}`">
+                    <option value="">select brick</option>
+                    <option v-for="(val, key) in userLocations" :key="`brick_${key}`" :value="val">{{ val.brick }}</option>
+                  </select>
                 </ValidationProvider>
               </div>
             </div>
@@ -118,14 +125,21 @@
 <script>
 import { httpCall } from "../../../helpers/http-service";
 export default {
+  mounted() {
+    this.$store.dispatch('getUserLocations');
+  },
   methods: {
     /**
      * adding new hospital
      *
      */
     onSubmit() {
+      let request = {
+        ...this.hospital,
+        ...this.hospitalLocation
+      }
       httpCall
-        .post("rep/v1/workplaces", this.hospital)
+        .post("rep/v1/workplaces", request)
         .then(({ data }) => {
           data.message = 'hospital added successfully';
           this.handleResponse(data, data => {
@@ -145,11 +159,18 @@ export default {
       address: null,
       brick: null,
       phone: null
-    }
+    },
+    hospitalLocation: {}
   }),
   computed: {
     types() {
       return this.$store.getters.hospitalTypes;
+    },
+    userLocations() {
+      return this.$store.getters.userLocations;
+    },
+    isUserLocationsFetched() {
+      return this.$store.getters.isUserLocationsFetched;
     }
   }
 };

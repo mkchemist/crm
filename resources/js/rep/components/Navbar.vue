@@ -28,6 +28,41 @@
               <span>New</span>
             </a>
             <div class="dropdown-menu dropdown-menu-left" id="new_menu">
+              <router-link
+                to="/reports/add/pm"
+                class="drop-item small nav-link"
+              >
+                <span><i class="fa fa-plus-circle"></i></span>
+                <span class="ml-1">New PM visit</span>
+              </router-link>
+              <router-link
+                to="/reports/add/Am"
+                class="drop-item small nav-link"
+              >
+                <span><i class="fa fa-plus-circle"></i></span>
+                <span class="ml-1">New AM visit</span>
+              </router-link>
+              <router-link
+                to="/reports/add/pharmacy"
+                class="drop-item small nav-link"
+              >
+                <span><i class="fa fa-plus-circle"></i></span>
+                <span class="ml-1">New Pharmacy visit</span>
+              </router-link>
+              <router-link
+                to="/planner/add-pm"
+                class="drop-item small nav-link"
+              >
+                <span><i class="fa fa-plus-circle"></i></span>
+                <span class="ml-1">Plan PM visit</span>
+              </router-link>
+              <router-link
+                to="/planner/add-am"
+                class="drop-item small nav-link"
+              >
+                <span><i class="fa fa-plus-circle"></i></span>
+                <span class="ml-1">Plan AM visit</span>
+              </router-link>
               <router-link to="/customers/new" class="drop-item small nav-link">
                 <span><i class="fa fa-user-plus"></i></span>
                 <span class="ml-1">New customer</span>
@@ -46,20 +81,7 @@
                 <span><i class="fa fa-store-alt"></i></span>
                 <span class="ml-1">New pharmacy</span>
               </router-link>
-              <router-link
-                to="/planner/add-pm"
-                class="drop-item small nav-link"
-              >
-                <span><i class="fa fa-plus-circle"></i></span>
-                <span class="ml-1">Plan PM visit</span>
-              </router-link>
-              <router-link
-                to="/planner/add-am"
-                class="drop-item small nav-link"
-              >
-                <span><i class="fa fa-plus-circle"></i></span>
-                <span class="ml-1">Plan AM visit</span>
-              </router-link>
+
             </div>
           </li>
           <!-- end new menu -->

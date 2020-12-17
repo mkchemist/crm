@@ -8,14 +8,38 @@ use App\CustomerParameter;
 use App\CustomerValidation;
 use App\Helpers\ResponseHelper;
 use App\Helpers\Setting\ActiveCycleSetting;
+use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RepCustomersResource as CustomerResource;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
+    use UserWithAssignment;
+
+    /**
+     * current auth user
+     *
+     * @var User
+     */
+    public $user;
+
+    /**
+     * CustomerController constructor
+     *
+     *
+     */
+    public function __construct()
+    {
+      $this->middleware(function($request, $next) {
+        $this->user= Auth::user();
+        return $next($request);
+      });
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -24,12 +48,12 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::with([
-            'params', 'frequency', 'workplace', 'report', 'planner',
-        ])->where([
-            'area' => Auth::user()->area,
-            'state' => 'approved',
-        ])
-            ->orderBy('name', 'asc')->get();
+          'params', 'frequency', 'workplace', 'report', 'planner'
+        ])->where('state', 'approved')
+        ->whereIn('area', json_decode($this->user->area));
+
+        $customers = $this->getQueryWithAssignment($this->user, $customers);
+        $customers = $customers->orderBy('name', 'asc')->get();
         $customers = CustomerResource::collection($customers);
         return response()->json([
             'code' => 201,
@@ -46,9 +70,10 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'specialty' => 'required',
-            'brick' => 'required',
+            'name' => 'required|string',
+            'specialty' => 'required|string',
+            'brick' => 'required|string',
+            'address' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -63,8 +88,7 @@ class CustomerController extends Controller
             return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
         }
 
-        $data = array_merge($request->all(), $this->getUserAreaDetails());
-        $customer = Customer::create($data);
+        $customer = Customer::create($request->all());
         return response()->json([
             "code" => 201,
             "data" => $customer,
@@ -117,18 +141,18 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'parameter' => 'required',
             'next_freq' => 'required|numeric',
+            'address'   =>  'required|string',
+            'phone'     =>  'required|string'
         ]);
         if ($validator->fails()) {
             return response()->json(ResponseHelper::validationErrorResponse($validator));
         }
         // check if the customer with the given id
         // is already exists
-        /* $customer = $this->getCustomerById($id); */
-        $user = Auth::user();
-        $customer = Customer::where([
-            'area' => $user->area,
-            'id' => $id,
-        ])->first();
+
+        $customer = Customer::where('id', $id);
+        $customer = $this->getQueryWithAssignment($this->user, $customer);
+        $customer = $customer->first();
         if (!$customer) {
             return response()->json(ResponseHelper::INVALID_ID);
         }
@@ -136,7 +160,7 @@ class CustomerController extends Controller
 
         CustomerValidation::updateOrCreate(
             [
-                'user_id' => $user->id,
+                'user_id' => $this->user->id,
                 'customer_id' => $customer->id,
             ],
             [
@@ -150,7 +174,7 @@ class CustomerController extends Controller
         );
 
         CustomerParameter::updateOrCreate(
-            ['user_id' => $user->id, 'customer_id' => $customer->id],
+            ['user_id' => $this->user->id, 'customer_id' => $customer->id],
             [
                 'next' => $request->parameter,
                 'state' => 'requested',
@@ -159,8 +183,8 @@ class CustomerController extends Controller
             ]
         );
 
-        $x = CustomerFrequency::updateOrCreate(
-            ['user_id' => $user->id, 'locked' => false, 'customer_id' => $customer->id],
+        CustomerFrequency::updateOrCreate(
+            ['user_id' => $this->user->id, 'locked' => false, 'customer_id' => $customer->id],
             ['next' => $request->next_freq, 'locked' => false, 'state' => 'updated']
         );
         return response()->json([
@@ -187,12 +211,11 @@ class CustomerController extends Controller
      */
     private function getUserAreaDetails()
     {
-        $user = Auth::user();
         return [
-            "area" => $user->area,
-            "district" => $user->district,
-            "territory" => $user->territory,
-            "region" => $user->region,
+            "area" => $this->user->area,
+            "district" => $this->user->district,
+            "territory" => $this->user->territory,
+            "region" => $this->user->region,
         ];
     }
 
@@ -227,8 +250,9 @@ class CustomerController extends Controller
         ])
             ->where([
                 'id' => $id,
-                'area' => Auth::user()->area,
-            ])->first();
+            ]);
+        $customer = $this->getQueryWithAssignment($this->user, $customer);
+        $customer = $customer->first();
         return $customer;
     }
 }

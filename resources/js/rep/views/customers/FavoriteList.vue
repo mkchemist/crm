@@ -6,6 +6,12 @@
         <span class="font-weight-bold">Favorite list</span>
       </p>
       <div class="p-2">
+        <div class="p-2 text-right">
+          <button class="btn btn-sm btn-secondary" type="button" :disabled="!customers.length" @click="clearAllFavoriteList">
+            <span class="fa fa-redo-alt"></span>
+            <span>clear all</span>
+          </button>
+        </div>
         <div v-if="customers.length" class="p-2">
           <table-component
             :heads="heads"
@@ -58,6 +64,10 @@ export default {
     NoDataToShow
   },
   methods: {
+    /**
+     * get all favorite list
+     *
+     */
     getFavoriteList() {
       httpCall.get("customers-favorite-list").then(({ data }) => {
         this.handleResponse(data, (data) => {
@@ -65,6 +75,21 @@ export default {
          this.customers = data.data;
         });
       });
+    },
+    /**
+     * clear all favorite list
+     *
+     */
+    clearAllFavoriteList() {
+      httpCall.post('customers-favorite-list/clear')
+      .then(({data}) => {
+        this.handleResponse(data ,data => {
+          this.getFavoriteList();
+        });
+      }).catch(err => {
+        console.log(err);
+        this.$toasted.error('Something went wrong')
+      })
     }
   }
 };

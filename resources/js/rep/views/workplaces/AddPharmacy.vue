@@ -69,14 +69,21 @@
             <div class="row mx-auto">
               <div class="col-lg">
                 <label for="address" class="text-muted">Address</label>
-                <input
-                  type="text"
-                  id="address"
+                <ValidationProvider
                   name="address"
-                  class="form-control form-control-sm"
-                  v-model="pharmacy.address"
-                  placeholder="Enter pharmacy address"
-                />
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    class="form-control form-control-sm"
+                    v-model="pharmacy.address"
+                    placeholder="Enter pharmacy address"
+                  />
+                </ValidationProvider>
               </div>
               <div class="col-lg">
                 <label for="brick" class="text-muted">Brick</label>
@@ -86,14 +93,25 @@
                   v-slot="{ errors }"
                 >
                   <span class="text-danger small">{{ errors[0] }}</span>
-                  <input
-                    type="text"
+
+                  <select
                     name="brick"
                     id="brick"
-                    class="form-control form-control-sm"
-                    placeholder="Enter pharmacy brick"
-                    v-model="pharmacy.brick"
-                  />
+                    v-model="pharmacyLocation"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border border-danger' : ''
+                      }`
+                    "
+                  >
+                    <option value="">select brick</option>
+                    <option
+                      v-for="(val, key) in userLocations"
+                      :key="`brick_${key}`"
+                      :value="val"
+                      >{{ val.brick }}</option
+                    >
+                  </select>
                 </ValidationProvider>
               </div>
             </div>
@@ -119,24 +137,27 @@
 </template>
 
 <script>
-import { httpCall } from '../../../helpers/http-service';
+import { httpCall } from "../../../helpers/http-service";
 export default {
+  mounted() {
+    this.$store.dispatch("getUserLocations");
+  },
   methods: {
     /**
      * adding new pharmacy
      */
     onSubmit() {
-      httpCall.post('rep/v1/pharmacies',this.pharmacy)
-      .then(({data}) => {
-
+      let request = {
+        ...this.pharmacy,
+        ...this.pharmacyLocation
+      };
+      httpCall.post("rep/v1/pharmacies", request).then(({ data }) => {
         data.message = "Pharmacy added";
         this.handleResponse(data, data => {
-          this.$store.dispatch('pharmacyGetAll', true).then(() => {
-            setTimeout(() => {
-              this.$router.replace('/workplaces/pharmacies');
-            }, 2000)
+          this.$store.dispatch("pharmacyGetAll", true).then(() => {
+            this.$router.replace("/workplaces/pharmacies");
           });
-        })
+        });
       });
     }
   },
@@ -148,11 +169,18 @@ export default {
       address: "",
       brick: "",
       area: ""
-    }
+    },
+    pharmacyLocation: {}
   }),
   computed: {
     types() {
       return this.$store.getters.pharmacyTypes;
+    },
+    userLocations() {
+      return this.$store.getters.userLocations;
+    },
+    isUserLocationsFetched() {
+      return this.$store.getters.isUserLocationsFetched;
     }
   }
 };

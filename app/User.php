@@ -25,7 +25,9 @@ class User extends Authenticatable
     'area',
     'district',
     'territory',
-    'region'
+    'region',
+    'assigned_brick',
+    'assigned_specialties'
   ];
 
     /**

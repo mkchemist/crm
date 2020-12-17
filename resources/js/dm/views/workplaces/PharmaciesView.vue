@@ -22,6 +22,13 @@
               </router-link>
             </td>
           </template>
+          <template v-slot:head>
+            <th>NO of reports</th>
+          </template>
+          <template v-slot:body="{item}">
+
+            <td>{{ item.report.length }}</td>
+          </template>
         </table-component>
         <div v-else-if="isFetched">
           <p class="text-center text-dark p-2">No data to show</p>

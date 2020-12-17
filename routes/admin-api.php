@@ -8,10 +8,13 @@ use Illuminate\Support\Facades\Route;
  *  start with prefix Admin/version/path
  */
 Route::prefix('v1')->group(function () {
+    Route::post('users/relations/{id}', "UserController@userRelations");
     Route::post("users/reactivate/{id}", "UserController@reActivateUser");
     Route::post("users/deactive/{id}", "UserController@deaActiveUser");
     Route::apiResource('users', 'UserController');
     Route::apiResource('customers', 'CustomerController');
+    Route::get('/locations', 'AreaController@area');
+    Route::get('/specialties', 'AreaController@specialty');
     Route::group([
         'prefix' => 'validation',
         'namespace' => 'Approvals',
@@ -40,5 +43,9 @@ Route::prefix('v1')->group(function () {
       Route::post('/active-cycle', 'ActiveCycleController@store');
       Route::get('/report-interval', 'ReportIntervalController@index');
       Route::post('/report-interval', 'ReportIntervalController@store');
+      Route::get('/lines/{id}', 'LineSettingController@show');
+      Route::delete('/lines/{id}', 'LineSettingController@destroy');
+      Route::get('/lines', 'LineSettingController@index');
+      Route::post('/lines', 'LineSettingController@store');
     });
 });

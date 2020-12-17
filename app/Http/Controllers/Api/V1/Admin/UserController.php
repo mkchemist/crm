@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Admin\UserResources;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -21,9 +22,11 @@ class UserController extends Controller
       $users = User::orderBy('district','asc')
       ->orderBy('name', 'asc')
       ->get();
+      /* $area = DB::table('customers')
+      ->select('area','brick','district','territory','region')->distinct()->get(); */
       return response([
         'code'  =>  200,
-        'data'  =>  $users
+        'data'  =>   UserResources::collection($users),
       ], 200);
     }
 
@@ -64,7 +67,9 @@ class UserController extends Controller
         'area'      =>  $request->area,
         'district'  =>  $request->district,
         'territory' =>  $request->territory,
-        'region'    =>  $request->region
+        'region'    =>  $request->region,
+        'assigned_brick' => $request->assigned_brick,
+        'assigned_specialties'=> $request->assigned_specialties
       ]);
 
       return response([
@@ -85,7 +90,7 @@ class UserController extends Controller
       $user = User::find($id);
       return response([
         "code"  =>  200,
-        "data"  =>  $user
+        "data"  =>  new UserResources($user)
       ], 200);
     }
 
@@ -179,6 +184,24 @@ class UserController extends Controller
       return response([
         "code"  =>  200,
         "message" =>  "User Activated"
+      ]);
+    }
+
+    /**
+     * update user relations
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function userRelations(Request $request, $id)
+    {
+      $user = User::find($id);
+      $user->user_relations = $request->relations;
+      $user->save();
+      return response([
+        'code'  =>  200,
+        'message' =>  'User relations updated'
       ]);
     }
 }

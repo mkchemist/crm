@@ -17,12 +17,13 @@ class CoachController extends Controller
     public function index() {
 
       $user = Auth::user();
-
+      $relations = json_decode($user->user_relations);
       $coachs = User::whereIn('role', ['dm','tm','rm', 'am'])
-      ->whereIn('district', ['all', $user->district])
-      ->whereIn('territory', ['all', $user->territory])
-      ->whereIn('region', [$user->region])
-      ->whereIn('line', ['all', $user->line])->get();
+      ->whereIn('id', $relations->dm)
+      ->orWhereIn('id', $relations->am)
+      ->orWhereIn('id', $relations->rm)
+      ->orWhereIn('id', $relations->marketing)
+      ->get();
 
       return response([
         'code'  =>  201,

@@ -24,7 +24,7 @@ class RepWorkplaceResource extends JsonResource
           'area'    =>  $this->area,
           'state'   =>  $this->state,
           'depart'  =>  $this->departs,
-          'phone'   =>  $this->phone
+          'phone'   =>  $this->phone ?? ''
         ];
     }
 }

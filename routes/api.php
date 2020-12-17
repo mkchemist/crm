@@ -23,6 +23,8 @@ Route::post('/login', "Api\UserController@login");
 
 
 Route::group(["middleware" => ["auth:api"]] ,function() {
+  // clear all customer favorite lists
+  Route::post('/customers-favorite-list/clear','Api\V1\CustomerFavoriteListController@clearAllList');
   // Customers favorite lists routes
   Route::apiResource('/customers-favorite-list', 'Api\V1\CustomerFavoriteListController');
 });
@@ -33,7 +35,8 @@ Route::group([
   'prefix' => 'rep/v1',
   'namespace' => 'Api\V1\Rep'
 ], function() {
-
+  // locations route
+  Route::get('/locations', 'UserLocationsController@index');
   // coaches routes
   Route::get('/coach', 'CoachController@index');
   // customers routes

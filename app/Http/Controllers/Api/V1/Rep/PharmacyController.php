@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Rep;
 
 use App\Helpers\ResponseHelper;
+use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use App\Pharmacy;
 use Illuminate\Http\Request;
@@ -11,6 +12,27 @@ use Illuminate\Support\Facades\Validator;
 
 class PharmacyController extends Controller
 {
+  use UserWithAssignment;
+  /**
+     * current auth user
+     *
+     * @var User
+     */
+    public $user;
+
+    /**
+     * CustomerController constructor
+     *
+     *
+     */
+    public function __construct()
+    {
+      $this->middleware(function($request, $next) {
+        $this->user= Auth::user();
+        return $next($request);
+      });
+    }
+
   /**
    * Display a listing of the resource.
    *
@@ -18,9 +40,9 @@ class PharmacyController extends Controller
    */
   public function index()
   {
-    $pharmacies = Pharmacy::where([
-      'area'  =>  Auth::user()->area
-    ])->orderBy('name', 'asc')->get();
+    $pharmacies = Pharmacy::where('state','approved');
+    $pharmacies = $this->getQueryWithAssignment($this->user, $pharmacies);
+    $pharmacies = $pharmacies->orderBy('name', 'asc')->get();
 
     return response()->json([
       'code'  =>  201,
@@ -37,9 +59,10 @@ class PharmacyController extends Controller
   public function store(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'name'  =>  'required',
-      'type'  =>  'required',
-      'brick' =>  'required'
+      'name'  =>  'required|string',
+      'type'  =>  'required|string',
+      'brick' =>  'required|string',
+      'address' =>  'required|string'
     ]);
     if ($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
@@ -52,13 +75,7 @@ class PharmacyController extends Controller
     if ($check) {
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
-    $user = Auth::user();
-    $pharmacy = Pharmacy::create(array_merge($request->all(), [
-      'area'  => $user->area,
-      'district'  =>  $user->district,
-      'territory' =>  $user->territory,
-      'region'    =>  $user->region
-    ]));
+    $pharmacy = Pharmacy::create($request->all());
 
     return response()->json([
       'code'  =>  201,
@@ -77,10 +94,9 @@ class PharmacyController extends Controller
     if(!is_numeric($id)) {
       return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
-    $pharmacy = $this->getPharmacy([
-      'id'  =>  $id,
-      'area'  =>  Auth::user()->area
-    ]);
+    $pharmacy = Pharmacy::with(['report'])->where('id', $id);
+    $pharmacy = $this->getQueryWithAssignment($this->user, $pharmacy);
+    $pharmacy = $pharmacy->first();
     if(!$pharmacy) {
       return response()->json(ResponseHelper::INVALID_ID);
     }
@@ -100,8 +116,9 @@ class PharmacyController extends Controller
   public function update(Request $request, $id)
   {
     $validator = Validator::make($request->all(), [
-      'type'  =>  'required',
-      'brick' =>  'required'
+      'type'    =>  'required|string',
+      'brick'   =>  'required|string',
+      'address' =>  'required|string'
     ]);
     if($validator->fails()) {
       return response()->json(ResponseHelper::validationErrorResponse($validator));
@@ -109,10 +126,9 @@ class PharmacyController extends Controller
     if(!is_numeric($id)) {
       return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
     }
-    $pharmacy = $this->getPharmacy([
-      'id'  =>  $id,
-      'area'  =>  Auth::user()->area
-    ]);
+    $pharmacy = Pharmacy::where('id', $id);
+    $pharmacy = $this->getQueryWithAssignment($this->user, $pharmacy);
+    $pharmacy = $pharmacy->first();
     if(!$pharmacy) {
       return response()->json(ResponseHelper::INVALID_ID);
     }

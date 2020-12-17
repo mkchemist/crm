@@ -37,6 +37,12 @@
               <span>activate</span>
             </router-link>
           </li>
+          <li class="nav-item mx-lg-1">
+            <router-link to="/users/relations" class="nav-link small" active-class="bg-primary text-light" exact>
+              <span><i class="fa fa-user-friends"></i></span>
+              <span>User Relation</span>
+            </router-link>
+          </li>
         </nav>
       </section>
 

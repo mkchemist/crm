@@ -150,9 +150,7 @@ export default {
         data.message = data.data;
         this.handleResponse(data, data => {
           this.$store.dispatch('workplaceGetAll', true).then(() => {
-            setTimeout(() => {
-              this.$router.push('/workplaces');
-            },2000);
+            this.$router.push('/workplaces');
           })
         });
       });

@@ -19,14 +19,14 @@
         <div class="border rounded p-2">
           <table-component
             :data="visits"
-            :heads="headers"
+            :heads="reportHeaders"
             v-if="visits.length"
             head-class="bg-success text-light"
           >
             <template v-slot:head:before>
               <th>Actions</th>
             </template>
-            <template v-slot:body:before="{item}">
+            <template v-slot:body:before="{ item }">
               <td>
                 <router-link
                   :to="`/reports/edit/pm/${item.id}`"
@@ -35,53 +35,19 @@
                   <span><i class="fa fa-edit"></i></span>
                 </router-link>
 
-                <button class="btn btn-sm btn-danger" @click="removeReport(item.id)">
+                <button
+                  class="btn btn-sm btn-danger"
+                  @click="removeReport(item.id)"
+                >
                   <span><i class="fa fa-trash"></i></span>
                 </button>
               </td>
             </template>
             <template v-slot:head>
-              <th class="text-center">Products</th>
               <th>General Feedback</th>
             </template>
             <template v-slot:body="{ item }">
-              <td>
-                <ul class="nav">
-                  <li
-                    v-for="(product, i) in item.products"
-                    :key="i"
-                    class="nav-item"
-                  >
-                    <span
-                      >Product :
-                      <span class="font-weight-bold">{{
-                        product.name
-                      }}</span></span
-                    >
-                    |
-                    <span
-                      >Lader :<span class="font-weight-bold">{{
-                        product.lader
-                      }}</span></span
-                    >
-                    |
-                    <span
-                      >Action :<span class="font-weight-bold">{{
-                        product.action
-                      }}</span></span
-                    >
-                    |
-                    <span
-                      >Competitor :
-                      <span class="font-weight-bold">{{
-                        product.competitor
-                      }}</span></span
-                    >
-                  </li>
-                </ul>
-              </td>
               <td>{{ item.general_feedback }}</td>
-
             </template>
           </table-component>
           <div
@@ -110,14 +76,47 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
-import { httpCall } from '../../../helpers/http-service';
+import { httpCall } from "../../../helpers/http-service";
 export default {
-  created() {
+  mounted() {
     this.$store.dispatch("reportGetAll");
   },
   computed: {
     visits() {
       return this.$store.getters.pmVisits;
+    },
+    reportHeaders() {
+      let products = [];
+      let noOfProductsInReport = 0;
+      if (this.visits) {
+        this.visits.map(visit => {
+          let visitProducts = visit.products;
+          let count = visitProducts.length;
+          if (count > noOfProductsInReport) {
+            noOfProductsInReport = count;
+          }
+        });
+      }
+      let headers = [...this.headers];
+      for (let i = 0; i < noOfProductsInReport; i++) {
+        headers.push({
+          title: `Product ${i + 1}`,
+          name: `products.${i}.name`
+        });
+        headers.push({
+          title: `Product ${i + 1} action`,
+          name: `products.${i}.action`
+        });
+        headers.push({
+          title: `Product ${i + 1} Lader of adaption`,
+          name: `products.${i}.lader`
+        });
+        headers.push({
+          title: `Product ${i + 1} competitor`,
+          name: `products.${i}.competitor`
+        });
+      }
+      return headers;
     }
   },
   components: {
@@ -129,15 +128,15 @@ export default {
         title: "ID",
         name: "id"
       },
-        {
-          title: "Date",
-          name: "date"
-        },
-        {
-          title: 'Visit Type',
-          name:'visit_type',
-          style: 'text-uppercase font-weight-bold'
-        },
+      {
+        title: "Date",
+        name: "date"
+      },
+      {
+        title: "Visit Type",
+        name: "visit_type",
+        style: "text-uppercase font-weight-bold"
+      },
       {
         title: "Name",
         name: "customer_name"
@@ -149,7 +148,7 @@ export default {
       {
         title: "Param",
         name: "customer.params.0.current",
-        fallback: 'NN'
+        fallback: "NN"
       },
       {
         title: "Address",
@@ -171,13 +170,15 @@ export default {
   }),
   methods: {
     removeReport(id) {
-      httpCall.post('rep/v1/reports/pm/'+id, {
-        _method: 'DELETE'
-      }).then(({data}) => {
-        this.handleResponse(data, data => {
-          this.$store.dispatch('reportGetAll', true);
+      httpCall
+        .post("rep/v1/reports/pm/" + id, {
+          _method: "DELETE"
         })
-      })
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.$store.dispatch("reportGetAll", true);
+          });
+        });
     }
   }
 };

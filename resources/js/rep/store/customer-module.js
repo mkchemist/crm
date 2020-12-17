@@ -4,7 +4,7 @@
  * this module deal with all customer related http service
  *
  */
-import { httpCall } from "../../helpers/http-service"
+import { httpCall } from "../../helpers/http-service";
 import router from "../routes";
 import { ResponseHandler } from "../../helpers/response-handler";
 export default {
@@ -27,12 +27,14 @@ export default {
      *
      *
      */
-    customerFilter: [],
+    customerFilter: []
   },
   mutations: {
-    updateCustomerInStore: (state,{id, payload}) => {
-      let customer = state.all.filter(customer => customer.id === parseInt(id))[0];
-      for(let key in payload) {
+    updateCustomerInStore: (state, { id, payload }) => {
+      let customer = state.all.filter(
+        customer => customer.id === parseInt(id)
+      )[0];
+      for (let key in payload) {
         customer[key] = payload[key];
       }
     },
@@ -40,11 +42,12 @@ export default {
       state.customerFilter = customers;
     },
     filterCustomers(state, payload) {
-      let asyncSetCustomer = () => new Promise((resolve, reject) => {
-        resolve(payload.data);
-      });
+      let asyncSetCustomer = () =>
+        new Promise((resolve, reject) => {
+          resolve(payload.data);
+        });
       state[payload.name] = [];
-      asyncSetCustomer().then(data => state[payload.name] = data);
+      asyncSetCustomer().then(data => (state[payload.name] = data));
     }
   },
   getters: {
@@ -53,14 +56,14 @@ export default {
      * with parameters [HH,HM,HL,MH,MM,ML,LH,LM,LL]
      */
     active: state => {
-      return state.activeCustomers
+      return state.activeCustomers;
     },
     /**
      * get only inactive customers
      * with parameters [NN,XX]
      */
     inactive: state => {
-      return state.inactiveCustomers
+      return state.inactiveCustomers;
     },
     /**
      * return all customers
@@ -82,19 +85,30 @@ export default {
      * @param {object} state
      * @param {boolean} force // to force module to update customers
      */
-    customerGetAll({state}, force) {
-      if(!state.all.length|| force) {
-        httpCall.get('rep/v1/customers')
-        .then(({data}) => {
+    customerGetAll({ state }, force) {
+      if (!state.all.length || force) {
+        state.all = [];
+        state.allCustomers = [];
+        state.fetched = false;
+        state.customerFilter = [];
+        state.activeCustomers = [];
+        state.inactiveCustomers = [];
+        httpCall.get("rep/v1/customers").then(({ data }) => {
           data.message = "Customer list loaded";
-          ResponseHandler.methods.handleResponse(data, (data) => {
-            state.all = data.data
+          ResponseHandler.methods.handleResponse(data, data => {
+            state.all = data.data;
             state.allCustomers = data.data;
             state.fetched = true;
-            state.customerFilter = data.data.filter(c => !["NN","XX"].includes(c.parameter))
-            state.activeCustomers =data.data.filter(c => !["NN","XX"].includes(c.parameter))
-            state.inactiveCustomers =data.data.filter(c => ["NN","XX"].includes(c.parameter))
-          })
+            state.customerFilter = data.data.filter(
+              c => !["NN", "XX"].includes(c.parameter)
+            );
+            state.activeCustomers = data.data.filter(
+              c => !["NN", "XX"].includes(c.parameter)
+            );
+            state.inactiveCustomers = data.data.filter(c =>
+              ["NN", "XX"].includes(c.parameter)
+            );
+          });
         });
       }
     },
@@ -106,15 +120,14 @@ export default {
      * @param {object} data
      * @return {void}
      */
-    addNewCustomer({dispatch}, data) {
-      httpCall.post('rep/v1/customers',data)
-      .then(({data}) => {
+    addNewCustomer({ dispatch }, data) {
+      httpCall.post("rep/v1/customers", data).then(({ data }) => {
         data.message = `customer ${data.data.name} added successfully`;
         ResponseHandler.methods.handleResponse(data, data => {
-          dispatch("customerGetAll", true)
+          dispatch("customerGetAll", true);
           router.replace("/customers");
-        })
-      })
+        });
+      });
     }
   }
-}
+};

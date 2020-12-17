@@ -136,6 +136,10 @@ export default {
         name: "old_address"
       },
       {
+        title: "To Address",
+        name: "new_address"
+      },
+      {
         title: "From Workplace",
         name: "old_workplace"
       },
