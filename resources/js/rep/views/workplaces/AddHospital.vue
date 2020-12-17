@@ -74,14 +74,6 @@
                   v-slot="{ errors }"
                 >
                   <span class="text-danger small">{{ errors[0] }}</span>
-                  <!-- <input
-                    type="text"
-                    id="brick"
-                    name="brick"
-                    class="form-control form-control-sm"
-                    placeholder="Enter hospital brick"
-                    v-model="hospital.brick"
-                  /> -->
                   <select name="brick" id="brick" v-model="hospitalLocation" :class="`form-control form-control-sm ${errors[0] ? 'border border-danger': ''}`">
                     <option value="">select brick</option>
                     <option v-for="(val, key) in userLocations" :key="`brick_${key}`" :value="val">{{ val.brick }}</option>
@@ -134,6 +126,10 @@ export default {
      *
      */
     onSubmit() {
+      if(!this.hospitalLocation.brick) {
+        this.$toasted.error('You must select workplace brick')
+        return;
+      }
       let request = {
         ...this.hospital,
         ...this.hospitalLocation

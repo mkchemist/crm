@@ -118,7 +118,7 @@
             <hr />
             <div class="form-group text-right">
               <router-link
-                to="/workplaces/pharamcies"
+                to="/workplaces/pharmacies"
                 class="btn btn-sm btn-dark"
               >
                 <span><i class="fa fa-chevron-circle-left"></i></span>

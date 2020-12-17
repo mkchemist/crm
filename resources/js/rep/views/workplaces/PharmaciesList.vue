@@ -24,9 +24,17 @@
             head-class="bg-success text-light"
           >
             <template v-slot:head>
+              <th>Visits</th>
+              <th>Address</th>
+              <th>Brick</th>
+              <th>Area</th>
               <th>Actions</th>
             </template>
             <template v-slot:body="{ item }">
+              <td>{{ item.report.length }}</td>
+              <td>{{ item.address }}</td>
+              <td>{{ item.brick }}</td>
+              <td>{{ item.area }}</td>
               <td>
                 <router-link
                   :to="`/workplaces/pharmacy/view/${item.id}`"
@@ -98,18 +106,7 @@ export default {
         title: "Key Person",
         name: "key_person"
       },
-      {
-        title: "Address",
-        name: "address"
-      },
-      {
-        title: "Brick",
-        name: "brick"
-      },
-      {
-        title: "Area",
-        name: "area"
-      }
+
     ]
   })
 };

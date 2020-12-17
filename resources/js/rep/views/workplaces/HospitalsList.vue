@@ -22,9 +22,21 @@
           head-class="bg-success text-light"
         >
           <template v-slot:head>
+            <th>Achievment state</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Brick</th>
+            <th>Area</th>
+            <th>State</th>
             <th>Actions</th>
           </template>
           <template v-slot:body="{ item }">
+            <td :class="`${calculateState(item).class}`">{{ calculateState(item).title }}</td>
+            <td>{{ item.address }}</td>
+            <td>{{ item.phone }}</td>
+            <td>{{ item.brick }}</td>
+            <td>{{ item.area }}</td>
+            <td>{{ item.state }}</td>
             <td>
               <router-link
                 :to="`/workplaces/hospital/view/${item.id}`"
@@ -92,27 +104,52 @@ export default {
         name: "type"
       },
       {
-        title: "Address",
-        name: "address"
+        title: 'Plans',
+        name: 'plans'
       },
       {
-        title: "Phone",
-        name: "phone"
+        title: 'Reports',
+        name: 'visits'
       },
       {
-        title: "Brick",
-        name: "brick"
-      },
-      {
-        title: "Area",
-        name: "area"
-      },
-      {
-        title: "State",
-        name: "state"
+        title: 'Diff',
+        name:'diff'
       }
     ]
-  })
+  }),
+  methods: {
+    calculateState(item) {
+      let diff = item.diff;
+      let plans = item.plans;
+      let visits = item.visits;
+      if(diff === 0 && plans === 0) {
+        return  {
+          title: 'Not Planned',
+          class: 'bg-dark text-light'
+        };
+      } else if(diff ===0 && plans !== 0) {
+        return {
+          title: 'Accomplished',
+          class: 'bg-success text-light'
+        }
+      }else if (diff > 0 && visits !== 0){
+        return {
+          title: 'missed',
+          class: "bg-warning text-dark"
+        }
+      }else if(diff > 0 && visits === 0) {
+        return {
+          title: 'uncoverd',
+          class: "bg-danger text-light"
+        }
+      } else {
+        return {
+          title: 'over',
+          class: 'bg-primary text-light'
+        }
+      }
+    }
+  }
 };
 </script>
 

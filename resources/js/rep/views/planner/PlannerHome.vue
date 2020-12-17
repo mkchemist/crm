@@ -127,6 +127,10 @@
               <span><i class="fa fa-times"></i></span>
               <span>cancel</span>
             </button>
+            <button @click="generateVisitLink" class="btn btn-sm btn-primary">
+              <span class="fa fa-hands-helping"></span>
+              <span>visit</span>
+            </button>
             <button class="btn btn-sm btn-success" @click="updateEvent">
               <span><i class="fa fa-save"></i></span>
               <span>save</span>
@@ -382,6 +386,28 @@ export default {
         }, 500);
       });
       exported.document.body.append(exportTable);
+    },
+    generateVisitLink() {
+      if(!this.selected_event) {
+        return;
+      }
+      if(this.selected_event.class === "AM") {
+        let link =  `/reports/add/am/${this.selected_event.workplace.id}`
+        this.show_event_modal = false;
+        setTimeout(() => {
+
+          this.$router.push(link);
+        }, 300);
+
+      } else {
+        let link =  `/reports/add/pm/${this.selected_event.customer_id}`
+        this.show_event_modal = false;
+        setTimeout(() => {
+
+          this.$router.push(link);
+        }, 300);
+
+      }
     }
   },
   computed: {

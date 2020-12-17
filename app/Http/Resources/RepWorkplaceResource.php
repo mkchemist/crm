@@ -24,7 +24,10 @@ class RepWorkplaceResource extends JsonResource
           'area'    =>  $this->area,
           'state'   =>  $this->state,
           'depart'  =>  $this->departs,
-          'phone'   =>  $this->phone ?? ''
+          'phone'   =>  $this->phone ?? '',
+          'plans'   =>  count($this->plans),
+          'visits'  =>  count($this->reports->groupBy('visit_date')),
+          'diff'    =>  count($this->plans) - count($this->reports->groupBy('visit_date'))
         ];
     }
 }

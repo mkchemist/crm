@@ -41,7 +41,7 @@ class WorkplaceController extends Controller
    */
   public function index()
   {
-    $workplaces = Workplace::with(['departs'])->where([
+    $workplaces = Workplace::with(['departs','reports','plans'])->where([
       'state' =>  'approved'
     ]);
     $workplaces = $this->getQueryWithAssignment($this->user, $workplaces);

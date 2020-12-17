@@ -40,7 +40,7 @@ class PharmacyController extends Controller
    */
   public function index()
   {
-    $pharmacies = Pharmacy::where('state','approved');
+    $pharmacies = Pharmacy::with('report')->where('state','approved');
     $pharmacies = $this->getQueryWithAssignment($this->user, $pharmacies);
     $pharmacies = $pharmacies->orderBy('name', 'asc')->get();
 
