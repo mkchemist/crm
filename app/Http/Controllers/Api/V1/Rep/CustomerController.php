@@ -52,7 +52,7 @@ class CustomerController extends Controller
         ])->where('state', 'approved')
         ->whereIn('area', json_decode($this->user->area));
 
-        $customers = $this->getQueryWithAssignment($this->user, $customers);
+        $customers = $this->getQueryWithAssignment($this->user, $customers, true);
         $customers = $customers->orderBy('name', 'asc')->get();
         $customers = CustomerResource::collection($customers);
         return response()->json([
@@ -151,7 +151,7 @@ class CustomerController extends Controller
         // is already exists
 
         $customer = Customer::where('id', $id);
-        $customer = $this->getQueryWithAssignment($this->user, $customer);
+        $customer = $this->getQueryWithAssignment($this->user, $customer,true);
         $customer = $customer->first();
         if (!$customer) {
             return response()->json(ResponseHelper::INVALID_ID);
@@ -251,7 +251,7 @@ class CustomerController extends Controller
             ->where([
                 'id' => $id,
             ]);
-        $customer = $this->getQueryWithAssignment($this->user, $customer);
+        $customer = $this->getQueryWithAssignment($this->user, $customer,true);
         $customer = $customer->first();
         return $customer;
     }
