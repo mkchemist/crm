@@ -8,9 +8,41 @@
     <div class="p-2 row mx-auto">
       <!-- add plans controller -->
       <div class="col-lg-6 p-2 border rounded" id="workplace_list">
+        <p class="bg-warning text-dark p-2" v-if="isSubmitted">This day is submitted , you can't add or delete</p>
         <p class="bg-dark text-light p-2" v-if="selected_workplaces.length">
           Selected : {{ selected_workplaces.length }}
         </p>
+        <div class="p-2 text-right">
+          <button class="btn btn-sm btn-primary" @click="openFilterModal">
+            <span class="fa fa-filter"></span>
+            <span>filter</span>
+          </button>
+        </div>
+        <modal-fade :show="show_filter_modal" @onClose="closeFilterModal">
+          <template v-slot:header>
+            <span class="lead">Filter A.M. workplaces</span>
+          </template>
+          <template v-slot:body>
+            <div>
+              <div class="p-2">
+                <label>Brick</label>
+                <select name="brick" id="brick" class="form-control form-control-sm" :disabled="!filterBricks.length" v-model="selectedBrick">
+                  <option v-for="(brick, i) in filterBricks" :key="`brick_${i}`" :value="brick">{{ brick }}</option>
+                </select>
+              </div>
+              <div class="p-2 text-right">
+                <button class="btn btn-sm btn-primary" @click="filterWorkplaces">
+                  <span class="fa fa-check-circle"></span>
+                  <span>ok</span>
+                </button>
+                <button class="btn btn-sm btn-dark" @click="reset">
+                  <span class="fa fa-redo"></span>
+                  <span>reset</span>
+                </button>
+              </div>
+            </div>
+          </template>
+        </modal-fade>
         <div
           v-if="workplaces.length"
           class="border"
@@ -28,7 +60,7 @@
             <tbody>
               <tr v-for="workplace in workplaces" :key="workplace.id">
                 <td>
-                  <input type="checkbox" @click="addToSelected(workplace.id)" />
+                  <input type="checkbox" @click="addToSelected(workplace.id)" :disabled="isSubmitted" />
                 </td>
                 <td>{{ workplace.name }}</td>
                 <td>{{ workplace.address }}</td>
@@ -53,6 +85,7 @@
       </div>
       <!-- planned workplacess controller -->
       <div class="col-lg-6 p-2 rounded border" id="plans_list">
+        <p class="bg-warning text-dark p-2" v-if="isSubmitted">This day is submitted , you can't add or delete</p>
         <p class="bg-dark text-light p-2" v-if="deleted_workplaces.length">
           Selected : {{ deleted_workplaces.length }}
         </p>
@@ -69,7 +102,7 @@
             <tbody>
               <tr v-for="plan in amPlans" :key="plan.id">
                 <td>
-                  <input type="checkbox" @click="addToDeleted(plan.id)" />
+                  <input type="checkbox" @click="addToDeleted(plan.id)" :disabled="isSubmitted" />
                 </td>
                 <td>{{ plan.name }}</td>
                 <td>{{ plan.workplace.address }}</td>
@@ -88,7 +121,7 @@
         <span><i class="fa fa-chevron-circle-left"></i></span>
         <span class="font-weight-bold">back</span>
       </router-link>
-      <button class="btn btn-sm btn-success" @click="addPlans">
+      <button class="btn btn-sm btn-success" @click="addPlans" :disabled="isSubmitted">
         <span
           class="px-1 text-success bg-light rounded-circle font-weight-bold"
           v-if="selected_workplaces.length"
@@ -96,7 +129,7 @@
         >
         <span class="font-weight-bold">add</span>
       </button>
-      <button class="btn btn-sm btn-danger" @click="deletePlans">
+      <button class="btn btn-sm btn-danger" @click="deletePlans" :disabled="isSubmitted">
         <span
           class="px-1 text-danger bg-light rounded-circle font-weight-bold"
           v-if="deleted_workplaces.length"
@@ -110,22 +143,38 @@
 
 <script>
 import { httpCall } from "../../../helpers/http-service";
+import ModalFade from "../../../components/ModalFade";
+
 export default {
   created() {
     this.$store.dispatch("workplaceGetAll");
   },
   data: () => ({
     selected_workplaces: [],
-    deleted_workplaces: []
+    deleted_workplaces: [],
+    show_filter_modal: false,
+    activeFilter: false,
+    selectedBrick: null,
+    filteredList:[]
   }),
-  computed: {
+  components: {
+    ModalFade
+  },
+  computed:{
     amPlans() {
       let data = this.$store.getters.amPlans.filter(
         plan => plan.start === this.$attrs.date
       );
       return data;
     },
+    rowWorkplaces() {
+      return this.$store.getters.allWorkplaces;
+
+    },
     workplaces() {
+      if(this.activeFilter) {
+        return this.filteredList;
+      }
       return this.$store.getters.allWorkplaces;
     },
     isPlansFetched() {
@@ -133,6 +182,25 @@ export default {
     },
     isWorkplaceFetched() {
       return this.$store.getters.isWorkplacesFetched;
+    },
+    submitted() {
+      return this.$store.getters.submittedDays
+    },
+    isSubmitted() {
+      let date = this.$attrs.date;
+      return this.submitted.includes(date)
+    },
+    filterBricks() {
+      let workplaces = this.rowWorkplaces;
+      let bricks = [];
+      if(workplaces.length) {
+        workplaces.forEach(workplace => {
+          if(!bricks.includes(workplace.brick)) {
+            bricks.push(workplace.brick);
+          }
+        })
+      }
+      return bricks;
     }
   },
   methods: {
@@ -210,6 +278,9 @@ export default {
           this.selected_workplaces = [];
         });
     },
+    /**
+     * delete plans
+     */
     deletePlans() {
       let data = {
         workplaces: JSON.stringify(this.deleted_workplaces),
@@ -231,6 +302,29 @@ export default {
             });
           this.deleted_workplaces = [];
         });
+    },
+    /** open filter modal */
+    openFilterModal() {
+      this.show_filter_modal = true;
+    },
+    /** close filter modal */
+    closeFilterModal() {
+      this.show_filter_modal = false;
+    },
+    filterWorkplaces() {
+      this.activeFilter = true;
+      let res = [];
+      this.rowWorkplaces.map(workplace => {
+        if(workplace.brick === this.selectedBrick) {
+          res.push(workplace)
+        }
+      });
+     this.filteredList = res;
+     this.show_filter_modal = false;
+    },
+    reset() {
+      this.activeFilter = false;
+      this.selectedBrick = null;
     }
   }
 };

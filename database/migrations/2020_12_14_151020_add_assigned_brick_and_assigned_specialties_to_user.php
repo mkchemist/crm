@@ -14,8 +14,8 @@ class AddAssignedBrickAndAssignedSpecialtiesToUser extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-          $table->longText('assigned_brick')->nullable()->after('line')->default(json_encode([]));
-          $table->longText('assigned_specialties')->nullable()->after('assigned_brick')->default(json_encode([]));
+          $table->longText('assigned_brick')->nullable()->after('line');
+          $table->longText('assigned_specialties')->nullable()->after('assigned_brick');
         });
     }
 

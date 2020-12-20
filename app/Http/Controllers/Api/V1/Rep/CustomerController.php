@@ -50,7 +50,7 @@ class CustomerController extends Controller
         $customers = Customer::with([
           'params', 'frequency', 'workplace', 'report', 'planner'
         ])->where('state', 'approved')
-        ->whereIn('area', json_decode($this->user->area));
+        /* ->whereIn('area', json_decode($this->user->area)) */;
 
         $customers = $this->getQueryWithAssignment($this->user, $customers, true);
         $customers = $customers->orderBy('name', 'asc')->get();

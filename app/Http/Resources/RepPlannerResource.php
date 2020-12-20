@@ -22,7 +22,7 @@ class RepPlannerResource extends JsonResource
           'end'      => $this->plan_date,
           'id'      =>  $this->id,
           'type'    =>  $this->type,
-          'class'   =>  'PM',
+          'class'   =>  $this->submitted ? 'submitted PM' :'PM',
           'title'    =>  $this->customer->name,
           'specialty' =>  $this->customer->specialty,
           'freq'      =>  $freq,
@@ -34,7 +34,8 @@ class RepPlannerResource extends JsonResource
           'brick'       =>  $this->customer->brick,
           'user_name'   =>  $this->user->name,
           'address'     =>  $this->customer->address,
-          'date'        =>  $this->plan_date
+          'date'        =>  $this->plan_date,
+          'submitted'   =>  $this->submitted
         ];
     }
 }

@@ -36,7 +36,11 @@ Route::group([
   'namespace' => 'Api\V1\Rep'
 ], function() {
   // locations route
-  Route::get('/locations', 'UserLocationsController@index');
+  Route::get('/locations', 'RepSettingController@locations');
+  // cycles route
+  Route::get('/cycles', 'RepSettingController@Cycles');
+  /** Active cycle */
+  Route::get('/active-cycle', 'RepSettingController@activeCycle');
   // coaches routes
   Route::get('/coach', 'CoachController@index');
   // customers routes
@@ -56,11 +60,13 @@ Route::group([
     Route::delete('/{id}', 'WorkplaceDepartmentController@delete');
   });
   // planner routes
+  Route::post('planner/submit', 'PlannerController@submitPlan');
   Route::delete('planner/delete','PlannerController@groupDelete');
   Route::put('planner/duplicate', 'PlannerController@DuplicateDate');
   Route::delete('planner/clear-day', 'PlannerController@clearDate');
   Route::apiResource('planner', 'PlannerController');
   // workplace planner routes
+  Route::post('workplace-planner/submit', 'WorkplacePlannerController@submit');
   Route::delete('workplace-planner/delete','WorkplacePlannerController@groupDelete');
   Route::apiResource('/workplace-planner', 'WorkplacePlannerController');
   // Reports routes
@@ -75,4 +81,14 @@ Route::group([
     Route::get('/coaching', 'CoachReportsController@index');
     Route::get('/coaching/{id}', 'CoachReportsController@show');
   });
+
+  /** other reps collections */
+  Route::group(['prefix' => 'other-reps'], function() {
+    Route::get('customer-plans/{id}', 'OtherRepsController@customerPlans');
+    Route::get('customer-reports/{id}', 'OtherRepsController@customerReports');
+    Route::get('workplace-plans/{id}', 'OtherRepsController@workplacePlans');
+    Route::get('workplace-reports/{id}', 'OtherRepsController@workplaceReports');
+    Route::get('pharmacy-reports/{id}', 'OtherRepsController@pharmacyReports');
+  });
+
 });

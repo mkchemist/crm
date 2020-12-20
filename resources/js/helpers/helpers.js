@@ -268,7 +268,7 @@ const initialDateRange = {
 export function filterByDate(data, prop, range = initialDateRange) {
   let { start, end } = range;
   if (!start && !end) {
-    return err("Start and End date is undefined");
+    return data;
   }
   let result = data;
   if (start) {

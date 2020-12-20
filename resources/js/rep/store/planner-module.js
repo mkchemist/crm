@@ -22,7 +22,11 @@ export default {
      * is workplaces plans fetched
      *
      */
-    isWorkplacePlansFetched: false
+    isWorkplacePlansFetched: false,
+    /**
+     * submitted days
+     */
+    submittedDays: [],
   },
   getters: {
     /**
@@ -48,7 +52,20 @@ export default {
     allPlans: state => {
       return [...state.workplacePlans, ...state.plans];
     },
-    isAmPlansFetched: state => state.isWorkplacePlansFetched
+    isAmPlansFetched: state => state.isWorkplacePlansFetched,
+    submittedDays : state =>  {
+      let days = [];
+      try {
+        state.submittedDays.map(day => {
+          if(!days.includes(day.plan_date)) {
+            days.push(day.plan_date);
+          }
+        })
+      }catch(e) {
+        console.warn(e)
+      }
+      return days
+    }
   },
   mutations: {
 
@@ -62,12 +79,17 @@ export default {
      */
     getPlanner({state}, force) {
       if(!state.plans.length || force) {
-        httpCall.get('rep/v1/planner')
+        let queryString = {};
+        if(typeof force === 'object') {
+          queryString = force.cycle
+        }
+        return httpCall.get('rep/v1/planner', queryString)
         .then(({data}) => {
           state.fetched = true;
           data.message = "Planner loaded";
           ResponseHandler.methods.handleResponse(data, (data) => {
             state.plans = data.data;
+            state.submittedDays = [...state.submittedDays,...data.submitted]
           });
         });
       }
@@ -81,7 +103,11 @@ export default {
     getWorkplacePlanner({state}, force) {
       if(!state.workplacePlans.length || force) {
         this.isWorkplacePlansFetched = false;
-        httpCall.get('rep/v1/workplace-planner')
+        let queryString = {};
+        if(typeof force === 'object') {
+          queryString = force.cycle
+        }
+       return httpCall.get('rep/v1/workplace-planner',queryString)
         .then(({data}) => {
           this.isWorkplacePlansFetched = true;
           if(data.code === 201) {
@@ -90,6 +116,7 @@ export default {
               icon: 'check'
             });
             state.workplacePlans = data.data;
+            state.submittedDays = [...state.submittedDays,...data.submitted]
           }
         })
       }

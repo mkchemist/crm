@@ -146,9 +146,17 @@ export default {
       "Finding new needs"
     ],
     userLocations: [],
-    isUserLocationsFetched: false
+    isUserLocationsFetched: false,
+    cycles: [],
+    activeCycle: null
   },
   actions: {
+    /**
+     * get user locations
+     *
+     * @param {object} Module.State
+     * @param {boolean} force
+     */
     getUserLocations({state}, force) {
       if(!state.userLocations.length || force) {
         state.userLocations = [];
@@ -160,6 +168,26 @@ export default {
         }).catch(err => {
           console.log(err)
         });
+      }
+    },
+    /**
+     * get user cycles
+     */
+    getCycles({state}, force) {
+      if(!state.cycles.length || force) {
+        state.cycles = [];
+        return httpCall.get('rep/v1/cycles')
+        .then(({data}) => state.cycles = data.data)
+        .catch(err => console.log(err))
+      }
+    },
+    /** get active cycle */
+    getActiveCycle({state}, force) {
+      if(!state.activeCycle || force) {
+        state.activeCycle = null;
+        return httpCall.get('rep/v1/active-cycle')
+        .then(({data}) => state.activeCycle = data.data)
+        .catch(err => console.log(err))
       }
     }
   },
@@ -197,6 +225,8 @@ export default {
     },
     isUserLocationsFetched: state => {
       return state.isUserLocationsFetched;
-    }
+    },
+    repCycles : state => state.cycles,
+    repActiveCycle: state => state.activeCycle
   }
 };

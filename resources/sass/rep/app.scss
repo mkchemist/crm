@@ -59,7 +59,7 @@ $success: #38c172;
   }
 }
 
-.PM , .AM{
+.PM , .AM, .submitted{
   width:90% !important;
   margin: 0.2rem auto;
   border-radius: 5px;
@@ -78,6 +78,11 @@ $success: #38c172;
 .AM {
   background-color: royalblue !important;
   color: white !important;
+}
+
+.submitted {
+  cursor: not-allowed;
+  opacity: .7;
 }
 
 #side_datepicker {
@@ -126,5 +131,3 @@ td,th {
   width:98%;
   background-color: white;
 }
-
-

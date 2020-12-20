@@ -25,21 +25,27 @@ class WorkplacePlannerController extends Controller
         $user = Auth::user();
         $cycle = new ActiveCycleSetting;
         $date = $cycle->all();
-        if($date) {
-          $plans = WorkplacePlanner::with('workplace')->where([
-              'user_id' => $user->id,
-          ])->whereBetween('plan_date', [$date->start, $date->end])
-          ->orderBy('plan_date', 'asc')->get();
+        $WorkplacePlannerQuery = WorkplacePlanner::with('workplace')
+        ->where('user_id', $user->id)->orderBy('plan_date');
+        if(request()->start && request()->end) {
+          $plans = $WorkplacePlannerQuery->whereBetween('plan_date', [request()->start, request()->end])
+          ->get();
+        }elseif($date) {
+          $plans = $WorkplacePlannerQuery->whereBetween('plan_date', [$date->start, $date->end])
+          ->get();
 
         } else {
-          $plans = WorkplacePlanner::with('workplace')->where([
-            'user_id' => $user->id,
-        ])->orderBy('plan_date', 'asc')->get();
+          $plans = $WorkplacePlannerQuery->get();
         }
 
+        $submitted = $WorkplacePlannerQuery->where('submitted', true)
+        ->select('plan_date')
+        ->distinct()
+        ->get();
         return response()->json([
             'code' => 201,
             'data' => RepWorkplacePlannerResource::collection($plans),
+            'submitted' =>  $submitted
         ]);
     }
 
@@ -60,6 +66,21 @@ class WorkplacePlannerController extends Controller
         if ($validator->fails()) {
             return response()->json(ResponseHelper::validationErrorResponse($validator));
         }
+        /**
+         * #TODO need to be configured through admin panel
+         * to control whether it allowed or not
+         */
+       /*  if(date('20y-m-d') > $request->date) {
+          $today = date('20y-m-d');
+          return response([
+            'code'  =>  400,
+            'data'  =>  [
+              'errors'  =>  [
+                "Cannot submitted plan on day before $today"
+              ]
+            ]
+          ]);
+        } */
         $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
             return response($isNotValidDate);
@@ -73,16 +94,7 @@ class WorkplacePlannerController extends Controller
         $user = Auth::user();
         /** looping through ids */
         foreach ($ids as $id) {
-            /**
-             * check if plan already exists
-             *
-             * if exists it will add the given id
-             * to rejected plans
-             * if no exists it will create new plan
-             * for the given workplace id
-             *
-             */
-            $state = WorkplacePlanner::updateOrCreate([
+          WorkplacePlanner::updateOrCreate([
                 'workplace_id' => $id,
                 'user_id' => Auth::id(),
                 'plan_date' => $request->date,
@@ -206,5 +218,21 @@ class WorkplacePlannerController extends Controller
             'user_id' => Auth::user()->id,
         ])->first();
         return $plan;
+    }
+
+    public function submit()
+    {
+      $user = Auth::user();
+      $activeCycle = new ActiveCycleSetting;
+      $data = $activeCycle->all();
+      WorkplacePlanner::where([
+        'user_id' =>  $user->id,
+        'submitted' =>  false
+      ])->whereBetween('plan_date', [$data->start, $data->end])
+      ->update(['submitted' => true]);
+      return response([
+        'code'  =>  200,
+        'message' =>  'Workplace plans have been submitted'
+      ]);
     }
 }

@@ -97,13 +97,26 @@
               <span class="font-weight-bold">Planned visits</span>
             </p>
             <div class="p-2">
-              <button
-                class="btn btn-sm btn-primary"
-                @click="open_plan_modal = true"
-              >
-                <span><i class="fa fa-plus-circle"></i></span>
-                <span>new plan</span>
-              </button>
+              <div class="p-2 row mx-auto align-items-center">
+                <button
+                  class="btn btn-sm btn-primary"
+                  @click="open_plan_modal = true"
+                >
+                  <span><i class="fa fa-plus-circle"></i></span>
+                  <span>new plan</span>
+                </button>
+                <input type="checkbox" class="mx-1" @click="toggleOtherRepsPlans">
+                <span class="small">Other reps</span>
+                <div class="form-inline border rounded p-2 mx-2">
+                  <label class="small mx-2">from</label>
+                  <input type="date" class="form-control form-control-sm col-lg" v-model="plan_start">
+                  <label class="small mx-2">to</label>
+                  <input type="date" class="form-control form-control-sm col-lg" v-model="plan_end">
+                  <a href="#" class="badge badge-primary mx-2" @click.prevent="resetPlan">
+                    <span class="fa fa-redo"></span>
+                  </a>
+                </div>
+              </div>
               <modal-fade
                 :show="open_plan_modal"
                 @onClose="() => (open_plan_modal = false)"
@@ -134,18 +147,20 @@
                 </template>
               </modal-fade>
             </div>
-            <div class="p-2" v-if="plans.length > 0">
+            <div class="p-2" v-if="planCollection.length > 0">
               <table class="table table-sm small table-striped">
                 <thead>
                   <tr>
                     <th>Date</th>
+                    <th v-if="view_other_reps_plans">Rep</th>
                     <th>State</th>
                     <th>Dual</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="plan in plans" :key="plan.id">
+                  <tr v-for="plan in planCollection" :key="plan.id">
                     <td>{{ plan.plan_date }}</td>
+                    <td v-if="plan.user">{{ plan.user.name }}</td>
                     <td>
                       {{ plan.submitted === 0 ? "not submitted" : "submitted" }}
                     </td>
@@ -169,17 +184,29 @@
               <span><i class="fa fa-hands-helping"></i></span>
               <span class="font-weight-bold">Customer Reports</span>
             </p>
-            <div class="my-2 p-2">
+            <div class="my-2 p-2 row mx-auto align-items-center">
               <router-link :to="`/reports/add/pm/${customer.id}`" class="btn btn-sm btn-primary">
                 <span><i class="fa fa-plus-circle"></i></span>
                 <span>new visit</span>
               </router-link>
+              <input type="checkbox" @click="toggleOtherRepsReports" class="mx-1">
+              <span class="small">Other reps</span>
+              <div class="form-inline p-2 mx-2 align-items-center border rounded">
+                <label class="small">from</label>
+                <input type="date" class="form-control form-control-sm col-lg mx-2" v-model="report_start">
+                <label class="small">to</label>
+                <input type="date" class="form-control form-control-sm col-lg mx-2" v-model="report_end">
+                <a href="" @click.prevent="resetReport" class="badge badge-primary">
+                  <span class="fa fa-redo"></span>
+                </a>
+              </div>
             </div>
-            <div v-if="reports.length">
+            <div v-if="reportCollection.length">
               <table class="table table-sm small table-responsive">
                 <thead>
                   <tr>
                     <th>Date</th>
+                    <th v-if="view_other_reps_report">Rep</th>
                     <th>Type</th>
                     <th>Comment</th>
                     <th>Products</th>
@@ -187,8 +214,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="report in reports" :key="report.id">
+                  <tr v-for="report in reportCollection" :key="report.id">
                     <td>{{ report.visit_date }}</td>
+                    <td v-if="report.user">{{ report.user.name }}</td>
                     <td>{{ report.dual_with?'Double visit': 'Single visit' }}</td>
                     <td>{{ report.comment ? report.comment : '-----' }}</td>
                     <td>
@@ -242,6 +270,7 @@
  */
 import { httpCall } from "../../../helpers/http-service";
 import ModalFade from "../../../components/ModalFade";
+import { filterByDate } from '../../../helpers/helpers';
 export default {
   created() {
     this.getCustomer();
@@ -299,6 +328,56 @@ export default {
           this.open_plan_modal = false;
           this.getCustomer();
         });
+    },
+    /**
+     * toggle other reps plans
+     */
+    toggleOtherRepsPlans() {
+      if(event.target.checked) {
+        this.view_other_reps_plans = true;
+        if(!this.other_reps_plans.length) {
+          httpCall.get('rep/v1/other-reps/customer-plans/'+this.$route.params.id)
+          .then(({data}) => {
+            this.handleResponse(data, data => this.other_reps_plans = data.data)
+          }).catch(err => {
+            console.log(err)
+          });
+
+        }
+      } else {
+        this.view_other_reps_plans = false;
+      }
+    },
+    /**
+     * toggle other reps reports
+     */
+    toggleOtherRepsReports() {
+      if(event.target.checked) {
+        this.view_other_reps_report = true;
+        if(!this.other_reps_reports.length) {
+            httpCall.get('rep/v1/other-reps/customer-reports/'+this.$route.params.id)
+            .then(({data}) => {
+              this.handleResponse(data, data => {
+                data.data.map(report => {
+                  report.products = JSON.parse(report.products);
+                })
+                this.other_reps_reports = data.data
+              });
+            }).catch(err => {
+              console.log(err)
+            })
+        }
+      } else {
+        this.view_other_reps_report = false;
+      }
+    },
+    resetPlan(){
+      this.plan_start = null;
+      this.plan_end = null;
+    },
+    resetReport() {
+      this.report_start = null;
+      this.report_end = null;
     }
   },
   data: () => ({
@@ -308,11 +387,40 @@ export default {
     isFetched: false,
     err_message: null,
     new_plan_date: new Date().format("YYYY-MM-DD"),
-    open_plan_modal: false
+    open_plan_modal: false,
+    view_other_reps_plans: false,
+    view_other_reps_report: false,
+    other_reps_plans: [],
+    other_reps_reports: [],
+    plan_start: null,
+    plan_end: null,
+    report_start:null,
+    report_end: null
   }),
   computed: {
     customers() {
       return this.$store.getters.all;
+    },
+    planCollection() {
+      let plans;
+      if(!this.view_other_reps_plans) {
+        plans = this.plans;
+      } else {
+        plans = this.other_reps_plans;
+      }
+      plans = filterByDate(plans,'plan_date', {start: this.plan_start, end: this.plan_end});
+      return plans;
+    },
+    reportCollection() {
+      let reports =[];
+      if(!this.view_other_reps_report) {
+        reports = this.reports;
+      } else {
+        reports = this.other_reps_reports;
+      }
+      console.log(reports, 'loaded');
+      reports = filterByDate(reports, 'visit_date', {start: this.report_start, end: this.report_end});
+      return reports;
     }
   },
   components: {

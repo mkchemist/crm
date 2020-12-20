@@ -47,4 +47,10 @@ class User extends Authenticatable
     protected $casts = [
     'email_verified_at' => 'datetime',
   ];
+
+    protected $attributes = [
+      'user_relations'  =>  "[]",
+      'assigned_brick'  =>  "[]",
+      'assigned_specialties' => "[]"
+    ];
 }

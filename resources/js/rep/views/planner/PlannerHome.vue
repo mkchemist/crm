@@ -18,8 +18,8 @@
         <span><i class="fa fa-file-pdf"></i></span>
         <span>Export to PDF</span>
       </button>
-      <button class="btn btn-success btn-sm">
-        <span><i class="fa  fa-calendar-minus"></i></span>
+      <button class="btn btn-success btn-sm" @click="submitPlan">
+        <span><i class="fa  fa-calendar-check"></i></span>
         <span>Submit</span>
       </button>
     </div>
@@ -94,7 +94,7 @@
       :show="show_event_modal"
       :centered="true"
       header-style="bg-primary text-light"
-      @onClose="show_event_modal = false"
+      @onClose="closeEventModal"
     >
       <template v-slot:header v-if="selected_event">
         <span
@@ -146,7 +146,7 @@
     <modal-fade
       id="cell_modal_fade"
       :show="show_day_modal"
-      @onClose="show_day_modal = false"
+      @onClose="closeCellModal"
       :centered="true"
     >
       <template v-slot:header v-if="selected_day">
@@ -199,6 +199,12 @@ export default {
     summery_icon: "fa-chevron-circle-down"
   }),
   methods: {
+    isSubmittedDay(date) {
+      if (this.submitted.includes(date)) {
+        return true;
+      }
+      return false;
+    },
     /**
      * handle event click
      *
@@ -207,11 +213,20 @@ export default {
      * @param {object} e [event]
      */
     onEventClick(e) {
+      /* if(e.submitted === 1 || this.isSubmittedDay(e.start)) {
+        return;
+      } */
+      if (this.submitted.includes(e.start.format())) {
+        return;
+      }
       let id = e.id;
       let date = new Date(e.start).format("YYYY-MM-DD");
       this.selected_event = e;
       this.selected_event.start = new Date(e.start).format("YYYY-MM-DD");
+      console.time("open modal");
+      console.timeLog("open modal");
       this.show_event_modal = true;
+      console.timeEnd("open modal");
     },
     /**
      * handle day event click
@@ -226,8 +241,17 @@ export default {
       } else {
         date = new Date(e).format("YYYY-MM-DD");
       }
+      if (this.isSubmittedDay(date) === true) {
+        return;
+      }
       this.selected_day = this.duplicate_date = date;
       this.show_day_modal = true;
+    },
+    closeEventModal() {
+      this.show_event_modal = false;
+    },
+    closeCellModal() {
+      this.show_day_modal = false;
     },
     /**
      * update event
@@ -357,6 +381,9 @@ export default {
         this.summery_icon = "fa-chevron-circle-down";
       }
     },
+    /**
+     * export table to PDF
+     */
     exportToPDF() {
       let plans = filterData(this.plans, "start");
       let exported = window.open("", "_blank");
@@ -387,27 +414,42 @@ export default {
       });
       exported.document.body.append(exportTable);
     },
+    /**
+     * generate visit link
+     */
     generateVisitLink() {
-      if(!this.selected_event) {
+      if (!this.selected_event) {
         return;
       }
-      if(this.selected_event.class === "AM") {
-        let link =  `/reports/add/am/${this.selected_event.workplace.id}`
+      if (this.selected_event.class === "AM") {
+        let link = `/reports/add/am/${this.selected_event.workplace.id}`;
         this.show_event_modal = false;
         setTimeout(() => {
-
           this.$router.push(link);
         }, 300);
-
       } else {
-        let link =  `/reports/add/pm/${this.selected_event.customer_id}`
+        let link = `/reports/add/pm/${this.selected_event.customer_id}`;
         this.show_event_modal = false;
         setTimeout(() => {
-
           this.$router.push(link);
         }, 300);
-
       }
+    },
+    submitPlan() {
+      httpCall.post('rep/v1/planner/submit')
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.$store.dispatch('getPlanner', true)
+        })
+      }).then(() => {
+        httpCall.post('rep/v1/workplace-planner/submit')
+        .then(({data}) => {
+          this.handleResponse(data, data => {
+            this.$store.dispatch('getWorkplacePlanner', true)
+          });
+        });
+      })
+      .catch(err => console.log(err))
     }
   },
   computed: {
@@ -439,6 +481,10 @@ export default {
         customers,
         days
       };
+    },
+    /** submitted */
+    submitted() {
+      return this.$store.getters.submittedDays;
     }
   }
 };

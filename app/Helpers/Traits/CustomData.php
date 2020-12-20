@@ -12,11 +12,30 @@ trait CustomData {
   public function getRelatedUserData($model)
   {
     $user = Auth::user();
-    return $model->whereIn('user_id', function($query) use($user) {
+    switch($user->role) {
+      case 'dm' :
+        return $this->getRelatedRepsData($user, $model);
+      default:
+        return $model->where('user_id', $user->id);
+    }
+    /* return $model->whereIn('user_id', function($query) use($user) {
       $query->from('users')->select('id')
-      /* ->whereIn('line', json_decode($user->line)) */
-      /* ->whereIn('district', json_decode($user->district)) */
+      ->whereIn('line', json_decode($user->line))
+      ->whereIn('district', json_decode($user->district))
       ->get();
-    });
+    }); */
+  }
+
+  public function getRelatedRepsData($user, $model)
+  {
+    if($user->user_relations) {
+      $relations = json_decode($user->user_relations);
+      if(count($relations) > 0) {
+        $reps = $relations->reps;
+        return $model->whereIn('user_id', $reps);
+      } else {
+        return $model->get();
+      }
+    }
   }
 }

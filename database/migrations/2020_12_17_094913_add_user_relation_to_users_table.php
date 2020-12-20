@@ -14,7 +14,7 @@ class AddUserRelationToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->longText('user_relations')->nullable()->after('line')->default(json_encode([]));
+            $table->longText('user_relations')->nullable()->after('line');
         });
     }
 

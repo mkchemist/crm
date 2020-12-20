@@ -18,6 +18,10 @@ import Navbar from "./components/Navbar.vue";
 export default {
   components: {
     Navbar
+  },
+  mounted() {
+    this.$store.dispatch('getCycles')
+    .then(() => this.$store.dispatch('getActiveCycle'))
   }
 }
 </script>

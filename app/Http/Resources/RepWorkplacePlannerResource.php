@@ -21,9 +21,10 @@ class RepWorkplacePlannerResource extends JsonResource
         'title'     =>  $this->workplace->name,
         'id'        =>  $this->id,
         'type'      =>  'AM',
-        'class'     =>  'AM',
+        'class'     =>  $this->submitted ? 'submitted AM' :'AM',
         'name'      =>  $this->workplace->name,
-        'workplace' =>  $this->workplace
+        'workplace' =>  $this->workplace,
+        'submitted' =>  $this->submitted
       ];
     }
 }

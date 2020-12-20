@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1\Rep;
 
-use App\Customer;
 use App\Helpers\ResponseHelper;
 use App\Helpers\Setting\ActiveCycleSetting;
 use App\Helpers\Traits\CycleDateValidation;
@@ -25,22 +24,25 @@ class PlannerController extends Controller
     {
         $activeCycle = new ActiveCycleSetting;
         $activeCycleData = $activeCycle->all();
-        $plans = Planner::with(['customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user'])
-        ->where([
-            'user_id' => Auth::user()->id,
-        ]);
-        if($activeCycleData) {
+        $user = Auth::user();
+        $model = Planner::query();
+        $plans = $model->with(['customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user'])
+        ->where('user_id', $user->id)->orderBy('plan_date', 'asc');
+        if(request()->start && request()->end) {
+          $plans = $plans->whereBetween('plan_date', [request()->start, request()->end])->get();
+        } elseif($activeCycleData) {
           $plans = $plans->whereBetween('plan_date', [$activeCycleData->start, $activeCycleData->end])
-          ->orderBy('plan_date', 'asc')->get();
+          ->get();
         } else {
-          $plans = $plans->orderBy('plan_date', 'asc')->get();
+          $plans = $plans->get();
         }
-        if (count($plans) === 0) {
-            return response()->json(ResponseHelper::EMPTY_RESPONSE);
-        }
+
+        $submitted = $model->where('submitted', true)->select('plan_date')->distinct()->get();
+
         return response()->json([
             'code' => 201,
             'data' => RepPlannerResource::collection($plans),
+            'submitted' => $submitted->toArray(),
         ]);
     }
 
@@ -251,6 +253,26 @@ class PlannerController extends Controller
             'user_id' => Auth::user()->id,
         ])->first();
         return $plan;
+    }
+
+
+    public function submitPlan()
+    {
+      $user = Auth::user();
+      $activeCycle = new ActiveCycleSetting;
+      $data = $activeCycle->all();
+      $start = $data->start;
+      $end = $data->end;
+      $plans = Planner::where([
+        'user_id' =>  $user->id,
+        'submitted'  =>  false
+      ])->whereBetween('plan_date', [$start, $end])->update([
+        'submitted' => true
+      ]);
+      return response([
+        'code'  =>  200,
+        'message' =>  'PM plans have been submitted'
+      ]);
     }
 
 }
