@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin\Setting;
 
 use App\Helpers\Setting\LineSetting;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
 
 class LineSettingController extends Controller
@@ -30,6 +31,7 @@ class LineSettingController extends Controller
      */
     public function store(Request $request)
     {
+      $id = $request->id;
       $lines = new LineSetting;
       $data = json_decode($request->lines);
       foreach($data as $item) {
@@ -37,9 +39,14 @@ class LineSettingController extends Controller
         $item->specialties = json_decode($item->specialties);
       }
       $lines->save($data);
+      $newLines = $lines->all();
+      $users = User::whereJsonContains('line', $request->line)
+      ->update(['assigned_specialties' => json_encode($newLines[$id]->specialties)]);
       return response([
         'code'  =>  200,
-        'message' =>  'Lines updated'
+        'message' =>  'Lines updated',
+        'users'   =>  $users,
+        'lines'   =>  $newLines
       ]);
     }
 

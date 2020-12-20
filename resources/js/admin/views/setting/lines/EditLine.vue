@@ -204,7 +204,7 @@ export default {
         }
         line.products = JSON.stringify(line.products);
       })
-      httpCall.post('admin/v1/setting/lines', {lines: JSON.stringify(lines)})
+      httpCall.post('admin/v1/setting/lines', {lines: JSON.stringify(lines), id, line: line.name})
       .then(({data}) => {
         this.handleResponse(data, data => {
           this.$store.dispatch("getAllLines", true);

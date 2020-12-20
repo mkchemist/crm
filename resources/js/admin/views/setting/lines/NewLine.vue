@@ -189,6 +189,7 @@ export default {
         ...this.line
       }
       lines.push(line);
+      let id = lines.length -1;
       lines.map(line => {
         if(line.specialties.includes('all')) {
           line.specialties = JSON.stringify([]);
@@ -197,7 +198,7 @@ export default {
         }
         line.products = JSON.stringify(line.products);
       })
-      httpCall.post('admin/v1/setting/lines',{lines: JSON.stringify(lines)})
+      httpCall.post('admin/v1/setting/lines',{lines: JSON.stringify(lines), line, id})
       .then(({data}) => {
         this.handleResponse(data, data => {
           this.$store.dispatch('getAllLines', true);

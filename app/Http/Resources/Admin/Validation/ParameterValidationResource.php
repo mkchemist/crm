@@ -16,19 +16,19 @@ class ParameterValidationResource extends JsonResource
     {
         return [
           'id'              =>  $this->id,
-          'customer_id'     =>  $this->customer->id,
-          'customer'        =>  $this->customer->name,
+          'customer_id'     =>  $this->customer ?$this->customer->id : null,
+          'customer'        =>  $this->customer ?$this->customer->name : null,
           'from'            =>  $this->current,
           'to'              =>  $this->next,
           'user'            =>  $this->user->name,
           'user_id'         =>  $this->user->id,
-          'specialty'       =>  $this->customer->specialty,
-          'address'         =>  $this->customer->address,
-          'brick'           =>  $this->customer->brick,
-          'area'            =>  $this->customer->area,
-          'district'        =>  $this->customer->district,
-          'territory'       =>  $this->customer->territory,
-          'region'          =>  $this->customer->region
+          'specialty'       =>  $this->customer ?$this->customer->specialty : null,
+          'address'         =>  $this->customer ?$this->customer->address : null,
+          'brick'           =>  $this->customer ?$this->customer->brick : null,
+          'area'            =>  $this->customer ?$this->customer->area : null,
+          'district'        =>  $this->customer ?$this->customer->district : null,
+          'territory'       =>  $this->customer ?$this->customer->territory : null,
+          'region'          =>  $this->customer ?$this->customer->region : null
         ];
     }
 }
