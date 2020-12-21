@@ -87,47 +87,43 @@
               </ValidationProvider>
             </div>
           </div>
-          <!-- line  Products -->
-          <div class="row mx-auto my-2">
-            <div class="col-lg-4">
-              <label for="desc" class="text-muted">Products : </label>
-            </div>
-            <div class="col-lg-4">
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                v-model="product"
-                placeholder="write product name"
-              />
-              <button
-                type="button"
-                class="btn btn-sm btn-block btn-primary my-1"
-                :disabled="!product"
-                @click="addProduct"
-              >
+          <!-- New line product control -->
+          <div class="p-2 border rounded">
+            <div >
+              <button class="btn btn-sm btn-primary" type="button" @click="createNewDosage">
                 <span class="fa fa-plus-circle"></span>
-                <span>add</span>
+                <span>Add new dosage</span>
               </button>
             </div>
-            <div class="col-lg-4 border p-2 rounded">
-              <ul class="nav">
-                <li
-                  class="nav-item col-12 bg-light my-1 clearfix"
-                  v-for="(val, key) in line.products"
-                  :key="`product_${key}`"
-                >
-                  <span>{{ val }}</span>
-                  <button
-                    type="button"
-                    class="close"
-                    @click="deleteProduct(key)"
-                  >
-                    &times;
+            <div v-if="products.length" class="my-1">
+              <div class="row mx-auto p-2 border rounded my-2" v-for="(product, i) in products" :key="`product_${i}`">
+                <div class="col-lg-5">
+                  <label for="" class="text-muted">Product {{ product.name ? `: ${product.name}` : `Name`}}</label>
+                  <input type="text" class="form-control form-control-sm" placeholder="Product name" v-model="product.name">
+                   <button class="btn btn-sm btn-block btn-danger my-2" @click="removeProduct(i)">
+                    <span class="fa fa-trash"></span>
                   </button>
-                </li>
-              </ul>
+                </div>
+                <div class="row mx-auto col-lg-7">
+                  <div class="col-lg-6">
+                    <input type="text" class="form-control form-control" placeholder="Competitor name" v-model="competitors[i]">
+                    <button class="btn btn-sm btn-block btn-primary my-1" @click="createCompetitor(i)" type="button" :disabled="!competitors[i]">
+                      <span class="fa fa-plus"></span>
+                    </button>
+                  </div>
+                  <div class="col-lg-6 border rounded">
+                    <ul class="nav">
+                      <li class="nav-item col-12 clearfix bg-light small" v-for="(val,key) in product.competitors" :key="`product_${i}_competitor_${key}`">
+                        <span>{{ val }}</span>
+                        <button class="close float-right" @click="removeCompetitor(key, i)" type="button">&times;</button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+            <!-- end new line product control -->
           <hr />
           <!-- Form control -->
           <div class="form-group text-right">
@@ -179,15 +175,18 @@ export default {
       products: [],
       specialties: []
     },
-    product: null,
-    specialties: []
+    specialties: [],
+    products: [],
+    competitors: []
   }),
   methods: {
     saveLine() {
-      let lines = [...this.lines];
+      let lines = new Array;
+      lines = Array.from(this.lines)
       let line ={
         ...this.line
       }
+      line.products = this.products
       lines.push(line);
       let id = lines.length -1;
       lines.map(line => {
@@ -208,29 +207,43 @@ export default {
         console.log(err)
       });
     },
-    addProduct() {
-      if (
-        this.product === null ||
-        this.product === "" ||
-        this.product === " "
-      ) {
-        this.$toasted.show("Product name cannot be empty");
-        return;
-      }
-      if (!this.line.products.includes(this.product)) {
-        this.line.products.push(this.product);
-        this.product = "";
-      } else {
-        this.$toasted.show(`${this.product} is already exist`);
-        return;
-      }
-    },
-    deleteProduct(i) {
-      this.line.products.splice(i, 1);
-    },
     resetProducts() {
-      this.line.products = [];
+      this.products = [];
       this.line.specialties = [];
+      this.competitors = [];
+    },
+    createNewDosage() {
+      this.products.push({
+        name: '',
+        competitors: []
+      });
+      this.competitors.push('')
+    },
+    /**
+     * add new competitor
+     *
+     * @param {int} i [product index]
+     */
+    createCompetitor(i) {
+      this.products[i].competitors.push(this.competitors[i]);
+      this.competitors[i] = null;
+    },
+    /**
+     * remove product from dosage form
+     *
+     * @param {int} key [competitor index]
+     * @param {int} i [product index]
+     */
+    removeCompetitor(key, i) {
+      this.products[i].competitors.splice(key, 1);
+    },
+    /**
+     * remove product from products list
+     *
+     * @param {int} i [product index]
+     */
+    removeProduct(i) {
+      this.products.splice(i, 1);
     }
   }
 };

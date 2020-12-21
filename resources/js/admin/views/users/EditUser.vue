@@ -340,6 +340,14 @@ export default {
       if (this.locations.length) {
         regions = this.filterItems(this.locations, "region");
       }
+      regions.sort((a,b) => {
+        if(a > b) {
+          return 1
+        } else {
+          return -1
+        }
+        return 0
+      })
       return regions;
     },
     territories() {
@@ -354,6 +362,14 @@ export default {
       territory = this.filterItems(this.locations, "territory", item =>
         this.user.region.includes(item.region)
       );
+       territory.sort((a,b) => {
+        if(a > b) {
+          return 1
+        } else {
+          return -1
+        }
+        return 0
+      })
       return territory;
     },
     districts() {
@@ -378,6 +394,14 @@ export default {
         /* item => item.territory === this.user.territory */
         item => this.user.territory.includes(item.territory)
       );
+       district.sort((a,b) => {
+        if(a > b) {
+          return 1
+        } else {
+          return -1
+        }
+        return 0
+      })
       return district;
     },
     areas() {
@@ -402,6 +426,14 @@ export default {
       areas = this.filterItems(this.locations, "area", item =>
         this.user.district.includes(item.district)
       );
+       areas.sort((a,b) => {
+        if(a > b) {
+          return 1
+        } else {
+          return -1
+        }
+        return 0
+      })
       return areas;
     },
     bricks() {
@@ -425,6 +457,14 @@ export default {
       bricks = this.filterItems(this.locations, "brick", item =>
        this.user.area.includes(item.area)
       );
+       bricks.sort((a,b) => {
+        if(a > b) {
+          return 1
+        } else {
+          return -1
+        }
+        return 0
+      })
       return bricks;
     },
     lines() {

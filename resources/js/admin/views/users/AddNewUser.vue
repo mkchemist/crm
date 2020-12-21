@@ -90,11 +90,13 @@
                       "
                       multiple
                     >
-                      <option value="">Select Line</option>
                       <option value="all">All</option>
-                      <option value="line1">Line 1</option>
-                      <option value="line2">Line 2</option>
-                      <option value="line3">Line 3</option>
+                      <option
+                        v-for="(val, key) in lines"
+                        :key="`line_${key}`"
+                        :value="val.name"
+                        >{{ val.name }}</option
+                      >
                     </select>
                   </ValidationProvider>
                 </div>
@@ -178,7 +180,9 @@
                       id="territory"
                       v-model="user.territory"
                       :class="
-                        `form-control ${errors[0] ? 'border border-danger' : ''}`
+                        `form-control ${
+                          errors[0] ? 'border border-danger' : ''
+                        }`
                       "
                       :disabled="!user.region.length"
                       multiple
@@ -242,7 +246,9 @@
                       id="area"
                       v-model="user.area"
                       :class="
-                        `form-control ${errors[0] ? 'border border-danger' : ''}`
+                        `form-control ${
+                          errors[0] ? 'border border-danger' : ''
+                        }`
                       "
                       :disabled="!user.district.length"
                       multiple
@@ -320,16 +326,18 @@
 import { httpCall } from "../../../helpers/http-service";
 export default {
   created() {
-    this.$store.dispatch("getAllLocations");
+    this.$store.dispatch("getAllLocations").then(() => {
+      this.$store.dispatch("getAllLines");
+    });
   },
   data: () => ({
     user: {
-      name: '',
-      email: '',
-      username: '',
-      password: '',
+      name: "",
+      email: "",
+      username: "",
+      password: "",
       line: [],
-      role: '',
+      role: "",
       region: [],
       territory: [],
       district: [],
@@ -351,6 +359,14 @@ export default {
       if (this.locations.length) {
         regions = this.filterItems(this.locations, "region");
       }
+      regions.sort((a, b) => {
+        if (a > b) {
+          return 1;
+        } else {
+          return -1;
+        }
+        return 0;
+      });
       return regions;
     },
     territories() {
@@ -365,6 +381,14 @@ export default {
       territory = this.filterItems(this.locations, "territory", item =>
         this.user.region.includes(item.region)
       );
+      territory.sort((a, b) => {
+        if (a > b) {
+          return 1;
+        } else {
+          return -1;
+        }
+        return 0;
+      });
       return territory;
     },
     districts() {
@@ -380,7 +404,6 @@ export default {
             this.user.region.includes(item.region)
           );
         }
-
         return district;
       }
       district = this.filterItems(
@@ -389,6 +412,14 @@ export default {
         /* item => item.territory === this.user.territory */
         item => this.user.territory.includes(item.territory)
       );
+      district.sort((a, b) => {
+        if (a > b) {
+          return 1;
+        } else {
+          return -1;
+        }
+        return 0;
+      });
       return district;
     },
     areas() {
@@ -409,6 +440,14 @@ export default {
         } else {
           areas = this.filterItems(this.locations, "area");
         }
+        areas.sort((a, b) => {
+          if (a > b) {
+            return 1;
+          } else {
+            return -1;
+          }
+          return 0;
+        });
         return areas;
       }
       areas = this.filterItems(this.locations, "area", item =>
@@ -418,9 +457,11 @@ export default {
     },
     bricks() {
       let bricks = [];
-      if (this.user.area[0] === 'all') {
-        if(this.user.district[0] !== 'all') {
-          bricks = this.filterItems(this.locations, 'brick', item => this.user.district.includes(item.district))
+      if (this.user.area[0] === "all") {
+        if (this.user.district[0] !== "all") {
+          bricks = this.filterItems(this.locations, "brick", item =>
+            this.user.district.includes(item.district)
+          );
         } else if (this.user.territory[0] !== "all") {
           bricks = this.filterItems(this.locations, "brick", item =>
             this.user.territory.includes(item.territory)
@@ -435,9 +476,20 @@ export default {
         return bricks;
       }
       bricks = this.filterItems(this.locations, "brick", item =>
-       this.user.area.includes(item.area)
+        this.user.area.includes(item.area)
       );
+      bricks.sort((a, b) => {
+        if (a > b) {
+          return 1;
+        } else {
+          return -1;
+        }
+        return 0;
+      });
       return bricks;
+    },
+    lines() {
+      return this.$store.getters.allLines;
     }
   },
   methods: {
@@ -446,9 +498,9 @@ export default {
         ...this.user
       };
       request = this.serializeRequest(request);
-      console.log(request)
+      console.log(request);
       httpCall
-        .post("admin/v1/users" , request)
+        .post("admin/v1/users", request)
         .then(({ data }) => {
           this.handleResponse(data, data => {
             this.$router.push("/users");

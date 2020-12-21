@@ -64,4 +64,14 @@ class RepSettingController extends Controller
         'data'  =>  $data
       ]);
     }
+
+    /**
+     * get user line props
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function line()
+    {
+
+    }
 }
