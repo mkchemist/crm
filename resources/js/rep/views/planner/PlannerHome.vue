@@ -216,7 +216,7 @@ export default {
       /* if(e.submitted === 1 || this.isSubmittedDay(e.start)) {
         return;
       } */
-      if (this.submitted.includes(e.start.format())) {
+      if (e.submitted === 1 && this.submitted.includes(e.start.format())) {
         return;
       }
       let id = e.id;

@@ -30,7 +30,7 @@ trait CustomData {
   {
     if($user->user_relations) {
       $relations = json_decode($user->user_relations);
-      if(count($relations) > 0) {
+      if(count($relations->reps) > 0) {
         $reps = $relations->reps;
         return $model->whereIn('user_id', $reps);
       } else {
