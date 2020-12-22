@@ -40,7 +40,7 @@ class LineSettingController extends Controller
       }
       $lines->save($data);
       $newLines = $lines->all();
-      $users = User::whereJsonContains('line', $request->line)
+      $users = User::whereJsonContains('line', [$request->line])
       ->update(['assigned_specialties' => json_encode($newLines[$id]->specialties)]);
       return response([
         'code'  =>  200,
