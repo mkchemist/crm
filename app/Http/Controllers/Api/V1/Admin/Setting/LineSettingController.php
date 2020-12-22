@@ -17,11 +17,9 @@ class LineSettingController extends Controller
     public function index()
     {
       $lines = new LineSetting;
-      $users =  User::whereJsonContains('line', ['Line 3'])->get();
       return response([
         'code'  =>  200,
         'data'  =>  $lines->all(),
-        'users' =>  $users
       ]);
     }
 
@@ -42,7 +40,7 @@ class LineSettingController extends Controller
       }
       $lines->save($data);
       $newLines = $lines->all();
-      $users = User::whereJsonContains('line', [$request->line])
+      $users = User::where('line', 'like',"%$request->line%")
       ->update(['assigned_specialties' => json_encode($newLines[$id]->specialties)]);
       return response([
         'code'  =>  200,
