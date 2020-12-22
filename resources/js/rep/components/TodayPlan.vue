@@ -13,12 +13,15 @@
           <ul class="nav">
             <li class="nav-item col-12 border-bottom clearfix" v-for="(customer,i) in plannedCustomers" :key="customer.id+''+i">
               <span>
-                <i v-if="customer.class=== 'PM'" class="fa fa-user-md text-success"></i>
+                <i v-if="!['AM','submitted AM'].includes(customer.class)" class="fa fa-user-md text-success"></i>
                 <i v-else class="fa fa-hospital text-primary"></i>
               </span>
               <span class="text-muted small">{{ customer.title }}</span>
-              <router-link :to="`/reports/add/pm/${customer.customer_id}`" v-if="customer.class === 'PM'" class="float-right">
+              <router-link :to="`/reports/add/pm/${customer.customer_id}`" v-if="!['AM','submitted AM'].includes(customer.class)" class="float-right">
                 <span><i class="fa fa-hands-helping text-success"></i></span>
+              </router-link>
+              <router-link :to="`/reports/add/am/${customer.workplace_id}`" v-if="['AM','submitted AM'].includes(customer.class)" class="float-right">
+                <span><i class="fa fa-hands-helping text-primary"></i></span>
               </router-link>
             </li>
           </ul>
@@ -61,7 +64,8 @@ export default {
     },
     fetched() {
       return this.$store.getters.isPlansFetched;
-    }
+    },
+
   },
   methods: {
     loadPlans() {
