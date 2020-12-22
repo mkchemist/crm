@@ -131,6 +131,8 @@
                 v-model="relations.reps"
                 multiple
                 class="form-control"
+                style="min-height:250px"
+
               >
                 <option v-for="user in reps" :key="user.id" :value="user.id"
                   >{{ user.name }}-({{ user.role }})</option
@@ -154,6 +156,8 @@
                 v-model="relations.dm"
                 class="form-control"
                 multiple
+                style="min-height:250px"
+
               >
                 <option v-for="user in dm" :key="user.id" :value="user.id"
                   >{{ user.name }}-({{ user.role }})</option
@@ -177,6 +181,8 @@
                 v-model="relations.rm"
                 class="form-control"
                 multiple
+                style="min-height:250px"
+
               >
                 <option v-for="user in am" :key="user.id" :value="user.id"
                   >{{ user.name }}-({{ user.role }})</option
@@ -200,6 +206,8 @@
                 v-model="relations.am"
                 class="form-control"
                 multiple
+                style="min-height:250px"
+
               >
                 <option v-for="user in rm" :key="user.id" :value="user.id"
                   >{{ user.name }}-({{ user.role }})</option
@@ -223,6 +231,8 @@
                 v-model="relations.marketing"
                 class="form-control"
                 multiple
+                style="min-height:250px"
+
               >
                 <option
                   v-for="user in marketing"

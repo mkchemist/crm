@@ -33,7 +33,7 @@ class LineSetting extends Manager {
       'name'  =>  $this->name,
       'group' =>  $this->group
     ])->first();
-    if($lines) {
+    if($lines->content) {
       $this->data = json_decode($lines->content);
     } else {
       $this->data = [];

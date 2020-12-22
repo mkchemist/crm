@@ -89,6 +89,7 @@
                         }`
                       "
                       multiple
+                      style="min-height:150px"
                     >
                       <option value="all">All</option>
                       <option
@@ -153,6 +154,7 @@
                       "
                       :disabled="!user.role"
                       multiple
+                      style="min-height:150px"
                     >
                       <option value="all">All</option>
                       <option
@@ -186,6 +188,8 @@
                       "
                       :disabled="!user.region.length"
                       multiple
+                      style="min-height:150px"
+
                     >
                       <option value="all">All</option>
                       <option
@@ -221,6 +225,8 @@
                       "
                       :disabled="!user.territory.length"
                       multiple
+                      style="min-height:150px"
+
                     >
                       <option value="all">All</option>
                       <option
@@ -252,6 +258,8 @@
                       "
                       :disabled="!user.district.length"
                       multiple
+                      style="min-height:150px"
+
                     >
                       <option value="all">All</option>
                       <option
@@ -285,6 +293,8 @@
                     multiple
                     class="form-control"
                     v-model="user.assigned_brick"
+                      style="min-height:200px"
+
                   >
                     <option
                       v-for="(item, i) in bricks"
