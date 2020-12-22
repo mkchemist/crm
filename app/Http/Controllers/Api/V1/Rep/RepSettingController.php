@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Rep;
 
 use App\Helpers\Setting\ActiveCycleSetting;
 use App\Helpers\Setting\CyclesSetting;
+use App\Helpers\Setting\LineSetting;
 use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -72,6 +73,21 @@ class RepSettingController extends Controller
      */
     public function line()
     {
-
+      $user = Auth::user();
+      $userLine = json_decode($user->line);
+      $lines = new LineSetting;
+      $data =$lines->all();
+      $products = [];
+      if($data && count($data)) {
+        foreach($data as $line) {
+          if(in_array($line->name,$userLine)) {
+            $products = $line->products;
+          }
+        }
+      }
+      return response([
+        'code'  =>  200,
+        'data'  =>  $products
+      ]);
     }
 }

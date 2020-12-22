@@ -19,8 +19,8 @@
           class="form-control form-control-sm"
           v-model="product.name"
         >
-          <option v-for="(item, i) in products" :key="i" :value="item">{{
-            item
+          <option v-for="(item, i) in rep_products" :key="i" :value="item.name">{{
+            item.name
           }}</option>
         </select>
       </div>
@@ -65,12 +65,15 @@
 
       <div class="col-lg">
         <label for="competitor" class="text-muted small">Competitor</label>
-        <input
+        <!-- <input
           type="text"
           name="competitor"
           class="form-control form-control-sm"
           v-model="product.competitor"
-        />
+        /> -->
+        <select name="competitor" id="competitor" class="form-control form-control-sm" v-model="product.competitor">
+          <option v-for="(val, key) in getProductCompetitors(product, i)" :key="`product_${i}_competitor_${key}`" :value="val">{{ val }}</option>
+        </select>
       </div>
       <div class="col-lg" v-if="pharmacyProducts">
         <label for="competitor_rate" class="text-muted small">Competitor Rate</label>
@@ -96,7 +99,11 @@
 </template>
 
 <script>
+import { httpCall } from '../../helpers/http-service';
 export default {
+  mounted() {
+    this.getRepProducts();
+  },
   props: ["data", 'pharmacyProducts'],
   computed: {
     products() {
@@ -107,8 +114,12 @@ export default {
     },
     visitActions() {
       return this.$store.getters.visitActions;
-    }
+    },
+
   },
+  data: () => ({
+    rep_products : []
+  }),
   methods: {
     addNewProduct() {
       let product = {};
@@ -122,8 +133,25 @@ export default {
     },
     removeProduct(i) {
       this.data.splice(i, 1);
+    },
+    getRepProducts() {
+      return httpCall.get('rep/v1/rep-line')
+      .then(({data}) => {
+        this.handleResponse(data ,data => {
+          this.rep_products = data.data;
+        });
+      }).catch(err => console.log(err));
+    },
+  getProductCompetitors(product,i) {
+      let competitors = [];
+      this.rep_products.map(product => {
+        if(product.name ===this.data[i].name) {
+          competitors = Array.from(product.competitors);
+        }
+      })
+      return competitors;
     }
-  }
+  },
 };
 </script>
 

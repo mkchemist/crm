@@ -5,10 +5,6 @@
  */
 export const CUSTOMERS_TABLE_HEADS = [
   {
-    title: "ID",
-    name: "id"
-  },
-  {
     title: "Name",
     name: "name"
   },

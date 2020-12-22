@@ -21,22 +21,12 @@
           :data="all"
           head-class="bg-success text-light"
         >
-          <template v-slot:head>
-            <th>Achievment state</th>
-            <th>Address</th>
-            <th>Phone</th>
-            <th>Brick</th>
-            <th>Area</th>
-            <th>State</th>
-            <th>Actions</th>
+        <template v-slot:head:before>
+            <th>ID</th>
+            <th>Action</th>
           </template>
-          <template v-slot:body="{ item }">
-            <td :class="`${calculateState(item).class}`">{{ calculateState(item).title }}</td>
-            <td>{{ item.address }}</td>
-            <td>{{ item.phone }}</td>
-            <td>{{ item.brick }}</td>
-            <td>{{ item.area }}</td>
-            <td>{{ item.state }}</td>
+           <template v-slot:body:before="{item}">
+            <th>{{ item.id }}</th>
             <td>
               <router-link
                 :to="`/workplaces/hospital/view/${item.id}`"
@@ -51,6 +41,22 @@
                 <span><i class="fa fa-edit"></i></span>
               </router-link>
             </td>
+          </template>
+          <template v-slot:head>
+            <th>Achievment state</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Brick</th>
+            <th>Area</th>
+            <th>State</th>
+          </template>
+          <template v-slot:body="{ item }">
+            <td :class="`${calculateState(item).class}`">{{ calculateState(item).title }}</td>
+            <td>{{ item.address }}</td>
+            <td>{{ item.phone }}</td>
+            <td>{{ item.brick }}</td>
+            <td>{{ item.area }}</td>
+            <td>{{ item.state }}</td>
           </template>
         </table-component>
       </div>
@@ -91,10 +97,6 @@ export default {
   },
   data: () => ({
     heads: [
-      {
-        title: "ID",
-        name: "id"
-      },
       {
         title: "Name",
         name: "name"

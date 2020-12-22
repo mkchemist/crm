@@ -41,6 +41,8 @@ Route::group([
   Route::get('/cycles', 'RepSettingController@Cycles');
   /** Active cycle */
   Route::get('/active-cycle', 'RepSettingController@activeCycle');
+  /** Line setting */
+  Route::get('/rep-line', 'RepSettingController@line');
   // coaches routes
   Route::get('/coach', 'CoachController@index');
   // customers routes

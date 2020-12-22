@@ -41,13 +41,33 @@
             headClass="bg-success text-light"
             :with-favorite="true"
           >
+            <template v-slot:head:before>
+              <th>ID</th>
+              <th>Actions</th>
+            </template>
+            <template v-slot:body:before="{item}">
+              <td>{{ item.id }}</td>
+              <td>
+                <router-link
+                  :to="`/customers/view/${item.id}`"
+                  class="btn btn-sm btn-info"
+                >
+                  <span><i class="fa fa-eye"></i></span>
+                </router-link>
+                <router-link
+                  :to="`/customers/edit/${item.id}`"
+                  class="btn btn-sm btn-warning"
+                >
+                  <span><i class="fa fa-edit"></i></span>
+                </router-link>
+              </td>
+            </template>
             <template v-slot:head>
               <th>Missed</th>
               <th>Status</th>
               <th>Address</th>
               <th>Brick</th>
               <th>Area</th>
-              <th>Actions</th>
             </template>
             <template v-slot:body="{ item }">
               <td>
@@ -88,20 +108,7 @@
               <td>
                 {{ item.area }}
               </td>
-              <td>
-                <router-link
-                  :to="`/customers/view/${item.id}`"
-                  class="btn btn-sm btn-info"
-                >
-                  <span><i class="fa fa-eye"></i></span>
-                </router-link>
-                <router-link
-                  :to="`/customers/edit/${item.id}`"
-                  class="btn btn-sm btn-warning"
-                >
-                  <span><i class="fa fa-edit"></i></span>
-                </router-link>
-              </td>
+
             </template>
           </table-component>
         </div>

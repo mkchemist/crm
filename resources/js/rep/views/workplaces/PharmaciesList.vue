@@ -23,19 +23,13 @@
             :heads="heads"
             head-class="bg-success text-light"
           >
-            <template v-slot:head>
-              <th>Visits</th>
-              <th>Address</th>
-              <th>Brick</th>
-              <th>Area</th>
+            <template v-slot:head:before>
+              <th>ID</th>
               <th>Actions</th>
             </template>
-            <template v-slot:body="{ item }">
-              <td>{{ item.report.length }}</td>
-              <td>{{ item.address }}</td>
-              <td>{{ item.brick }}</td>
-              <td>{{ item.area }}</td>
-              <td>
+            <template v-slot:body:before="{item}">
+              <th>{{ item.id }}</th>
+               <td>
                 <router-link
                   :to="`/workplaces/pharmacy/view/${item.id}`"
                   class="btn btn-sm btn-info"
@@ -49,6 +43,19 @@
                   <span><i class="fa fa-edit"></i></span>
                 </router-link>
               </td>
+            </template>
+            <template v-slot:head>
+              <th>Visits</th>
+              <th>Address</th>
+              <th>Brick</th>
+              <th>Area</th>
+            </template>
+            <template v-slot:body="{ item }">
+              <td>{{ item.report.length }}</td>
+              <td>{{ item.address }}</td>
+              <td>{{ item.brick }}</td>
+              <td>{{ item.area }}</td>
+
             </template>
           </table-component>
         </div>
