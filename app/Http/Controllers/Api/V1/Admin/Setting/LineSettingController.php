@@ -17,9 +17,11 @@ class LineSettingController extends Controller
     public function index()
     {
       $lines = new LineSetting;
+      $users =  User::whereJsonContains('line', ['Line 3'])->get();
       return response([
         'code'  =>  200,
-        'data'  =>  $lines->all()
+        'data'  =>  $lines->all(),
+        'users' =>  $users
       ]);
     }
 
