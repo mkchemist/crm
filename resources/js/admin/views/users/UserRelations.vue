@@ -130,7 +130,7 @@
                 id="reps"
                 v-model="relations.reps"
                 multiple
-                class="form-control"
+                class="form-control small"
                 style="min-height:250px"
 
               >
@@ -154,7 +154,7 @@
                 name="reps"
                 id="reps"
                 v-model="relations.dm"
-                class="form-control"
+                class="form-control small"
                 multiple
                 style="min-height:250px"
 
@@ -179,7 +179,7 @@
                 name="reps"
                 id="reps"
                 v-model="relations.rm"
-                class="form-control"
+                class="form-control small"
                 multiple
                 style="min-height:250px"
 
@@ -204,7 +204,7 @@
                 name="reps"
                 id="reps"
                 v-model="relations.am"
-                class="form-control"
+                class="form-control small"
                 multiple
                 style="min-height:250px"
 
@@ -229,7 +229,7 @@
                 name="reps"
                 id="reps"
                 v-model="relations.marketing"
-                class="form-control"
+                class="form-control small"
                 multiple
                 style="min-height:250px"
 
@@ -269,6 +269,7 @@
 </template>
 
 <script>
+import { sortBy } from '../../../helpers/helpers';
 import { httpCall } from "../../../helpers/http-service";
 export default {
   data: () => ({
@@ -289,19 +290,33 @@ export default {
     },
     reps() {
       let users = this.users;
-      return users.filter(user => user.role === "rep");
+      users = users.filter(user => user.role === "rep");
+      users = sortBy(users, 'name')
+      return users;
     },
     dm() {
-      return this.users.filter(user => user.role === "dm");
+      let dm = this.users;
+      dm = dm.filter(user => user.role === "dm");
+      dm = sortBy(dm, 'name')
+      return dm;
     },
     am() {
-      return this.users.filter(user => user.role === "am");
+      let am = this.users;
+      am = am.filter(user => user.role === 'am');
+      am = sortBy(am, 'name');
+      return am;
     },
     rm() {
-      return this.users.filter(user => user.role === "rm");
+      let rm = this.users;
+      rm = rm.filter(user => user.role === 'rm');
+      rm = sortBy(rm, 'name');
+      return rm;
     },
     marketing() {
-      return this.users.filter(user => user.role === "marketing");
+      let marketing = this.users;
+      marketing = marketing.filter(user => user.role === 'marketing');
+      marketing = sortBy(marketing, 'name');
+      return marketing;
     }
   },
   methods: {
