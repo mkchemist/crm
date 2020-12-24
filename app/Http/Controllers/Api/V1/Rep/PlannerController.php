@@ -146,6 +146,7 @@ class PlannerController extends Controller
         Planner::where([
             'user_id' => Auth::user()->id,
             'plan_date' => $request->date,
+            'submitted' =>  false
         ])->whereIn('id', $ids)->delete();
         return response()->json([
             'code' => 201,
@@ -177,6 +178,7 @@ class PlannerController extends Controller
         $plans = Planner::where([
             'plan_date' => $request->date,
             'user_id' => Auth::user()->id,
+            'submitted' => false
         ])->get();
         foreach ($plans as $plan) {
             $check = $this->checkIfExists($plan->customer_id, $request->replan_date);
@@ -216,6 +218,7 @@ class PlannerController extends Controller
         Planner::where([
             'plan_date' => $request->date,
             'user_id' => Auth::user()->id,
+            'submitted' =>  false
         ])->delete();
         return response()->json([
             'code' => 201,
@@ -251,6 +254,7 @@ class PlannerController extends Controller
         $plan = Planner::where([
             'id' => $id,
             'user_id' => Auth::user()->id,
+            'submitted' =>  false
         ])->first();
         return $plan;
     }

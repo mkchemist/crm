@@ -97,16 +97,20 @@
       @onClose="closeEventModal"
     >
       <template v-slot:header v-if="selected_event">
-        <span
+        <span v-if="!is_selected_event_is_submitted"
           >Edit {{ selected_event.class === "PM" ? "Customer" : "Hospital" }}
           {{ selected_event.title }} plan on date
           {{ selected_event.start }}</span
         >
+        <span v-else>View {{ selected_event.title }} Plan</span>
       </template>
       <template v-slot:body v-if="selected_event">
         <div>
           <p>{{ selected_event.title }}</p>
-          <div class="form-group row mx-auto">
+          <div
+            class="form-group row mx-auto"
+            v-if="!is_selected_event_is_submitted"
+          >
             <label for="replan_date" class="text-muted col-auto">Date</label>
             <input
               type="date"
@@ -131,11 +135,19 @@
               <span class="fa fa-hands-helping"></span>
               <span>visit</span>
             </button>
-            <button class="btn btn-sm btn-success" @click="updateEvent">
+            <button
+              class="btn btn-sm btn-success"
+              @click="updateEvent"
+              v-if="!is_selected_event_is_submitted"
+            >
               <span><i class="fa fa-save"></i></span>
               <span>save</span>
             </button>
-            <button class="btn btn-sm btn-danger" @click="deleteEvent">
+            <button
+              class="btn btn-sm btn-danger"
+              @click="deleteEvent"
+              v-if="!is_selected_event_is_submitted"
+            >
               <span><i class="fa fa-trash"></i></span>
               <span>remove</span>
             </button>
@@ -176,10 +188,6 @@
 </template>
 
 <script>
-/**
- * //TODO adding submit plan
- *
- */
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import ModalFade from "../../../components/ModalFade";
@@ -196,7 +204,8 @@ export default {
     selected_event: null,
     selected_day: null,
     duplicate_date: null,
-    summery_icon: "fa-chevron-circle-down"
+    summery_icon: "fa-chevron-circle-down",
+    is_selected_event_is_submitted: false
   }),
   methods: {
     isSubmittedDay(date) {
@@ -213,20 +222,21 @@ export default {
      * @param {object} e [event]
      */
     onEventClick(e) {
-      /* if(e.submitted === 1 || this.isSubmittedDay(e.start)) {
-        return;
-      } */
-      if (e.submitted === 1 && this.submitted.includes(e.start.format())) {
-        return;
+
+      let formatted = new Date(e.start)
+        .toLocaleDateString("en-gb")
+        .split("/")
+        .reverse()
+        .join("-");
+      console.log(this.submitted.includes(formatted))
+      if (e.submitted === 1 && this.submitted.includes(formatted)) {
+        this.is_selected_event_is_submitted = true;
       }
       let id = e.id;
       let date = new Date(e.start).format("YYYY-MM-DD");
       this.selected_event = e;
       this.selected_event.start = new Date(e.start).format("YYYY-MM-DD");
-      console.time("open modal");
-      console.timeLog("open modal");
       this.show_event_modal = true;
-      console.timeEnd("open modal");
     },
     /**
      * handle day event click
@@ -249,6 +259,7 @@ export default {
     },
     closeEventModal() {
       this.show_event_modal = false;
+      this.is_selected_event_is_submitted = false;
     },
     closeCellModal() {
       this.show_day_modal = false;
@@ -436,20 +447,21 @@ export default {
       }
     },
     submitPlan() {
-      httpCall.post('rep/v1/planner/submit')
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.$store.dispatch('getPlanner', true)
-        })
-      }).then(() => {
-        httpCall.post('rep/v1/workplace-planner/submit')
-        .then(({data}) => {
+      httpCall
+        .post("rep/v1/planner/submit")
+        .then(({ data }) => {
           this.handleResponse(data, data => {
-            this.$store.dispatch('getWorkplacePlanner', true)
+            this.$store.dispatch("getPlanner", true);
           });
-        });
-      })
-      .catch(err => console.log(err))
+        })
+        .then(() => {
+          httpCall.post("rep/v1/workplace-planner/submit").then(({ data }) => {
+            this.handleResponse(data, data => {
+              this.$store.dispatch("getWorkplacePlanner", true);
+            });
+          });
+        })
+        .catch(err => console.log(err));
     }
   },
   computed: {
