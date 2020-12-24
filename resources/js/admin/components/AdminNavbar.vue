@@ -21,8 +21,12 @@
             <span>Actions</span>
           </a>
           <div class="dropdown-menu dropdown-menu-right">
+            <a href="#" class="dropdown-item small" @click.prevent="$store.commit('toggleBroadcastModal', true)">
+              <span class="fa fa-envelope-open" style="color:purple"></span>
+              <span>broadcast a message</span>
+            </a>
             <a :href="`${base_url}change-password`" class="dropdown-item small">
-              <span class="fa fa-lock"></span>
+              <span class="fa fa-lock text-danger"></span>
               <span>change password</span>
             </a>
           </div>

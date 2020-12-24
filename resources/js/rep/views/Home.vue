@@ -9,7 +9,7 @@
         <div class="col-lg-9">
           <div class="row mx-auto">
             <div class="col-lg">
-
+              <broadcasting-messages />
             </div>
             <div class="col-lg-auto">
               <p class="lead text-center text-muted">Quick Analysis</p>
@@ -40,10 +40,12 @@
  */
 import TodayPlan from "../components/TodayPlan";
 import KnobCard from "../../components/KnobCard"
+import BroadcastingMessages from '../../components/BroadcastingMessages.vue';
 export default {
   components: {
     TodayPlan,
-    KnobCard
+    KnobCard,
+    BroadcastingMessages
   },
   created() {
     this.$store.dispatch("getPlanner").then(() => {
