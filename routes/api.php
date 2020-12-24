@@ -29,6 +29,9 @@ Route::group(["middleware" => ["auth:api"]] ,function() {
   Route::apiResource('/customers-favorite-list', 'Api\V1\CustomerFavoriteListController');
 });
 
+/** Broadcasting messages */
+Route::get('broadcasting', 'MessageBroadcastingReaderController@all')->middleware(['auth:api']);
+
 /** Rep routes */
 Route::group([
   'middleware' => 'auth:api',

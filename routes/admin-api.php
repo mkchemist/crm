@@ -48,4 +48,5 @@ Route::prefix('v1')->group(function () {
       Route::get('/lines', 'LineSettingController@index');
       Route::post('/lines', 'LineSettingController@store');
     });
+    Route::apiResource('broadcasting', 'MessageBroadcastingController');
 });
