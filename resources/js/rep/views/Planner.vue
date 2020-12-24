@@ -68,10 +68,14 @@ import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 export default {
   created() {
-    this.$store.dispatch("customerGetAll").then(() => {
-      this.$store.dispatch("getPlanner");
-      this.$store.dispatch("getWorkplacePlanner");
-    });
+    this.$store.dispatch('getNonFieldActivityPlans')
+    .then(() => {
+
+      this.$store.dispatch("customerGetAll").then(() => {
+        this.$store.dispatch("getPlanner");
+        this.$store.dispatch("getWorkplacePlanner");
+      });
+    })
   },
   components: {
     VueCal

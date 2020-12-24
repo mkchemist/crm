@@ -27,6 +27,10 @@ export default {
      * submitted days
      */
     submittedDays: [],
+    /**
+     * non field activity plans
+     */
+    nonFieldActivityPlans: [],
   },
   getters: {
     /**
@@ -50,7 +54,7 @@ export default {
       return state.workplacePlans;
     },
     allPlans: state => {
-      return [...state.workplacePlans, ...state.plans];
+      return [...state.nonFieldActivityPlans,...state.workplacePlans, ...state.plans];
     },
     isAmPlansFetched: state => state.isWorkplacePlansFetched,
     submittedDays : state =>  {
@@ -65,7 +69,8 @@ export default {
         console.warn(e)
       }
       return days
-    }
+    },
+    nonFieldActivityPlans: state => state.nonFieldActivityPlans
   },
   mutations: {
 
@@ -119,6 +124,19 @@ export default {
             state.submittedDays = [...state.submittedDays,...data.submitted]
           }
         })
+      }
+    },
+    /**
+     * get non field activity plans
+     *
+     */
+    getNonFieldActivityPlans({state}, force) {
+      if(!state.nonFieldActivityPlans.length || force) {
+        state.nonFieldActivityPlans = [];
+        return httpCall.get('non-field-activity-planner')
+        .then(({data}) => {
+          state.nonFieldActivityPlans = data.data;
+        }).catch(err => console.log(err))
       }
     }
   }

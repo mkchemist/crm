@@ -5,9 +5,19 @@
         <div class="border p-2 rounded shadow-sm bg-white">
           <div class="form-group">
             <label for="rep" class="small text-muted p-1">Planner of :</label>
-            <select name="rep" id="rep" class="form-control form-control-sm" v-model="plannerUser" @change="getUserPlanner">
-              <option :value="$store.state.user.id">{{ $store.state.user.name }}</option>
-              <option :value="rep.id" v-for="rep in reps" :key="rep.id" >{{ rep.name }}</option>
+            <select
+              name="rep"
+              id="rep"
+              class="form-control form-control-sm"
+              v-model="plannerUser"
+              @change="getUserPlanner"
+            >
+              <option :value="$store.state.user.id">{{
+                $store.state.user.name
+              }}</option>
+              <option :value="rep.id" v-for="rep in reps" :key="rep.id">{{
+                rep.name
+              }}</option>
             </select>
           </div>
         </div>
@@ -17,9 +27,10 @@
             xsmall
             hide-view-selector
             active-view="month"
-            :disable-views="['years','year','week', 'day']"
+            :disable-views="['years', 'year', 'week', 'day']"
             :selectDate="date"
-            @cell-click="(d) => date = new Date(d).format('YYYY-MM-DD')"
+            @cell-click="d => (date = new Date(d).format('YYYY-MM-DD'))"
+            :startWeekOnSunday="true"
           />
         </div>
       </div>
@@ -31,11 +42,11 @@
 </template>
 
 <script>
-import VueCal from 'vue-cal'
-import "vue-cal/dist/vuecal.css"
+import VueCal from "vue-cal";
+import "vue-cal/dist/vuecal.css";
 export default {
   created() {
-    this.$store.dispatch('getPlans');
+    this.$store.dispatch("getPlans");
     this.setPlannerUser(this.$store.state.user.id);
   },
   components: {
@@ -43,25 +54,23 @@ export default {
   },
   computed: {
     reps() {
-      return this.$store.getters.allReps
+      return this.$store.getters.allReps;
     }
   },
   data: () => ({
-    date: new Date().format('YYYY-MM-DD'),
-    plannerUser : null
+    date: new Date().format("YYYY-MM-DD"),
+    plannerUser: null
   }),
   methods: {
     getUserPlanner() {
-      this.$store.commit('setCurrentUserId', this.plannerUser);
+      this.$store.commit("setCurrentUserId", this.plannerUser);
     },
     setPlannerUser(id) {
       this.plannerUser = id;
       this.getUserPlanner();
     }
   }
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

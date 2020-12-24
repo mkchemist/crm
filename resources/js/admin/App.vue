@@ -9,22 +9,38 @@
         <router-view></router-view>
       </div>
     </div>
+    <modal-fade
+      :show="$store.state.BroadcastModule.is_modal_active"
+      @onClose="$store.commit('toggleBroadcastModal', false)"
+      headerStyle="bg-primary text-light"
+    >
+      <template v-slot:header>
+        Broadcast a new message
+      </template>
+      <template v-slot:body>
+        <new-broadcast-message />
+      </template>
+    </modal-fade>
   </div>
 </template>
 
 <script>
 import AdminSideMenu from "./components/AdminSideMenu.vue";
 import AdminNavbar from "./components/AdminNavbar.vue";
+import NewBroadcastMessage from "./components/NewBroadcastMessage";
+import ModalFade from "../components/ModalFade";
 export default {
   components: {
     AdminSideMenu,
-    AdminNavbar
+    AdminNavbar,
+    ModalFade,
+    NewBroadcastMessage
   }
-}
+};
 </script>
 
 <style>
-  body {
-    background-color: #1111 !important;
-  }
+body {
+  background-color: #1111 !important;
+}
 </style>

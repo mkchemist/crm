@@ -7,7 +7,7 @@ export default {
     currentUserId: [],
     selectedUserPlans: [],
     repPlans: [],
-    coachPlans: []
+    coachPlans: [],
   },
   getters: {
     plans: state => state.allPlans.filter(plan => plan.user_id === state.currentUserId),
@@ -24,13 +24,17 @@ export default {
     getPlans: ({state}, force) => {
       if(!state.allPlans.length || force) {
         state.fetched = false;
-        return httpCall.get('dm/v1/planner')
+        return httpCall.get('non-field-activity-planner')
         .then(({data}) => {
-          state.fetched = true;
-          state.repPlans = data.data.rep;
-          state.coachPlans = data.data.coach;
-          state.allPlans = [...data.data.coach, ...data.data.rep]
-        })
+          state.allPlans = data.data;
+          return httpCall.get('dm/v1/planner')
+          .then(({data}) => {
+            state.fetched = true;
+            state.repPlans = data.data.rep;
+            state.coachPlans = data.data.coach;
+            state.allPlans = [...state.allPlans,...data.data.coach, ...data.data.rep]
+          })
+        }).catch(err => console.log(err));
       }
     }
   }

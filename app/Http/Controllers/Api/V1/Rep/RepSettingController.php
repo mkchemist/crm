@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Rep;
 use App\Helpers\Setting\ActiveCycleSetting;
 use App\Helpers\Setting\CyclesSetting;
 use App\Helpers\Setting\LineSetting;
+use App\Helpers\Setting\NonFieldActivitySetting;
+use App\Helpers\Setting\FieldActivitySetting;
 use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -88,6 +90,34 @@ class RepSettingController extends Controller
       return response([
         'code'  =>  200,
         'data'  =>  $products
+      ]);
+    }
+
+    /**
+     * non field activity types
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function nonFieldActivityTypes()
+    {
+      $types = new NonFieldActivitySetting;
+      return response([
+        'code'  =>  200,
+        'data'  =>  $types->all()
+      ]);
+    }
+
+    /**
+     * field activity types
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function fieldActivityTypes()
+    {
+      $types = new FieldActivitySetting;
+      return response([
+        'code'  =>  200,
+        'data'  =>  $types->all()
       ]);
     }
 }

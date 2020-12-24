@@ -31,6 +31,9 @@ Route::group(["middleware" => ["auth:api"]] ,function() {
 
 /** Broadcasting messages */
 Route::get('broadcasting', 'MessageBroadcastingReaderController@all')->middleware(['auth:api']);
+Route::get('/non-field-activity-types', 'Api\V1\Rep\RepSettingController@nonFieldActivityTypes');
+Route::get('/field-activity-types', 'Api\V1\Rep\RepSettingController@fieldActivityTypes');
+Route::apiResource('/non-field-activity-planner', 'NonFieldActivityPlansController')->middleware(['auth:api']);
 
 /** Rep routes */
 Route::group([

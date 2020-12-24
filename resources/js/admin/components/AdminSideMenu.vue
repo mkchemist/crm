@@ -52,6 +52,11 @@ export default {
         name: 'Setting',
         icon: 'fa-cog',
         path: '/setting'
+      },
+      {
+        name: 'Broadcasting',
+        icon: 'fa-bullhorn',
+        path: '/broadcasting'
       }
     ]
   })

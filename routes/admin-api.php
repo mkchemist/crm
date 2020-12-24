@@ -47,6 +47,10 @@ Route::prefix('v1')->group(function () {
       Route::delete('/lines/{id}', 'LineSettingController@destroy');
       Route::get('/lines', 'LineSettingController@index');
       Route::post('/lines', 'LineSettingController@store');
+      Route::get('/non-field-activity', 'NonFieldActivityController@index');
+      Route::post('/non-field-activity', 'NonFieldActivityController@store');
+      Route::get('/field-activity', 'FieldActivityController@index');
+      Route::post('/field-activity', 'FieldActivityController@store');
     });
     Route::apiResource('broadcasting', 'MessageBroadcastingController');
 });

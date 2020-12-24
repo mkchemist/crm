@@ -23,7 +23,7 @@
         ></span>
       </p>
       <div v-if="planSummery" id="plan_summery" class="collapse">
-        <hr>
+        <hr />
         <p class="mb-0">
           Total planner days :
           <span class="text-primary font-weight-bold">{{
@@ -54,6 +54,7 @@
         :hide-weekdays="[5]"
         today-button
         :events="plans"
+        :startWeekOnSunday="true"
       >
         <template v-slot:arrow-prev>
           <i class="fa fa-chevron-circle-left text-success"></i>
@@ -101,10 +102,10 @@ export default {
   },
   methods: {
     togglePlanSummeryIcon() {
-      let downIcon = 'fa-chevron-circle-down';
-      let upIcon = 'fa-chevron-circle-up';
+      let downIcon = "fa-chevron-circle-down";
+      let upIcon = "fa-chevron-circle-up";
       let el = this.$refs.planSummeryBtn;
-      el.classList.toggle('rotateIcon180');
+      el.classList.toggle("rotateIcon180");
     }
   }
 };

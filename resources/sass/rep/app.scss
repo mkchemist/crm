@@ -85,6 +85,18 @@ $success: #38c172;
   opacity: .7;
 }
 
+.field-activity {
+  background-color: #eee12d !important;
+  color: #111 !important;
+  cursor: pointer;
+}
+
+.non-field-activity {
+  background-color: #313130 !important;
+  color: white !important;
+  cursor: pointer;
+}
+
 #side_datepicker {
   .vuecal__cell--today {
     .vuecal__cell-content {

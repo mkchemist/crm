@@ -14,6 +14,20 @@
         <span><i class="fa fa-hospital-alt"></i></span>
         <span>Add Am Plans</span>
       </router-link>
+      <router-link
+        to="/planner/add-field-activity"
+        class="btn btn-warning btn-sm"
+      >
+        <span><i class="fa fa-plus"></i></span>
+        <span>Plan field activity</span>
+      </router-link>
+      <router-link
+        to="/planner/add-non-field-activity"
+        class="btn btn-warning btn-sm"
+      >
+        <span><i class="fa fa-plus"></i></span>
+        <span>Plan non field activity</span>
+      </router-link>
       <button class="btn btn-sm btn-primary" @click="exportToPDF">
         <span><i class="fa fa-file-pdf"></i></span>
         <span>Export to PDF</span>
@@ -184,6 +198,49 @@
         </div>
       </template>
     </modal-fade>
+    <modal-fade
+      :show="active_non_field_modal"
+      id="non-field-modal"
+      @onClose="closeNonFieldActivityModal"
+      headerStyle="bg-warning text-dark"
+    >
+      <template v-slot:header v-if="selected_event">
+        <span>Non field activity {{ selected_event.title }}</span>
+      </template>
+      <template v-slot:body v-if="selected_event">
+        <div class="form-group">
+          <label for="">From</label>
+          <input
+            type="date"
+            name="date_from"
+            id="date_from"
+            v-model="selected_event.date_start"
+            class="form-control form-controls-m"
+          />
+        </div>
+        <div class="form-group">
+          <label for="">To</label>
+          <input
+            type="date"
+            name="date_to"
+            id="date_to"
+            v-model="selected_event.date_end"
+            class="form-control form-controls-m"
+          />
+        </div>
+        <hr />
+        <div class="form-group text-right">
+          <button class="btn btn-sm btn-primary" type="button" @click="editNonFieldActivity">
+            <span class="fa fa-edit"></span>
+            <span>Edit</span>
+          </button>
+          <button class="btn btn-sm btn-danger" type="button" @click="deleteNonFieldActivity">
+            <span class="fa fa-times"></span>
+            <span>Delete</span>
+          </button>
+        </div>
+      </template>
+    </modal-fade>
   </div>
 </template>
 
@@ -205,7 +262,8 @@ export default {
     selected_day: null,
     duplicate_date: null,
     summery_icon: "fa-chevron-circle-down",
-    is_selected_event_is_submitted: false
+    is_selected_event_is_submitted: false,
+    active_non_field_modal: false
   }),
   methods: {
     isSubmittedDay(date) {
@@ -222,13 +280,16 @@ export default {
      * @param {object} e [event]
      */
     onEventClick(e) {
-
+      if (e.type === "non-field-activity" || e.type=== 'field-activity') {
+        this.active_non_field_modal = true;
+        this.selected_event = e;
+        return;
+      }
       let formatted = new Date(e.start)
         .toLocaleDateString("en-gb")
         .split("/")
         .reverse()
         .join("-");
-      console.log(this.submitted.includes(formatted))
       if (e.submitted === 1 && this.submitted.includes(formatted)) {
         this.is_selected_event_is_submitted = true;
       }
@@ -462,6 +523,36 @@ export default {
           });
         })
         .catch(err => console.log(err));
+    },
+    closeNonFieldActivityModal() {
+      this.active_non_field_modal = false;
+    },
+    editNonFieldActivity() {
+      let request = {
+        start : this.selected_event.date_start,
+        end: this.selected_event.date_end,
+        _method: 'PUT'
+      };
+      let id = this.selected_event.id;
+      httpCall.post('non-field-activity-planner/'+id,request)
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.$store.dispatch('getNonFieldActivityPlans', true);
+          this.active_non_field_modal = false;
+        });
+      }).catch(err => {
+        console.log(err)
+      });
+    },
+    deleteNonFieldActivity() {
+      let id = this.selected_event.id;
+      httpCall.post('non-field-activity-planner/'+id,{_method: 'DELETE'})
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.active_non_field_modal = false;
+          this.$store.dispatch('getNonFieldActivityPlans', true);
+        })
+      }).catch(err => console.log(err))
     }
   },
   computed: {
