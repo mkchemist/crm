@@ -20,6 +20,7 @@ class CreateNonFieldActivityReportsTable extends Migration
             $table->date('start');
             $table->date('end');
             $table->longText('content')->nullable();
+            $table->longText('comment')->nullable();
             $table->boolean('approved')->default(false);
             $table->bigInteger('approved_by')->unsigned()->nullable();
             $table->timestamps();

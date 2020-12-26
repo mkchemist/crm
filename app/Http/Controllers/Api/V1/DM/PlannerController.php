@@ -97,7 +97,36 @@ class PlannerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+          'date'  =>  'required|date',
+        ]);
+
+        if($validator->fails()) {
+          return response(ResponseHelper::validationErrorResponse($validator));
+        }
+
+        $user = Auth::user();
+        $plan = CoachPlanner::where([
+          'coach_id' =>  $user->id,
+          'id'      =>  $id,
+        ])->first();
+
+        $check = CoachPlanner::where([
+          'coach_id' =>  $user->id,
+          'rep_id'  =>  $plan->rep_id,
+          'plan_date' =>  $request->date
+        ])->first();
+        if($check) {
+          return response(ResponseHelper::ITEM_ALREADY_EXIST);
+        }
+
+        $plan->plan_date = $request->date;
+        $plan->save();
+        return response([
+          'code'  =>  200,
+          'message' =>  'Planned visit updated',
+          'plan'    =>  $plan
+        ]);
     }
 
     /**

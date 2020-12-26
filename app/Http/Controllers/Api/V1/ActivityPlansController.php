@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\Helpers\ResponseHelper;
-use App\Http\Resources\RepNonFieldActivityPlansResource;
+use App\Http\Resources\ActivityPlansResource;
 use App\NonFieldActivityPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class NonFieldActivityPlansController extends Controller
+class ActivityPlansController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,7 +24,7 @@ class NonFieldActivityPlansController extends Controller
       $plans = $plans->with('user')->get();
       return response([
         'code'  =>  200,
-        'data'  =>  RepNonFieldActivityPlansResource::collection($plans),
+        'data'  =>  ActivityPlansResource::collection($plans),
       ]);
     }
 

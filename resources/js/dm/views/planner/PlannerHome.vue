@@ -5,6 +5,24 @@
         <span class="fa fa-plus-circle"></span>
         <span>Add Plan</span>
       </router-link>
+      <router-link
+        class="btn btn-warning btn-sm"
+        to="/planner/add-field-activity"
+      >
+        <span class="fa fa-plus-circle"></span>
+        <span>Plan Field activity</span>
+      </router-link>
+      <router-link
+        class="btn btn-dark btn-sm"
+        to="/planner/add-non-field-activity"
+      >
+        <span class="fa fa-plus-circle"></span>
+        <span>Plan Non-Field activity</span>
+      </router-link>
+      <button class="btn btn-sm btn-primary" v-if="!isOwnerPlans">
+        <span class="fa fa-check-circle"></span>
+        <span>Approve </span>
+      </button>
       <button class="btn btn-sm btn-success">
         <span><i class="fa fa-paper-plane"></i></span>
         <span>submit</span>
@@ -55,6 +73,7 @@
         today-button
         :events="plans"
         :startWeekOnSunday="true"
+        :onEventClick="onEventClick"
       >
         <template v-slot:arrow-prev>
           <i class="fa fa-chevron-circle-left text-success"></i>
@@ -69,21 +88,90 @@
         </template>
       </vue-cal>
     </div>
+    <modal-fade
+      id="owner_plans_control"
+      :show="show_owner_control_modal"
+      @onClose="closeOwnerControlModal"
+      :headerStyle="`bg-success text-light`"
+    >
+      <template v-slot:header v-if="selected_event">
+        <span>Plan manipulation </span>
+      </template>
+      <template v-slot:body v-if="selected_event">
+        <div class="p-2">
+          <label>{{
+            selected_event.type !== "coach-plan" ? "Activity" : "Rep"
+          }}</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            disabled
+            :value="
+              `${selected_event.type.replace(/-/g, ' ').toUpperCase()} | ${
+                selected_event.title
+              }`
+            "
+          />
+        </div>
+        <div class="p-2">
+          <label>{{
+            selected_event.type !== "coach-plan" ? "From" : "Date"
+          }}</label>
+          <input
+            type="date"
+            class="form-control form-control-sm"
+            v-model="selected_event.date_start"
+          />
+        </div>
+        <div class="p-2" v-if="selected_event.type !== 'coach-plan'">
+          <label>To</label>
+          <input
+            type="date"
+            class="form-control form-control-sm"
+            v-model="selected_event.date_end"
+          />
+        </div>
+        <hr>
+        <div class="form-group text-right">
+          <button type="button" class="btn btn-sm btn-primary" @click="updatePlannedVisit">
+            <span class="fa fa-edit"></span>
+            <span>edit</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-danger" @click="deletePlannedVisit">
+            <span class="fa fa-trash"></span>
+            <span>delete</span>
+          </button>
+        </div>
+      </template>
+    </modal-fade>
   </div>
 </template>
 
 <script>
 import VueCal from "vue-cal";
 import { filterData } from "../../../helpers/helpers";
+import ModalFade from "../../../components/ModalFade.vue";
+import { httpCall } from '../../../helpers/http-service';
 export default {
   components: {
-    VueCal
+    VueCal,
+    ModalFade
   },
-  data: () => ({}),
+  data: () => ({
+    /** toggle event manipulation */
+    show_owner_control_modal: false,
+    /** selected event to be manipulated */
+    selected_event: null
+  }),
   computed: {
+    /**
+     * all plans
+     * including [rep plans, dm plan]
+     */
     plans() {
       return this.$store.getters.plans;
     },
+    /** generating plan summery */
     planSummery() {
       let summery = {};
       if (!this.plans.length) {
@@ -98,15 +186,107 @@ export default {
       ).length;
       summery["is_dm"] = this.plans[0].user_id === this.$store.state.user.id;
       return summery;
+    },
+    /** get current view user id */
+    currentPlannerUserId() {
+      return this.$store.getters.currentUserId;
+    },
+    /**
+     * check if this view is owner view
+     */
+    isOwnerPlans() {
+      return this.$store.state.user.id === this.currentPlannerUserId;
     }
   },
   methods: {
+    /**
+     * toggle plan summery accordion icon
+     */
     togglePlanSummeryIcon() {
       let downIcon = "fa-chevron-circle-down";
       let upIcon = "fa-chevron-circle-up";
       let el = this.$refs.planSummeryBtn;
       el.classList.toggle("rotateIcon180");
-    }
+    },
+    /**
+     * action that will be raised when click on
+     * single event
+     * that is owner event
+     */
+    onEventClick(e) {
+      let { user_id } = e;
+      if (user_id === this.$store.state.user.id) {
+        this.show_owner_control_modal = true;
+        this.selected_event = e;
+      }
+    },
+    /**
+     * get select event for manipulation url
+     *
+     * check event type
+     * generate url
+     *
+     * @return {string}
+     */
+    getSelectedEventUrl() {
+      let url;
+      if(this.selected_event.type === 'coach-plan') {
+        url = "dm/v1/planner/";
+      } else {
+        url = "activity-planner/"
+      }
+      return url
+    },
+    /**
+     * close event actions modal
+     */
+    closeOwnerControlModal() {
+      this.show_owner_control_modal = false;
+      this.selected_event = null;
+    },
+    /**
+     * update single event
+     */
+    updatePlannedVisit() {
+      let url = this.getSelectedEventUrl();
+      let request = {
+        start: this.selected_event.date_start,
+        end : this.selected_event.date_end,
+        date: this.selected_event.date_start,
+        _method: 'PUT'
+      }
+      httpCall.post(url+this.selected_event.id, request)
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.$store.dispatch('getPlans', true)
+          .then(() => {
+            this.$store.dispatch('getNonFieldActivityPlans', true)
+          }).finally(() => {
+            this.show_owner_control_modal = false;
+          });
+        });
+      }).catch(err => console.log(err))
+    },
+    /**
+     * delete single event
+     */
+    deletePlannedVisit() {
+      let url = this.getSelectedEventUrl();
+      let request = {
+        _method: 'DELETE'
+      }
+      httpCall.post(url+this.selected_event.id, request)
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.$store.dispatch('getPlans', true)
+          .then(() => {
+            this.$store.dispatch('getNonFieldActivityPlans', true)
+          }).finally(() => {
+            this.show_owner_control_modal = false;
+          });
+        });
+      }).catch(err => console.log(err))
+    },
   }
 };
 </script>

@@ -133,7 +133,7 @@ export default {
     getNonFieldActivityPlans({state}, force) {
       if(!state.nonFieldActivityPlans.length || force) {
         state.nonFieldActivityPlans = [];
-        return httpCall.get('non-field-activity-planner')
+        return httpCall.get('activity-planner')
         .then(({data}) => {
           state.nonFieldActivityPlans = data.data;
         }).catch(err => console.log(err))

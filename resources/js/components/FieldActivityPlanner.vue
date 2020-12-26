@@ -1,5 +1,5 @@
 <template>
-  <div class="px-0 shadow rounded pb-5 mb-5">
+  <div class="px-0 shadow rounded pb-5 mb-5 bg-white">
     <p class="alert alert-success">
       <span class="fa fa-plus-circle"></span>
       <span class="font-weight-bold">Plan field activity</span>
@@ -112,7 +112,7 @@ export default {
   }),
   methods: {
     savePlan() {
-      httpCall.post('non-field-activity-planner', this.plan)
+      httpCall.post('activity-planner', this.plan)
       .then(({data}) => {
         this.handleResponse(data, data => {
           this.$store.dispatch('getNonFieldActivityPlans', true);

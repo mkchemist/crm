@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RepNonFieldActivityPlansResource extends JsonResource
+class ActivityPlansResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,7 +23,7 @@ class RepNonFieldActivityPlansResource extends JsonResource
           'user_title' =>  $this->user->role,
           'id'    =>  $this->id,
           'user_id' =>  $this->user_id,
-          'type'    =>  'non-field-activity',
+          'type'    =>  $this->type,
           'date_start'  =>  $this->start,
           'date_end'    =>  $this->end,
           'plan_type'   =>  $this->type

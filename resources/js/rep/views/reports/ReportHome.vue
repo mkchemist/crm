@@ -11,7 +11,9 @@
       </div>
       <hr />
       <div class="row mx-auto p-3">
-        <div class="col-lg"></div>
+        <div class="col-lg">
+          <list-component :links="othersLinks"></list-component>
+        </div>
         <div class="col-lg">
           <list-component :links="analysisLinks" />
         </div>
@@ -41,6 +43,16 @@ export default {
       {
         title: "Add new Pharmacy visit",
         link: "/reports/add/pharmacy",
+        icon: "fa-plus-circle"
+      },
+      {
+        title: "Add new field activity report",
+        link: "/reports/add/activity-report?type=field-activity",
+        icon: "fa-plus-circle"
+      },
+      {
+        title: "Add new non-field activity report",
+        link: "/reports/add/activity-report?type=non-field-activity",
         icon: "fa-plus-circle"
       }
     ],
@@ -86,6 +98,23 @@ export default {
         title: "Time investment",
         link: "/reports/view/pharmacy",
         icon: "fa-chart-pie"
+      }
+    ],
+    othersLinks: [
+      {
+        title: 'Field activity report',
+        link: '/reports/activity-report?type=field-activity',
+        icon: 'fa-book-reader'
+      },
+      {
+        title: 'Non-Field activity report',
+        link: '/reports/activity-report?type=non-field-activity',
+        icon: 'fa-book-reader'
+      },
+      {
+        title: 'Requests report',
+        link: '/reports/requests',
+        icon: 'fa-dollar-sign'
       }
     ]
   })

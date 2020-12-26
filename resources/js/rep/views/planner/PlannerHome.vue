@@ -67,7 +67,7 @@
               Total planned Days : {{ Object.keys(planSummery.days).length }}
             </p>
             <p class="mb-0 text-muted">
-              Total P.M. plnned Customers :
+              Total P.M. planned Customers :
               {{ Object.keys(planSummery.customers).length }}
             </p>
             <p class="mb-0 text-muted">
@@ -534,7 +534,7 @@ export default {
         _method: 'PUT'
       };
       let id = this.selected_event.id;
-      httpCall.post('non-field-activity-planner/'+id,request)
+      httpCall.post('activity-planner/'+id,request)
       .then(({data}) => {
         this.handleResponse(data, data => {
           this.$store.dispatch('getNonFieldActivityPlans', true);
@@ -546,7 +546,7 @@ export default {
     },
     deleteNonFieldActivity() {
       let id = this.selected_event.id;
-      httpCall.post('non-field-activity-planner/'+id,{_method: 'DELETE'})
+      httpCall.post('activity-planner/'+id,{_method: 'DELETE'})
       .then(({data}) => {
         this.handleResponse(data, data => {
           this.active_non_field_modal = false;

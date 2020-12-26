@@ -16,6 +16,10 @@ import PmPlansReport from '../views/reports/plans/PmPlansReport'
 import AmPlansReport from '../views/reports/plans/AmPlansReport'
 import CoachingReport from "../views/reports/CoachingReport.vue";
 import SingleCoachReport from "../views/reports/SingleCoachReport.vue";
+import ActivityReportsContainer from '../views/reports/ActivityReportsContainer.vue'
+import RequestsContainer from '../views/reports/RequestsReportContainer.vue';
+import AddActivityReport from '../../components/AddActivityReport.vue';
+
 export default {
   path: "/reports",
   component:Report,
@@ -67,6 +71,10 @@ export default {
       component: AddPmReport
     },
     {
+      path: 'add/activity-report',
+      component: AddActivityReport
+    },
+    {
       path: "add/pharmacy/:id?",
       component: AddPharmacyReport
     },
@@ -89,6 +97,14 @@ export default {
     {
       path: 'analysis/plan',
       component: PlanReportAnalysis
+    },
+    {
+      path: 'requests',
+      component: RequestsContainer
+    },
+    {
+      path: 'activity-report',
+      component: ActivityReportsContainer
     }
   ]
 }

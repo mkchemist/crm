@@ -3,6 +3,7 @@ import { httpCall } from "../../helpers/http-service"
 export default {
   state: {
     allPlans: [],
+    nonFieldActivityPlans:[],
     fetched: false,
     currentUserId: [],
     selectedUserPlans: [],
@@ -10,7 +11,10 @@ export default {
     coachPlans: [],
   },
   getters: {
-    plans: state => state.allPlans.filter(plan => plan.user_id === state.currentUserId),
+    plans: state =>{
+      let plans = [...state.nonFieldActivityPlans,...state.allPlans];
+     return plans.filter(plan => plan.user_id === state.currentUserId)
+    } ,
     isPlanFetched : state => state.fetched,
     currentUserId: state => state.currentUserId,
     repPlans: state => state.repPlans
@@ -24,17 +28,26 @@ export default {
     getPlans: ({state}, force) => {
       if(!state.allPlans.length || force) {
         state.fetched = false;
-        return httpCall.get('non-field-activity-planner')
-        .then(({data}) => {
-          state.allPlans = data.data;
-          return httpCall.get('dm/v1/planner')
+        state.repPlans = [];
+        state.coachPlans = [];
+        state.allPlans = [];
+        return httpCall.get('dm/v1/planner')
           .then(({data}) => {
             state.fetched = true;
             state.repPlans = data.data.rep;
             state.coachPlans = data.data.coach;
             state.allPlans = [...state.allPlans,...data.data.coach, ...data.data.rep]
-          })
-        }).catch(err => console.log(err));
+          }).catch(err => console.log(err))
+        ;
+      }
+    },
+    getNonFieldActivityPlans({state} ,force){
+      if(!state.nonFieldActivityPlans.length || force) {
+        this.nonFieldActivityPlans = [];
+        return httpCall.get('activity-planner')
+          .then(({data}) => {
+            state.nonFieldActivityPlans = data.data;
+          }).catch(err => console.log(err))
       }
     }
   }

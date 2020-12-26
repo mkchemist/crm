@@ -29,11 +29,22 @@ Route::group(["middleware" => ["auth:api"]] ,function() {
   Route::apiResource('/customers-favorite-list', 'Api\V1\CustomerFavoriteListController');
 });
 
-/** Broadcasting messages */
-Route::get('broadcasting', 'MessageBroadcastingReaderController@all')->middleware(['auth:api']);
-Route::get('/non-field-activity-types', 'Api\V1\Rep\RepSettingController@nonFieldActivityTypes');
-Route::get('/field-activity-types', 'Api\V1\Rep\RepSettingController@fieldActivityTypes');
-Route::apiResource('/non-field-activity-planner', 'NonFieldActivityPlansController')->middleware(['auth:api']);
+
+Route::group([
+  'middleware'  =>  ['auth:api']
+], function () {
+  /** Broadcasting messages */
+  Route::get('broadcasting', 'Api\V1\MessageBroadcastingReaderController@all');
+  /** non field activity types */
+  Route::get('/non-field-activity-types', 'Api\V1\Rep\RepSettingController@nonFieldActivityTypes');
+  /** field activity types */
+  Route::get('/field-activity-types', 'Api\V1\Rep\RepSettingController@fieldActivityTypes');
+  /**  activity planner */
+  Route::apiResource('/activity-planner', 'Api\V1\ActivityPlansController');
+  /** activity reports */
+  Route::apiResource('/activity-reports', 'Api\V1\ActivityReportController');
+});
+
 
 /** Rep routes */
 Route::group([

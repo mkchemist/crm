@@ -10,6 +10,7 @@
     </div>
     <div class="p-2 row mx-auto my-2">
       <div class="col-lg">
+        <side-bar :links="others_links" />
       </div>
       <div class="col-lg">
         <side-bar :links="analysis_links" />
@@ -45,7 +46,17 @@ export default {
         link: '/reports/add/pharmacy',
         icon: 'fa-plus-circle',
         title: 'Add Pharmacy visit'
-      }
+      },
+      {
+        link: '/reports/add/activity-report?type=field-activity',
+        icon: 'fa-plus-circle',
+        title: 'Add Field Activity report'
+      },
+      {
+        link: '/reports/add/activity-report?type=non-field-activity',
+        icon: 'fa-plus-circle',
+        title: 'Add Non-Field Activity report'
+      },
     ],
     view_links: [
       {
@@ -84,6 +95,18 @@ export default {
         link: '/reports/analysis/plans',
         icon: 'fa-chart-pie',
         title: 'Plan analysis report'
+      }
+    ],
+    others_links: [
+      {
+        link: '/reports/activity-report?type=field-activity',
+        icon: 'fa-book-reader',
+        title: 'Field Activity report'
+      },
+      {
+        link: '/reports/activity-report?type=non-field-activity',
+        icon: 'fa-book-reader',
+        title: 'Non-Field Activity report'
       }
     ]
   })

@@ -9,7 +9,8 @@ import ViewPharmacyReport from '../views/reports/VIewPharmacyReport.vue';
 import ViewPmAnalysis from '../views/reports/analysis/ViewPmAnalysis.vue';
 import ViewPlanAnalysis from "../views/reports/analysis/ViewPlanAnalysis.vue"
 import CreateCoachReport from "../views/reports/CreateCoachReport.vue";
-
+import ActivityReportContainer from '../views/reports/ActivityReportContainer.vue';
+import AddActivityReport from '../../components/AddActivityReport.vue';
 export default {
   path: '/reports',
   component: Reports,
@@ -25,6 +26,10 @@ export default {
     {
       path: 'add/coach-report/:id',
       component: FullfilCoachReport
+    },
+    {
+      path: 'add/activity-report',
+      component: AddActivityReport
     },
     {
       path: 'view/pm',
@@ -53,6 +58,10 @@ export default {
     {
       path: 'add/coach',
       component: CreateCoachReport
+    },
+    {
+      path: 'activity-report',
+      component: ActivityReportContainer
     }
   ]
 }

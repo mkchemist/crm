@@ -24,65 +24,144 @@
               class="nav-link dropdown-toggle"
               data-toggle="dropdown"
             >
-              <span><i class="fa fa-plus-circle"></i></span>
-              <span>New</span>
+              <span><i class="fa fa-check-circle"></i></span>
+              <span>Actions</span>
             </a>
-            <div class="dropdown-menu dropdown-menu-left" id="new_menu">
-              <router-link
-                to="/reports/add/pm"
-                class="drop-item small nav-link"
-              >
-                <span><i class="fa fa-plus-circle"></i></span>
-                <span class="ml-1">New PM visit</span>
-              </router-link>
-              <router-link
-                to="/reports/add/Am"
-                class="drop-item small nav-link"
-              >
-                <span><i class="fa fa-plus-circle"></i></span>
-                <span class="ml-1">New AM visit</span>
-              </router-link>
-              <router-link
-                to="/reports/add/pharmacy"
-                class="drop-item small nav-link"
-              >
-                <span><i class="fa fa-plus-circle"></i></span>
-                <span class="ml-1">New Pharmacy visit</span>
-              </router-link>
-              <router-link
-                to="/planner/add-pm"
-                class="drop-item small nav-link"
-              >
-                <span><i class="fa fa-plus-circle"></i></span>
-                <span class="ml-1">Plan PM visit</span>
-              </router-link>
-              <router-link
-                to="/planner/add-am"
-                class="drop-item small nav-link"
-              >
-                <span><i class="fa fa-plus-circle"></i></span>
-                <span class="ml-1">Plan AM visit</span>
-              </router-link>
-              <router-link to="/customers/new" class="drop-item small nav-link">
-                <span><i class="fa fa-user-plus"></i></span>
-                <span class="ml-1">New customer</span>
-              </router-link>
-              <router-link
-                to="/workplaces/add-hospital"
-                class="drop-item small nav-link"
-              >
-                <span><i class="fa fa-hospital-user"></i></span>
-                <span class="ml-1">New hospital</span>
-              </router-link>
-              <router-link
-                to="/workplaces/add-pharmacy"
-                class="drop-item small nav-link"
-              >
-                <span><i class="fa fa-store-alt"></i></span>
-                <span class="ml-1">New pharmacy</span>
-              </router-link>
+            <ul class="dropdown-menu dropdown-menu-left" id="new_menu">
+              <li class="dropdown-submenu">
+                <span class="dropdown-submenu-title nav-link clearfix px-2">
+                  <span>Visit</span>
+                  <span class="fa fa-chevron-circle-right float-right"></span>
+                </span>
+                <ul class="dropdown-menu dropdown-menu-left">
+                  <li class="px-2">
+                    <router-link
+                      to="/reports/add/pm"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-plus-circle"></i></span>
+                      <span class="ml-1">PM visit</span>
+                    </router-link>
+                  </li>
+                  <li class="px-2">
+                    <router-link
+                      to="/reports/add/Am"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-plus-circle"></i></span>
+                      <span class="ml-1">AM visit</span>
+                    </router-link>
+                  </li>
+                  <li class="px-2">
+                    <router-link
+                      to="/reports/add/pharmacy"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-plus-circle"></i></span>
+                      <span class="ml-1">Pharmacy visit</span>
+                    </router-link>
+                  </li>
+                  <li class="px-2">
+                    <router-link
+                      to="/reports/add/activity-report?type=field-activity"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-plus-circle"></i></span>
+                      <span class="ml-1">Field activity report</span>
+                    </router-link>
+                  </li>
+                  <li class="px-2">
+                    <router-link
+                      to="/reports/add/activity-report?type=non-field-activity"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-plus-circle"></i></span>
+                      <span class="ml-1">Non Field activity report</span>
+                    </router-link>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown-submenu">
+                <span class="dropdown-submenu-title nav-link clearfix px-2">
+                  <span>Plan</span>
+                  <span class="fa fa-chevron-circle-right float-right"></span>
+                </span>
+                <ul class="dropdown-menu dropdown-menu-left">
+                  <li>
+                    <router-link
+                      to="/planner/add-pm"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-plus-circle"></i></span>
+                      <span class="ml-1">Plan PM visit</span>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      to="/planner/add-am"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-plus-circle"></i></span>
+                      <span class="ml-1">Plan AM visit</span>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      to="/planner/add-field-activity"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-plus-circle"></i></span>
+                      <span class="ml-1">Plan Field activity</span>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      to="/planner/add-non-field-activity"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-plus-circle"></i></span>
+                      <span class="ml-1">Plan Non Field activity</span>
+                    </router-link>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown-submenu">
+                <span class="dropdown-submenu-title nav-link clearfix px-2">
+                  <span>New</span>
+                  <span class="fa fa-chevron-circle-right float-right"></span>
+                </span>
+                <ul class="dropdown-menu dropdown-menu-left">
+                  <li>
+                    <router-link
+                      to="/customers/new"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-user-plus"></i></span>
+                      <span class="ml-1">New customer</span>
+                    </router-link>
+                  </li>
 
-            </div>
+                  <li>
+                    <router-link
+                      to="/workplaces/add-hospital"
+                      class="drop-</li>item small nav-link"
+                    >
+                      <span><i class="fa fa-hospital-user"></i></span>
+                      <span class="ml-1">New hospital</span>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      to="/workplaces/add-pharmacy"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-store-alt"></i></span>
+                      <span class="ml-1">New pharmacy</span>
+                    </router-link>
+                  </li>
+                </ul>
+              </li>
+            </ul>
           </li>
           <!-- end new menu -->
           <!-- nav main menu -->
