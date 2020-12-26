@@ -18,6 +18,8 @@ Route::prefix('v1')->group(function() {
   Route::apiResource('pharmacies', 'PharmacyController');
   // Planner Routes
   Route::apiResource("planner", "PlannerController");
+  // Rep workplace planner
+  Route::get('workplace-planner', 'RepWorkplacePlannerController@index');
   // Approval Routes
   Route::group(['prefix' => 'approval'], function() {
     Route::get('/frequency', 'ApprovalController@RequestCustomerFrequency');

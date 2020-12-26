@@ -4,6 +4,7 @@ import ViewCoachAssign from '../views/reports/ViewCoachAssign.vue';
 import FullfilCoachReport from '../views/reports/FullfilCoachReport.vue';
 import ViewPmReports from '../views/reports/ViewPmReports.vue';
 import ViewPlanReports from '../views/reports/ViewPlanReports.vue';
+import ViewAmPlanReports from '../views/reports/ViewAmPlanReports.vue';
 import ViewHospitalReport from '../views/reports/ViewHospitalReport.vue'
 import ViewPharmacyReport from '../views/reports/VIewPharmacyReport.vue';
 import ViewPmAnalysis from '../views/reports/analysis/ViewPmAnalysis.vue';
@@ -38,6 +39,10 @@ export default {
     {
       path: 'view/plans',
       component: ViewPlanReports
+    },
+    {
+      path: 'view/am-plans',
+      component: ViewAmPlanReports
     },
     {
       path: 'view/am',

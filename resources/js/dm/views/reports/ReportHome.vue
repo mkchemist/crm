@@ -83,6 +83,11 @@ export default {
         link: '/reports/view/plans',
         icon: 'fa-book-open',
         title: 'View Plans reports'
+      },
+      {
+        link: '/reports/view/am-plans',
+        icon: 'fa-book-open',
+        title: 'View AM Plans reports'
       }
     ],
     analysis_links: [
