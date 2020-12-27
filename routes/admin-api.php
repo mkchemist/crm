@@ -51,6 +51,8 @@ Route::prefix('v1')->group(function () {
       Route::post('/non-field-activity', 'NonFieldActivityController@store');
       Route::get('/field-activity', 'FieldActivityController@index');
       Route::post('/field-activity', 'FieldActivityController@store');
+      Route::get('/refresh-hash-key', 'ForceRefreshHashKeySettingController@index');
+      Route::post('/refresh-hash-key', 'ForceRefreshHashKeySettingController@store');
     });
     Route::apiResource('broadcasting', 'MessageBroadcastingController');
 });

@@ -31,5 +31,5 @@
 
 <script src="{{ asset('js/dm/manifest.js') }}" ></script>
 <script src="{{ asset('js/dm/vendor.js') }}" ></script>
-<script src="{{ asset('js/dm/dm.js') }}" ></script>
+<script src="{{ asset('js/dm/dm.js?').$hash_key }}" ></script>
 @endsection

@@ -30,5 +30,5 @@
 <script type="text/javascript" src="{{ asset("libs/data-tables") }}/Select-1.3.1/js/dataTables.select.min.js"></script>
 <script src="{{ asset('js/dm/manifest.js') }}" ></script>
 <script src="{{ asset('js/dm/vendor.js') }}" ></script>
-<script src="{{ asset('js/rep/app.js') }}" ></script>
+<script src="{{ asset('js/rep/app.js?').$hash_key }}" ></script>
 @endsection

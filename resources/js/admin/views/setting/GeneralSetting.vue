@@ -17,6 +17,9 @@
       <!-- Non field activity types -->
       <setting-non-field-activity-types />
       <!-- end of non field activity types -->
+      <!-- Force assets refresh -->
+      <setting-force-refresh />
+      <!-- end Force assets refresh -->
     </div>
   </div>
 </template>
@@ -26,13 +29,15 @@ import SettingFieldActivityTypes from '../../components/SettingFieldActivityType
 import SettingNonFieldActivityTypes from '../../components/SettingNonFieldActivityTypes';
 import SettingReportInterval from '../../components/SettingReportInterval.vue';
 import SettingActiveCycle from '../../components/SettingActiveCycle.vue';
+import SettingForceRefresh from '../../components/SettingForceRefresh.vue';
 export default {
 
   components: {
     SettingFieldActivityTypes,
     SettingNonFieldActivityTypes,
     SettingReportInterval,
-    SettingActiveCycle
+    SettingActiveCycle,
+    SettingForceRefresh,
   },
 
 };

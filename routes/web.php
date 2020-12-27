@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Setting\ForceRefreshHashKeySetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -37,31 +38,41 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('change-password', 'UserController@updatePassword');
     // Rep application
     Route::get('/rep/{name?}', function() {
-        return view('pages.rep.index');
+        $hash_key = new ForceRefreshHashKeySetting;
+        return view('pages.rep.index', ['hash_key' => $hash_key->all()]);
     })->where('name', '.*');
 
     // District Manager application
     Route::get('/dm/{name?}', function() {
-        return view('pages.dm.index');
+      $hash_key = new ForceRefreshHashKeySetting;
+        return view('pages.dm.index', ['hash_key' => $hash_key->all()]);
     })->where('name', '.*')->middleware('dmOnly');
 
     // territory Manager application
     Route::get('/tm/{name?}', function() {
-        return view('pages.tm.index');
+      $hash_key = new ForceRefreshHashKeySetting;
+
+        return view('pages.tm.index', ['hash_key' => $hash_key->all()]);
     });
 
     // regional Manager application
     Route::get('/rm/{name?}', function() {
-        return view('pages.rm.index');
+      $hash_key = new ForceRefreshHashKeySetting;
+
+        return view('pages.rm.index', ['hash_key' => $hash_key->all()]);
     });
 
     // general Manager application
     Route::get('/gm/{name?}', function() {
-        return view('pages.gm.index');
+      $hash_key = new ForceRefreshHashKeySetting;
+
+        return view('pages.gm.index', ['hash_key' => $hash_key->all()]);
     });
 
     // admin application
     Route::get('/admin/{name?}', function() {
-        return view('pages.admin.index');
+      $hash_key = new ForceRefreshHashKeySetting;
+
+        return view('pages.admin.index', ['hash_key' => $hash_key->all()]);
     })->where("name", ".*")->middleware('adminOnly');
 });
