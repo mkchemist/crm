@@ -28,11 +28,8 @@
         <span><i class="fa fa-plus"></i></span>
         <span>Plan non field activity</span>
       </router-link>
-      <button class="btn btn-sm btn-primary" @click="exportToPDF">
-        <span><i class="fa fa-file-pdf"></i></span>
-        <span>Export to PDF</span>
-      </button>
-      <button class="btn btn-success btn-sm" @click="submitPlan">
+
+      <button class="btn btn-success btn-sm" @click="submitPlan" :disabled="isSubmittedPlans">
         <span><i class="fa  fa-calendar-check"></i></span>
         <span>Submit</span>
       </button>
@@ -112,7 +109,7 @@
     >
       <template v-slot:header v-if="selected_event">
         <span v-if="!is_selected_event_is_submitted"
-          >Edit {{ selected_event.class === "PM" ? "Customer" : "Hospital" }}
+          >Edit
           {{ selected_event.title }} plan on date
           {{ selected_event.start }}</span
         >
@@ -123,7 +120,6 @@
           <p>{{ selected_event.title }}</p>
           <div
             class="form-group row mx-auto"
-            v-if="!is_selected_event_is_submitted"
           >
             <label for="replan_date" class="text-muted col-auto">Date</label>
             <input
@@ -131,6 +127,7 @@
               class="form-control form-control-sm col"
               id="replan_date"
               v-model="selected_event.start"
+              :disabled="isSubmittedPlans"
             />
           </div>
           <div class="Form-group text-right">
@@ -152,7 +149,7 @@
             <button
               class="btn btn-sm btn-success"
               @click="updateEvent"
-              v-if="!is_selected_event_is_submitted"
+              v-if="!isSubmittedPlans"
             >
               <span><i class="fa fa-save"></i></span>
               <span>save</span>
@@ -160,7 +157,7 @@
             <button
               class="btn btn-sm btn-danger"
               @click="deleteEvent"
-              v-if="!is_selected_event_is_submitted"
+              v-if="!isSubmittedPlans"
             >
               <span><i class="fa fa-trash"></i></span>
               <span>remove</span>
@@ -280,20 +277,15 @@ export default {
      * @param {object} e [event]
      */
     onEventClick(e) {
+     /*  if(this.isSubmittedPlans) {
+        this.$toasted.show('Plans is already submitted, you cant change plan after submit');
+        return;
+      } */
       if (e.type === "non-field-activity" || e.type=== 'field-activity') {
         this.active_non_field_modal = true;
         this.selected_event = e;
         return;
       }
-      let formatted = new Date(e.start)
-        .toLocaleDateString("en-gb")
-        .split("/")
-        .reverse()
-        .join("-");
-      if (e.submitted === 1 && this.submitted.includes(formatted)) {
-        this.is_selected_event_is_submitted = true;
-      }
-      let id = e.id;
       let date = new Date(e.start).format("YYYY-MM-DD");
       this.selected_event = e;
       this.selected_event.start = new Date(e.start).format("YYYY-MM-DD");
@@ -306,14 +298,15 @@ export default {
      * @param {object} e [date]
      */
     onDayClick(e, x) {
+      if(this.isSubmittedPlans) {
+        this.$toasted.show('Plans is already submitted, you cant change plan after submit');
+        return;
+      }
       let date;
       if (e.date) {
         date = new Date(e.date).format("YYYY-MM-DD");
       } else {
         date = new Date(e).format("YYYY-MM-DD");
-      }
-      if (this.isSubmittedDay(date) === true) {
-        return;
       }
       this.selected_day = this.duplicate_date = date;
       this.show_day_modal = true;
@@ -330,6 +323,9 @@ export default {
      *
      */
     updateEvent() {
+      if(this.isSubmittedPlans) {
+        return;
+      }
       let eventDetails = this.getEventDetails();
       if (!eventDetails) {
         return;
@@ -346,6 +342,9 @@ export default {
      * delete selected event
      */
     deleteEvent() {
+      if(this.isSubmittedPlans) {
+        return;
+      }
       let eventDetails = this.getEventDetails();
       if (!eventDetails) {
         return;
@@ -407,6 +406,9 @@ export default {
      *
      */
     duplicateDay() {
+      if(this.isSubmittedPlans) {
+        return;
+      }
       let data = {
         date: this.selected_day,
         replan_date: this.duplicate_date,
@@ -429,6 +431,9 @@ export default {
      *
      */
     clearDay() {
+      if(this.isSubmittedPlans) {
+        return;
+      }
       let data = {
         date: this.selected_day,
         _method: "DELETE"
@@ -452,39 +457,6 @@ export default {
       } else {
         this.summery_icon = "fa-chevron-circle-down";
       }
-    },
-    /**
-     * export table to PDF
-     */
-    exportToPDF() {
-      let plans = filterData(this.plans, "start");
-      let exported = window.open("", "_blank");
-      exported.document.head.innerHTML = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous"><title>${this.$store.state.AppModule.user.name}_planner</title>`;
-      let exportTable = document.createElement("div");
-      exportTable.classList.add("row", "mx-auto", "my-2");
-      Object.keys(plans).forEach(day => {
-        let container = document.createElement("div");
-        container.classList.add("col-lg-4", "px-0", "border", "mx-1");
-        container.innerHTML = `<p class="px-0 bg-dark text-light">${day}</p>`;
-        plans[day].forEach(plan => {
-          container.innerHTML += `<div class="row mx-auto small border">
-            <span class="col-3">${plan.class}</span>
-            <span class="col-3">${plan.title}</span>
-            <span class="col-3">${
-              plan.specialty ? plan.specialty : "-----"
-            }</span>
-            <span class="col-3">${
-              plan.brick ? plan.brick : plan.workplace.brick
-            }</span>
-          </div>`;
-        });
-        exportTable.append(container);
-        setTimeout(() => {
-          exported.print();
-          exported.close();
-        }, 500);
-      });
-      exported.document.body.append(exportTable);
     },
     /**
      * generate visit link
@@ -528,6 +500,9 @@ export default {
       this.active_non_field_modal = false;
     },
     editNonFieldActivity() {
+      if(this.isSubmittedPlans) {
+        return;
+      }
       let request = {
         start : this.selected_event.date_start,
         end: this.selected_event.date_end,
@@ -545,6 +520,9 @@ export default {
       });
     },
     deleteNonFieldActivity() {
+      if(this.isSubmittedPlans) {
+        return;
+      }
       let id = this.selected_event.id;
       httpCall.post('activity-planner/'+id,{_method: 'DELETE'})
       .then(({data}) => {
@@ -585,9 +563,8 @@ export default {
         days
       };
     },
-    /** submitted */
-    submitted() {
-      return this.$store.getters.submittedDays;
+    isSubmittedPlans() {
+      return this.$store.getters.isSubmittedPlans;
     }
   }
 };

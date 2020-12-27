@@ -17,6 +17,7 @@ Route::prefix('v1')->group(function() {
   // Pharmacy Routes
   Route::apiResource('pharmacies', 'PharmacyController');
   // Planner Routes
+  Route::post('/planner/submit', 'PlannerController@repPlansAction');
   Route::apiResource("planner", "PlannerController");
   // Rep workplace planner
   Route::get('workplace-planner', 'RepWorkplacePlannerController@index');

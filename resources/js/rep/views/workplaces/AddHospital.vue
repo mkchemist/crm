@@ -54,13 +54,21 @@
             <div class="row mx-auto my-1">
               <div class="col-lg">
                 <label for="address" class="text-muted">Address</label>
-                <ValidationProvider name="address" rules="required" v-slot="{errors}">
+                <ValidationProvider
+                  name="address"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
                   <span class="text-danger small">{{ errors[0] }}</span>
                   <input
                     type="text"
                     id="address"
                     name="address"
-                    :class="`form-control form-control-sm ${errors[0]?'border border-danger':''}`"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border border-danger' : ''
+                      }`
+                    "
                     placeholder="Enter Hospital address"
                     v-model="hospital.address"
                   />
@@ -74,9 +82,23 @@
                   v-slot="{ errors }"
                 >
                   <span class="text-danger small">{{ errors[0] }}</span>
-                  <select name="brick" id="brick" v-model="hospitalLocation" :class="`form-control form-control-sm ${errors[0] ? 'border border-danger': ''}`">
+                  <select
+                    name="brick"
+                    id="brick"
+                    v-model="hospitalLocation"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border border-danger' : ''
+                      }`
+                    "
+                  >
                     <option value="">select brick</option>
-                    <option v-for="(val, key) in userLocations" :key="`brick_${key}`" :value="val">{{ val.brick }}</option>
+                    <option
+                      v-for="(val, key) in userLocations"
+                      :key="`brick_${key}`"
+                      :value="val"
+                      >{{ val.brick }}</option
+                    >
                   </select>
                 </ValidationProvider>
               </div>
@@ -118,7 +140,7 @@
 import { httpCall } from "../../../helpers/http-service";
 export default {
   mounted() {
-    this.$store.dispatch('getUserLocations');
+    this.$store.dispatch("getUserLocations");
   },
   methods: {
     /**
@@ -126,26 +148,25 @@ export default {
      *
      */
     onSubmit() {
-      if(!this.hospitalLocation.brick) {
-        this.$toasted.error('You must select workplace brick')
+      if (!this.hospitalLocation.brick) {
+        this.$toasted.error("You must select workplace brick");
         return;
       }
       let request = {
         ...this.hospital,
         ...this.hospitalLocation
-      }
+      };
       httpCall
         .post("rep/v1/workplaces", request)
         .then(({ data }) => {
-          data.message = 'hospital added successfully';
+          data.message = "hospital added successfully";
           this.handleResponse(data, data => {
             this.$store.dispatch("workplaceGetAll", true).then(() => {
               this.$router.replace("/workplaces");
             });
-          })
+          });
         })
-        .finally(() => {
-        });
+        .finally(() => {});
     }
   },
   data: () => ({

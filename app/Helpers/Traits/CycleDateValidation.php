@@ -19,4 +19,12 @@ trait CycleDateValidation {
       }
       return null;
   }
+
+  public function isPassedDay($date)
+  {
+      if($date < date('20y-m-d')) {
+        return ResponseHelper::InvalidDayRange();
+      }
+      return null;
+  }
 }

@@ -66,21 +66,9 @@ class WorkplacePlannerController extends Controller
         if ($validator->fails()) {
             return response()->json(ResponseHelper::validationErrorResponse($validator));
         }
-        /**
-         * #TODO need to be configured through admin panel
-         * to control whether it allowed or not
-         */
-       /*  if(date('20y-m-d') > $request->date) {
-          $today = date('20y-m-d');
-          return response([
-            'code'  =>  400,
-            'data'  =>  [
-              'errors'  =>  [
-                "Cannot submitted plan on day before $today"
-              ]
-            ]
-          ]);
-        } */
+        if($this->isPassedDay($request->date)) {
+          return $this->isPassedDay($request->date);
+        }
         $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
             return response($isNotValidDate);
@@ -127,6 +115,9 @@ class WorkplacePlannerController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if($this->isPassedDay($request->date)) {
+          return $this->isPassedDay($request->date);
+        }
         $plan = $this->getPlanById($id);
         $check = $this->getPlanByWorkplaceId($plan->workplace_id, $request->date);
         $isNotValidDate = $this->isNotValidDate($request->date);
