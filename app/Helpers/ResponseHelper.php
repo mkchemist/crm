@@ -86,4 +86,17 @@ class ResponseHelper
             ],
         ];
     }
+
+    public static function InvalidDayRange()
+    {
+      $today = date('20y-m-d');
+      return [
+        'code'  =>  400,
+        'data' => [
+          'errors'=>[
+            "Date cannot be before $today"
+          ]
+        ]
+      ];
+    }
 }

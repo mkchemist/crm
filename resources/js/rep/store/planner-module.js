@@ -31,6 +31,8 @@ export default {
      * non field activity plans
      */
     nonFieldActivityPlans: [],
+    /** is plan submitted */
+    isSubmitted: false
   },
   getters: {
     /**
@@ -70,7 +72,8 @@ export default {
       }
       return days
     },
-    nonFieldActivityPlans: state => state.nonFieldActivityPlans
+    nonFieldActivityPlans: state => state.nonFieldActivityPlans,
+    isSubmittedPlans : state => state.isSubmitted
   },
   mutations: {
 
@@ -95,6 +98,7 @@ export default {
           ResponseHandler.methods.handleResponse(data, (data) => {
             state.plans = data.data;
             state.submittedDays = [...state.submittedDays,...data.submitted]
+            state.isSubmitted = data.isSubmitted;
           });
         });
       }

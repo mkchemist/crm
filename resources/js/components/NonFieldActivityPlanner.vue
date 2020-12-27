@@ -7,6 +7,10 @@
     <div class="p-2">
       <ValidationObserver v-slot="{ handleSubmit }">
         <form @submit.prevent="handleSubmit(savePlan)">
+          <p class="alert alert-warning" v-if="isSubmittedPlans">
+            <span class="fa fa-exclamation-triangle"></span>
+            Plan is already submitted
+          </p>
           <div class="row mx-auto">
             <div class="col-lg">
               <label for="" class="text-muted">From</label>
@@ -26,6 +30,8 @@
                     }`
                   "
                   v-model="plan.from"
+                  :disabled="isSubmittedPlans"
+                  :min="today"
                 />
               </validationProvider>
             </div>
@@ -47,6 +53,8 @@
                     }`
                   "
                   v-model="plan.to"
+                  :disabled="isSubmittedPlans||!plan.from"
+                  :min="plan.from"
                 />
               </validationProvider>
             </div>
@@ -66,7 +74,7 @@
                       errors[0] ? 'border border-danger' : ''
                     }`
                   "
-                  v-model="plan.content"
+                  v-model="plan.content" :disabled="isSubmittedPlans"
                 >
                   <option
                     v-for="(type, i) in types"
@@ -84,7 +92,7 @@
               <span class="fa fa-chevron-circle-left"></span>
               <span>back</span>
             </router-link>
-            <button class="btn btn-sm btn-primary">
+            <button class="btn btn-sm btn-primary" :disabled="isSubmittedPlans">
               <span class="fa fa-save"></span>
               <span>save</span>
             </button>
@@ -108,10 +116,22 @@ export default {
       content: "",
       type: 'non-field-activity'
     },
-    types: []
+    types: [],
+    today: new Date().format()
   }),
+   computed: {
+    isSubmittedPlans() {
+      if(this.$store.getters.isSubmittedPlans) {
+        return this.$store.getters.isSubmittedPlans;
+      }
+      return false
+    }
+  },
   methods: {
     savePlan() {
+      if(this.isSubmittedPlans) {
+        return;
+      }
       httpCall.post('activity-planner', this.plan)
       .then(({data}) => {
         this.handleResponse(data, data => {

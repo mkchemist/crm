@@ -38,11 +38,12 @@ class PlannerController extends Controller
         }
 
         $submitted = $model->where('submitted', true)->select('plan_date')->distinct()->get();
-
+        $isSubmitted = $model->where('submitted', true)->first();
         return response()->json([
             'code' => 201,
             'data' => RepPlannerResource::collection($plans),
             'submitted' => $submitted->toArray(),
+            'isSubmitted' => $isSubmitted ? true : false
         ]);
     }
 
@@ -57,6 +58,9 @@ class PlannerController extends Controller
         $ids = json_decode($request->customers);
         $exists = [];
         $user = Auth::user();
+        if($this->isPassedDay($request->date)) {
+          return $this->isPassedDay($request->date);
+        }
         $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
             return response($isNotValidDate);
@@ -97,6 +101,9 @@ class PlannerController extends Controller
     public function update(Request $request, $id)
     {
         $plan = $this->getPlanById($id);
+        if($this->isPassedDay($request->date)) {
+          return $this->isPassedDay($request->date);
+        }
         $check = $this->checkIfExists($plan->customer_id, $request->date);
         if ($check) {
             return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
@@ -168,6 +175,9 @@ class PlannerController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json(ResponseHelper::validationErrorResponse($validator));
+        }
+        if($this->isPassedDay($request->date)) {
+          return $this->isPassedDay($request->date);
         }
         $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {

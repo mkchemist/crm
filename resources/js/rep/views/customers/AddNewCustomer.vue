@@ -97,11 +97,9 @@
                 >
                   <span class="text-danger small">{{ errors[0] }}</span>
                   <select
-                    type="text"
                     name="brick"
                     id="brick"
                     class="form-control form-control-sm"
-                    placeholder="Enter customer brick"
                     v-model="customerLocation"
                   >
                     <option value="">select brick</option>

@@ -9,7 +9,7 @@
         <div class="col-lg-6 border rounded px-0">
           <p class="alert alert-info">Customers</p>
           <div class="p-2">
-            <p class="bg-warning text-dark p-2" v-if="isSubmitted">This day is submitted , you can't add or delete</p>
+            <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">This day is submitted , you can't add or delete</p>
             <p
               v-if="selected_customers.length"
               class="bg-dark small text-light p-2"
@@ -40,7 +40,7 @@
                       <input
                         type="checkbox"
                         @click="addToSelected(customer.id)"
-                        :disabled="isSubmitted"
+                        :disabled="isSubmittedPlans"
                       />
                     </td>
                     <td>{{ customer.name }}</td>
@@ -74,7 +74,7 @@
         <div class="col-lg-6 px-0 border rounded">
           <p class="alert alert-info">Date {{ $attrs.date }} plans</p>
           <div class="p-2">
-            <p class="bg-warning text-dark p-2" v-if="isSubmitted">This day is submitted , you can't add or delete</p>
+            <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">This day is submitted , you can't add or delete</p>
             <p v-if="datePlan.length" class="p-2 bg-dark text-light small">
               total planned : {{ datePlan.length }}
             </p>
@@ -98,7 +98,7 @@
                       <input
                         type="checkbox"
                         @click="addToDeletedCustomers(customer.id)"
-                        :disabled="isSubmitted"
+                        :disabled="isSubmittedPlans"
                       />
                     </td>
                     <td>{{ customer.title }}</td>
@@ -118,7 +118,7 @@
             <span><i class="fa fa-chevron-circle-left"></i></span>
             <span>back</span>
           </router-link>
-          <button class="btn btn-sm btn-success" @click="addPlan" :disabled="isSubmitted||!selected_customers.length">
+          <button class="btn btn-sm btn-success" @click="addPlan" :disabled="isSubmittedPlans||!selected_customers.length">
             <span
               class="bg-white text-success rounded-circle px-1 font-weight-bold"
               v-if="selected_customers.length"
@@ -130,6 +130,7 @@
             class="btn btn-sm btn-danger"
             v-if="deleted_customers.length"
             @click="deletePlans"
+            :disabled="isSubmittedPlans||!deleted_customers.length"
           >
             <span
               class="bg-white text-danger rounded-circle px-1 font-weight-bold"
@@ -179,12 +180,8 @@ export default {
     isFetched() {
       return this.$store.getters.fetched;
     },
-    submitted(){
-      return this.$store.getters.submittedDays;
-    },
-    isSubmitted(){
-      let date = this.$attrs.date;
-      return this.submitted.includes(date);
+    isSubmittedPlans() {
+      return this.$store.getters.isSubmittedPlans
     }
   },
   methods: {

@@ -9,6 +9,7 @@ export default {
     selectedUserPlans: [],
     repPlans: [],
     coachPlans: [],
+    planValidationData: []
   },
   getters: {
     plans: state =>{
@@ -17,7 +18,8 @@ export default {
     } ,
     isPlanFetched : state => state.fetched,
     currentUserId: state => state.currentUserId,
-    repPlans: state => state.repPlans
+    repPlans: state => state.repPlans,
+    planValidationData: state => state.planValidationData
   },
   mutations: {
     setCurrentUserId(state, id) {
@@ -37,6 +39,7 @@ export default {
             state.repPlans = data.data.rep;
             state.coachPlans = data.data.coach;
             state.allPlans = [...state.allPlans,...data.data.coach, ...data.data.rep]
+            state.planValidationData = data.validation
           }).catch(err => console.log(err))
         ;
       }

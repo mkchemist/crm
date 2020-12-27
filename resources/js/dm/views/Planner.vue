@@ -45,7 +45,7 @@
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 export default {
-  mounted() {
+  created() {
     this.$store.dispatch('getNonFieldActivityPlans')
     .then(() => {
       this.$store.dispatch("getPlans");

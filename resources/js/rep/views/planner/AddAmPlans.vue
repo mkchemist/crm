@@ -8,7 +8,7 @@
     <div class="p-2 row mx-auto">
       <!-- add plans controller -->
       <div class="col-lg-6 p-2 border rounded" id="workplace_list">
-        <p class="bg-warning text-dark p-2" v-if="isSubmitted">This day is submitted , you can't add or delete</p>
+        <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">This day is submitted , you can't add or delete</p>
         <p class="bg-dark text-light p-2" v-if="selected_workplaces.length">
           Selected : {{ selected_workplaces.length }}
         </p>
@@ -60,7 +60,7 @@
             <tbody>
               <tr v-for="workplace in workplaces" :key="workplace.id">
                 <td>
-                  <input type="checkbox" @click="addToSelected(workplace.id)" :disabled="isSubmitted" />
+                  <input type="checkbox" @click="addToSelected(workplace.id)" :disabled="isSubmittedPlans" />
                 </td>
                 <td>{{ workplace.name }}</td>
                 <td>{{ workplace.address }}</td>
@@ -85,7 +85,7 @@
       </div>
       <!-- planned workplacess controller -->
       <div class="col-lg-6 p-2 rounded border" id="plans_list">
-        <p class="bg-warning text-dark p-2" v-if="isSubmitted">This day is submitted , you can't add or delete</p>
+        <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">This day is submitted , you can't add or delete</p>
         <p class="bg-dark text-light p-2" v-if="deleted_workplaces.length">
           Selected : {{ deleted_workplaces.length }}
         </p>
@@ -102,7 +102,7 @@
             <tbody>
               <tr v-for="plan in amPlans" :key="plan.id">
                 <td>
-                  <input type="checkbox" @click="addToDeleted(plan.id)" :disabled="isSubmitted" />
+                  <input type="checkbox" @click="addToDeleted(plan.id)" :disabled="isSubmittedPlans" />
                 </td>
                 <td>{{ plan.name }}</td>
                 <td>{{ plan.workplace.address }}</td>
@@ -121,7 +121,7 @@
         <span><i class="fa fa-chevron-circle-left"></i></span>
         <span class="font-weight-bold">back</span>
       </router-link>
-      <button class="btn btn-sm btn-success" @click="addPlans" :disabled="isSubmitted">
+      <button class="btn btn-sm btn-success" @click="addPlans" :disabled="isSubmittedPlans">
         <span
           class="px-1 text-success bg-light rounded-circle font-weight-bold"
           v-if="selected_workplaces.length"
@@ -129,7 +129,7 @@
         >
         <span class="font-weight-bold">add</span>
       </button>
-      <button class="btn btn-sm btn-danger" @click="deletePlans" :disabled="isSubmitted">
+      <button class="btn btn-sm btn-danger" @click="deletePlans" :disabled="isSubmittedPlans">
         <span
           class="px-1 text-danger bg-light rounded-circle font-weight-bold"
           v-if="deleted_workplaces.length"
@@ -183,13 +183,6 @@ export default {
     isWorkplaceFetched() {
       return this.$store.getters.isWorkplacesFetched;
     },
-    submitted() {
-      return this.$store.getters.submittedDays
-    },
-    isSubmitted() {
-      let date = this.$attrs.date;
-      return this.submitted.includes(date)
-    },
     filterBricks() {
       let workplaces = this.rowWorkplaces;
       let bricks = [];
@@ -201,6 +194,9 @@ export default {
         })
       }
       return bricks;
+    },
+    isSubmittedPlans() {
+      return this.$store.getters.isSubmittedPlans;
     }
   },
   methods: {

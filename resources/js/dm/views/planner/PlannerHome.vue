@@ -19,9 +19,13 @@
         <span class="fa fa-plus-circle"></span>
         <span>Plan Non-Field activity</span>
       </router-link>
-      <button class="btn btn-sm btn-primary" v-if="!isOwnerPlans">
+      <button class="btn btn-sm btn-primary" v-if="!isOwnerPlans && isRepPlansNeedToApproval() === true" @click="approveCurrentUserPlans">
         <span class="fa fa-check-circle"></span>
         <span>Approve </span>
+      </button>
+      <button class="btn btn-sm btn-secondary" v-if="!isOwnerPlans && isRepPlansNeedToApproval() === true" @click="rejectCurrentUserPlans">
+        <span class="fa fa-check-circle"></span>
+        <span>Reject </span>
       </button>
       <button class="btn btn-sm btn-success">
         <span><i class="fa fa-paper-plane"></i></span>
@@ -191,6 +195,9 @@ export default {
     currentPlannerUserId() {
       return this.$store.getters.currentUserId;
     },
+    planValidationData() {
+      return this.$store.getters.planValidationData;
+    },
     /**
      * check if this view is owner view
      */
@@ -287,6 +294,39 @@ export default {
         });
       }).catch(err => console.log(err))
     },
+    approveCurrentUserPlans(){
+      this.sendCurrentUserPlansAction('approved');
+    },
+    rejectCurrentUserPlans(){
+      this.sendCurrentUserPlansAction('rejected');
+    },
+    sendCurrentUserPlansAction(type){
+      let user = this.currentPlannerUserId;
+      let request = {
+        user,
+        type
+      }
+      httpCall.post('dm/v1/planner/submit', request)
+      .then(({data}) => {
+        this.handleResponse(data, data=> {
+          this.$store.dispatch('getPlans', true)
+          .then(() => {
+            this.$store.dispatch('getNonFieldActivityPlans', true)
+          })
+        })
+      }).catch(err => console.log(err))
+    },
+    isRepPlansNeedToApproval() {
+      if(this.isOwnerPlans) {
+        return;
+      }
+      let userId = this.currentPlannerUserId;
+      let userValidation = this.planValidationData.filter(plan => plan.user_id === userId)[0];
+      if(userValidation && userValidation.submitted === 1) {
+        return true;
+      }
+      return false;
+    }
   }
 };
 </script>
