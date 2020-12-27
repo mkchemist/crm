@@ -10,60 +10,62 @@
           <form @submit.prevent="handleSubmit(saveReport)">
             <!-- visit customer and date -->
             <div class="row mx-auto my-2 border rounded p-2">
-              <div class="col-lg">
-                <label for="customer" class="text-muted">Customer</label>
-                <ValidationProvider
-                  name="customer"
-                  rules="required"
-                  v-slot="{ errors }"
-                  v-if="customers.length"
-                >
-                  <span class="text-danger small">{{ errors[0] }}</span>
-                  <div v-if="is_single_customer">
-                    <input
-                      type="text"
-                      readonly
-                      disabled
-                      class="form-control form-control-sm"
-                      :value="customer.name"
-                    />
-                    <input
-                      type="hidden"
-                      readonly
-                      disabled
-                      class="form-control form-control-sm"
-                      name="customer"
-                      id="customer"
-                      v-model="visit.customer"
-                    />
-                  </div>
-                  <div v-else class="row mx-auto">
-                    <select
-                      name="customer"
-                      id="customer"
-                      v-model="visit.customer"
-                      class="form-control form-control-sm col-lg-8"
-                    >
-                      <option value="">Select customer</option>
-                      <option
-                        v-for="customer in customers"
-                        :key="customer.id"
-                        :value="customer.id"
-                        >{{ customer.name }}</option
+              <div class="col-lg row mx-auto align-items-center">
+                <label for="customer" class="text-muted col-lg-2">Customer</label>
+                <div class="col-lg-7">
+                  <ValidationProvider
+                    name="customer"
+                    rules="required"
+                    v-slot="{ errors }"
+                    v-if="customers.length"
+                  >
+                    <span class="text-danger small">{{ errors[0] }}</span>
+                    <div v-if="is_single_customer">
+                      <input
+                        type="text"
+                        readonly
+                        disabled
+                        class="form-control form-control-sm"
+                        :value="customer.name"
+                      />
+                      <input
+                        type="hidden"
+                        readonly
+                        disabled
+                        class="form-control form-control-sm"
+                        name="customer"
+                        id="customer"
+                        v-model="visit.customer"
+                      />
+                    </div>
+                    <div v-else class="row mx-auto">
+                      <select
+                        name="customer"
+                        id="customer"
+                        v-model="visit.customer"
+                        class="form-control form-control-sm"
                       >
-                    </select>
-                    <customer-select-filter
-                      :data="$store.getters.active"
-                      class="col-lg-4"
-                    ></customer-select-filter>
+                        <option value="">Select customer</option>
+                        <option
+                          v-for="customer in customers"
+                          :key="customer.id"
+                          :value="customer.id"
+                          >{{ customer.name }}</option
+                        >
+                      </select>
+                    </div>
+                  </ValidationProvider>
+                  <div v-else-if="fetched">
+                    <p class="text-center">No customers found</p>
                   </div>
-                </ValidationProvider>
-                <div v-else-if="fetched">
-                  <p class="text-center">No customers found</p>
+                  <div class="text-center" v-else>
+                    <div class="spinner-border text-success"></div>
+                  </div>
                 </div>
-                <div class="text-center" v-else>
-                  <div class="spinner-border text-success"></div>
-                </div>
+                <customer-select-filter
+                  :data="$store.getters.active"
+                  class="col-lg-3"
+                ></customer-select-filter>
               </div>
               <div class="col-lg">
                 <label for="date" class="text-muted">Date:</label>
@@ -88,13 +90,21 @@
             <div class="row mx-auto my-2 border rounded p-2">
               <div class="col-lg-6">
                 <label for="" class="text-muted small">Visit type</label>
-                <ValidationProvider rules="required" name="visit_type" v-slot="{errors}">
+                <ValidationProvider
+                  rules="required"
+                  name="visit_type"
+                  v-slot="{ errors }"
+                >
                   <span>{{ errors[0] }}</span>
                   <select
                     name="visit_type"
                     id=""
                     v-model="visit.visit_type"
-                    :class="`form-control form-control-sm ${errors[0] ? 'border border-danger' : ''}`"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border border-danger' : ''
+                      }`
+                    "
                     @change="handleVisitType"
                   >
                     <option
@@ -174,7 +184,10 @@
                 <span><i class="fa fa-chevron-circle-left"></i></span>
                 <span class="font-weight-bold">back</span>
               </router-link>
-              <button class="btn btn-sm btn-success" :disabled="!visit.customer">
+              <button
+                class="btn btn-sm btn-success"
+                :disabled="!visit.customer"
+              >
                 <span><i class="fa fa-save"></i></span>
                 <span class="font-weight-bold">save</span>
               </button>
@@ -221,15 +234,15 @@ export default {
      * save report
      */
     saveReport() {
-      if(!this.visit.customer) {
-        this.$toasted.error('No customer selected', {
-          icon: 'exclamation-triangle'
+      if (!this.visit.customer) {
+        this.$toasted.error("No customer selected", {
+          icon: "exclamation-triangle"
         });
         return;
       }
-      if(!this.visit.products.length) {
-        this.$toasted.error('You must add one product at least', {
-          icon: 'exclamation-triangle'
+      if (!this.visit.products.length) {
+        this.$toasted.error("You must add one product at least", {
+          icon: "exclamation-triangle"
         });
         return;
       }
