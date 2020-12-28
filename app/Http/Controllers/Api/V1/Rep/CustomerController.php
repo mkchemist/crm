@@ -69,6 +69,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+      return response($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'specialty' => 'required|string',

@@ -54,6 +54,11 @@ export default {
         title: "Add new non-field activity report",
         link: "/reports/add/activity-report?type=non-field-activity",
         icon: "fa-plus-circle"
+      },
+      {
+        title: 'Create new request',
+        link: '/reports/add/request',
+        icon: 'fa-plus-circle'
       }
     ],
     reportLinks: [

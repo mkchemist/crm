@@ -53,6 +53,8 @@ Route::prefix('v1')->group(function () {
       Route::post('/field-activity', 'FieldActivityController@store');
       Route::get('/refresh-hash-key', 'ForceRefreshHashKeySettingController@index');
       Route::post('/refresh-hash-key', 'ForceRefreshHashKeySettingController@store');
+      Route::get('/request-types', 'RequestSettingController@index');
+      Route::post('/request-types', 'RequestSettingController@store');
     });
     Route::apiResource('broadcasting', 'MessageBroadcastingController');
 });

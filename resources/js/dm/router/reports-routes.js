@@ -12,6 +12,7 @@ import ViewPlanAnalysis from "../views/reports/analysis/ViewPlanAnalysis.vue"
 import CreateCoachReport from "../views/reports/CreateCoachReport.vue";
 import ActivityReportContainer from '../views/reports/ActivityReportContainer.vue';
 import AddActivityReport from '../../components/AddActivityReport.vue';
+import RequestReportContainer from '../views/reports/RequestReportContainer.vue'
 export default {
   path: '/reports',
   component: Reports,
@@ -67,6 +68,10 @@ export default {
     {
       path: 'activity-report',
       component: ActivityReportContainer
+    },
+    {
+      path: 'requests',
+      component: RequestReportContainer,
     }
   ]
 }

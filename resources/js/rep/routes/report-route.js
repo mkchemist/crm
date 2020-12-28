@@ -19,6 +19,7 @@ import SingleCoachReport from "../views/reports/SingleCoachReport.vue";
 import ActivityReportsContainer from '../views/reports/ActivityReportsContainer.vue'
 import RequestsContainer from '../views/reports/RequestsReportContainer.vue';
 import AddActivityReport from '../../components/AddActivityReport.vue';
+import AddRequest from '../views/reports/requests/AddRequest.vue';
 
 export default {
   path: "/reports",
@@ -77,6 +78,10 @@ export default {
     {
       path: "add/pharmacy/:id?",
       component: AddPharmacyReport
+    },
+    {
+      path: 'add/request',
+      component: AddRequest
     },
     {
       path: "edit/pm/:id",

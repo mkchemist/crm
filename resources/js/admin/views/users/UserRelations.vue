@@ -286,7 +286,7 @@ export default {
   }),
   computed: {
     users() {
-      return this.$store.getters.users;
+      return sortBy(this.$store.getters.users,'name');
     },
     reps() {
       let users = this.users;

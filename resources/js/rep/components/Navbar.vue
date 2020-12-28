@@ -131,6 +131,15 @@
                   <span class="fa fa-chevron-circle-right float-right"></span>
                 </span>
                 <ul class="dropdown-menu dropdown-menu-left">
+                   <li>
+                    <router-link
+                      to="/reports/add/request"
+                      class="drop-item small nav-link"
+                    >
+                      <span><i class="fa fa-dollar-sign"></i></span>
+                      <span class="ml-1">New Request</span>
+                    </router-link>
+                  </li>
                   <li>
                     <router-link
                       to="/customers/new"
@@ -159,6 +168,7 @@
                       <span class="ml-1">New pharmacy</span>
                     </router-link>
                   </li>
+
                 </ul>
               </li>
             </ul>

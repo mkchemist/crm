@@ -5,6 +5,8 @@ import LineSetting from "../views/setting/LineSetting.vue";
 import NewLine from '../views/setting/lines/NewLine.vue';
 import LineHome from '../views/setting/lines/LineHome.vue';
 import EditLine from "../views/setting/lines/EditLine.vue";
+import RequestSetting from '../views/setting/RequestSetting.vue';
+
 export default {
   path: '/setting',
   component: Setting,
@@ -34,6 +36,10 @@ export default {
           component: EditLine
         }
       ]
+    },
+    {
+      path: 'requests',
+      component: RequestSetting
     }
   ]
 }

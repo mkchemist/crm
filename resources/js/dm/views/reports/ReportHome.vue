@@ -112,6 +112,11 @@ export default {
         link: '/reports/activity-report?type=non-field-activity',
         icon: 'fa-book-reader',
         title: 'Non-Field Activity report'
+      },
+      {
+        link: '/reports/requests',
+        icon: 'fa-dollar-sign',
+        title: 'Requests report'
       }
     ]
   })

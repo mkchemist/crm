@@ -43,6 +43,10 @@ Route::group([
   Route::apiResource('/activity-planner', 'Api\V1\ActivityPlansController');
   /** activity reports */
   Route::apiResource('/activity-reports', 'Api\V1\ActivityReportController');
+  /** customer requests route */
+  Route::apiResource('/customer-requests', 'Api\V1\CustomerRequestController');
+  /** Requests type */
+  Route::get('/request-types', 'Api\V1\RequestsTypeController@index');
 });
 
 
