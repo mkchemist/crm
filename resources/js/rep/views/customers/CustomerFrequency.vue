@@ -48,12 +48,17 @@
             <span>Submit</span>
           </button>
         </div>
+        <div class="p-2">
+          <p class="text-muted">Total Current Frequency : <span class="badge badge-primary p-1">{{ totalFrequency.totalCurrentFrequency }}</span></p>
+          <p class="text-muted">Total Updated Frequency : <span class="badge badge-primary p-1">{{ totalFrequency.totalUpdatedFrequency }}</span></p>
+        </div>
         <div v-if="customers.length">
           <table-component
             :heads="heads"
             :data="customers"
             head-class="bg-success text-light"
             order-by="Name,asc|Specialty,asc"
+            :unselectable="true"
           >
             <template v-slot:head>
               <th>Next</th>
@@ -74,6 +79,7 @@
                       (item.freq && item.freq.locked === 1)
                   "
                   @change="updateCustomerFrequency(item.id)"
+                  :min="0"
                 />
                 <span class="d-none">{{ item.next_freq }}</span>
               </td>
@@ -149,6 +155,18 @@ export default {
     },
     isFetched() {
       return this.$store.getters.fetched;
+    },
+    totalFrequency() {
+      let totalCurrentFrequency = 0;
+      this.customers.map(customer => totalCurrentFrequency += customer.current_freq);
+      let totalUpdatedFrequency = 0;
+      if(this.updated.length) {
+        this.updated.map(customer => totalUpdatedFrequency += customer.frequency);
+      }
+      return {
+        totalCurrentFrequency,
+        totalUpdatedFrequency
+      }
     }
   },
   data: () => ({
@@ -177,7 +195,7 @@ export default {
     updated: [],
     isLoading: false,
     fetched: false,
-    showFilter: false
+    showFilter: false,
   }),
   methods: {
     /**
