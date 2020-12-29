@@ -13,15 +13,19 @@
           <ul class="nav">
             <li class="nav-item col-12 border-bottom clearfix" v-for="(customer,i) in plannedCustomers" :key="customer.id+''+i">
               <span>
-                <i v-if="!['AM','submitted AM'].includes(customer.class)" class="fa fa-user-md text-success"></i>
-                <i v-else class="fa fa-hospital text-primary"></i>
+                <i v-if="['AM','submitted AM'].includes(customer.class)" class="fa fa-hospital text-success"></i>
+                <i v-if="!['AM','submitted AM', 'PM', 'submitted PM'].includes(customer.class)" class="fa fa-user-plus text-dark"></i>
+                <i v-if="['PM','submitted PM'].includes(customer.class)" class="fa fa-user-md text-primary"></i>
               </span>
               <span class="text-muted small">{{ customer.title }}</span>
-              <router-link :to="`/reports/add/pm/${customer.customer_id}`" v-if="!['AM','submitted AM'].includes(customer.class)" class="float-right">
+              <router-link :to="`/reports/add/pm/${customer.customer_id}`" v-if="['PM','submitted PM'].includes(customer.class)" class="float-right">
                 <span><i class="fa fa-hands-helping text-success"></i></span>
               </router-link>
               <router-link :to="`/reports/add/am/${customer.workplace_id}`" v-if="['AM','submitted AM'].includes(customer.class)" class="float-right">
                 <span><i class="fa fa-hands-helping text-primary"></i></span>
+              </router-link>
+              <router-link :to="`/reports/add/activity-report?type=${customer.class}`" v-if="!['PM','submitted PM', 'AM', 'submitted AM'].includes(customer.class)" class="float-right">
+                <span><i class="fa fa-hands-helping text-dark"></i></span>
               </router-link>
             </li>
           </ul>
@@ -41,11 +45,21 @@
 
 <script>
 export default {
-  created(){
-    this.$store.dispatch('getWorkplacePlanner')
-    .then(() => {
-      this.$store.dispatch('getPlanner');
+  mounted(){
+    this.$store.dispatch('getNonFieldActivityPlans')
+    .finally(() => {
+      this.$store.dispatch('getWorkplacePlanner')
+      .finally(() => {
+        this.$store.dispatch('getPlanner')
+      })
     })
+    /* this.$store.dispatch('getWorkplacePlanner')
+    .then(() => {
+      this.$store.dispatch('getPlanner')
+      .then(() => {
+        this.$store.dispatch('getNonFieldActivityPlans')
+      })
+    }) */
   },
   data: () => ({
     isLoading: false,
