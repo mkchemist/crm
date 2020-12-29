@@ -122,7 +122,7 @@ export default {
      */
     addNewCustomer({ dispatch }, data) {
       httpCall.post("rep/v1/customers", data).then(({ data }) => {
-        data.message = `customer ${data.data.name} added successfully`;
+        data.message = `customer added successfully`;
         ResponseHandler.methods.handleResponse(data, data => {
           dispatch("customerGetAll", true);
           router.replace("/customers");

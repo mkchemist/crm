@@ -69,7 +69,6 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-      return response($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'specialty' => 'required|string',
@@ -88,8 +87,19 @@ class CustomerController extends Controller
         )) {
             return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
         }
-
-        $customer = Customer::create($request->all());
+        $customer = new Customer;
+        $customer->name  =  $request->name;
+        $customer->title =  $request->title;
+        $customer->specialty =  $request->specialty;
+        $customer->workplace_id  =  $request->workplace_id;
+        $customer->brick         =  $request->brick;
+        $customer->address         =  $request->address;
+          $customer->phone         =  $request->phone;
+          $customer->area         =  $request->area;
+          $customer->district         =  $request->district;
+          $customer->territory         =  $request->territory;
+          $customer->region         =  $request->region;
+          $customer->save();
         return response()->json([
             "code" => 201,
             "data" => $customer,
