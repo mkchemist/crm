@@ -213,7 +213,7 @@ class ApprovalController extends Controller
     $relations = json_decode($user->user_relations);
     $reps = $relations->reps;
     $customers = CustomerValidation::with(['customer', 'user', 'workplace'])
-    ->whereIn('user_id', $reps)->get();
+    ->whereIn('user_id', $reps)->where('approved', false)->get();
 
     return response([
       'code'  =>  200,
