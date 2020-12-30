@@ -28,7 +28,10 @@ class CustomerResource extends JsonResource
       "parameter"   =>  count($this->params) ? $this->params[0]->current : 'NN',
       "reports" =>  count($this->report),
       'workplace' =>  $this->workplace ? $this->workplace->name : null,
-      "plans"     =>  count($this->planner)
+      "plans"     =>  count($this->planner),
+      'district'  =>  $this->district,
+      'territory' =>  $this->territory,
+      'region'    =>  $this->region
     ];
   }
 
