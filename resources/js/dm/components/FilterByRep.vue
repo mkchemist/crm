@@ -76,15 +76,12 @@ export default {
       if(district.length && district[0] !== 'all') {
         data = data.filter(customer => district.includes(customer.district));
       }
-      console.log(data)
       if(area.length && area[0] !== 'all') {
         data = data.filter(customer => area.includes(customer.area));
       }
-      console.log(data)
       if(brick.length) {
         data = data.filter(customer => brick.includes(customer.brick));
       }
-      console.log(data)
       this.onFilter(data);
       this.show_modal = false;
 
