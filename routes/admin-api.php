@@ -57,4 +57,9 @@ Route::prefix('v1')->group(function () {
       Route::post('/request-types', 'RequestSettingController@store');
     });
     Route::apiResource('broadcasting', 'MessageBroadcastingController');
+    // Admin management routes
+    Route::group(['prefix' => 'management'], function () {
+        Route::get('duplicate-customers', 'CustomerManagementController@duplicateCustomers');
+        Route::get('query-duplicate-customer', 'CustomerManagementController@queryDuplicateCustomer');
+    });
 });

@@ -7,7 +7,7 @@ import UsersRoutes from './users-routes';
 import ValidationRoutes from "./validation-routes";
 import SettingsRoutes from "./setting-routes";
 import broadcastingRoutes from "./broadcasting-routes";
-
+import CustomerRoutes from './customers-routes'
 Vue.use(VueRouter)
 
 
@@ -23,10 +23,7 @@ export default new VueRouter({
     ValidationRoutes,
     SettingsRoutes,
     broadcastingRoutes,
-    {
-      path: '/customers',
-      component: CustomersPage
-    },
+    CustomerRoutes,
     {
       path: '*',
       component: ErrorPage

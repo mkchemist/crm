@@ -5,7 +5,19 @@
         <span><i class="fa fa-lock"></i></span>
         <span class="font-weight-bold">Inactive Customers list</span>
       </p>
+
       <div class="my-2 p-2">
+        <div class="text-right">
+          <filter-by-rep :onFilter="onFilter" :onReset="onReset" :data="$store.getters.inactiveCustomers">
+          <button
+            class="btn btn-primary btn-sm"
+            @click="$store.dispatch('customersGetAll', true)"
+          >
+            <span><i class="fa fa-redo"></i></span>
+            <span>refresh list</span>
+          </button>
+          </filter-by-rep>
+        </div>
         <table-component
           v-if="customers.length"
           :heads="heads"
@@ -52,12 +64,21 @@
 <script>
 import TableComponent from "../../../components/TableComponent";
 import { DM_CUSTOMERS_HEADS } from "../../../helpers/constants";
+import FilterByRep from '../../components/FilterByRep';
+
 export default {
   components: {
-    TableComponent
+    TableComponent,
+    FilterByRep
   },
   computed: {
     customers() {
+      if(this.shouldFilter) {
+        return [];
+      }
+      if(this.filteredList.length) {
+        return this.filteredList;
+      }
       return this.$store.getters.inactiveCustomers;
     },
     isCustomersFetched() {
@@ -65,7 +86,9 @@ export default {
     }
   },
   data: () => ({
-    heads: DM_CUSTOMERS_HEADS
+    heads: DM_CUSTOMERS_HEADS,
+    filteredList: [],
+    shouldFilter: false
   }),
    methods: {
     customerState(item) {
@@ -92,6 +115,19 @@ export default {
           style: 'bg-success text-light p-1'
         }
       }
+    },
+    onFilter(data) {
+      this.shouldFilter = true;
+     let async = () => Promise.resolve(data);
+      async().then(() => {
+        this.filteredList =data;
+        this.shouldFilter = false;
+      });
+
+    },
+    onReset() {
+      this.shouldFilter = false;
+      this.filteredList = false;
     }
   }
 };

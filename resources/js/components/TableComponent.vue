@@ -6,7 +6,7 @@
           notResponsive ? '' : 'table-responsive'
         }`
       "
-      id="data-table"
+      :id="id ? id:`data-table`"
       v-if="rows.length"
     >
       <thead>
@@ -44,7 +44,8 @@ export default {
     "orderBy",
     "notResponsive",
     "actionCell",
-    "unselectable"
+    "unselectable",
+    "id"
   ],
   data: () => ({
     table: null
@@ -80,7 +81,7 @@ export default {
       buttons = this.addFavoriteButton(buttons);
       buttons = this.addUnlinkButton(buttons);
       let select = this.unselectable ? false : {style: 'single'}
-      this.table = $("#data-table").DataTable({
+      this.table = $(`#${this.id ? this.id : 'data-table'}`).DataTable({
         order: this.ordering(),
         language: {
           searchPlaceholder: "Search..."

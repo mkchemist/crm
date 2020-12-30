@@ -7,6 +7,7 @@ use App\CustomerFrequency;
 use App\CustomerParameter;
 use App\CustomerValidation;
 use App\Helpers\ResponseHelper;
+use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,7 @@ use Illuminate\Validation\Rule;
 class ApprovalController extends Controller
 {
 
+  use UserWithAssignment;
   /**
    * get reps customers frequency requests
    *
@@ -46,15 +48,11 @@ class ApprovalController extends Controller
    */
   public function CustomerParameterRequests()
   {
+    $user = Auth::user();
+    $relations = json_decode($user->user_relations);
+    $reps = $relations->reps;
     $customers = CustomerParameter::with(['customer', 'user'])
-    ->whereIn('user_id', function($query) {
-      $query->from('users')
-      ->select('id')
-      ->where([
-        'line'  =>  Auth::user()->line,
-        'district'  =>  Auth::user()->district
-      ])->get();
-    })->where(['state' => 'requested'])->get();
+    ->whereIn('user_id', $reps)->where(['state' => 'requested'])->get();
 
     return response([
       'code'  =>  201,
@@ -159,13 +157,15 @@ class ApprovalController extends Controller
   public function newCustomerApprovals()
   {
     $user = Auth::user();
+    $relations = json_decode($user->user_relations);
+    $reps = $relations->reps;
+
     $customers = Customer::without([
       'planner', 'report','params', 'frequency', 'workplace'
-      ])->where([
-      'district'  =>  $user->district,
-      'state'     =>  'new'
-    ])->orderBy('name')->get();
-
+      ]);
+      $customers = $this->getQueryWithAssignment($user, $customers);
+      $customers = $customers->where('state', 'new')
+      ->orderBy('name')->get();
     return response([
       'code'  =>  200,
       'data'  =>  $customers
@@ -181,18 +181,16 @@ class ApprovalController extends Controller
   {
     $user = Auth::user();
     $ids = json_decode($request->ids);
+    $model = Customer::whereIn('id', $ids);
+    $customers = $this->getQueryWithAssignment($user, $model);
     if($request->state === 'approved') {
-      Customer::where('district',$user->district)
-      ->whereIn('id', $ids)
-      ->update([
+      $customers->update([
         'state' => "approved by $user->name",
         'approved'  =>  true,
         'approved_by' =>  $user->id
       ]);
     } else {
-      Customer::where('district',$user->district)
-      ->whereIn('id', $ids)
-      ->update([
+      $customers->update([
         'state' => 'rejected',
         'approved'  =>  false,
         'approved_by' =>  $user->id
@@ -212,14 +210,10 @@ class ApprovalController extends Controller
   public function customerDetailsApproval()
   {
     $user = Auth::user();
+    $relations = json_decode($user->user_relations);
+    $reps = $relations->reps;
     $customers = CustomerValidation::with(['customer', 'user', 'workplace'])
-    ->whereIn('user_id', function($query) use($user) {
-      $query->from('users')->select('id')
-      ->where([
-        'district'  =>  $user->district,
-        'line'      =>  $user->line,
-      ])->get();
-    })->where('approved', false)->get();
+    ->whereIn('user_id', $reps)->get();
 
     return response([
       'code'  =>  200,
