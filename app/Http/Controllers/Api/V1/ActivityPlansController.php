@@ -165,4 +165,31 @@ class ActivityPlansController extends Controller
       $plans = NonFieldActivityPlan::whereIn('user_id', $relations->reps)->orWhere('user_id', $user->id);
       return $plans;
     }
+
+    public function submitPlans()
+    {
+      $user = Auth::user();
+      $activeCycle = new ActiveCycleSetting;
+      $data= $activeCycle->all();
+      if(!$data) {
+        return response([
+          'code'  =>  400,
+          'data' => [
+            'errors' => [
+              'No active cycle selected'
+            ]
+          ]
+        ]);
+      }
+      NonFieldActivityPlan::where([
+        'user_id' =>  $user->id,
+        'submitted' =>  false
+      ])->update([
+        'submitted' => true
+      ]);
+      return response([
+        'code'  =>  200,
+        'message' =>  'Plan submitted'
+      ]);
+    }
 }

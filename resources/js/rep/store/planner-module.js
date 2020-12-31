@@ -23,10 +23,7 @@ export default {
      *
      */
     isWorkplacePlansFetched: false,
-    /**
-     * submitted days
-     */
-    submittedDays: [],
+
     /**
      * non field activity plans
      */
@@ -59,19 +56,6 @@ export default {
       return [...state.nonFieldActivityPlans,...state.workplacePlans, ...state.plans];
     },
     isAmPlansFetched: state => state.isWorkplacePlansFetched,
-    submittedDays : state =>  {
-      let days = [];
-      try {
-        state.submittedDays.map(day => {
-          if(!days.includes(day.plan_date)) {
-            days.push(day.plan_date);
-          }
-        })
-      }catch(e) {
-        console.warn(e)
-      }
-      return days
-    },
     nonFieldActivityPlans: state => state.nonFieldActivityPlans,
     isSubmittedPlans : state => state.isSubmitted
   },
@@ -99,8 +83,9 @@ export default {
           data.message = "Planner loaded";
           ResponseHandler.methods.handleResponse(data, (data) => {
             state.plans = data.data;
-            state.submittedDays = [...state.submittedDays,...data.submitted]
-            state.isSubmitted = data.isSubmitted;
+            if(state.isSubmitted !== true) {
+              state.isSubmitted = data.submitted;
+            }
           });
         });
       }
@@ -128,7 +113,9 @@ export default {
               icon: 'check'
             });
             state.workplacePlans = data.data;
-            state.submittedDays = [...state.submittedDays,...data.submitted]
+            if(state.isSubmitted !== true) {
+              state.isSubmitted = data.submitted;
+            }
           }
         })
       }

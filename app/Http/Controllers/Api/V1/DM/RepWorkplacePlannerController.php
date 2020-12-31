@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\DM;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RepWorkplacePlannerResource;
 use App\WorkplacePlanner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class RepWorkplacePlannerController extends Controller
 
       return response([
         'code'  =>  200,
-        'data'  =>  $plans
+        'data'  =>  RepWorkplacePlannerResource::collection($plans)
       ]);
     }
 }

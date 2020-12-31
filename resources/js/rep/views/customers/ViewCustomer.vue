@@ -418,7 +418,6 @@ export default {
       } else {
         reports = this.other_reps_reports;
       }
-      console.log(reports, 'loaded');
       reports = filterByDate(reports, 'visit_date', {start: this.report_start, end: this.report_end});
       return reports;
     }

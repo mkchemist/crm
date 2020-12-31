@@ -106,7 +106,7 @@ export default {
       },
       {
         title: "Area",
-        name: "user.area"
+        name: "customer.area"
       },
       {
         title: "Brick",
