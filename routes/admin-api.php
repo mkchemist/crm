@@ -62,4 +62,9 @@ Route::prefix('v1')->group(function () {
         Route::get('duplicate-customers', 'CustomerManagementController@duplicateCustomers');
         Route::get('query-duplicate-customer', 'CustomerManagementController@queryDuplicateCustomer');
     });
+
+    // Planner Routes
+    Route::group(['prefix' => 'planner'], function() {
+      Route::get('/', 'PlannerController@index');
+    });
 });

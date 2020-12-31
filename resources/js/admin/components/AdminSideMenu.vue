@@ -44,6 +44,11 @@ export default {
         path: "/customers"
       },
       {
+        name: 'Planner',
+        icon: 'fa-calendar-check',
+        path: '/planner'
+      },
+      {
         name: 'Validation',
         icon: 'fa-check-circle',
         path: '/validation'

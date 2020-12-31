@@ -61,17 +61,17 @@ class PlannerController extends Controller
         if($this->isPassedDay($request->date)) {
           return $this->isPassedDay($request->date);
         }
-        $isNotValidDate = $this->isNotValidDate($request->date);
+       /*  $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
             return response($isNotValidDate);
-        }
+        } */
         $accepted = [];
         foreach ($ids as $id) {
-            Planner::updateOrCreate([
-                'customer_id' => $id,
-                'user_id' => $user->id,
-                'plan_date' => $request->date,
-            ]);
+          Planner::updateOrCreate([
+              'customer_id' => $id,
+              'user_id' => $user->id,
+              'plan_date' => $request->date,
+          ]);
         }
         return response()->json([
             'code' => 201,
@@ -108,10 +108,10 @@ class PlannerController extends Controller
         if ($check) {
             return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
         }
-        $isNotValidDate = $this->isNotValidDate($request->date);
+        /* $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
             return response($isNotValidDate);
-        }
+        } */
         $plan->plan_date = $request->date;
         $plan->save();
         return response()->json([

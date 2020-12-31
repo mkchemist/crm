@@ -8,6 +8,7 @@ import ValidationRoutes from "./validation-routes";
 import SettingsRoutes from "./setting-routes";
 import broadcastingRoutes from "./broadcasting-routes";
 import CustomerRoutes from './customers-routes'
+import PlannerRoutes from './planner-routes'
 Vue.use(VueRouter)
 
 
@@ -24,6 +25,7 @@ export default new VueRouter({
     SettingsRoutes,
     broadcastingRoutes,
     CustomerRoutes,
+    PlannerRoutes,
     {
       path: '*',
       component: ErrorPage
