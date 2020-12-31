@@ -179,10 +179,10 @@ class PlannerController extends Controller
         if($this->isPassedDay($request->date)) {
           return $this->isPassedDay($request->date);
         }
-        $isNotValidDate = $this->isNotValidDate($request->date);
+      /*   $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
             return response($isNotValidDate);
-        }
+        } */
         $rejected = [];
         $accepted = [];
         $plans = Planner::where([
