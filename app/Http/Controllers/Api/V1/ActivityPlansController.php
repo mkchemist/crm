@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Helpers\ResponseHelper;
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Resources\ActivityPlansResource;
 use App\NonFieldActivityPlan;
 use Illuminate\Http\Request;
@@ -19,8 +20,20 @@ class ActivityPlansController extends Controller
      */
     public function index()
     {
+      $start = request()->start;
+      $end = request()->end;
       $user = Auth::user();
+      $activeCycle = new ActiveCycleSetting;
+      $data  = $activeCycle->all();
       $plans = $this->getUserPlans($user);
+      if($start && $end) {
+        $plans = $plans->whereBetween('start', [$start, $end]);
+      } else {
+        if($data) {
+          $plans = $plans->whereBetween('start', [$data->start, $data->end]);
+        }
+      }
+
       $plans = $plans->with('user')->get();
       return response([
         'code'  =>  200,

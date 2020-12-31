@@ -32,7 +32,7 @@ export default {
      */
     nonFieldActivityPlans: [],
     /** is plan submitted */
-    isSubmitted: false
+    isSubmitted: false,
   },
   getters: {
     /**
@@ -88,9 +88,11 @@ export default {
     getPlanner({state}, force) {
       if(!state.plans.length || force) {
         let queryString = {};
-        if(typeof force === 'object') {
-          queryString = force.cycle
+        let activeCycle = this.state.AppModule.activeCycle;
+        if(activeCycle) {
+          queryString = activeCycle
         }
+
         return httpCall.get('rep/v1/planner', queryString)
         .then(({data}) => {
           state.fetched = true;
@@ -113,8 +115,9 @@ export default {
       if(!state.workplacePlans.length || force) {
         this.isWorkplacePlansFetched = false;
         let queryString = {};
-        if(typeof force === 'object') {
-          queryString = force.cycle
+        let activeCycle = this.state.AppModule.activeCycle;
+        if(activeCycle) {
+          queryString = activeCycle
         }
        return httpCall.get('rep/v1/workplace-planner',queryString)
         .then(({data}) => {
@@ -134,10 +137,15 @@ export default {
      * get non field activity plans
      *
      */
-    getNonFieldActivityPlans({state}, force) {
-      if(!state.nonFieldActivityPlans.length || force) {
+    getNonFieldActivityPlans({state}, payload) {
+      if(!state.nonFieldActivityPlans.length || payload) {
+        let query = {};
+        let activeCycle = this.state.AppModule.activeCycle;
+        if(activeCycle) {
+          query = activeCycle
+        }
         state.nonFieldActivityPlans = [];
-        return httpCall.get('activity-planner')
+        return httpCall.get('activity-planner', query)
         .then(({data}) => {
           state.nonFieldActivityPlans = data.data;
         }).catch(err => console.log(err))

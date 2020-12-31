@@ -67,10 +67,9 @@
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 export default {
-  created() {
+  mounted() {
     this.$store.dispatch('getNonFieldActivityPlans')
     .then(() => {
-
       this.$store.dispatch("customerGetAll").then(() => {
         this.$store.dispatch("getPlanner");
         this.$store.dispatch("getWorkplacePlanner");
@@ -91,12 +90,18 @@ export default {
       this.$store.dispatch('getPlanner', {force: true, cycle : this.activeCycle})
       .then(()=> {
         this.$store.dispatch('getWorkplacePlanner', {force: true, cycle: this.activeCycle})
+        .then(() => {
+          this.$store.dispatch('getNonFieldActivityPlans', {force: true, cycle: this.activeCycle})
+        })
       })
     },
     resetCycle() {
-      this.$store.dispatch('getPlanner', true)
+      this.$store.dispatch('getActiveCycle', true)
       .then(() => {
-        this.$store.dispatch('getWorkplacePlanner', true)
+        this.$store.dispatch('getPlanner', true)
+        .then(() => {
+          this.$store.dispatch('getWorkplacePlanner', true)
+        })
       })
     }
   },
