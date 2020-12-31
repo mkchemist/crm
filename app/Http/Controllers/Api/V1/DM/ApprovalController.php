@@ -25,15 +25,11 @@ class ApprovalController extends Controller
    */
   public function RequestCustomerFrequency()
   {
+    $user = Auth::user();
+    $relations = json_decode($user->user_relations);
+    $reps = $relations->reps;
     $customers = CustomerFrequency::with(['customer.params','user'])
-    ->whereIn('user_id', function ($query) {
-      $query->from('users')
-        ->select('id')
-        ->where([
-          'line'      =>  Auth::user()->line,
-          'district'  =>  Auth::user()->district
-        ])->get();
-    })
+    ->whereIn('user_id', $reps)
    ->where(['state' => 'requested', 'submitted' => true])->get();
     return response([
       'code'  =>  201,
@@ -157,8 +153,6 @@ class ApprovalController extends Controller
   public function newCustomerApprovals()
   {
     $user = Auth::user();
-    $relations = json_decode($user->user_relations);
-    $reps = $relations->reps;
 
     $customers = Customer::without([
       'planner', 'report','params', 'frequency', 'workplace'
