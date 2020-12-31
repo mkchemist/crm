@@ -45,11 +45,8 @@
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 export default {
-  created() {
-    this.$store.dispatch('getNonFieldActivityPlans')
-    .then(() => {
-      this.$store.dispatch("getPlans");
-    })
+  mounted() {
+    this.$store.dispatch('fetchAllPlans', {force: true});
     this.setPlannerUser(this.$store.state.user.id);
   },
   components: {

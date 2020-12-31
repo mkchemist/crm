@@ -37,13 +37,11 @@ class PlannerController extends Controller
           $plans = $plans->get();
         }
 
-        $submitted = $model->where('submitted', true)->select('plan_date')->distinct()->get();
-        $isSubmitted = $model->where('submitted', true)->first();
+        $isSubmitted = $model->where(['submitted'=> true, 'user_id' => $user->id])->first();
         return response()->json([
             'code' => 201,
             'data' => RepPlannerResource::collection($plans),
-            'submitted' => $submitted->toArray(),
-            'isSubmitted' => $isSubmitted ? true : false
+            'submitted' => $isSubmitted ? true : false
         ]);
     }
 
@@ -275,6 +273,16 @@ class PlannerController extends Controller
       $user = Auth::user();
       $activeCycle = new ActiveCycleSetting;
       $data = $activeCycle->all();
+      if(!$data) {
+        return response([
+          'code'  =>  400,
+          'data' => [
+            'errors' => [
+              'No active cycle selected'
+            ]
+          ]
+        ]);
+      }
       $start = $data->start;
       $end = $data->end;
       $plans = Planner::where([

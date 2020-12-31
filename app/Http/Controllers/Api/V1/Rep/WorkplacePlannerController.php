@@ -37,15 +37,11 @@ class WorkplacePlannerController extends Controller
         } else {
           $plans = $WorkplacePlannerQuery->get();
         }
-
-        $submitted = $WorkplacePlannerQuery->where('submitted', true)
-        ->select('plan_date')
-        ->distinct()
-        ->get();
+        $submitted = $WorkplacePlannerQuery->where('submitted', true)->first();
         return response()->json([
             'code' => 201,
             'data' => RepWorkplacePlannerResource::collection($plans),
-            'submitted' =>  $submitted
+            'submitted' => $submitted ? true : false
         ]);
     }
 
@@ -216,6 +212,16 @@ class WorkplacePlannerController extends Controller
       $user = Auth::user();
       $activeCycle = new ActiveCycleSetting;
       $data = $activeCycle->all();
+      if(!$data) {
+        return response([
+          'code'  =>  400,
+          'data' => [
+            'errors' => [
+              'No active cycle selected'
+            ]
+          ]
+        ]);
+      }
       WorkplacePlanner::where([
         'user_id' =>  $user->id,
         'submitted' =>  false
