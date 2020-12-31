@@ -69,10 +69,10 @@ class WorkplacePlannerController extends Controller
         if($this->isPassedDay($request->date)) {
           return $this->isPassedDay($request->date);
         }
-        $isNotValidDate = $this->isNotValidDate($request->date);
+        /* $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
             return response($isNotValidDate);
-        }
+        } */
         /** convert workplaces IDs json to normal array */
         $ids = json_decode($request->workplaces);
         /** rejected plans */
@@ -84,7 +84,7 @@ class WorkplacePlannerController extends Controller
         foreach ($ids as $id) {
           WorkplacePlanner::updateOrCreate([
                 'workplace_id' => $id,
-                'user_id' => Auth::id(),
+                'user_id' => $user->id,
                 'plan_date' => $request->date,
             ]);
         }
@@ -120,10 +120,10 @@ class WorkplacePlannerController extends Controller
         }
         $plan = $this->getPlanById($id);
         $check = $this->getPlanByWorkplaceId($plan->workplace_id, $request->date);
-        $isNotValidDate = $this->isNotValidDate($request->date);
+       /*  $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
             return response($isNotValidDate);
-        }
+        } */
         if ($check) {
             return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
         }
