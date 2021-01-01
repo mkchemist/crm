@@ -28,7 +28,7 @@ export default {
       if(payload.reset) {
         module.state.customers = [];
       }
-      let url = `${base_url}/admin/v1/customers?api_token=${token}`;
+      let url = `${base_url}admin/v1/customers?api_token=${token}`;
       if(payload && payload.url) {
         url = payload.url;
       }
