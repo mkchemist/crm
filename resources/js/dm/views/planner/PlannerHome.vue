@@ -19,11 +19,20 @@
         <span class="fa fa-plus-circle"></span>
         <span>Plan Non-Field activity</span>
       </router-link>
-      <button class="btn btn-sm btn-primary" v-if="!isOwnerPlans && isRepPlansNeedToApproval() === true" @click="approveCurrentUserPlans">
+      <button
+        :class="`btn btn-sm ${isRepPlanApproved()?'btn-success' :`btn-primary`}`"
+        v-if="!isOwnerPlans && isRepPlansNeedToApproval() === true"
+        @click="approveCurrentUserPlans"
+        :disabled="isRepPlanApproved()"
+      >
         <span class="fa fa-check-circle"></span>
-        <span>Approve </span>
+        <span>{{ isRepPlanApproved() ? 'Already approved' : 'approve' }} </span>
       </button>
-      <button class="btn btn-sm btn-secondary" v-if="!isOwnerPlans && isRepPlansNeedToApproval() === true" @click="rejectCurrentUserPlans">
+      <button
+        class="btn btn-sm btn-secondary"
+        v-if="!isOwnerPlans &&!isRepPlanApproved() &&isRepPlansNeedToApproval() === true"
+        @click="rejectCurrentUserPlans"
+      >
         <span class="fa fa-check-circle"></span>
         <span>Reject </span>
       </button>
@@ -135,13 +144,21 @@
             v-model="selected_event.date_end"
           />
         </div>
-        <hr>
+        <hr />
         <div class="form-group text-right">
-          <button type="button" class="btn btn-sm btn-primary" @click="updatePlannedVisit">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            @click="updatePlannedVisit"
+          >
             <span class="fa fa-edit"></span>
             <span>edit</span>
           </button>
-          <button type="button" class="btn btn-sm btn-danger" @click="deletePlannedVisit">
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            @click="deletePlannedVisit"
+          >
             <span class="fa fa-trash"></span>
             <span>delete</span>
           </button>
@@ -155,7 +172,7 @@
 import VueCal from "vue-cal";
 import { filterData } from "../../../helpers/helpers";
 import ModalFade from "../../../components/ModalFade.vue";
-import { httpCall } from '../../../helpers/http-service';
+import { httpCall } from "../../../helpers/http-service";
 export default {
   components: {
     VueCal,
@@ -237,12 +254,12 @@ export default {
      */
     getSelectedEventUrl() {
       let url;
-      if(this.selected_event.type === 'coach-plan') {
+      if (this.selected_event.type === "coach-plan") {
         url = "dm/v1/planner/";
       } else {
-        url = "activity-planner/"
+        url = "activity-planner/";
       }
-      return url
+      return url;
     },
     /**
      * close event actions modal
@@ -258,21 +275,25 @@ export default {
       let url = this.getSelectedEventUrl();
       let request = {
         start: this.selected_event.date_start,
-        end : this.selected_event.date_end,
+        end: this.selected_event.date_end,
         date: this.selected_event.date_start,
-        _method: 'PUT'
-      }
-      httpCall.post(url+this.selected_event.id, request)
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.$store.dispatch('getPlans', true)
-          .then(() => {
-            this.$store.dispatch('getNonFieldActivityPlans', true)
-          }).finally(() => {
-            this.show_owner_control_modal = false;
+        _method: "PUT"
+      };
+      httpCall
+        .post(url + this.selected_event.id, request)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.$store
+              .dispatch("getPlans", true)
+              .then(() => {
+                this.$store.dispatch("getNonFieldActivityPlans", true);
+              })
+              .finally(() => {
+                this.show_owner_control_modal = false;
+              });
           });
-        });
-      }).catch(err => console.log(err))
+        })
+        .catch(err => console.log(err));
     },
     /**
      * delete single event
@@ -280,56 +301,76 @@ export default {
     deletePlannedVisit() {
       let url = this.getSelectedEventUrl();
       let request = {
-        _method: 'DELETE'
-      }
-      httpCall.post(url+this.selected_event.id, request)
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.$store.dispatch('getPlans', true)
-          .then(() => {
-            this.$store.dispatch('getNonFieldActivityPlans', true)
-          }).finally(() => {
-            this.show_owner_control_modal = false;
+        _method: "DELETE"
+      };
+      httpCall
+        .post(url + this.selected_event.id, request)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.$store
+              .dispatch("getPlans", true)
+              .then(() => {
+                this.$store.dispatch("getNonFieldActivityPlans", true);
+              })
+              .finally(() => {
+                this.show_owner_control_modal = false;
+              });
           });
-        });
-      }).catch(err => console.log(err))
+        })
+        .catch(err => console.log(err));
     },
-    approveCurrentUserPlans(){
-      this.sendCurrentUserPlansAction('approved');
+    approveCurrentUserPlans() {
+      this.sendCurrentUserPlansAction("approved");
     },
-    rejectCurrentUserPlans(){
-      this.sendCurrentUserPlansAction('rejected');
+    rejectCurrentUserPlans() {
+      this.sendCurrentUserPlansAction("rejected");
     },
-    sendCurrentUserPlansAction(type){
+    sendCurrentUserPlansAction(type) {
       let user = this.currentPlannerUserId;
       let request = {
         user,
         type
-      }
-      httpCall.post('dm/v1/planner/submit', request)
-      .then(({data}) => {
-        this.handleResponse(data, data=> {
-          this.$store.dispatch('getPlans', true)
-          .then(() => {
-            this.$store.dispatch('getNonFieldActivityPlans', true)
-          })
+      };
+      httpCall
+        .post("dm/v1/planner/submit", request)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.$store.dispatch("getPlans", true).then(() => {
+              this.$store.dispatch("getNonFieldActivityPlans", true);
+            });
+          });
         })
-      })
-      .then(() => {
-        httpCall.post('dm/v1/workplace-planner/submit', request)
-        .then(({data}) => {
-          this.handleResponse(data);
-        });
-      })
-      .catch(err => console.log(err))
+        .then(() => {
+          httpCall
+            .post("dm/v1/workplace-planner/submit", request)
+            .then(({ data }) => {
+              this.handleResponse(data);
+            });
+        })
+        .catch(err => console.log(err));
     },
     isRepPlansNeedToApproval() {
-      if(this.isOwnerPlans) {
+      if (this.isOwnerPlans) {
         return;
       }
       let userId = this.currentPlannerUserId;
-      let userValidation = this.planValidationData.filter(plan => plan.user_id === userId)[0];
-      if(userValidation && userValidation.submitted === 1) {
+      let userValidation = this.planValidationData.filter(
+        plan => plan.user_id === userId
+      )[0];
+      if (userValidation && userValidation.submitted === 1) {
+        return true;
+      }
+      return false;
+    },
+    isRepPlanApproved() {
+      if (this.isOwnerPlans) {
+        return;
+      }
+      let userId = this.currentPlannerUserId;
+      let userValidation = this.planValidationData.filter(
+        plan => plan.user_id === userId
+      )[0];
+      if (userValidation && userValidation.approved === 1) {
         return true;
       }
       return false;

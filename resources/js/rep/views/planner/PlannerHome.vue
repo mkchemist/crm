@@ -30,8 +30,8 @@
       </router-link>
 
       <button class="btn btn-success btn-sm" @click="submitPlan" :disabled="isSubmittedPlans|| !isPlansFetched">
-        <span><i class="fa  fa-calendar-check"></i></span>
-        <span>Submit</span>
+        <span><i :class="`fa  ${isSubmittedPlans ? 'fa-check' :`fa-calendar-check`}`"></i></span>
+        <span>{{ isSubmittedPlans ? 'Already submitted' :'Submit' }}</span>
       </button>
     </div>
     <!-- end planner home navbar -->
@@ -227,11 +227,15 @@
         </div>
         <hr />
         <div class="form-group text-right">
-          <button class="btn btn-sm btn-primary" type="button" @click="editNonFieldActivity">
+          <button class="btn btn-sm btn-primary" type="button" @click="editNonFieldActivity" v-if="!isSubmittedPlans">
             <span class="fa fa-edit"></span>
             <span>Edit</span>
           </button>
-          <button class="btn btn-sm btn-danger" type="button" @click="deleteNonFieldActivity">
+          <button type="button" class="btn btn-success btn-sm" @click="goToActivityReport">
+            <span class="fa fa-sticky-note"></span>
+            <span>Report</span>
+          </button>
+          <button class="btn btn-sm btn-danger" type="button" @click="deleteNonFieldActivity" v-if="!isSubmittedPlans">
             <span class="fa fa-times"></span>
             <span>Delete</span>
           </button>
@@ -479,6 +483,10 @@ export default {
         }, 300);
       }
     },
+    /**
+     * submit all plan
+     *
+     */
     submitPlan() {
       httpCall
         .post("rep/v1/planner/submit")
@@ -496,9 +504,15 @@ export default {
         })
         .catch(err => console.log(err));
     },
+    /**
+     * close non field activity modal
+     */
     closeNonFieldActivityModal() {
       this.active_non_field_modal = false;
     },
+    /**
+     * edit field activity modal
+     */
     editNonFieldActivity() {
       if(this.isSubmittedPlans) {
         return;
@@ -519,6 +533,10 @@ export default {
         console.log(err)
       });
     },
+    /**
+     * delete field activity modal
+     *
+     */
     deleteNonFieldActivity() {
       if(this.isSubmittedPlans) {
         return;
@@ -531,6 +549,16 @@ export default {
           this.$store.dispatch('getNonFieldActivityPlans', true);
         })
       }).catch(err => console.log(err))
+    },
+    /**
+     * redirect to activity report page
+     *
+     */
+    goToActivityReport() {
+      this.active_non_field_modal = false;
+      setTimeout(() => {
+        this.$router.push(`/reports/add/activity-report?type=${this.selected_event.type}`);
+      },300)
     }
   },
   computed: {

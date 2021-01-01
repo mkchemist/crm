@@ -30,6 +30,7 @@
           :data="requests"
           :heads="heads"
           head-class="bg-success text-light"
+          :unselectable="true"
         >
           <template v-slot:head:before>
             <th><input type="checkbox" @click="selectAll" /></th>

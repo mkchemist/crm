@@ -66,5 +66,6 @@ Route::prefix('v1')->group(function () {
     // Planner Routes
     Route::group(['prefix' => 'planner'], function() {
       Route::get('/', 'PlannerController@index');
+      Route::post('/approval', 'PlannerController@approvalAction');
     });
 });

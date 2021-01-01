@@ -64,7 +64,7 @@ class RepWorkplacePlannerController extends Controller
 
       return response([
         'code'  =>  200,
-        'message' => sprintf('Plan %s', $state === true ? 'approved' : 'false')
+        'message' => sprintf('Plan %s', $request->type)
       ]);
     }
 }

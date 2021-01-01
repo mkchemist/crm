@@ -22,6 +22,7 @@
             :heads="heads"
             :data="customers"
             head-class="bg-success text-light"
+            :unselectable="true"
           >
             <template v-slot:head:before>
               <th>

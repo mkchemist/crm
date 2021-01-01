@@ -32,7 +32,7 @@
 <script>
 export default {
   mounted() {
-    this.$store.dispatch('fetchAllPlans')
+
   },
   data: () => ({
     navLinks: [

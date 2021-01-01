@@ -2,12 +2,16 @@
   <div>
     <div class="p-2">
       <div v-if="plans.length">
-        <table-component :data="plans" :heads="heads" :headClass="`bg-success text-light`">
-
+        <table-component
+          :data="plans"
+          :heads="heads"
+          :headClass="`bg-success text-light`"
+          :unselectable="true"
+        >
         </table-component>
       </div>
       <div class="" v-else-if="isPlanFetched">
-        <no-data-to-show :title="`No plans`"/>
+        <no-data-to-show :title="`No plans`" />
       </div>
       <loader-component v-else></loader-component>
     </div>
@@ -15,66 +19,77 @@
 </template>
 
 <script>
-import NoDataToShow from '../../../components/NoDataToShow.vue'
-import TableComponent from '../../../components/TableComponent.vue'
+import NoDataToShow from "../../../components/NoDataToShow.vue";
+import TableComponent from "../../../components/TableComponent.vue";
 export default {
-  components:{TableComponent, NoDataToShow},
+  mounted(){
+    this.$store.dispatch('fetchAllPlans')
+  },
+  components: { TableComponent, NoDataToShow },
   computed: {
     plans() {
-      return this.$store.getters.pmPlans
+      return this.$store.getters.pmPlans;
     },
     isPlanFetched() {
-      return this.$store.getters.isPlanFetched
+      return this.$store.getters.isPlanFetched;
     }
   },
   data: () => ({
     heads: [
       {
-        title: 'Date',
-        name: 'plan_date'
+        title: "Date",
+        name: "Date"
       },
       {
-        title: 'Rep',
-        name: 'user.name'
+        title: "Rep",
+        name: "Rep"
       },
       {
-        title: 'Customer',
-        name: 'customer.name'
+        title: "Customer",
+        name: "Customer"
       },
       {
-        title: 'Submitted',
-        name: 'submitted'
+        title: "Specialty",
+        name: "Specialty"
       },
       {
-        title: 'Address',
-        name: 'customer.address'
+        title: 'Parameter',
+        name: 'Parameter',
+        fallback: 'NN'
       },
       {
-        title: 'Brick',
-        name: 'customer.brick'
+        title: 'Frequency',
+        name: 'Frequency',
+        fallback: 0
       },
       {
-        title: 'Area',
-        name: 'customer.area'
+        title: "Submitted",
+        name: "submitted"
       },
       {
-        title: 'District',
-        name: 'customer.district'
+        title: "Approved",
+        name: "approved"
       },
       {
-        title: 'Territory',
-        name: 'customer.territory'
+        title: "Brick",
+        name: "Brick"
       },
       {
-        title : 'Region',
-        name: 'customer.region'
+        title: "Area",
+        name: "Area"
+      },
+      {
+        title: "District",
+        name: "District"
+      },
+      {
+        title: "Territory",
+        name: "Territory"
       },
 
     ]
   })
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

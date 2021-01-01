@@ -45,6 +45,7 @@
           :data="requests"
           :orderBy="`Customer,asc`"
           head-class="bg-success text-light"
+          :unselectable="true"
         >
           <template v-slot:head:before>
             <th>

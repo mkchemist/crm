@@ -23,10 +23,15 @@ class PlannerController extends Controller
      */
     public function index()
     {
+      $activeCycle= new ActiveCycleSetting;
+       $data = $activeCycle->all();
         $user = Auth::user();
         $relations = json_decode($user->user_relations);
         $reps = $relations->reps;
         $repPlansModel = Planner::query();
+        if($data) {
+          $repPlansModel = $repPlansModel->whereBetween('plan_date', [$data->start, $data->end]);
+        }
         $repPlans = $repPlansModel->with([
             'customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user',
         ])->whereIn('user_id', $reps)

@@ -5,7 +5,8 @@ export default {
     amPlans: [],
     pmPlans: [],
     activityPlans: [],
-    isPlanFetched: false
+    isPlanFetched: false,
+    planUser: null
   },
   getters: {
     allPlans: state => [
@@ -16,14 +17,19 @@ export default {
     pmPlans: state => state.pmPlans,
     amPlans: state => state.amPlans,
     activityPlans: state => state.activityPlans,
-    isPlanFetched: state => state.isPlanFetched
+    isPlanFetched: state => state.isPlanFetched,
+    planUser: state => state.planUser
   },
-  mutations: {},
+  mutations: {
+    setPlanUser(state, payload) {
+      state.setPlanUser = payload.user
+    }
+  },
   actions: {
     fetchAllPlans(module, payload) {
       let query = {};
-      if (this.state.AppModule.planUser) {
-        query.user = this.state.AppModule.planUser;
+      if (module.state.planUser) {
+        query.user = module.state.planUser;
       }
       module.state.isPlanFetched = false;
       module.state.pmPlans = [];

@@ -21,6 +21,9 @@ export const ObjectNotation = function(container, key, $default = null) {
    */
   if (!matches) {
     if (container[key] !== undefined) {
+      if(container[key] === null) {
+        return $default
+      }
       return container[key];
     }
     return $default;

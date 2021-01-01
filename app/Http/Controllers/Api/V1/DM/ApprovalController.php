@@ -70,6 +70,7 @@ class ApprovalController extends Controller
       return ResponseHelper::validationErrorResponse($validator);
     }
     $ids = json_decode($request->ids);
+    $user = Auth::user();
     $customers = CustomerFrequency::whereIn('id', $ids)->get();
     foreach($customers as $customer) {
       if($request->state === "approved") {
@@ -81,7 +82,7 @@ class ApprovalController extends Controller
         $customer->next = 0;
       }
       $customer->submitted = false;
-      $customer->approved_by = Auth::user()->id;
+      $customer->approved_by = $user->id;
       $customer->save();
     }
     return response([
@@ -104,6 +105,7 @@ class ApprovalController extends Controller
       return ResponseHelper::validationErrorResponse($validator);
     }
     $ids = json_decode($request->ids);
+    $user = Auth::user();
     $customers  =CustomerParameter::whereIn('id', $ids)->get();
     foreach($customers as $customer) {
       if($request->state === "approved") {
@@ -115,7 +117,7 @@ class ApprovalController extends Controller
         $customer->state = "rejected";
       }
       $customer->approved = true;
-      $customer->approved_by = Auth::user()->id;
+      $customer->approved_by = $user->id;
       $customer->save();
     }
     return response([

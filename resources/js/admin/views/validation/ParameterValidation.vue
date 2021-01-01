@@ -31,6 +31,7 @@
           :heads="heads"
           headClass="bg-success text-light"
           :orderBy="`Customer,asc|Area,asc`"
+          :unselectable="true"
         >
           <template v-slot:head:before>
             <th>

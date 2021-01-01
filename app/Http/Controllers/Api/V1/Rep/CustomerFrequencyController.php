@@ -23,20 +23,14 @@ class CustomerFrequencyController extends Controller
     foreach($customers as $customer) {
       $freq = $this->checkIfExists($customer->id);
       if($freq) {
-        if($freq->locked === 1) {
-          $rejected[] = $freq;
-        } else {
-          $freq->next = $customer->frequency;
-          $freq->locked = $customer->locked;
-          $freq->state = "updated";
-          $freq->save();
-        }
+        $freq->next = $customer->frequency;
+        $freq->state = "updated";
+        $freq->save();
       } else {
         $freq = CustomerFrequency::create([
           'customer_id' =>  $customer->id,
           'user_id'     =>  Auth::user()->id,
           'next'        =>  $customer->frequency,
-          'locked'      =>  $customer->locked,
           "state"       =>  "updated"
         ]);
       }

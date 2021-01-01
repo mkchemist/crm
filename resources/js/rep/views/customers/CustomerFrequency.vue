@@ -1,12 +1,12 @@
 <template>
   <div>
     <customer-filter
-        :data="customers"
-        v-if="showFilter"
-        :onClose="closeFilterModal"
-        :onFilter="onFilter"
-        :onReset="onReset"
-      />
+      :data="customers"
+      v-if="showFilter"
+      :onClose="closeFilterModal"
+      :onFilter="onFilter"
+      :onReset="onReset"
+    />
     <div class="px-0 shadow rounded">
       <div class="custom-loader" v-if="isLoading">
         <div class="spinner-border"></div>
@@ -28,10 +28,14 @@
             <span><i class="fa fa-redo"></i></span>
             <span>refresh list</span>
           </button>
-          <button class="btn btn-sm btn-secondary" type="button" @click="showFilterModal">
-          <span><i class="fa fa-filter"></i></span>
-          <span>Filter</span>
-        </button>
+          <button
+            class="btn btn-sm btn-secondary"
+            type="button"
+            @click="showFilterModal"
+          >
+            <span><i class="fa fa-filter"></i></span>
+            <span>Filter</span>
+          </button>
           <button
             class="btn btn-sm btn-success"
             v-if="updated.length"
@@ -49,8 +53,18 @@
           </button>
         </div>
         <div class="p-2">
-          <p class="text-muted">Total Current Frequency : <span class="badge badge-primary p-1">{{ totalFrequency.totalCurrentFrequency }}</span></p>
-          <p class="text-muted">Total Updated Frequency : <span class="badge badge-primary p-1">{{ totalFrequency.totalUpdatedFrequency }}</span></p>
+          <p class="text-muted">
+            Total Current Frequency :
+            <span class="badge badge-primary p-1">{{
+              totalFrequency.totalCurrentFrequency
+            }}</span>
+          </p>
+          <p class="text-muted">
+            Total Updated Frequency :
+            <span class="badge badge-primary p-1">{{
+              totalFrequency.totalUpdatedFrequency
+            }}</span>
+          </p>
         </div>
         <div v-if="customers.length">
           <table-component
@@ -62,7 +76,6 @@
           >
             <template v-slot:head>
               <th>Next</th>
-              <th>Locked</th>
               <th>Submitted</th>
               <th>Freqeuncy state</th>
               <th>Address</th>
@@ -75,28 +88,12 @@
                   :value="item.next_freq"
                   class="form-control form-control-sm"
                   :disabled="
-                    (item.freq && item.freq.submitted === 1) ||
-                      (item.freq && item.freq.locked === 1)
+                    (item.freq && item.freq.submitted === 1)
                   "
                   @change="updateCustomerFrequency(item.id)"
                   :min="0"
                 />
                 <span class="d-none">{{ item.next_freq }}</span>
-              </td>
-              <td class="text-center">
-                <input
-                  type="checkbox"
-                  :disabled="
-                    (item.freq && item.freq.locked === 1) ||
-                      (item.freq && item.freq.submitted === 1)
-                  "
-                  :checked="item.freq && item.freq.locked === 1"
-                  :value="item.freq && item.freq.locked === 1"
-                  @click="lockFrequency(item.id)"
-                />
-                <span class="d-none">{{
-                  item.freq && item.freq.locked === 1 ? "true" : "false"
-                }}</span>
               </td>
               <td>
                 <span v-if="item.freq && item.freq.submitted === 1"
@@ -130,7 +127,7 @@
 //FIXME this module need some refactor
 import TableComponent from "../../../components/TableComponent";
 import { httpCall } from "../../../helpers/http-service";
-import CustomerFilter from '../../components/CustomerFilter';
+import CustomerFilter from "../../components/CustomerFilter";
 import NoDataToShow from "../../../components/NoDataToShow";
 
 /**
@@ -158,15 +155,19 @@ export default {
     },
     totalFrequency() {
       let totalCurrentFrequency = 0;
-      this.customers.map(customer => totalCurrentFrequency += customer.current_freq);
+      this.customers.map(
+        customer => (totalCurrentFrequency += customer.current_freq)
+      );
       let totalUpdatedFrequency = 0;
-      if(this.updated.length) {
-        this.updated.map(customer => totalUpdatedFrequency += customer.frequency);
+      if (this.updated.length) {
+        this.updated.map(
+          customer => (totalUpdatedFrequency += customer.frequency)
+        );
       }
       return {
         totalCurrentFrequency,
         totalUpdatedFrequency
-      }
+      };
     }
   },
   data: () => ({
@@ -195,7 +196,7 @@ export default {
     updated: [],
     isLoading: false,
     fetched: false,
-    showFilter: false,
+    showFilter: false
   }),
   methods: {
     /**
@@ -323,12 +324,14 @@ export default {
       this.showFilter = true;
     },
     onFilter(data) {
-      this.$store.commit('filterCustomers', {name: 'activeCustomers', data});
+      this.$store.commit("filterCustomers", { name: "activeCustomers", data });
       this.showFilter = false;
     },
     onReset() {
-      let data = this.$store.getters.all.filter(c => !['NN','XX'].includes(c.parameter));
-      this.$store.commit('filterCustomers', {name: 'activeCustomers', data});
+      let data = this.$store.getters.all.filter(
+        c => !["NN", "XX"].includes(c.parameter)
+      );
+      this.$store.commit("filterCustomers", { name: "activeCustomers", data });
       this.updated = [];
       this.showFilter = false;
     }
