@@ -27,10 +27,10 @@
         <span class="fa fa-check-circle"></span>
         <span>Reject </span>
       </button>
-      <button class="btn btn-sm btn-success">
+      <!-- <button class="btn btn-sm btn-success">
         <span><i class="fa fa-paper-plane"></i></span>
         <span>submit</span>
-      </button>
+      </button> -->
     </div>
     <div class="p-2 border p-2 rounded my-1">
       <p class="clearfix">
@@ -314,7 +314,14 @@ export default {
             this.$store.dispatch('getNonFieldActivityPlans', true)
           })
         })
-      }).catch(err => console.log(err))
+      })
+      .then(() => {
+        httpCall.post('dm/v1/workplace-planner/submit', request)
+        .then(({data}) => {
+          this.handleResponse(data);
+        });
+      })
+      .catch(err => console.log(err))
     },
     isRepPlansNeedToApproval() {
       if(this.isOwnerPlans) {

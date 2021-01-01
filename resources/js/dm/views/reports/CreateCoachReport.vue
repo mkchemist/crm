@@ -16,12 +16,14 @@
               v-model="rep"
               class="form-control form-control-sm"
               :disabled="!allReps.length"
+              v-if="activeCustomers.length"
             >
               <option value="">All</option>
               <option v-for="rep in allReps" :key="rep.id" :value="rep">{{
                 rep.name
               }}</option>
             </select>
+            <loader-component v-else></loader-component>
           </div>
           <hr />
           <!-- Brick Select -->
@@ -240,10 +242,24 @@ export default {
     },
     bricks() {
       if (this.rep !== "") {
+        let area = JSON.parse(this.rep.area);
+        let district = JSON.parse(this.rep.district);
+        let territory = JSON.parse(this.rep.territory);
         return filterData(
           this.activeCustomers,
           "brick",
-          item => item.area === this.rep.area
+          item => {
+            if(area.length && area[0] !== 'all') {
+              return area.includes(item.area)
+            } else if(district.length && district[0] !== 'all') {
+              return district.includes(item.district)
+            } else if(territory.length && territory[0] !== 'all') {
+              return territory.includes(item.territory)
+            } else {
+              return false
+            }
+
+          }
         );
       }
       return filterData(this.activeCustomers, "brick");
@@ -251,14 +267,6 @@ export default {
     customers() {
       if (this.brick !== "") {
         return this.bricks[this.brick];
-      } else if (this.rep !== "") {
-        let data = this.activeCustomers.filter(
-          customer => customer.area === this.rep.area
-        );
-        if (data) {
-          return data;
-        }
-        return [];
       }
       return this.activeCustomers;
     },
@@ -316,7 +324,8 @@ export default {
           });
           console.log(err);
         });
-    }
+    },
+
   }
 };
 </script>

@@ -14,10 +14,17 @@ class PlannerController extends Controller
 
   public function index()
   {
+    /**
+     * pm plans
+     */
     $pm_plans = $this->buildPlansQuery(request(), Planner::class, 'plan_date')
     ->with(['user', 'customer'])->orderBy('plan_date')->get();
+    /**
+     * am plans
+     */
     $am_plans = $this->buildPlansQuery(request(), WorkplacePlanner::class, 'plan_date')
     ->with(['user', 'workplace'])->orderBy('plan_date')->get();
+    /** response */
     return response([
       'code'  =>  200,
       'data'  =>  [
@@ -32,6 +39,9 @@ class PlannerController extends Controller
    *
    *
    * @param \Illuminate\Http\Request $request
+   * @param string $model [model class name]
+   * @param string $date [date column name]
+   * @return Model
    */
   private function buildPlansQuery(Request $request, string $model, string $date)
   {

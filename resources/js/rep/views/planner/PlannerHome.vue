@@ -29,7 +29,7 @@
         <span>Plan non field activity</span>
       </router-link>
 
-      <button class="btn btn-success btn-sm" @click="submitPlan" :disabled="isSubmittedPlans">
+      <button class="btn btn-success btn-sm" @click="submitPlan" :disabled="isSubmittedPlans|| !isPlansFetched">
         <span><i class="fa  fa-calendar-check"></i></span>
         <span>Submit</span>
       </button>

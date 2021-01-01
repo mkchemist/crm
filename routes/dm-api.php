@@ -21,6 +21,7 @@ Route::prefix('v1')->group(function() {
   Route::apiResource("planner", "PlannerController");
   // Rep workplace planner
   Route::get('workplace-planner', 'RepWorkplacePlannerController@index');
+  Route::post('workplace-planner/submit', 'RepWorkplacePlannerController@submit');
   // Approval Routes
   Route::group(['prefix' => 'approval'], function() {
     Route::get('/frequency', 'ApprovalController@RequestCustomerFrequency');
