@@ -60,7 +60,12 @@ export default {
     isSubmittedPlans : state => state.isSubmitted
   },
   mutations: {
-
+    collectPlansStatus(state, payload) {
+      let {status} = payload;
+      if(state.isSubmitted !== true) {
+        state.isSubmitted = status;
+      }
+    }
   },
   actions: {
     /**
@@ -69,7 +74,7 @@ export default {
      * @param {object} {state}
      * @param {bool} force
      */
-    getPlanner({state}, force) {
+    getPlanner({state, commit}, force) {
       if(!state.plans.length || force) {
         let queryString = {};
         let activeCycle = this.state.AppModule.activeCycle;
@@ -83,9 +88,7 @@ export default {
           data.message = "Planner loaded";
           ResponseHandler.methods.handleResponse(data, (data) => {
             state.plans = data.data;
-            if(state.isSubmitted !== true) {
-              state.isSubmitted = data.submitted;
-            }
+            commit('collectPlansStatus',{status: data.submitted})
           });
         });
       }
@@ -96,7 +99,7 @@ export default {
      * @param {object} {state}
      * @param {boolean} force
      */
-    getWorkplacePlanner({state}, force) {
+    getWorkplacePlanner({state, commit}, force) {
       if(!state.workplacePlans.length || force) {
         this.isWorkplacePlansFetched = false;
         let queryString = {};
@@ -113,9 +116,7 @@ export default {
               icon: 'check'
             });
             state.workplacePlans = data.data;
-            if(state.isSubmitted !== true) {
-              state.isSubmitted = data.submitted;
-            }
+            commit('collectPlansStatus',{status: data.submitted})
           }
         })
       }
