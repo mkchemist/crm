@@ -15,7 +15,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-      $customers = Customer::all();
+      $customers = Customer::where('territory',request()->territory)->paginate(5000);
       return response()->json([
         'code'  =>  201,
         "length"  =>  count($customers),

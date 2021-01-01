@@ -5,6 +5,7 @@ import UsersModule from './users-module';
 import SettingModule from "./setting-module";
 import BroadcastModule from './broadcast-module';
 import PlannerModule from './planner-module'
+import CustomerModule from './customer-module'
 
 Vue.use(Vuex);
 
@@ -15,6 +16,7 @@ export default new Vuex.Store({
     UsersModule,
     SettingModule,
     BroadcastModule,
-    PlannerModule
+    PlannerModule,
+    CustomerModule
   }
 });
