@@ -7,7 +7,12 @@
     <div class="p-2">
       <nav class="nav">
         <li class="nav-item border">
-          <router-link to="/customers/duplicate-customers" class="nav-link" active-class="bg-success text-light" exact>
+          <router-link to="/customers" class="nav-link" active-class="bg-primary text-light" exact>
+            <span>All customers</span>
+          </router-link>
+        </li>
+        <li class="nav-item border">
+          <router-link to="/customers/duplicate-customers" class="nav-link" active-class="bg-primary text-light" exact>
             <span>Duplicates</span>
           </router-link>
         </li>
