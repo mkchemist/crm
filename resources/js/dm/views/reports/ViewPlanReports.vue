@@ -35,10 +35,23 @@
               :unselectable="true"
               head-class="bg-success text-light"
               order-by="Date,asc"
-            ></table-component>
+            >
+              <template v-slot:head>
+                <th>Difference</th>
+                <th>State</th>
+              </template>
+              <template v-slot:body="{ item }">
+                <td>
+                  {{ item.freq-item.plans_count }}
+                </td>
+                <td :class="getPlanState(item).style">
+                  {{ getPlanState(item).text }}
+                </td>
+              </template>
+            </table-component>
           </div>
           <div class="" v-else-if="fetched">
-            <p class="font-weight-bold text-center">no data to show</p>
+            <no-data-to-show :title="`No Plans found`" />
           </div>
           <loader-component v-else />
         </div>
@@ -48,17 +61,19 @@
 </template>
 
 <script>
+import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent";
-import DataFilter from '../../components/DataFilter';
+import DataFilter from "../../components/DataFilter";
 export default {
-  created() {
+  mounted() {
     this.$store.dispatch("getPlans").then(() => {
       this.repPlans = this.$store.state.PlannerModule.repPlans;
     });
   },
   components: {
     TableComponent,
-    DataFilter
+    DataFilter,
+    NoDataToShow
   },
   computed: {
     fetched() {
@@ -71,37 +86,42 @@ export default {
       {
         title: "Rep",
         name: "user_name",
-        style: 'font-weight-bold'
+        style: "font-weight-bold"
       },
       {
-        title: 'Date',
-        name: 'start',
-        style: 'font-weight-bold'
+        title: "Date",
+        name: "start",
+        style: "font-weight-bold"
       },
       {
-        title: "Area",
-        name: "area"
+        title: "Customer",
+        name: "title",
+        style: "font-weight-bold"
+      },
+      {
+        title: "Specialty",
+        name: "specialty",
+        style: "font-weight-bold"
+      },
+      {
+        title: "Parameter",
+        name: "param",
+        style: "font-weight-bold"
+      },
+
+      {
+        title: "Address",
+        name: "address"
       },
       {
         title: "Brick",
         name: "brick"
       },
       {
-        title: "Customer",
-        name: "title",
-        style: 'font-weight-bold'
+        title: "Area",
+        name: "area"
       },
-      {
-        title: "Specialty",
-        name: "specialty",
-        style: 'font-weight-bold'
-      },
-      {
-        title: "Parameter",
-        name: "param",
-        style: 'font-weight-bold'
-      },
-      {
+  {
         title: "Freq.",
         name: "freq"
       },
@@ -109,23 +129,50 @@ export default {
         title: "Plans",
         name: "plans_count"
       },
-      {
-        title: "Address",
-        name: "address"
-      }
+
     ]
   }),
   methods: {
     onUpdate(resolve) {
       this.repPlans = [];
-      resolve.then(data => this.repPlans = data);
+      resolve.then(data => (this.repPlans = data));
     },
     onReset() {
       this.replans = [];
-      let reset = () => new Promise((res, err) => {
-        res(this.$store.state.PlannerModule.repPlans);
-      });
-      reset().then(data => this.repPlans = data);
+      let reset = () =>
+        new Promise((res, err) => {
+          res(this.$store.state.PlannerModule.repPlans);
+        });
+      reset().then(data => (this.repPlans = data));
+    },
+    getPlanState(item) {
+      let freq = item.freq;
+      let plans = item.plans_count;
+      let diff = freq-plans;
+      let result = {};
+      if(diff === 0) {
+        result =  {
+          style: 'bg-success text-light',
+          text: 'Accomplished'
+        }
+      } else if(diff > 0 && diff === freq) {
+        result =  {
+          style: 'bg-dark text-light',
+          text: 'Uncovered'
+        }
+      }else if(diff > 0 && diff !== freq) {
+        console.log(item)
+        result =  {
+          style: 'bg-warning text-dark',
+          text: 'Missed'
+        }
+      } else if(diff < 0) {
+        result =  {
+          style: 'bg-info text-dark',
+          text: 'over'
+        }
+      }
+      return result;
     }
   }
 };
