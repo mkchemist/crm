@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Helpers\Traits\CustomData;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +50,9 @@ class Customer extends Model
   public function report()
   {
     $model = $this->hasMany('App\CustomerReport');
-    return $this->getRelatedUserData($model);
+    $activeCycle = new ActiveCycleSetting;
+    $data = $activeCycle->all();
+    return $this->getRelatedUserData($model, 'visit_date', [$data->start, $data->end]);
   }
 
   public function fav()
@@ -60,7 +63,9 @@ class Customer extends Model
   public function planner()
   {
    $model = $this->hasMany('App\Planner', 'customer_id', 'id');
-   return $this->getRelatedUserData($model);
+   $activeCycle = new ActiveCycleSetting;
+   $data = $activeCycle->all();
+   return $this->getRelatedUserData($model,'plan_date' ,[$data->start, $data->end]);
   }
 
   public function workplace()

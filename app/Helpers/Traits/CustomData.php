@@ -9,33 +9,26 @@ trait CustomData {
 
 
 
-  public function getRelatedUserData($model)
+  public function getRelatedUserData($model, $field = null, $range = null)
   {
     $user = Auth::user();
     switch($user->role) {
       case 'dm' :
-        return $this->getRelatedRepsData($user, $model);
+        $model= $this->getRelatedRepsData($user, $model);
+        break;
       default:
-        return $model->where('user_id', $user->id);
+        $model= $model->where('user_id', $user->id);
+        break;
     }
-    /* return $model->whereIn('user_id', function($query) use($user) {
-      $query->from('users')->select('id')
-      ->whereIn('line', json_decode($user->line))
-      ->whereIn('district', json_decode($user->district))
-      ->get();
-    }); */
+    if($range) {
+      $model = $model->whereBetween($field, $range);
+    }
+    return $model;
   }
 
   public function getRelatedRepsData($user, $model)
   {
-    if($user->user_relations) {
-      $relations = json_decode($user->user_relations);
-      if(count($relations->reps) > 0) {
-        $reps = $relations->reps;
-        return $model->whereIn('user_id', $reps);
-      } else {
-        return $model->get();
-      }
-    }
+    $relations = json_decode($user->user_relations);
+    return $model->whereIn('user_id', $relations->reps);
   }
 }
