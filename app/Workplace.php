@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Helpers\Traits\CustomData;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,7 +30,9 @@ class Workplace extends Model
     public function reports()
     {
       $model = $this->hasMany('App\WorkplaceReport')->orderBy('visit_date');
-      return $this->getRelatedUserData($model);
+      $activeCycle = new ActiveCycleSetting;
+      $data = $activeCycle->all();
+      return $this->getRelatedUserData($model, 'visit_date', [$data->start, $data->end]);
     }
 
     public function plans()

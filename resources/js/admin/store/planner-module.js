@@ -22,7 +22,7 @@ export default {
   },
   mutations: {
     setPlanUser(state, payload) {
-      state.setPlanUser = payload.user
+      state.setPlanUser = payload.user;
     }
   },
   actions: {
@@ -34,7 +34,7 @@ export default {
       module.state.isPlanFetched = false;
       module.state.pmPlans = [];
       module.state.amPlans = [];
-      httpCall
+      return httpCall
         .get("admin/v1/planner", query)
         .then(({ data }) => {
           module.state.amPlans = data.data.am;

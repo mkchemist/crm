@@ -17,7 +17,8 @@ class CustomerReportResource extends JsonResource
         return [
           'date'        =>  $this->visit_date,
           'user_name'  =>  $this->user->name,
-          'coach'       =>  $this->coach ? $this->coach->name: '',
+          'coach'       =>  $this->coach ? $this->coach->name: null,
+          'coach2'      =>  $this->coach2 ? $this->coach2->name: null,
           'customer'    =>  $this->customer->name,
           'specialty'   =>  $this->customer->specialty,
           'param'       =>  count($this->customer->params) ? $this->customer->params[0]->current: 'NN',

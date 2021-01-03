@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\DM;
 
 use App\CustomerReport;
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DM\CustomerReportResource;
 use Illuminate\Http\Request;
@@ -20,10 +21,15 @@ class CustomerReportController extends Controller
     $user = Auth::user();
     $relations = json_decode($user->user_relations);
     $reps = $relations->reps;
-    $reports = CustomerReport::with(['customer', 'user', 'customer.params', 'coach', 'customer.planner', 'customer.report'])
-      ->whereIn('user_id', function ($query) use ($reps) {
-        $query->select('id')->from('users')->whereIn('id', $reps)->get();
-      })->get();
+    $activeCycle = new ActiveCycleSetting;
+    $activeCycle = $activeCycle->all();
+    $reports = CustomerReport::with([
+      'customer', 'user', 'customer.params', 'coach', 'customer.planner', 'customer.report', 'coach2'
+      ])->whereIn('user_id', $reps);
+    if($activeCycle) {
+      $reports = $reports->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end]);
+    }
+    $reports = $reports->get();
 
     return response([
       'code'  =>  200,

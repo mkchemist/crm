@@ -159,8 +159,12 @@ export default {
         name: "customer.brick"
       },
       {
-        title: "Coach",
+        title: "Coach 1",
         name: "dual_with_name"
+      },
+      {
+        title: 'Coach2',
+        name: 'coach2_name'
       },
       {
         title: "Comment",

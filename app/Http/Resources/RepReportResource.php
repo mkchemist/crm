@@ -24,6 +24,8 @@ class RepReportResource extends JsonResource
         'date'        =>  $this->visit_date,
         'dual_with_name'        =>  $this->coach ? $this->coach->name: '',
         'dual_with'   =>  $this->coach ? $this->coach->id : '',
+        'coach2_name' =>  $this->coach2 ?$this->coach2->name :'',
+        'coach2_id'   =>  $this->coach2 ?$this->coach2->id :'',
         'user'        =>  $this->user->name,
         'comment'     =>  $this->comment,
         'products'    =>  json_decode($this->products),

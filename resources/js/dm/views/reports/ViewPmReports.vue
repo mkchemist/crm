@@ -110,19 +110,23 @@ export default {
       for (let i = 0; i < noOfProductsInReport; i++) {
         headers.push({
           title: `Product ${i + 1}`,
-          name: `products.${i}.name`
+          name: `products.${i}.name`,
+          fallback: '-------------'
         });
         headers.push({
           title: `Product ${i + 1} action`,
-          name: `products.${i}.action`
+          name: `products.${i}.action`,
+          fallback: '-------------'
         });
         headers.push({
           title: `Product ${i + 1} Lader of adaption`,
-          name: `products.${i}.lader`
+          name: `products.${i}.lader`,
+          fallback: '-------------'
         });
         headers.push({
           title: `Product ${i + 1} competitor`,
-          name: `products.${i}.competitor`
+          name: `products.${i}.competitor`,
+          fallback: '-------------'
         });
       }
       return headers;
@@ -140,9 +144,14 @@ export default {
         style: "font-weight-bold"
       },
       {
-        title: "Coach",
+        title: "Coach 1",
         name: "coach",
         fallback: "-----"
+      },
+      {
+        title: 'Coach 2',
+        name: 'coach2',
+        fallback: '-------'
       },
       {
         title: "Customer",

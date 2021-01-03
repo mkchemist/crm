@@ -14,6 +14,7 @@ class CustomerReport extends Model
     'user_id',
     'visit_date',
     'dual_with',
+    'coach2_id',
     'comment',
     'products',
     'general_feedback',
@@ -32,5 +33,10 @@ class CustomerReport extends Model
 
   public function coach() {
     return $this->belongsTo('App\User', 'dual_with', 'id');
+  }
+
+  public function coach2()
+  {
+    return $this->belongsTo('App\User', 'coach2_id', 'id');
   }
 }
