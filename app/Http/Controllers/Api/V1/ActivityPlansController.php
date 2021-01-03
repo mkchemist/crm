@@ -25,6 +25,7 @@ class ActivityPlansController extends Controller
       $user = Auth::user();
       $activeCycle = new ActiveCycleSetting;
       $data  = $activeCycle->all();
+
       $plans = $this->getUserPlans($user);
       if($start && $end) {
         $plans = $plans->whereBetween('start', [$start, $end]);
@@ -162,7 +163,8 @@ class ActivityPlansController extends Controller
       if($relations) {
         $relations = json_decode($relations);
       };
-      $plans = NonFieldActivityPlan::whereIn('user_id', $relations->reps)->orWhere('user_id', $user->id);
+      $relations->reps[] = $user->id;
+      $plans = NonFieldActivityPlan::whereIn('user_id', $relations->reps);
       return $plans;
     }
 
