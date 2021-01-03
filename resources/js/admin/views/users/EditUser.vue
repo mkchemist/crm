@@ -20,8 +20,7 @@
                     v-model="user.name"
                     name="name"
                     :class="`form-control form-control-sm`"
-                    placeholder="Enter user fullname"
-                    disabled
+                    placeholder="Enter user full name"
                   />
                 </div>
                 <div class="form-group col-lg">
