@@ -26,7 +26,7 @@
           </div>
           <div class="col-lg">
             <label for="name" class="text-muted">Department Head</label>
-            <ValidationProvider name="head" rules="alpha" v-slot="{ errors }">
+            <ValidationProvider name="head" rules="required" v-slot="{ errors }">
               <span class="text-danger small">{{
                 errors[0] ? "Must be alphabetic only" : null
               }}</span>
