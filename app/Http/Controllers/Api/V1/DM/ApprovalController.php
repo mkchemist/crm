@@ -208,7 +208,7 @@ class ApprovalController extends Controller
     $user = Auth::user();
     $relations = json_decode($user->user_relations);
     $reps = $relations->reps;
-    $customers = CustomerValidation::with(['customer', 'user', 'workplace'])
+    $customers = CustomerValidation::with(['customer', 'customer.workplace', 'user', 'workplace'])
     ->whereIn('user_id', $reps)->where('approved', false)->get();
 
     return response([
@@ -227,6 +227,13 @@ class ApprovalController extends Controller
   {
     $ids = json_decode($request->ids);
     $validatedCustomers = CustomerValidation::whereIn('id', $ids);
+    if($request->state === 'rejected') {
+      $validatedCustomers->delete();
+      return response([
+        'code'  =>  200,
+        'message' =>  'Requests rejected successfully'
+      ]);
+    }
     foreach($validatedCustomers->get() as $item) {
       $item->customer()->update([
         'phone' =>    $item->phone,

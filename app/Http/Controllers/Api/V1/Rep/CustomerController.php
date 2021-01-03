@@ -266,4 +266,62 @@ class CustomerController extends Controller
         $customer = $customer->first();
         return $customer;
     }
+
+    /**
+     * get related customers for the given workplace
+     *
+     * @param int $workplace
+     * @return \Illuminate\Http\Response
+     */
+    public function getWorkplaceRelatedCustomers($workplace)
+    {
+      $customers = Customer::where('workplace_id', $workplace);
+      $customers = $this->getQueryWithAssignment($this->user, $customers);
+      $customers = $customers->get();
+
+      return response([
+        'code'  =>  200,
+        'data'  =>  $customers
+      ]);
+    }
+
+    /**
+     * bind customers to workplace
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $workplace
+     * @return \Illuminate\Http\Response
+     */
+    public function bindWorkplaceCustomer(Request $request, $workplace)
+    {
+      CustomerValidation::updateOrCreate([
+        'user_id' =>  $this->user->id,
+        'customer_id' =>  $request->id
+      ],[
+        'workplace_id' => $workplace,
+        'approved' => false,
+        'approved_by' => null,
+      ]);
+      return response([
+        'code'  =>  200,
+        'message' =>  'Customer link request sent'
+      ]);
+    }
+
+    public function unlinkWorkplaceCustomer(Request $request)
+    {
+      $customer = $request->customer;
+      CustomerValidation::updateOrCreate([
+        'user_id' =>  $this->user->id,
+        'customer_id' =>  $customer
+      ],[
+        'workplace_id'  =>  null,
+        'approved'  =>  false,
+        'approved_by' =>  null
+      ]);
+      return response([
+        'code'  =>  200,
+        'message' =>  'Customer unlink request sent'
+      ]);
+    }
 }

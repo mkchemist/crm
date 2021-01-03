@@ -71,6 +71,9 @@ Route::group([
   // customer frequency
   Route::post('/customer-frequency', 'CustomerFrequencyController@update');
   Route::post('/customer-frequency/submit', 'CustomerFrequencyController@submitFrequency');
+  Route::get('/workplace-customers/{workplace}', 'CustomerController@getWorkplaceRelatedCustomers');
+  Route::post('/workplace-customers/add/{workplace}', 'CustomerController@bindWorkplaceCustomer');
+  Route::post('/workplace-customers/unlink', 'CustomerController@unlinkWorkplaceCustomer');
   // workplaces routes
   Route::apiResource('/workplaces', 'WorkplaceController');
   // pharmacies routes

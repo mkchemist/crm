@@ -109,6 +109,9 @@
           </div>
           <loader-component v-else />
         </div>
+        <!-- Workplace Doctors -->
+        <workplace-customers :workplace="$route.params.id" />
+        <!-- Workplace plans -->
         <div class="my-2 border p-2 rounded">
           <p class="lead text-muted">Hospital Plans</p>
           <div class="p-2 row mx-auto align-items-center">
@@ -275,9 +278,17 @@ import WorkplaceDepartmentComponent from "../../components/WorkplaceDepartment";
 import AddWorkplaceDepartment from "../../components/AddWorkplaceDepartment";
 import NoDataToShow from "../../../components/NoDataToShow";
 import { filterByDate } from "../../../helpers/helpers";
+import WorkplaceCustomers from "../../components/WorkplaceCustomers.vue";
 export default {
-  created() {
+  mounted() {
+    this.$store.dispatch("customerGetAll");
     this.getHospital();
+  },
+  components: {
+    WorkplaceDepartmentComponent,
+    AddWorkplaceDepartment,
+    NoDataToShow,
+    WorkplaceCustomers
   },
   data: () => ({
     hospital: null,
@@ -295,13 +306,11 @@ export default {
     plan_start: null,
     plan_end: null,
     report_start: null,
-    report_end: null
+    report_end: null,
+    relatedCustomers: [],
+    attachedCustomer: null
   }),
-  components: {
-    WorkplaceDepartmentComponent,
-    AddWorkplaceDepartment,
-    NoDataToShow
-  },
+
   computed: {
     plansCollection() {
       let plans = [];
@@ -351,7 +360,7 @@ export default {
     getHospital() {
       this.fetched = false;
       let id = this.getHospitalId();
-      httpCall.get("rep/v1/workplaces/" + id).then(({ data }) => {
+      return httpCall.get("rep/v1/workplaces/" + id).then(({ data }) => {
         this.fetched = true;
         data.message = "hospital loaded";
         this.handleResponse(data, data => {
