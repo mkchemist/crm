@@ -19,7 +19,7 @@ class WorkplaceReportController extends Controller
     public function hospitalsReports()
     {
       $user = Auth::user();
-      $relations = json_decode($user->relations);
+      $relations = json_decode($user->user_relations);
       $reps = $relations->reps;
       $reports = WorkplaceReport::with(['customer', 'user', 'workplace'])
       ->whereIn('user_id', $reps)->get();
@@ -33,7 +33,7 @@ class WorkplaceReportController extends Controller
     public function pharmaciesReports()
     {
       $user = Auth::user();
-      $relations = json_decode($user->relations);
+      $relations = json_decode($user->user_relations);
       $reps = $relations->reps;
       $reports = PharmacyReport::with(['pharmacy', 'user'])
       ->whereIn('user_id', $reps)->get();
