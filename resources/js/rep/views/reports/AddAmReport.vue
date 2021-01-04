@@ -30,8 +30,14 @@
                     >must select workplace</span
                   >
                   <div v-if="is_single_workplace">
-                    <input type="text" class="form-control form-control-sm" :value="workplace?workplace.name: ''" disabled readonly>
-                    <input type="hidden" v-model="visit.workplace_id">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      :value="workplace ? workplace.name : ''"
+                      disabled
+                      readonly
+                    />
+                    <input type="hidden" v-model="visit.workplace_id" />
                   </div>
                   <select
                     name="workplace_id"
@@ -182,7 +188,7 @@ export default {
     this.$store.dispatch("customerGetAll").finally(() => {
       this.$store.dispatch("workplaceGetAll");
     });
-    if(this.$route.params.id) {
+    if (this.$route.params.id) {
       this.is_single_workplace = true;
       this.visit.workplace_id = parseInt(this.$route.params.id);
     }
@@ -198,7 +204,7 @@ export default {
       comment: "",
       general_feedback: "",
       dual_with: "",
-      products: [],
+      products: []
     },
     is_single_workplace: false,
     departs: null,
@@ -211,20 +217,26 @@ export default {
     customers() {
       let customers = this.$store.getters.all;
       let data = [];
-      if(this.visit.workplace_id && this.filter_departs.length) {
-        data = customers.filter(customer => customer.workplace_id === this.visit.workplace_id && this.filter_departs.includes(customer.specialty));
+      if (this.visit.workplace_id && this.filter_departs.length) {
+        data = customers.filter(
+          customer =>
+            parseInt(customer.workplace_id) === parseInt(this.visit.workplace_id) &&
+            this.filter_departs.includes(customer.specialty)
+        );
       }
       return data;
     },
     workplace() {
-      if(!this.workplaces.length) {
+      if (!this.workplaces.length) {
         return;
       }
       let id = parseInt(this.$route.params.id);
-      let workplace = this.workplaces.filter(workplace => workplace.id === id)[0];
+      let workplace = this.workplaces.filter(
+        workplace => workplace.id === id
+      )[0];
       this.departs = workplace.depart;
       this.visit.customers = [];
-      return workplace
+      return workplace;
     }
   },
   methods: {
@@ -236,7 +248,7 @@ export default {
     handleWorkplacesDropdownChange() {
       let val = event.target.value;
       this.departs = null;
-      this.filter_departs=[];
+      this.filter_departs = [];
     },
     /**
      * submit am report
@@ -262,7 +274,7 @@ export default {
         data.message = data.data;
         this.handleResponse(data, data => {
           this.$router.replace("/reports/view/am");
-          this.$store.dispatch('amGetAll', true);
+          this.$store.dispatch("amGetAll", true);
         });
       });
     },
