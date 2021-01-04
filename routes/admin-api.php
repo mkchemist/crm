@@ -21,6 +21,7 @@ Route::prefix('v1')->group(function () {
     ], function () {
         Route::get('/new-customers', 'NewCustomerValidationController@getNewCustomers');
         Route::post('/new-customers', 'NewCustomerValidationController@approveNewCustomers');
+        Route::post('/new-customers/delete', 'NewCustomerValidationController@deleteRejected');
         Route::get('/customers', 'CustomerValidationController@index');
         Route::put('/customers', 'CustomerValidationController@update');
         Route::delete("/customers/clear-rejected", "CustomerValidationController@clearRejectedRequests");
