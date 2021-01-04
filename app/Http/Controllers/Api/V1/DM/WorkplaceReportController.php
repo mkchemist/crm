@@ -19,15 +19,10 @@ class WorkplaceReportController extends Controller
     public function hospitalsReports()
     {
       $user = Auth::user();
+      $relations = json_decode($user->relations);
+      $reps = $relations->reps;
       $reports = WorkplaceReport::with(['customer', 'user', 'workplace'])
-      ->whereIn('user_id', function($query) use($user){
-        $query->select('id')
-        ->from('users')
-        ->where([
-          'district'  =>  $user->district,
-          'line'      =>  $user->line
-        ])->get();
-      })->get();
+      ->whereIn('user_id', $reps)->get();
 
       return response([
         'code' => 201,
@@ -38,15 +33,10 @@ class WorkplaceReportController extends Controller
     public function pharmaciesReports()
     {
       $user = Auth::user();
+      $relations = json_decode($user->relations);
+      $reps = $relations->reps;
       $reports = PharmacyReport::with(['pharmacy', 'user'])
-      ->whereIn('user_id', function($query) use ($user) {
-        $query->select('id')
-        ->from('users')
-        ->where([
-          'district' => $user->district,
-          'line'      =>  $user->line
-        ])->get();
-      })->get();
+      ->whereIn('user_id', $reps)->get();
 
       return response([
         'code'  =>  201,
