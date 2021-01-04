@@ -4,29 +4,77 @@
       <p class="alert alert-info mb-0 text-center p-1">
         <span>Today Plan</span>
       </p>
-      <div class="row mx-auto align-items-center justify-content-around my-1 p-2">
-        <input type="date" class="form-control form-control-sm col" v-model="today">
+      <div
+        class="row mx-auto align-items-center justify-content-around my-1 p-2"
+      >
+        <input
+          type="date"
+          class="form-control form-control-sm col"
+          v-model="today"
+        />
       </div>
-      <hr class="my-1">
+      <hr class="my-1" />
       <div>
         <div v-if="plannedCustomers.length">
           <ul class="nav">
-            <li class="nav-item col-12 border-bottom clearfix" v-for="(customer,i) in plannedCustomers" :key="customer.id+''+i">
-              <span>
-                <i v-if="['AM','submitted AM'].includes(customer.class)" class="fa fa-hospital text-success"></i>
-                <i v-if="!['AM','submitted AM', 'PM', 'submitted PM'].includes(customer.class)" class="fa fa-user-plus text-dark"></i>
-                <i v-if="['PM','submitted PM'].includes(customer.class)" class="fa fa-user-md text-primary"></i>
+            <li
+              class="nav-item col-12 border-bottom clearfix"
+              v-for="(customer, i) in plannedCustomers"
+              :key="customer.id + '_' + i"
+            >
+            <span :class="generateVisitLink(customer).icon"></span>
+        <span class="text-muted">{{ customer.title }}</span>
+        <router-link
+          :to="generateVisitLink(customer).link"
+          class="float-right"
+        >
+          <span><i :class="`fa fa-hands-helping ${generateVisitLink(customer).color}`"></i></span>
+        </router-link>
+              <!-- <span>
+                <i
+                  v-if="['AM', 'submitted AM'].includes(customer.class)"
+                  class="fa fa-hospital text-success"
+                ></i>
+                <i
+                  v-if="
+                    !['AM', 'submitted AM', 'PM', 'submitted PM'].includes(
+                      customer.class
+                    )
+                  "
+                  class="fa fa-user-plus text-dark"
+                ></i>
+                <i
+                  v-if="['PM', 'submitted PM'].includes(customer.class)"
+                  class="fa fa-user-md text-primary"
+                ></i>
               </span>
               <span class="text-muted small">{{ customer.title }}</span>
-              <router-link :to="`/reports/add/pm/${customer.customer_id}`" v-if="['PM','submitted PM'].includes(customer.class)" class="float-right">
+              <router-link
+                :to="`/reports/add/pm/${customer.customer_id}`"
+                v-if="['PM', 'submitted PM'].includes(customer.class)"
+                class="float-right"
+              >
                 <span><i class="fa fa-hands-helping text-success"></i></span>
               </router-link>
-              <router-link :to="`/reports/add/am/${customer.workplace_id}`" v-if="['AM','submitted AM'].includes(customer.class)" class="float-right">
+              <router-link
+                :to="`/reports/add/am/${customer.workplace_id}`"
+                v-if="['AM', 'submitted AM'].includes(customer.class)"
+                class="float-right"
+              >
                 <span><i class="fa fa-hands-helping text-primary"></i></span>
               </router-link>
-              <router-link :to="`/reports/add/activity-report?type=${customer.class}`" v-if="!['PM','submitted PM', 'AM', 'submitted AM'].includes(customer.class)" class="float-right">
+              <router-link
+                :to="`/reports/add/activity-report?type=${customer.class}`"
+                v-if="
+                  !['PM', 'submitted PM', 'AM', 'submitted AM'].includes(
+                    customer.class
+                  )
+                "
+                class="float-right"
+              >
                 <span><i class="fa fa-hands-helping text-dark"></i></span>
-              </router-link>
+              </router-link> -->
+
             </li>
           </ul>
         </div>
@@ -45,55 +93,67 @@
 
 <script>
 export default {
-  mounted(){
-    this.$store.dispatch('getNonFieldActivityPlans')
-    .finally(() => {
-      this.$store.dispatch('getWorkplacePlanner')
-      .finally(() => {
-        this.$store.dispatch('getPlanner')
-      })
-    })
-    /* this.$store.dispatch('getWorkplacePlanner')
-    .then(() => {
-      this.$store.dispatch('getPlanner')
-      .then(() => {
-        this.$store.dispatch('getNonFieldActivityPlans')
-      })
-    }) */
+  mounted() {
+    this.$store.dispatch("getNonFieldActivityPlans").finally(() => {
+      this.$store.dispatch("getWorkplacePlanner").finally(() => {
+        this.$store.dispatch("getPlanner");
+      });
+    });
   },
   data: () => ({
     isLoading: false,
-    isFetched : false,
-    today: new Date().format('YYYY-MM-DD')
+    isFetched: false,
+    today: new Date().format("YYYY-MM-DD")
   }),
   computed: {
     plannedCustomers() {
       let all = this.$store.getters.allPlans;
       let dayPlans = [];
       dayPlans = all.filter(day => day.start === this.today);
-      if(all.length) {
+      if (all.length) {
         this.isFetched = true;
       }
       return dayPlans;
     },
     fetched() {
       return this.$store.getters.isPlansFetched;
-    },
-
+    }
   },
   methods: {
     loadPlans() {
       this.isLoading = true;
-      this.$store.dispatch('getPlanner').then(() => {
-        this.$store.dispatch('getWorkplacePlanner')
-      }).finally(() => {
-        this.isLoading = false;
-      })
+      this.$store
+        .dispatch("getPlanner")
+        .then(() => {
+          this.$store.dispatch("getWorkplacePlanner");
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
+    generateVisitLink(customer) {
+      let data = {
+        icon: '',
+        link: '',
+        color: ''
+      }
+      if(['AM', 'submitted AM'].includes(customer.class)) {
+        data.icon = 'fa fa-hospital text-success';
+        data.link = `/reports/add/am/${customer.workplace_id}`
+        data.color = 'text-success'
+      } else if(['PM', 'submitted PM'].includes(customer.class)) {
+        data.icon = 'fa fa-user-md text-primary';
+        data.link = `/reports/add/pm/${customer.customer_id}`
+        data.color = 'text-primary'
+      } else {
+        data.icon = 'fa fa-user-plus text-dark';
+        data.link = `/reports/add/activity-report?type=${customer.class}`
+        data.color = 'text-dark'
+      }
+      return data;
     }
   }
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

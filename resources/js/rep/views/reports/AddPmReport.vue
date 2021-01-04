@@ -295,7 +295,7 @@ export default {
   },
   computed: {
     customers() {
-      return this.$store.getters.customerFilter;
+      return this.$store.getters.all;
     },
     customer() {
       let customers = this.customers;
