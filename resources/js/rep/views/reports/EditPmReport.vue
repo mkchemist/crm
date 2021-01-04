@@ -71,30 +71,52 @@
                 </select>
               </div>
               <div class="col-lg-6" v-if="visit.dual">
-                <ValidationProvider
-                  name="dual_with"
-                  rules="required"
-                  v-slot="{ errors }"
-                >
-                  <label for="" class="text-muted small">Select Coach</label>
-                  <span class="text-danger small" v-if="errors[0]"
-                    >you must select a coach</span
-                  >
-                  <select
+                 <div class="form-group">
+                  <ValidationProvider
                     name="dual_with"
-                    id="dual_with"
-                    class="form-control form-control-sm"
-                    v-model="visit.dual_with"
+                    rules="required"
+                    v-slot="{ errors }"
                   >
-                    <option value="">Select coach</option>
-                    <option
-                      :value="coach.id"
-                      v-for="coach in coaches"
-                      :key="coach.id"
-                      >{{ coach.name }}</option
+                    <label for="" class="text-muted small">Coach 1</label>
+                    <span class="text-danger small" v-if="errors[0]"
+                      >you must select a coach</span
                     >
-                  </select>
-                </ValidationProvider>
+                    <select
+                      name="dual_with"
+                      id="dual_with"
+                      class="form-control form-control-sm"
+                      v-model="visit.dual_with"
+                    >
+                      <option value="">Select coach</option>
+                      <option
+                        :value="coach.id"
+                        v-for="coach in coaches"
+                        :key="coach.id"
+                        >{{ coach.name }}</option
+                      >
+                    </select>
+                  </ValidationProvider>
+                </div>
+                <div class="form-group">
+
+                    <label for="" class="text-muted small">Coach 2</label>
+
+                    <select
+                      name="coach2_id"
+                      id="coach2_id"
+                      class="form-control form-control-sm"
+                      v-model="visit.coach2_id"
+                    >
+                      <option value="">Select coach</option>
+                      <option
+                        :value="coach.id"
+                        v-for="coach in coaches"
+                        :key="coach.id"
+                        >{{ coach.name }}</option
+                      >
+                    </select>
+
+                </div>
               </div>
             </div>
             <!-- end visit coach -->
@@ -163,7 +185,7 @@ import { httpCall } from "../../../helpers/http-service";
 import VisitProducts from "../../components/VisitProducts";
 
 export default {
-  created() {
+  mounted() {
     let id = this.$route.params.id;
     httpCall.get("rep/v1/reports/pm/" + id).then(({ data }) => {
       data.message = "visit loaded";

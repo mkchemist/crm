@@ -26,10 +26,10 @@ class CustomerReportController extends Controller
         $activeCycle = $activeCycle->all();
         $visits = CustomerReport::with([
             'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach', 'coach2',
-             ])
+        ])
             ->where(['user_id' => Auth::user()->id]);
         if ($activeCycle) {
-            $visits =$visits->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end]);
+            $visits = $visits->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end]);
 
         }
         $visits = $visits->get();
@@ -81,40 +81,11 @@ class CustomerReportController extends Controller
         ]);
 
         if ($request->dual_with) {
-            $check = CoachReport::where([
-                'rep_id' => $user->id,
-                'coach_id' => $request->dual_with,
-                'visit_date' => $request->date,
-                'customer_id' => $request->customer,
-            ])->first();
-            if (!$check) {
-                CoachReport::create([
-                    'rep_id' => $user->id,
-                    'coach_id' => $request->dual_with,
-                    'visit_date' => $request->date,
-                    'customer_id' => $request->customer,
-                    'data' => '',
-                ]);
-            }
+            $this->createCoachReport($user->id, $request->dual_with, $request->date, $request->customer);
         }
 
         if ($request->coach2_id) {
-            $check = CoachReport::where([
-                'rep_id' => $user->id,
-                'coach_id' => $request->coach2_id,
-                'visit_date' => $request->date,
-                'customer_id' => $request->customer,
-                'data' => '',
-            ])->first();
-            if (!$check) {
-                CoachReport::create([
-                    'rep_id' => $user->id,
-                    'coach_id' => $request->coach2_id,
-                    'visit_date' => $request->date,
-                    'customer_id' => $request->customer,
-                    'data' => '',
-                ]);
-            }
+            $this->createCoachReport($user->id, $request->coach2_id, $request->date, $request->customer);
         }
 
         return response()->json([
@@ -171,11 +142,19 @@ class CustomerReportController extends Controller
         if (!$visit) {
             return response()->json(ResponseHelper::INVALID_ID);
         }
+        $user = Auth::user();
+        if($request->dual_with) {
+          $this->handleEditVisitCoach($visit,'dual_with',$user->id,$request->dual_with, $visit->visit_date,$visit->customer_id);
+        }
+        if($request->coach2_id) {
+
+          $this->handleEditVisitCoach($visit,'coach2_id',$user->id,$request->coach2_id, $visit->visit_date,$visit->customer_id);
+        }
         $visit->dual_with = $request->dual_with;
+        $visit->coach2_id = $request->coach2_id;
         $visit->comment = $request->comment;
         $visit->products = $request->products;
         $visit->general_feedback = $request->general_feedback;
-        $visit->visit_type = $request->visit_type;
         $visit->save();
         return response()->json([
             'code' => 201,
@@ -228,5 +207,68 @@ class CustomerReportController extends Controller
             'user_id' => Auth::user()->id,
         ])->first();
         return $visit;
+    }
+
+    /**
+     * create coach report
+     *
+     *
+     * @param int $user [user id]
+     * @param int $coach [coach id]
+     * @param string $date [visit date]
+     * @param int $customer [customer id]
+     */
+    private function createCoachReport( $user,$coach, $date, $customer)
+    {
+        $check = CoachReport::where([
+            'rep_id' => $user,
+            'coach_id' => $coach,
+            'visit_date' => $date,
+            'customer_id' => $customer,
+        ])->first();
+        if (!$check) {
+            CoachReport::create([
+                'rep_id' => $user,
+                'coach_id' => $coach,
+                'visit_date' => $date,
+                'customer_id' => $customer,
+                'data' => '',
+            ]);
+        }
+    }
+
+    /**
+     * handle coach report for edited visit
+     *
+     *
+     * @param CustomerReport $visit
+     * @param string $type
+     * @param int $user [user id]
+     * @param int $coach [coach id]
+     * @param string $date [visit date]
+     * @param int $customer [customer id]
+     */
+    private function handleEditVisitCoach($visit,$type ,$user, $coach, $date, $customer)
+    {
+      $coach_check = CoachReport::where([
+        'rep_id'  =>  $user,
+        'coach_id' => $visit->$type,
+        'visit_date'  =>  $date,
+        'customer_id' =>  $customer
+      ])->first();
+      if(!$coach_check) {
+        $this->createCoachReport($user, $coach, $date, $customer);
+      } else if($visit->$type && !$coach) {
+        $coach_check->delete();
+      } else {
+        if($visit->$type !== $coach) {
+          $coach_check->delete();
+        }
+        $this->createCoachReport($user, $coach, $date, $customer);
+      }
+
+
+
+
     }
 }
