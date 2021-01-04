@@ -73,6 +73,7 @@ class CustomerReportController extends Controller
             'customer_id' => $request->customer,
             'user_id' => $user->id,
             'visit_date' => $request->date,
+            'visit_type'  =>  $request->visit_type,
             'dual_with' => $request->dual_with,
             'coach2_id' => $request->coach2_id,
             'comment' => $request->comment,
@@ -151,6 +152,7 @@ class CustomerReportController extends Controller
           $this->handleEditVisitCoach($visit,'coach2_id',$user->id,$request->coach2_id, $visit->visit_date,$visit->customer_id);
         }
         $visit->dual_with = $request->dual_with;
+        $visit->visit_type  =  $request->visit_type;
         $visit->coach2_id = $request->coach2_id;
         $visit->comment = $request->comment;
         $visit->products = $request->products;
