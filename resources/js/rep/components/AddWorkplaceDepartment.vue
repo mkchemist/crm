@@ -26,19 +26,14 @@
           </div>
           <div class="col-lg">
             <label for="name" class="text-muted">Department Head</label>
-            <ValidationProvider name="head" rules="required" v-slot="{ errors }">
-              <span class="text-danger small">{{
-                errors[0] ? "Must be alphabetic only" : null
-              }}</span>
-              <input
-                type="text"
-                id="head"
-                name="head"
-                class="form-control form-control-sm"
-                v-model="department.head"
-                placeholder="Enter name of department head"
-              />
-            </ValidationProvider>
+            <input
+              type="text"
+              id="head"
+              name="head"
+              class="form-control form-control-sm"
+              v-model="department.head"
+              placeholder="Enter name of department head"
+            />
           </div>
         </div>
 
@@ -66,7 +61,7 @@ export default {
   methods: {
     onSubmit() {
       this.$emit("onAdd", this.department);
-      this.$emit('onCancel');
+      this.$emit("onCancel");
     },
     cancelAdding() {
       this.$emit("onCancel");

@@ -227,7 +227,7 @@ import { httpCall } from "../../../helpers/http-service";
 import VisitProducts from "../../components/VisitProducts";
 import CustomerSelectFilter from "../../components/CustomerSelectFilter";
 export default {
-  created() {
+  mounted() {
     this.$store.dispatch("customerGetAll");
     this.$store.dispatch("getCoaches");
     if (this.$route.params.id) {
@@ -295,7 +295,7 @@ export default {
   },
   computed: {
     customers() {
-      return this.$store.getters.all;
+      return this.$store.getters.customerFilter;
     },
     customer() {
       let customers = this.customers;

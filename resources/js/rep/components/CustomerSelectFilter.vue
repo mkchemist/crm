@@ -222,6 +222,7 @@ export default {
     },
     reset() {
       this.$store.commit("setCustomerFilter", this.data);
+      this.withInactive = false;
       this.error = false;
       this.showFilter = false;
     },
