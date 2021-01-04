@@ -17,6 +17,10 @@
               <span>Reject</span>
               <span class="badge badge-light">{{ this.validated.length }}</span>
             </button>
+            <button class="btn btn-sm btn-danger" @click="deleteRejectedCustomers">
+              <span class="fa fa-trash"></span>
+              <span>Delete rejected</span>
+            </button>
           </div>
           <table-component
             :heads="heads"
@@ -196,6 +200,17 @@ export default {
           this.toggleAllInputs(false);
         });
       });
+    },
+    deleteRejectedCustomers() {
+      httpCall.post('admin/v1/validation/new-customers/delete')
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.getNewCustomers();
+          this.requestState = null;
+          this.validated = [];
+          this.toggleAllInputs(false);
+        });
+      }).catch(err => console.log(err));
     }
   }
 }

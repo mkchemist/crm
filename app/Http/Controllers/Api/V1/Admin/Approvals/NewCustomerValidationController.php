@@ -69,4 +69,22 @@ class NewCustomerValidationController extends Controller
         ]);
 
     }
+
+    /**
+     * delete rejected customers
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteRejected()
+    {
+      Customer::where([
+        'state' =>  'rejected',
+        'approved'  =>  true
+      ])->delete();
+
+      return response([
+        'code'  =>  200,
+        'message' =>  'Deleting all rejected customers'
+      ]);
+    }
 }
