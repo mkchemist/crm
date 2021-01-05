@@ -54,7 +54,7 @@ class FrequencyValidationController extends Controller
 
       $state = $request->state;
       $ids = json_decode($request->ids);
-      $user = Auth::user()->id;
+      $user = Auth::user();
       if($state === 'approved') {
         $this->approveRequests($ids, $user);
       } else {
@@ -71,18 +71,18 @@ class FrequencyValidationController extends Controller
      * approve requests
      *
      * @param array $ids [requests ids]
-     * @param int $user [admin id]
+     * @param User $user [admin]
      * @return void
      */
-    private function approveRequests(array $ids, int $user)
+    private function approveRequests(array $ids, $user)
     {
       DB::table('customer_frequencies as cf')
       ->crossJoin('customer_frequencies as c', 'cf.id' ,'=', 'c.id')
       ->whereIn('cf.id', $ids)
       ->update([
         'cf.current'      => DB::raw('c.next'),
-        'cf.state'        => 'approved',
-        'cf.approved_by'  =>  $user,
+        'cf.state'        => 'approved by '.$user->id,
+        'cf.approved_by'  =>  $user->id,
         'cf.next'         =>  0,
         'cf.submitted'    =>  false
       ]);
@@ -92,17 +92,16 @@ class FrequencyValidationController extends Controller
      * reject requests
      *
      * @param array $ids [requests ids]
-     * @param int $user [admin id]
+     * @param User $user [admin]
      * @return void
      */
-    private function rejectRequests(array $ids, int $user)
+    private function rejectRequests(array $ids, $user)
     {
       DB::table('customer_frequencies')
       ->whereIn('id', $ids)
       ->update([
-        'next'  =>  0,
-        'state' =>  'rejected',
-        'approved_by' =>  $user,
+        'state' =>  'rejected by '.$user->name,
+        'approved_by' =>  $user->id,
         'submitted'   =>  false
       ]);
     }

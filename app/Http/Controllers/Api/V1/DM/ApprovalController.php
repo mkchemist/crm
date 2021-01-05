@@ -76,10 +76,9 @@ class ApprovalController extends Controller
       if($request->state === "approved") {
         $customer->current = $customer->next;
         $customer->next = 0;
-        $customer->state = "approved";
+        $customer->state = "approved by $user->name";
       } else {
-        $customer->state = "rejected";
-        $customer->next = 0;
+        $customer->state = "rejected by $user->name";
       }
       $customer->submitted = false;
       $customer->approved_by = $user->id;
