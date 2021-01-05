@@ -5,8 +5,29 @@
         <span class="font-weight-bold">New customers validation</span>
       </p>
       <div class="p-2 pb-5">
+         <div class="p-2">
+            <div class="float-lg-right d-flex" id="filter_checkbox_container">
+              <div class="form-group mx-2">
+                <input type="checkbox" name="all" :checked="dataFilter==='all'" @click="changeDataFilter">
+                <label for="" class="form-check-label text-muted">All</label>
+              </div>
+              <div class="form-group mx-2">
+                <input type="checkbox" name="new" :checked="dataFilter==='new'" @click="changeDataFilter">
+                <label for="" class="form-check-label text-muted">New</label>
+              </div>
+              <div class="form-group mx-2">
+                <input type="checkbox" name="approved_by" :checked="dataFilter==='approved by'" @click="changeDataFilter">
+                <label for="" class="form-check-label text-muted">Approved by supervisor</label>
+              </div>
+              <div class="form-group mx-2">
+                <input type="checkbox" name="rejected" :checked="dataFilter==='rejected'" @click="changeDataFilter">
+                <label for="" class="form-check-label text-muted">Rejected</label>
+              </div>
+            </div>
+          </div>
+          <hr>
         <div v-if="customers.length" id="validation-data">
-          <div class="p-2 text-right">
+          <div class="text-right p-2">
             <button class="btn btn-primary btn-sm" :disabled="!this.validated.length" @click="approveRequest">
               <span><i class="fa fa-check-circle"></i></span>
               <span>Approve</span>
@@ -22,6 +43,7 @@
               <span>Delete rejected</span>
             </button>
           </div>
+
           <table-component
             :heads="heads"
             :data="customers"
@@ -71,6 +93,7 @@ export default {
   },
   data: () =>({
     customers: [],
+    raw : [],
     fetched: false,
     validated:[],
     requestState: null,
@@ -119,8 +142,10 @@ export default {
         title: 'Region',
         name: 'region'
       }
-    ]
+    ],
+    dataFilter: 'all',
   }),
+
   methods: {
     /**
      * get all new customers
@@ -133,6 +158,7 @@ export default {
         this.handleResponse(data, data => {
           this.fetched = true;
           this.customers = data.data;
+          this.raw = data.data;
         });
       })
     },
@@ -211,8 +237,49 @@ export default {
           this.toggleAllInputs(false);
         });
       }).catch(err => console.log(err));
+    },
+    /**
+     * toggle data view
+     * switch between [all, new ,approved by , rejected]
+     *
+     * @param {MouseEvent} e
+     */
+    changeDataFilter(e) {
+      let name = e.target.name;
+      if(e.target.checked) {
+        document.querySelectorAll('#filter_checkbox_container input[type="checkbox"]')
+        .forEach(el => {
+          el.checked = false;
+        });
+        e.target.checked = true;
+        this.dataFilter = name
+      } else {
+        this.dataFilter = 'all'
+      }
+      this.filterCustomers();
+    },
+    filterCustomers() {
+      let data = [];
+      switch (this.dataFilter) {
+        case 'new':
+          data =  this.raw.filter(customer => customer.state === 'new');
+          break;
+        case 'approved_by':
+          data =  this.raw.filter(customer => customer.state.match(/approved by (.*)/g));
+          break;
+        case 'rejected' :
+          data =  this.raw.filter(customer => customer.state === 'rejected')
+          break;
+        default:
+          data =  this.raw;
+          break;
+      }
+      console.log(data)
+      let async = () => Promise.resolve(data);
+      this.customers = [];
+      async().then(data => this.customers = data);
     }
-  }
+  },
 }
 </script>
 

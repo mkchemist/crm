@@ -18,8 +18,10 @@ const generateApiUrl = (path,query = {}) => {
 export const httpCall = {};
 
 
+axios
+
 httpCall.get = (path,query) => {
-  return axios.get(generateApiUrl(path, query));
+  return axios.get(generateApiUrl(path, query))
 }
 
 httpCall.post = (path, data) => {
