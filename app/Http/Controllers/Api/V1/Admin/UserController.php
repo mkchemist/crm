@@ -22,8 +22,7 @@ class UserController extends Controller
       $users = User::orderBy('district','asc')
       ->orderBy('name', 'asc')
       ->get();
-      /* $area = DB::table('customers')
-      ->select('area','brick','district','territory','region')->distinct()->get(); */
+
       return response([
         'code'  =>  200,
         'data'  =>   UserResources::collection($users),

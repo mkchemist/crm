@@ -9,6 +9,16 @@
       </div>
       <div v-if="plans.length">
         <table-component :data="plans" :heads="heads" :headClass="`bg-success text-light`">
+           <template v-slot:head:before>
+            <th>Business Unit Manager</th>
+            <th>Area Manager</th>
+            <th>District Manager</th>
+          </template>
+          <template v-slot:body:before="{ item }">
+            <td>{{ getRepRegionalManager(item.user_id) }}</td>
+            <td>{{ getRepAreaManager(item.user_id) }}</td>
+            <td>{{ getRepManager(item.user_id) }}</td>
+          </template>
         </table-component>
       </div>
        <div v-else-if="!startRequest" class="d-flex align-items-center justify-content-lg-center" style="height:300px">
@@ -40,6 +50,15 @@ export default {
     },
     isPlanFetched() {
       return this.$store.getters.isPlanFetched
+    },
+    dms() {
+      return this.$store.getters.dms
+    },
+    rms() {
+      return this.$store.getters.rms
+    },
+    ams(){
+      return this.$store.getters.ams
     }
   },
   data: () => ({
@@ -95,6 +114,36 @@ export default {
       .then(() => {
 
       })
+    },
+    getRepManager(id) {
+      let manager ="-------";
+      this.dms.map(user => {
+        let reps =user.relations.reps;
+        if(reps.includes(id)) {
+          manager = user.name;
+        }
+      })
+      return manager;
+    },
+    getRepAreaManager(id) {
+      let manager ="-------";
+      this.ams.map(user => {
+        let reps =user.relations.reps;
+        if(reps.includes(id)) {
+          manager = user.name;
+        }
+      })
+      return manager;
+    },
+    getRepRegionalManager(id) {
+      let manager ="-------";
+      this.rms.map(user => {
+        let reps =user.relations.reps;
+        if(reps.includes(id)) {
+          manager = user.name;
+        }
+      })
+      return manager;
     }
   }
 }

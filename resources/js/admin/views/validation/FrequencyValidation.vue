@@ -38,11 +38,17 @@
             <th>
               <input type="checkbox" @click="selectAll" />
             </th>
+            <th>Business Unit Manager</th>
+            <th>Area Manager</th>
+            <th>District Manager</th>
           </template>
           <template v-slot:body:before="{ item }">
             <td>
               <input type="checkbox" @click="selectRequest(item.id)" />
             </td>
+            <td>{{ getRepRegionalManager(item.user_id) }}</td>
+            <td>{{ getRepAreaManager(item.user_id) }}</td>
+            <td>{{ getRepManager(item.user_id) }}</td>
           </template>
         </table-component>
       </div>
@@ -123,6 +129,17 @@ export default {
       }
     ]
   }),
+  computed: {
+    dms() {
+      return this.$store.getters.dms
+    },
+    rms() {
+      return this.$store.getters.rms
+    },
+    ams(){
+      return this.$store.getters.ams
+    }
+  },
   methods: {
     /**
      * get all requests
@@ -224,6 +241,36 @@ export default {
             duration: ''
           });
         });
+    },
+    getRepManager(id) {
+      let manager ="-------";
+      this.dms.map(user => {
+        let reps =user.relations.reps;
+        if(reps.includes(id)) {
+          manager = user.name;
+        }
+      })
+      return manager;
+    },
+    getRepAreaManager(id) {
+      let manager ="-------";
+      this.ams.map(user => {
+        let reps =user.relations.reps;
+        if(reps.includes(id)) {
+          manager = user.name;
+        }
+      })
+      return manager;
+    },
+    getRepRegionalManager(id) {
+      let manager ="-------";
+      this.rms.map(user => {
+        let reps =user.relations.reps;
+        if(reps.includes(id)) {
+          manager = user.name;
+        }
+      })
+      return manager;
     }
   }
 };

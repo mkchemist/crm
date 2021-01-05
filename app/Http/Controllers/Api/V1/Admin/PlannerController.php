@@ -26,6 +26,7 @@ class PlannerController extends Controller
     ->select(
       'plan.plan_date as Date',
       'user.name as Rep',
+      'plan.user_id as user_id',
       'customer.name as Customer',
       'customer.specialty as Specialty',
       'parameter.current as Parameter',

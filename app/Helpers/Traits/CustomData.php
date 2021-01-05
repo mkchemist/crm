@@ -16,6 +16,9 @@ trait CustomData {
       case 'dm' :
         $model= $this->getRelatedRepsData($user, $model);
         break;
+      case 'rm' :
+        $model = $this->getRelatedRepsData($user, $model);
+        break;
       default:
         $model= $model->where('user_id', $user->id);
         break;

@@ -60,7 +60,7 @@ Route::group(['middleware' => ['auth']], function () {
       $hash_key = new ForceRefreshHashKeySetting;
 
         return view('pages.rm.index', ['hash_key' => $hash_key->all()]);
-    });
+    })->where("name", ".*");
 
     // general Manager application
     Route::get('/gm/{name?}', function() {

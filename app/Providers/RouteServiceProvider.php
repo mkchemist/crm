@@ -49,6 +49,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapAdminApiRoute();
 
         $this->mapDMApiRoute();
+
+        $this->mapRMApiRoute();
         //
     }
 
@@ -99,5 +101,13 @@ class RouteServiceProvider extends ServiceProvider
       ->middleware(["api", "auth:api", "dmOnly"])
       ->namespace("App\Http\Controllers\Api\V1\DM")
       ->group(base_path("routes/dm-api.php"));
+    }
+
+    protected function mapRMApiRoute()
+    {
+      Route::prefix('api/rm')
+      ->middleware(['api', 'auth:api', 'rmOnly'])
+      ->namespace('App\Http\Controllers\Api\V1\RM')
+      ->group(base_path('routes/rm-api.php'));
     }
 }

@@ -13,9 +13,11 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/rep/app.js', 'public/js/rep')
 .js('resources/js/admin/admin.js', 'public/js/admin')
+.js('resources/js/rm/rm.js', 'public/js/rm')
 .js('resources/js/dm/dm.js', 'public/js/dm')
 .sass('resources/sass/rep/app.scss', 'public/css/rep')
 .sass('resources/sass/admin/app.scss', 'public/css/admin')
+.sass('resources/sass/rm/app.scss', 'public/css/rm')
 .sass('resources/sass/dm/app.scss', 'public/css/dm')
 .extract(['vue', 'vuex', 'vue-router','vee-validate','vue-cal'])
 .browserSync("http://crm.localhost")

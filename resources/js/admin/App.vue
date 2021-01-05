@@ -35,6 +35,9 @@ export default {
     AdminNavbar,
     ModalFade,
     NewBroadcastMessage
+  },
+  mounted() {
+    this.$store.dispatch('getAllUsers')
   }
 };
 </script>

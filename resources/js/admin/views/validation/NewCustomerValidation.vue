@@ -274,7 +274,6 @@ export default {
           data =  this.raw;
           break;
       }
-      console.log(data)
       let async = () => Promise.resolve(data);
       this.customers = [];
       async().then(data => this.customers = data);

@@ -10,6 +10,10 @@ export default {
   },
   getters: {
     users: state => state.users,
+    reps: state => state.users.filter(user => user.role === 'rep'),
+    dms : state => state.users.filter(user => user.role === 'dm'),
+    ams: state => state.users.filter(user => user.role === 'am'),
+    rms : state => state.users.filter(user => user.role === 'rm'),
     allUsersFetched: state => state.allUsersFetched,
     allLocations: state => state.locations,
     isAllLocationFetched : state => state.isLocationsFetched

@@ -1,0 +1,121 @@
+<template>
+  <div class="row mx-auto p-2 pb-5">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-9 px-0 shadow rounded">
+      <p class="alert alert-success">
+        <span class="fa fa-book-reader"></span>
+        <span class="font-weight-bold">View PM Reports</span>
+      </p>
+      <div class="p-2">
+        <div v-if="reports.length">
+          <table-component
+            :heads="heads"
+            :data="reports"
+            :unselectable="true"
+            :headClass="`bg-success text-light`"
+          >
+            <template v-slot:head:before>
+              <th>Business Unit Manager</th>
+              <th>Area Manager</th>
+              <th>District Manager</th>
+            </template>
+            <template v-slot:body:before="{item}">
+              <td>{{ $store.state.UserModule.user.name }}</td>
+              <td>{{ getRepAreaManager(item.user_id) }}</td>
+              <td>{{ getRepManager(item.user_id) }}</td>
+            </template>
+          </table-component>
+        </div>
+        <div v-else-if="isReportsFetched">
+          <no-data-to-show />
+        </div>
+        <loader-component v-else></loader-component>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import NoDataToShow from "../../../components/NoDataToShow.vue";
+import TableComponent from "../../../components/TableComponent.vue";
+export default {
+  components: {
+    NoDataToShow,
+    TableComponent
+  },
+  mounted() {
+    this.$store.dispatch("getAllPmReports");
+  },
+  computed: {
+    reports() {
+      if (this.shouldFilter) {
+        return this.filteredReports;
+      }
+      return this.$store.getters.allPmReports;
+    },
+    isReportsFetched() {
+      return this.$store.getters.isReportsFetched;
+    },
+    dm() {
+      return this.$store.getters.allDm;
+    },
+    areaManagers() {
+      return this.$store.getters.allAreaManagers;
+    }
+  },
+  data: () => ({
+    filteredReports: [],
+    shouldFilter: false,
+    heads: [
+      {
+        title: "Rep",
+        name: "rep"
+      },
+      {
+        title: "Date",
+        name: "date"
+      },
+      {
+        title: "Customer",
+        name: "customer"
+      },
+      {
+        title: "Specialty",
+        name: "specialty"
+      },
+      {
+        title: "Parameter",
+        name: "parameter"
+      },
+      {
+        title: "Frequency",
+        name: "frequency"
+      }
+    ]
+  }),
+  methods: {
+    getRepManager(id) {
+      let manager = '-----------';
+      this.dm.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if(reps.includes(id)) {
+          manager = item.name;
+        }
+      })
+      return manager;
+    },
+    getRepAreaManager(id) {
+      let manager = '-----------';
+      this.areaManagers.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if(reps.includes(id)) {
+          manager = item.name;
+        }
+      })
+      return manager;
+    }
+  }
+};
+</script>
+
+<style></style>

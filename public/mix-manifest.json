@@ -6,5 +6,7 @@
     "/js/rep/app.js": "/js/rep/app.js",
     "/css/rep/app.css": "/css/rep/app.css",
     "/css/admin/app.css": "/css/admin/app.css",
-    "/css/dm/app.css": "/css/dm/app.css"
+    "/css/rm/app.css": "/css/rm/app.css",
+    "/css/dm/app.css": "/css/dm/app.css",
+    "/js/rm/rm.js": "/js/rm/rm.js"
 }
