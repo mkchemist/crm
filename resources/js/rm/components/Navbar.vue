@@ -2,7 +2,9 @@
   <header class="bg-white">
     <nav class="navbar navbar-expand-lg navbar-light">
       <router-link to="/" class="navbar-brand">
-        <img :src="logoUrl+'images/logo.png'" alt="" class="img-fluid">
+        <img :src="baseUrl+'images/logo.png'" alt="" class="img-fluid">
+        <br>
+        <span class="text-muted">Welcome {{ $store.state.UserModule.user.name }}</span>
       </router-link>
       <button class="navbar-toggler" data-toggle="collapse" data-target="rm_navbar">
         <span class="navbar-toggler-icon"></span>

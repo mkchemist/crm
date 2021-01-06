@@ -30,18 +30,12 @@
           </div>
           <div class="p-2" v-if="reports.length">
             <table-component
-              :heads="reportHeaders"
+              :heads="headers"
               :data="reports"
               :unselectable="true"
               head-class="bg-success text-light"
               sort-by="Date,asc|Hospital,asc"
             >
-            <template v-slot:head>
-              <th>Feedback</th>
-            </template>
-            <template v-slot:body="{item}">
-              <td>{{ item.feedback ? item.feedback : '--------' }}</td>
-            </template>
             </table-component>
           </div>
           <div v-else-if="fetched">
@@ -56,6 +50,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
+import { ProductWithLader } from '../../../helpers/constants';
 import DataFilter from "../../components/DataFilter";
 export default {
   components: {
@@ -91,6 +86,16 @@ export default {
         title : 'Specialty',
         name: 'customer_specialty'
       },
+      ...ProductWithLader,
+      {
+        title: 'Comment',
+        name: 'comment',
+        fallback: '--------'
+      },
+      {
+        title: 'Feedback',
+        name: 'feedback'
+      },
       {
         title: "Address",
         name: "address"
@@ -103,11 +108,6 @@ export default {
         title: "Area",
         name: "area"
       },
-      {
-        title: 'Comment',
-        name: 'comment',
-        fallback: '--------'
-      }
     ]
   }),
   computed: {
@@ -116,39 +116,6 @@ export default {
     },
     fetched() {
       return this.$store.getters.isHospitalReportsFetched;
-    },
-    reportHeaders() {
-      let products = [];
-      let noOfProductsInReport = 0;
-      if (this.reports) {
-        this.reports.map(visit => {
-          let visitProducts = visit.products;
-          let count = visitProducts.length;
-          if (count > noOfProductsInReport) {
-            noOfProductsInReport = count;
-          }
-        });
-      }
-      let headers = [...this.headers];
-      for (let i = 0; i < noOfProductsInReport; i++) {
-        headers.push({
-          title: `Product ${i + 1}`,
-          name: `products.${i}.name`
-        });
-        headers.push({
-          title: `Product ${i + 1} action`,
-          name: `products.${i}.action`
-        });
-        headers.push({
-          title: `Product ${i + 1} Lader of adaption`,
-          name: `products.${i}.lader`
-        });
-        headers.push({
-          title: `Product ${i + 1} competitor`,
-          name: `products.${i}.competitor`
-        });
-      }
-      return headers;
     }
   },
   methods: {

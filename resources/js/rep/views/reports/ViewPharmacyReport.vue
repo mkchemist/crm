@@ -18,7 +18,7 @@
       <div class="p-2 my-2" v-if="pharmacies.length">
         <table-component
           :data="pharmacies"
-          :heads="reportHeaders"
+          :heads="headers"
           order-by="Date,asc|Name,asc"
           head-class="bg-success text-light"
         >
@@ -41,12 +41,6 @@
                 <span><i class="fa fa-times"></i></span>
               </button>
             </td>
-          </template>
-          <template v-slot:head>
-            <th>Feedback</th>
-          </template>
-          <template v-slot:body="{ item }">
-            <td>{{ item.general_feedback }}</td>
           </template>
         </table-component>
       </div>
@@ -111,6 +105,7 @@
 import TableComponent from "../../../components/TableComponent";
 import ModalFade from "../../../components/ModalFade";
 import { httpCall } from "../../../helpers/http-service";
+import { ProductWithRate } from '../../../helpers/constants';
 export default {
   mounted() {
     this.$store.dispatch("pharmacyReportGetAll");
@@ -119,39 +114,7 @@ export default {
     pharmacies() {
       return this.$store.getters.pharmacyVisits;
     },
-    reportHeaders() {
-      let products = [];
-      let noOfProductsInReport = 0;
-      if (this.pharmacies) {
-        this.pharmacies.map(visit => {
-          let visitProducts = visit.products;
-          let count = visitProducts.length;
-          if (count > noOfProductsInReport) {
-            noOfProductsInReport = count;
-          }
-        });
-      }
-      let headers = [...this.headers];
-      for (let i = 0; i < noOfProductsInReport; i++) {
-        headers.push({
-          title: `Product ${i + 1}`,
-          name: `products.${i}.name`
-        });
-        headers.push({
-          title: `Product ${i + 1} rate`,
-          name: `products.${i}.rate`
-        });
-        headers.push({
-          title: `Product ${i + 1} competitor`,
-          name: `products.${i}.competitor`
-        });
-        headers.push({
-          title: `Product ${i + 1} Competitor rate`,
-          name: `products.${i}.competitor_rate`
-        });
-      }
-      return headers;
-    }
+
   },
   data: () => ({
     headers: [
@@ -171,6 +134,11 @@ export default {
         title: "Key Person",
         name: "pharmacy.key_person"
       },
+      ...ProductWithRate,
+      {
+        title: 'Feedback',
+        name: 'general_feedback'
+      },
       {
         title: "Address",
         name: "pharmacy.address"
@@ -178,6 +146,10 @@ export default {
       {
         title: "Brick",
         name: "pharmacy.brick"
+      },
+      {
+        title: "Area",
+        name: "pharmacy.area"
       }
     ],
     selectedReport: null,

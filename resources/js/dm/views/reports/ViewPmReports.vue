@@ -32,7 +32,7 @@
         <div class="col-lg-9 my-lg-0 my-2 shadow p-2 pb-5">
           <div v-if="reports.length">
             <table-component
-              :heads="reportHeaders"
+              :heads="headers"
               :data="reports"
               :unselectable="true"
               head-class="bg-success text-light"
@@ -77,6 +77,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
+import { ProductWithLader, ProductWithRate } from '../../../helpers/constants';
 import { sortBy } from "../../../helpers/helpers";
 import DataFilter from "../../components/DataFilter";
 export default {
@@ -94,43 +95,6 @@ export default {
     fetched() {
       return this.$store.getters.isRepPmReportsFetched;
     },
-    reportHeaders() {
-      let products = [];
-      let noOfProductsInReport = 0;
-      if (this.reports) {
-        this.reports.map(visit => {
-          let visitProducts = visit.products;
-          let count = visitProducts.length;
-          if (count > noOfProductsInReport) {
-            noOfProductsInReport = count;
-          }
-        });
-      }
-      let headers = [...this.headers];
-      for (let i = 0; i < noOfProductsInReport; i++) {
-        headers.push({
-          title: `Product ${i + 1}`,
-          name: `products.${i}.name`,
-          fallback: '-------------'
-        });
-        headers.push({
-          title: `Product ${i + 1} action`,
-          name: `products.${i}.action`,
-          fallback: '-------------'
-        });
-        headers.push({
-          title: `Product ${i + 1} Lader of adaption`,
-          name: `products.${i}.lader`,
-          fallback: '-------------'
-        });
-        headers.push({
-          title: `Product ${i + 1} competitor`,
-          name: `products.${i}.competitor`,
-          fallback: '-------------'
-        });
-      }
-      return headers;
-    }
   },
   data: () => ({
     headers: [
@@ -168,7 +132,8 @@ export default {
         name: "param",
         fallback: "NN",
         style: "font-weight-bold"
-      }
+      },
+      ...ProductWithLader
     ]
   }),
   methods: {

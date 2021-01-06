@@ -122,3 +122,138 @@ export const COACH_REPORT = {
     "provides all information on time and in a legible manner": ""
   }
 }
+
+
+export const ProductWithLader = [
+  {
+    title: 'Product 1',
+    name: 'products.0.name'
+  },
+  {
+    title: 'Product 1 lader of adaption',
+    name: 'products.0.lader'
+  },
+  {
+    title: 'Product 1 action',
+    name: 'products.0.action'
+  },
+  {
+    title: 'Product 1 competitor',
+    name: 'products.0.competitor'
+  },
+  {
+    title: 'Product 2',
+    name: 'products.1.name'
+  },
+  {
+    title: 'Product 2 lader of adaption',
+    name: 'products.1.lader'
+  },
+  {
+    title: 'Product 2 action',
+    name: 'products.1.action'
+  },
+  {
+    title: 'Product 2 competitor',
+    name: 'products.1.competitor'
+  },
+  {
+    title: 'Product 3',
+    name: 'products.2.name'
+  },
+  {
+    title: 'Product 3 lader of adaption',
+    name: 'products.2.lader'
+  },
+  {
+    title: 'Product 3 action',
+    name: 'products.2.action'
+  },
+  {
+    title: 'Product 3 competitor',
+    name: 'products.2.competitor'
+  },
+  {
+    title: 'Product 4',
+    name: 'products.3.name'
+  },
+  {
+    title: 'Product 4 lader of adaption',
+    name: 'products.3.lader'
+  },
+  {
+    title: 'Product 4 action',
+    name: 'products.3.action'
+  },
+  {
+    title: 'Product 4 competitor',
+    name: 'products.3.competitor'
+  },
+]
+
+export const ProductWithRate = [
+  {
+    title: 'Product 1',
+    name: 'products.0.name'
+  },
+  {
+    title: 'Product 1 Rate',
+    name: 'products.0.rate'
+  },
+  {
+    title: 'Product 1 competitor',
+    name: 'products.0.competitor'
+  },
+  {
+    title: 'Product 1 competitor_rate',
+    name: 'products.0.competitor_rate'
+  },
+  {
+    title: 'Product 2',
+    name: 'products.1.name'
+  },
+  {
+    title: 'Product 2 Rate',
+    name: 'products.1.rate'
+  },
+  {
+    title: 'Product 2 competitor',
+    name: 'products.1.competitor'
+  },
+  {
+    title: 'Product 2 competitor_rate',
+    name: 'products.1.competitor_rate'
+  },
+  {
+    title: 'Product 3',
+    name: 'products.2.name'
+  },
+  {
+    title: 'Product 3 Rate',
+    name: 'products.2.rate'
+  },
+  {
+    title: 'Product 3 competitor',
+    name: 'products.2.competitor'
+  },
+  {
+    title: 'Product 3 competitor_rate',
+    name: 'products.2.competitor_rate'
+  },
+  {
+    title: 'Product 4',
+    name: 'products.3.name'
+  },
+  {
+    title: 'Product 4 Rate',
+    name: 'products.3.rate'
+  },
+  {
+    title: 'Product 4 competitor',
+    name: 'products.3.competitor'
+  },
+  {
+    title: 'Product 4 competitor_rate',
+    name: 'products.3.competitor_rate'
+  },
+]

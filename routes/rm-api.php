@@ -22,6 +22,7 @@ Route::group([
     'prefix'=> 'reports'
   ], function () {
     Route::get('pm', 'CustomerReportController@index');
+    Route::get('am', 'WorkplaceReportController@index');
   });
 });
 

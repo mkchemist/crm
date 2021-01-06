@@ -25,7 +25,7 @@
         <div class="col-lg-9 shadow bg-white my-lg-0 my-2 p-2">
           <div class="p-2" v-if="reports.length">
             <table-component
-              :heads="reportHeaders"
+              :heads="headers"
               :data="reports"
               :unselectable="true"
               sort-by="Date,asc|Pharmacy,asc"
@@ -49,6 +49,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
+import { ProductWithRate } from '../../../helpers/constants';
 import DataFilter from "../../components/DataFilter";
 export default {
   components: {
@@ -65,39 +66,6 @@ export default {
     fetched() {
       return this.$store.getters.isPharmaciesReportsFetched;
     },
-    reportHeaders() {
-      let products = [];
-      let noOfProductsInReport = 0;
-      if (this.reports) {
-        this.reports.map(visit => {
-          let visitProducts = visit.products;
-          let count = visitProducts.length;
-          if (count > noOfProductsInReport) {
-            noOfProductsInReport = count;
-          }
-        });
-      }
-      let headers = [...this.headers];
-      for (let i = 0; i < noOfProductsInReport; i++) {
-        headers.push({
-          title: `Product ${i + 1}`,
-          name: `products.${i}.name`
-        });
-        headers.push({
-          title: `Product ${i + 1} rate`,
-          name: `products.${i}.rate`
-        });
-        headers.push({
-          title: `Product ${i + 1} competitor`,
-          name: `products.${i}.competitor`
-        });
-        headers.push({
-          title: `Product ${i + 1} Competitor rate`,
-          name: `products.${i}.competitor_rate`
-        });
-      }
-      return headers;
-    }
   },
   data: () => ({
     headers: [
@@ -117,6 +85,7 @@ export default {
         title: "Type",
         name: "type"
       },
+      ...ProductWithRate,
       {
         title: "Feedback",
         name: "feedback"

@@ -19,7 +19,7 @@
         <div class="border rounded p-2">
           <table-component
             :data="visits"
-            :heads="reportHeaders"
+            :heads="headers"
             v-if="visits.length"
             head-class="bg-success text-light"
           >
@@ -42,12 +42,6 @@
                   <span><i class="fa fa-trash"></i></span>
                 </button>
               </td>
-            </template>
-            <template v-slot:head>
-              <th>General Feedback</th>
-            </template>
-            <template v-slot:body="{ item }">
-              <td>{{ item.general_feedback }}</td>
             </template>
           </table-component>
           <div
@@ -76,6 +70,7 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
+import { ProductWithLader } from '../../../helpers/constants';
 import { httpCall } from "../../../helpers/http-service";
 export default {
   mounted() {
@@ -84,39 +79,6 @@ export default {
   computed: {
     visits() {
       return this.$store.getters.pmVisits;
-    },
-    reportHeaders() {
-      let products = [];
-      let noOfProductsInReport = 0;
-      if (this.visits) {
-        this.visits.map(visit => {
-          let visitProducts = visit.products;
-          let count = visitProducts.length;
-          if (count > noOfProductsInReport) {
-            noOfProductsInReport = count;
-          }
-        });
-      }
-      let headers = [...this.headers];
-      for (let i = 0; i < noOfProductsInReport; i++) {
-        headers.push({
-          title: `Product ${i + 1}`,
-          name: `products.${i}.name`
-        });
-        headers.push({
-          title: `Product ${i + 1} action`,
-          name: `products.${i}.action`
-        });
-        headers.push({
-          title: `Product ${i + 1} Lader of adaption`,
-          name: `products.${i}.lader`
-        });
-        headers.push({
-          title: `Product ${i + 1} competitor`,
-          name: `products.${i}.competitor`
-        });
-      }
-      return headers;
     }
   },
   components: {
@@ -150,14 +112,7 @@ export default {
         name: "customer.params.0.current",
         fallback: "NN"
       },
-      {
-        title: "Address",
-        name: "customer.address"
-      },
-      {
-        title: "Brick",
-        name: "customer.brick"
-      },
+      ...ProductWithLader,
       {
         title: "Coach 1",
         name: "dual_with_name"
@@ -169,7 +124,19 @@ export default {
       {
         title: "Comment",
         name: "comment"
-      }
+      },
+      {
+        title: 'Feedback',
+        name: 'general_feedback'
+      },
+      {
+        title: "Address",
+        name: "customer.address"
+      },
+      {
+        title: "Brick",
+        name: "customer.brick"
+      },
     ]
   }),
   methods: {

@@ -7,6 +7,12 @@
         <span class="font-weight-bold">View PM Reports</span>
       </p>
       <div class="p-2">
+        <div class="p-2 text-right">
+          <router-link to="/reports" class="btn btn-sm btn-dark">
+            <span class="fa fa-chevron-circle-left"></span>
+            <span>back</span>
+          </router-link>
+        </div>
         <div v-if="reports.length">
           <table-component
             :heads="heads"
@@ -19,7 +25,7 @@
               <th>Area Manager</th>
               <th>District Manager</th>
             </template>
-            <template v-slot:body:before="{item}">
+            <template v-slot:body:before="{ item }">
               <td>{{ $store.state.UserModule.user.name }}</td>
               <td>{{ getRepAreaManager(item.user_id) }}</td>
               <td>{{ getRepManager(item.user_id) }}</td>
@@ -38,6 +44,7 @@
 <script>
 import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent.vue";
+import { ProductWithLader } from '../../../helpers/constants';
 export default {
   components: {
     NoDataToShow,
@@ -83,6 +90,7 @@ export default {
         title: "Specialty",
         name: "specialty"
       },
+      ...ProductWithLader,
       {
         title: "Parameter",
         name: "parameter"
@@ -95,23 +103,23 @@ export default {
   }),
   methods: {
     getRepManager(id) {
-      let manager = '-----------';
+      let manager = "-----------";
       this.dm.map(item => {
         let reps = JSON.parse(item.user_relations).reps;
-        if(reps.includes(id)) {
+        if (reps.includes(id)) {
           manager = item.name;
         }
-      })
+      });
       return manager;
     },
     getRepAreaManager(id) {
-      let manager = '-----------';
+      let manager = "-----------";
       this.areaManagers.map(item => {
         let reps = JSON.parse(item.user_relations).reps;
-        if(reps.includes(id)) {
+        if (reps.includes(id)) {
           manager = item.name;
         }
-      })
+      });
       return manager;
     }
   }

@@ -18,7 +18,7 @@
       <div class="p-2">
         <table-component
           :data="visits"
-          :heads="reportHeaders"
+          :heads="headers"
           v-if="visits.length"
           head-class="bg-success text-light"
           order-by="Date,asc|Customer Name,asc"
@@ -42,14 +42,6 @@
                 <span><i class="fa fa-times"></i></span>
               </button>
             </td>
-          </template>
-          <template v-slot:head>
-            <th>Comment</th>
-            <th>Geneal Feedback</th>
-          </template>
-          <template v-slot:body="{ item }">
-            <td>{{ item.comment }}</td>
-            <td>{{ item.general_feedback }}</td>
           </template>
         </table-component>
         <div
@@ -108,6 +100,7 @@
 import TableComponent from "../../../components/TableComponent";
 import ModalFade from "../../../components/ModalFade";
 import { httpCall } from "../../../helpers/http-service";
+import { ProductWithLader } from "../../../helpers/constants";
 export default {
   mounted() {
     this.$store.dispatch("amGetAll");
@@ -115,39 +108,6 @@ export default {
   computed: {
     visits() {
       return this.$store.getters.amVisits;
-    },
-    reportHeaders() {
-      let products = [];
-      let noOfProductsInReport = 0;
-      if (this.visits) {
-        this.visits.map(visit => {
-          let visitProducts = visit.products;
-          let count = visitProducts.length;
-          if (count > noOfProductsInReport) {
-            noOfProductsInReport = count;
-          }
-        });
-      }
-      let headers = [...this.headers];
-      for (let i = 0; i < noOfProductsInReport; i++) {
-        headers.push({
-          title: `Product ${i + 1}`,
-          name: `products.${i}.name`
-        });
-        headers.push({
-          title: `Product ${i + 1} action`,
-          name: `products.${i}.action`
-        });
-        headers.push({
-          title: `Product ${i + 1} Lader of adaption`,
-          name: `products.${i}.lader`
-        });
-        headers.push({
-          title: `Product ${i + 1} competitor`,
-          name: `products.${i}.competitor`
-        });
-      }
-      return headers;
     }
   },
   components: {
@@ -161,6 +121,10 @@ export default {
         name: "date"
       },
       {
+        title: "Workplace",
+        name: "workplace.name"
+      },
+      {
         title: "Customer Name",
         name: "customer.name"
       },
@@ -168,9 +132,14 @@ export default {
         title: "Specialty",
         name: "customer.specialty"
       },
+      ...ProductWithLader,
       {
-        title: "Workplace",
-        name: "workplace.name"
+        title: 'Comment',
+        name: 'comment'
+      },
+      {
+        title: 'Feedback',
+        name: 'general_feedback'
       },
       {
         title: "Address",
