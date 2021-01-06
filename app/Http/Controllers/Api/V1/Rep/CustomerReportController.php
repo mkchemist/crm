@@ -138,6 +138,15 @@ class CustomerReportController extends Controller
         if ($validator->fails()) {
             return response()->json(ResponseHelper::validationErrorResponse($validator));
         }
+
+        $interval = new ReportIntervalSetting;
+        if(!$interval->isBeforeToday($request->date)) {
+          return response(ResponseHelper::dateAfterTodayError());
+        }
+        if(!$interval->isValidDateInterval($request->date)) {
+          return response(ResponseHelper::InvalidDateRange($request->date, $interval->all()));
+        }
+
         $visit = $this->getVisitById($id);
 
         if (!$visit) {
@@ -150,6 +159,9 @@ class CustomerReportController extends Controller
         if($request->coach2_id) {
 
           $this->handleEditVisitCoach($visit,'coach2_id',$user->id,$request->coach2_id, $visit->visit_date,$visit->customer_id);
+        }
+        if($interval->canEditReportDate()) {
+          $visit->visit_date = $request->date;
         }
         $visit->dual_with = $request->dual_with;
         $visit->visit_type  =  $request->visit_type;

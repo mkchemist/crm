@@ -21,7 +21,8 @@ class ReportIntervalController extends Controller
       $data = $reportInterval->all();
       return response([
         'code'  =>  200,
-        'data'  =>  $data
+        'data'  =>  $data,
+        'can_edit_date' =>  $reportInterval->canEditDate
       ]);
     }
 
@@ -45,7 +46,10 @@ class ReportIntervalController extends Controller
       }
 
       $reportInterval = new ReportIntervalSetting;
-      $reportInterval->save($request->interval);
+      $reportInterval->save([
+        'interval' => $request->interval,
+        'can_edit_date' =>  $request->can_edit_date
+      ]);
       return response([
         'code'  =>  200,
         'message' =>  'Report interval updated'

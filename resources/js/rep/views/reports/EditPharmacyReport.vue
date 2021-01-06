@@ -22,6 +22,8 @@
                     id="date"
                     v-model="visit.date"
                     :class="`form-control form-control-sm ${errors[0] ? 'border-danger' : ''}`"
+                    :disabled="!canEditReportDate"
+                    :min="minVisitDate"
                   />
                 </ValidationProvider>
               </div>
@@ -128,11 +130,24 @@
 </template>
 
 <script>
+import { Calendar } from '../../../helpers/date-helpers';
 import { httpCall } from "../../../helpers/http-service";
 import VisitProducts from "../../components/VisitProducts";
 export default {
-  created() {
+  mounted() {
     this.getPharmacy();
+  },
+  computed: {
+    reportInterval() {
+      return this.$store.getters.reportInterval;
+    },
+    canEditReportDate() {
+      return this.$store.getters.canEditReportDate;
+    },
+    minVisitDate() {
+      let date = new Calendar(this.visit.date)
+      return date.subtract(this.reportInterval).toString();
+    }
   },
   methods: {
     /**

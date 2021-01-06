@@ -148,7 +148,9 @@ export default {
     userLocations: [],
     isUserLocationsFetched: false,
     cycles: [],
-    activeCycle: null
+    activeCycle: null,
+    canEditReportDate: false,
+    reportInterval: 30
   },
   actions: {
     /**
@@ -186,7 +188,11 @@ export default {
       if(!state.activeCycle || force) {
         state.activeCycle = null;
         return httpCall.get('rep/v1/active-cycle')
-        .then(({data}) => state.activeCycle = data.data)
+        .then(({data}) => {
+          state.activeCycle = data.data
+          state.canEditReportDate = data.can_edit_report_date === 'true' ? true : false;
+          state.reportInterval = data.report_interval
+        })
         .catch(err => console.log(err))
       }
     }
@@ -227,6 +233,8 @@ export default {
       return state.isUserLocationsFetched;
     },
     repCycles : state => state.cycles,
-    repActiveCycle: state => state.activeCycle
+    repActiveCycle: state => state.activeCycle,
+    canEditReportDate: state=> state.canEditReportDate,
+    reportInterval: state => state.reportInterval
   }
 };

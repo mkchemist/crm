@@ -7,6 +7,7 @@ use App\Helpers\Setting\CyclesSetting;
 use App\Helpers\Setting\LineSetting;
 use App\Helpers\Setting\NonFieldActivitySetting;
 use App\Helpers\Setting\FieldActivitySetting;
+use App\Helpers\Setting\ReportIntervalSetting;
 use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -62,9 +63,12 @@ class RepSettingController extends Controller
     {
       $activeCycle = new ActiveCycleSetting;
       $data = $activeCycle->all();
+      $reportInterval = new ReportIntervalSetting;
       return response([
         'code'  =>  200,
-        'data'  =>  $data
+        'data'  =>  $data,
+        'can_edit_report_date' => $reportInterval->canEditDate,
+        'report_interval'      => $reportInterval->all()
       ]);
     }
 

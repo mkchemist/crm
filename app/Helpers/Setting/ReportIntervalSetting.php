@@ -24,7 +24,7 @@ class ReportIntervalSetting extends Manager
       'name'  =>  $this->name,
       'group' =>  $this->group
     ],[
-      'content' =>  $this->data
+      'content' =>  json_encode($this->data)
     ]);
 
   }
@@ -37,9 +37,17 @@ class ReportIntervalSetting extends Manager
       'group' =>  $this->group
     ])->first();
     if($reportInterval) {
-      $this->data = $reportInterval->content;
+      $data = json_decode($reportInterval->content);
+      if(is_object($data)) {
+        $this->data = $data->interval;
+        $this->canEditDate = $data->can_edit_date;
+      } else {
+        $this->data = $reportInterval->content;
+        $this->canEditDate = true;
+      }
     } else {
       $this->data = 30;
+      $this->canEditDate = true;
     }
   }
 
@@ -61,5 +69,9 @@ class ReportIntervalSetting extends Manager
     }
 
     return false;
+  }
+
+  public function canEditReportDate() {
+    return $this->canEditDate !==  "false";
   }
 }

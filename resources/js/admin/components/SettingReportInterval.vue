@@ -20,6 +20,21 @@
         <loader-component v-else></loader-component>
       </div>
     </div>
+    <div class="p-2 row mx-auto">
+      <div class="col-lg-8">
+        <h4 class="text-primary mb-0">Allow Edit Report Date</h4>
+        <small class="text-muted"
+          >Allow users to edit report date in editing report</small
+        >
+      </div>
+      <div class="col-lg-4">
+        <div v-if="reportInterval" class="custom-control custom-switch">
+         <input type="checkbox" class="custom-control-input" id="customSwitch1" v-model="canEditDate">
+  <label class="custom-control-label" for="customSwitch1">User can edit date</label>
+        </div>
+        <loader-component v-else></loader-component>
+      </div>
+    </div>
     <hr />
     <div class="p-2 text-right">
       <button class="btn btn-sm btn-primary" @click="saveReportInterval">
@@ -37,8 +52,9 @@ export default {
     this.getReportInterval()
   },
   data: () => ({
-     reportInterval: null,
+    reportInterval: null,
     isReportIntervalFetched: false,
+    canEditDate: true
   }),
   methods: {
     getReportInterval() {
@@ -48,6 +64,7 @@ export default {
       .then(({data}) => {
         this.reportInterval = data.data;
         this.isReportIntervalFetched = true;
+        this.canEditDate = data.can_edit_date === "true" ? true : false
       }).catch(err => {
         console.log(err);
         this.$toasted.error('Something went wrong');
@@ -58,7 +75,8 @@ export default {
      */
     saveReportInterval() {
       let request = {
-        interval : this.reportInterval
+        interval : this.reportInterval,
+        can_edit_date: this.canEditDate
       };
       httpCall.post('admin/v1/setting/report-interval', request)
       .then(({data}) => {

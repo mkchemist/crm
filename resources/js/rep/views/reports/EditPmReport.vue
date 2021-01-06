@@ -45,7 +45,8 @@
                     id="date"
                     class="form-control form-control-sm"
                     v-model="visit.date"
-                    readonly
+                    :disabled="!canEditReportDate"
+                    :min="minVisitDate"
                   />
                 </ValidationProvider>
               </div>
@@ -182,6 +183,7 @@
 
 <script>
 import { httpCall } from "../../../helpers/http-service";
+import { Calendar } from "../../../helpers/date-helpers";
 import VisitProducts from "../../components/VisitProducts";
 
 export default {
@@ -202,6 +204,16 @@ export default {
   computed: {
     coaches() {
       return this.$store.getters.coaches;
+    },
+    reportInterval() {
+      return this.$store.getters.reportInterval;
+    },
+    canEditReportDate() {
+      return this.$store.getters.canEditReportDate
+    },
+    minVisitDate() {
+      let date = new Calendar(this.visit.date);
+      return date.subtract(this.reportInterval).toString();
     }
   },
   data: () => ({

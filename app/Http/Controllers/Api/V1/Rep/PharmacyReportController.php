@@ -132,6 +132,13 @@ class PharmacyReportController extends Controller
       if(!$interval->isValidDateInterval($request->date)) {
         return response(ResponseHelper::InvalidDateRange($request->date, $interval->all()));
       }
+      $interval = new ReportIntervalSetting;
+      if(!$interval->isBeforeToday($request->date)) {
+        return response(ResponseHelper::dateAfterTodayError());
+      }
+      if(!$interval->isValidDateInterval($request->date)) {
+        return response(ResponseHelper::InvalidDateRange($request->date, $interval->all()));
+      }
       $visit = $this->getVisitById($id);
       if(!$visit) {
         return response()->json(ResponseHelper::INVALID_ID);
@@ -141,14 +148,16 @@ class PharmacyReportController extends Controller
       if($check && $check->visit_date !== $visit->visit_date) {
         return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
       }
-
-      $visit->visit_date = $request->date;
+      if($interval->canEditReportDate()) {
+        $visit->visit_date = $request->date;
+      }
       $visit->products = $request->products;
       $visit->general_feedback = $request->general_feedback;
       $visit->save();
       return response()->json([
         'code'  =>  201,
-        'data'  =>  sprintf('Report of pharmacy %s updated successfully', $visit->pharmacy->name)
+        'data'  =>  sprintf('Report of pharmacy %s updated successfully', $visit->pharmacy->name),
+        'd'     =>  $interval->canEditDate
       ]);
 
     }

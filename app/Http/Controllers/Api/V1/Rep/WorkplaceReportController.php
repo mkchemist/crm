@@ -126,9 +126,19 @@ class WorkplaceReportController extends Controller
     if (!$visit) {
       return response()->json(ResponseHelper::INVALID_ID);
     }
+    $interval = new ReportIntervalSetting;
+    if(!$interval->isBeforeToday($request->date)) {
+      return response(ResponseHelper::dateAfterTodayError());
+    }
+    if(!$interval->isValidDateInterval($request->date)) {
+      return response(ResponseHelper::InvalidDateRange($request->date, $interval->all()));
+    }
     $check = $this->getVisitByCustomerId($visit->customer_id, $request->date, $visit->workplace_id);
     if ($check && $visit->visit_date !== $request->date) {
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
+    }
+    if($interval->canEditReportDate()) {
+      $visit->visit_date = $request->date;
     }
     $visit->products = $request->products;
     $visit->comment = $request->comment;
