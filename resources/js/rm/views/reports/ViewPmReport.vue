@@ -1,6 +1,13 @@
 <template>
   <div class="row mx-auto p-2 pb-5">
-    <div class="col-lg-3"></div>
+    <div class="col-lg-3 p-2 border rounded">
+      <user-filter-box :users="reps" :data="$store.getters.allPmReports" :onFilter="onFilter" :onReset="onReset" />
+      <date-filter-box :data="reports" :onFilter="onFilter" :onReset="onReset" :dateField="`date`" />
+      <router-link to="/reports" class="btn btn-sm btn-block btn-dark">
+        <span class="fa fa-chevron-circle-left"></span>
+        <span>back</span>
+      </router-link>
+    </div>
     <div class="col-lg-9 px-0 shadow rounded">
       <p class="alert alert-success">
         <span class="fa fa-book-reader"></span>
@@ -8,10 +15,6 @@
       </p>
       <div class="p-2">
         <div class="p-2 text-right">
-          <router-link to="/reports" class="btn btn-sm btn-dark">
-            <span class="fa fa-chevron-circle-left"></span>
-            <span>back</span>
-          </router-link>
         </div>
         <div v-if="reports.length">
           <table-component
@@ -42,16 +45,20 @@
 </template>
 
 <script>
+import DateFilterBox from '../../../components/DateFilterBox.vue';
 import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent.vue";
+import UserFilterBox from '../../../components/UserFilterBox.vue';
 import { ProductWithLader } from '../../../helpers/constants';
 export default {
   components: {
     NoDataToShow,
-    TableComponent
+    TableComponent,
+    UserFilterBox ,
+    DateFilterBox
   },
   mounted() {
-    this.$store.dispatch("getAllPmReports");
+   this.$store.dispatch("getAllPmReports");
   },
   computed: {
     reports() {
@@ -68,6 +75,9 @@ export default {
     },
     areaManagers() {
       return this.$store.getters.allAreaManagers;
+    },
+    reps() {
+      return this.$store.getters.allReps
     }
   },
   data: () => ({
@@ -121,6 +131,19 @@ export default {
         }
       });
       return manager;
+    },
+    onFilter(data) {
+      console.log(data)
+      this.shouldFilter = true;
+      this.filteredReports = [];
+      let async = () => Promise.resolve(data);
+      async().then(data => this.filteredReports =data);
+    },
+    onReset() {
+      let async = () => Promise.resolve(this.$store.getters.allPmReports);
+      this.shouldFilter = true;
+      this.filteredReports = [];
+      async().then(data => this.filteredReports = data);
     }
   }
 };

@@ -49,6 +49,9 @@ export default {
     onReset: {
       type: Function,
       required: true
+    },
+    userField: {
+      type: String
     }
   },
   data: () => ({
@@ -56,6 +59,7 @@ export default {
   }),
   methods: {
     filterUsers() {
+      let key  = this.userField || 'user_id'
       if(user === null) {
         return this.data;
       }

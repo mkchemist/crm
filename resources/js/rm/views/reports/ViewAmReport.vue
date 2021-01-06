@@ -2,7 +2,7 @@
   <div class="p2">
     <div class="p-2">
       <div class="row mx-auto">
-        <div class="col-lg-3">
+        <div class="col-lg-3 p-2 border rounded">
           <user-filter-box
             :users="reps"
             :data="$store.getters.allAmReports"
@@ -10,23 +10,21 @@
             :onReset="onReset"
           />
           <date-filter-box
-            :data="$store.getters.allAmReports"
+            :data="reports"
             :onFilter="onFilter"
             :onReset="onReset"
-            :dateField="`visit_date`"
+            :dateField="`date`"
           />
+          <router-link to="/reports" class="btn btn-sm btn-dark btn-block">
+            <span class="fa fa-chevron-circle-left"></span>
+            <span>back</span>
+          </router-link>
         </div>
         <div class="col-lg-9 px-0 shadow">
           <p class="alert alert-success">
             <span class="fa fa-book-reader"></span>
             <span class="font-weight-bold">View AM reports</span>
           </p>
-          <div class="p-2 text-right">
-            <router-link to="/reports" class="btn btn-sm btn-dark">
-              <span class="fa fa-chevron-circle-left"></span>
-              <span>back</span>
-            </router-link>
-          </div>
           <div class="p-2" v-if="reports.length">
             <table-component :data="reports" :heads="heads" :unselectable="true" :headClass="`bg-success text-light`">
               <template v-slot:head:before>
@@ -170,15 +168,18 @@ export default {
       return manager;
     },
     onFilter(data) {
+      console.log(data)
       this.shouldRenderFilter = true;
       this.filteredList = [];
       let async = () => Promise.resolve(data);
       async().then(data => (this.filteredList = data));
     },
     onReset() {
-      this.shouldRenderFilter = false;
+      this.shouldRenderFilter = true;
       this.filteredList = [];
-      this.$store.dispatch("getAllAmReports");
+      let async = () => Promise.resolve(this.$store.getters.allAmReports);
+
+      async().then(data => this.filteredList = data);
     }
   }
 };

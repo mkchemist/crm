@@ -6,7 +6,7 @@
         <br>
         <span class="text-muted">Welcome {{ $store.state.UserModule.user.name }}</span>
       </router-link>
-      <button class="navbar-toggler" data-toggle="collapse" data-target="rm_navbar">
+      <button class="navbar-toggler" data-toggle="collapse" data-target="#rm_navbar">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse collapse" id="rm_navbar">

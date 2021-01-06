@@ -5,7 +5,9 @@ export default {
     pm_reports: [],
     isReportsFetched: false,
     am_reports: [],
-    isAmReportsFetched: false
+    isAmReportsFetched: false,
+    pharmacy_reports : [],
+    isPharmacyReportsFetched: false,
   },
   mutations: {
     setPmReports(state, payload) {
@@ -13,13 +15,18 @@ export default {
     },
     setAmReports(state, payload) {
       state.am_reports = payload;
+    },
+    setPharmacyReports(state, payload) {
+      state.pharmacy_reports = payload
     }
   },
   getters: {
     allPmReports: state => state.pm_reports,
     isReportsFetched: state => state.isReportsFetched,
     allAmReports: state => state.am_reports,
-    isAmReportsFetched: state => state.isAmReportsFetched
+    isAmReportsFetched: state => state.isAmReportsFetched,
+    allPharmacyReports: state => state.pharmacy_reports,
+    isPharmacyReportsFetched: state=> state.isPharmacyReportsFetched
   },
   actions: {
     getAllReports() {},
@@ -45,6 +52,14 @@ export default {
         })
         .catch(err => console.log(err));
     },
-    getAllPharmacyReport() {}
+    getAllPharmacyReports(module, payload) {
+      module.state.pharmacy_reports = [];
+        module.state.isPharmacyReportsFetched = false;
+      httpCall.get('rm/v1/reports/pharmacy')
+      .then(({data}) => {
+        module.commit('setPharmacyReports', data.data)
+        module.state.isPharmacyReportsFetched = true;
+      }).catch(err => console.log(err))
+    }
   }
 };

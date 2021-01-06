@@ -12,7 +12,7 @@
       <div class="navbar-collapse collapse" id="navbar">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item" v-for="(link,i) in links" :key="i">
-            <router-link :to="link.path" class="nav-link" active-class="active" exact>
+            <router-link :to="link.path" class="nav-link" active-class="active" :exact="link.path === '/' ? true : false">
               {{ link.name }}
             </router-link>
           </li>

@@ -23,6 +23,7 @@ Route::group([
   ], function () {
     Route::get('pm', 'CustomerReportController@index');
     Route::get('am', 'WorkplaceReportController@index');
+    Route::get('pharmacy', 'PharmacyReportController@index');
   });
 });
 
