@@ -28,7 +28,7 @@
 <script type="text/javascript" src="{{ asset("libs/data-tables/Buttons-1.6.4/js/buttons.print.min.js") }}" ></script>
 <script type="text/javascript" src="{{ asset("libs/data-tables/FixedHeader-3.1.7/js/dataTables.fixedHeader.min.js") }}" ></script>
 <script type="text/javascript" src="{{ asset("libs/data-tables") }}/Select-1.3.1/js/dataTables.select.min.js"></script>
-<script src="{{ asset('js/dm/manifest.js?v=')$hash_key }}" ></script>
+<script src="{{ asset('js/dm/manifest.js?v=').$hash_key }}" ></script>
 <script src="{{ asset('js/dm/vendor.js?v=').$hash_key }}" ></script>
 <script src="{{ asset('js/rep/app.js?v=').$hash_key }}" ></script>
 @endsection
