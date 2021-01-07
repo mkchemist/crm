@@ -168,7 +168,6 @@ export default {
       return manager;
     },
     onFilter(data) {
-      console.log(data)
       this.shouldRenderFilter = true;
       this.filteredList = [];
       let async = () => Promise.resolve(data);

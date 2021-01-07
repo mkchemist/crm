@@ -42,8 +42,9 @@ export default {
 };
 </script>
 
-<style>
+<style scoped lang="scss">
 body {
   background-color: #1111 !important;
 }
+
 </style>
