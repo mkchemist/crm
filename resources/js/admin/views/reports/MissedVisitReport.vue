@@ -136,6 +136,14 @@ export default {
         name: 'Parameter'
       },
       {
+        title: 'Count Of Plans',
+        name: 'countOfPlans'
+      },
+      {
+        title: 'Count Of Visits',
+        name: 'countOfVisits'
+      },
+      {
         title: 'Status',
         name: 'VisitDate',
         fallback: 'Missed'
