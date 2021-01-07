@@ -41,6 +41,7 @@ class MissedVisitsReportController extends Controller
       })->leftJoin('customer_reports as report', function($join) {
         $join->on('report.customer_id', '=', 'plan.customer_id');
         $join->on('report.user_id', '=', 'plan.user_id');
+        $join->on('report.visit_date', '=', 'plan.plan_date');
       })->where('report.visit_date',NULL);
       $userData = null;
       if($user !== null) {
