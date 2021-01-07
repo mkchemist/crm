@@ -101,14 +101,17 @@
                 <!-- customer phone -->
                 <div class="form-group col-lg">
                   <label for="phone" class="text-muted">Phone</label>
-                  <input
-                    type="phone"
-                    id="phone"
-                    name="phone"
-                    class="form-control form-control-sm"
-                    placeholder="Enter customer phone"
-                    v-model="customer.phone"
-                  />
+                  <ValidationProvider name="phone" rules="required" v-slot="{errors}">
+                    <span v-if="errors[0]" class="text-danger small">Phone is missing</span>
+                    <input
+                      type="number"
+                      id="phone"
+                      name="phone"
+                      class="form-control form-control-sm"
+                      placeholder="Enter customer phone"
+                      v-model="customer.phone"
+                    />
+                  </ValidationProvider>
                 </div>
               </div>
               <!-- customer parameters part -->

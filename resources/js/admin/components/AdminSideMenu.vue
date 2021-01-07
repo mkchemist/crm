@@ -49,6 +49,11 @@ export default {
         path: '/planner'
       },
       {
+        name: 'Reports',
+        icon : 'fa-hands-helping',
+        path: '/reports'
+      },
+      {
         name: 'Validation',
         icon: 'fa-check-circle',
         path: '/validation'

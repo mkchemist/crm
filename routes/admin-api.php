@@ -69,4 +69,9 @@ Route::prefix('v1')->group(function () {
       Route::get('/', 'PlannerController@index');
       Route::post('/approval', 'PlannerController@approvalAction');
     });
+
+    // reports routes
+    Route::group(['prefix' => 'reports', 'namespace' => 'Reports'], function () {
+      Route::get('missed', 'MissedVisitsReportController@index');
+    });
 });

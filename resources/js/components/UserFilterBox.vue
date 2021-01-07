@@ -10,7 +10,7 @@
       >
         <option :value="null">All</option>
         <option
-          v-for="(user, i) in users"
+          v-for="(user, i) in sortedUsers"
           :key="`filter_box_user_${i}`"
           :value="user.id"
           >{{ user.name }}</option
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { filterBy } from '../helpers/helpers';
+import { filterBy, sortBy } from '../helpers/helpers';
 export default {
   props: {
     users: {
@@ -57,6 +57,11 @@ export default {
   data: () => ({
     user: null
   }),
+  computed: {
+    sortedUsers() {
+      return sortBy(this.users, 'name');
+    }
+  },
   methods: {
     filterUsers() {
       let key  = this.userField || 'user_id'

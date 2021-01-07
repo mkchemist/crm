@@ -146,7 +146,7 @@
                 >
                   <span class="text-danger small">{{ errors[0] }}</span>
                   <input
-                    type="phone"
+                    type="number"
                     id="phone"
                     name="phone"
                     :class="
