@@ -48,8 +48,10 @@ class VisitsReportController extends Controller
 
       if($userId) {
         $user = User::find($userId);
-        $relations = json_decode($user->user_relations);
-        $reports = $reports->whereIn('report.user_id', $relations->reps);
+        if($user) {
+          $relations = json_decode($user->user_relations);
+          $reports = $reports->whereIn('report.user_id', $relations->reps);
+        }
       }
       $reports = $reports->whereBetween('report.visit_date', [$cycle->start, $cycle->end]);
       $reports = $reports->get();
