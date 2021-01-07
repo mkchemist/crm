@@ -72,6 +72,9 @@ Route::prefix('v1')->group(function () {
 
     // reports routes
     Route::group(['prefix' => 'reports', 'namespace' => 'Reports'], function () {
+      Route::get('pm', 'VisitsReportController@index');
+      Route::get('am', 'WorkplaceReportController@index');
+      Route::get('pharmacy', 'PharmacyReportController@index');
       Route::get('missed', 'MissedVisitsReportController@index');
     });
 });

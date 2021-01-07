@@ -2,18 +2,22 @@
   <div class="row mx-auto">
     <div class="col-lg-3 border p-2 rounded">
       <user-filter-box
-        :users="[]"
-        :data="[]"
+        :users="reps"
+        :data="reports"
         :onFilter="onFilter"
         :onReset="onReset"
         :userField="`user_id`"
       />
       <date-filter-box
-        :data="[]"
+        :data="reportsData"
         :onFilter="onFilter"
         :onReset="onReset"
-        :dateField="'visit_date'"
+        :dateField="'Date'"
       />
+      <router-link to="/reports" class="btn btn-sm btn-block btn-dark">
+        <span class="fa fa-chevron-circle-left"></span>
+        <span>back</span>
+      </router-link>
     </div>
     <div class="col-lg-9 px-0 shadow rounded pb-5 mb-5">
       <p class="alert alert-success">
@@ -44,10 +48,10 @@
         </div>
       </div>
       <div class="p-2">
-        <div v-if="reports.length">
+        <div v-if="reportsData.length">
           <table-component
             :heads="heads"
-            :data="reports"
+            :data="reportsData"
             :unselectable="true"
             :headClass="`bg-success text-light`"
           >
@@ -74,7 +78,9 @@
             <span class="fa fa-download fa-4x text-primary"></span>
           </div>
         </div>
-        <div v-else-if="isReportsFetched"></div>
+        <div v-else-if="isReportsFetched">
+          <no-data-to-show :title="`No Missed Doctors`"/>
+        </div>
         <loader-component v-else></loader-component>
       </div>
     </div>
@@ -83,6 +89,7 @@
 
 <script>
 import DateFilterBox from "../../../components/DateFilterBox.vue";
+import NoDataToShow from '../../../components/NoDataToShow.vue';
 import TableComponent from "../../../components/TableComponent.vue";
 import UserFilterBox from "../../../components/UserFilterBox.vue";
 import { sortBy } from "../../../helpers/helpers";
@@ -91,7 +98,8 @@ export default {
   components: {
     UserFilterBox,
     DateFilterBox,
-    TableComponent
+    TableComponent,
+    NoDataToShow
   },
   mounted() {},
   computed: {
@@ -103,6 +111,18 @@ export default {
     },
     ams() {
       return sortBy(this.$store.getters.ams, 'name');
+    },
+    reps() {
+      if(!this.manager) {
+        return this.$store.getters.reps;
+      }
+      return this.$store.getters.reps.filter(rep => this.manager.relations.reps.includes(rep.id))
+    },
+    reportsData() {
+      if(!this.shouldRenderFilter) {
+        return this.reports;
+      }
+      return this.filteredList;
     }
   },
   data: () => ({
@@ -164,19 +184,18 @@ export default {
         title: 'Territory',
         name: 'Territory'
       }
-    ]
+    ],
+    filteredList: [],
+    shouldRenderFilter: false
   }),
   methods: {
     getReports() {
-      /* if (!this.manager) {
-        this.$toasted.show("Select Business unit first");
-        return;
-      } */
       let user = this.manager ? this.manager.id : null;
       let query = { user };
       this.isLoaded = true;
       this.reports = [];
       this.isReportsFetched = false;
+      this.shouldRenderFilter =false;
       httpCall
         .get("admin/v1/reports/missed", query)
         .then(({ data }) => {
@@ -218,8 +237,17 @@ export default {
       });
       return manager;
     },
-    onFilter() {},
-    onReset() {}
+    onFilter(data) {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      let async = () => Promise.resolve(data);
+      async().then(data => this.filteredList = data);
+    },
+    onReset() {
+      this.filteredList = [];
+      let async = () => Promise.resolve(this.reports);
+      async().then(data => this.filteredList = data);
+    }
   }
 };
 </script>
