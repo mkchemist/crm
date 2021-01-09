@@ -16,8 +16,21 @@
               <span>{{ route.title }}</span>
             </router-link>
           </li>
-          <li class="nav-item">
-            <a :href="`${baseUrl}logout`" class="nav-link">logout</a>
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+              <span class="fa fa-user"></span>
+              <span>User</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a :href="`${baseUrl}change-password`" class="nav-link dropdown-item small">
+                <span class="fa fa-lock"></span>
+                <span>change password</span>
+              </a>
+              <a :href="`${baseUrl}logout`" class="nav-link dropdown-item small">
+                <span class="fa fa-door-open"></span>
+                <span>logout</span>
+              </a>
+            </div>
           </li>
         </ul>
       </div>

@@ -8,6 +8,9 @@ import ViewCoachReport from '../views/reports/ViewCoachReport.vue';
 import PmAnalysisReport from '../views/reports/PmAnalysisReport.vue';
 import AmAnalysisReport from '../views/reports/AmAnalysisReport.vue';
 import PlanAnalysisReport from '../views/reports/PlanAnalysisReport.vue';
+import RepAmPlanView from '../views/reports/plans/RepAmPlanView.vue';
+import RepPmPlanView from '../views/reports/plans/RepPmPlanView.vue';
+import CoachPlanView from '../views/reports/plans/CoachPlanView.vue';
 import ActivityReportContainer from '../views/reports/ActivityReportContainer.vue';
 import RequestReportContainer from '../views/reports/RequestReportContainer.vue'
 import CreateActivityReport from '../views/reports/CreateActivityReport.vue';
@@ -47,7 +50,21 @@ export default {
     },
     {
       path: 'view/plan',
-      component: ViewPlanReport
+      component: ViewPlanReport,
+      children: [
+        {
+          path: '',
+          component: CoachPlanView
+        },
+        {
+          path: 'am',
+          component: RepAmPlanView
+        },
+        {
+          path: 'pm',
+          component: RepPmPlanView
+        }
+      ]
     },
     {
       path: 'analysis/pm',

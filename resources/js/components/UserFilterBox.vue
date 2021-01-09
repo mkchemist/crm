@@ -68,7 +68,7 @@ export default {
       if(user === null) {
         return this.data;
       }
-      let data = filterBy(this.data, 'user_id', this.user);
+      let data = filterBy(this.data, key, this.user);
       this.onFilter(data)
     },
     reset() {

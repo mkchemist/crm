@@ -14,7 +14,12 @@ Route::group([
 ], function () {
 
   Route::get('user-relations', 'RepsController@index');
-
+  /** Planner Routes */
+  Route::group(['prefix' => 'planner'], function() {
+    Route::get('coach', 'PlannerController@coachPlans');
+    Route::get('am', 'PlannerController@repAmPlans');
+    Route::get('pm', 'PlannerController@repPmPlans');
+  });
   /**
    * reports routes
    */

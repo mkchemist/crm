@@ -16,6 +16,10 @@ export default new VueRouter({
       path: '/',
       component: HomePage
     },
-    ReportRoutes
+    ReportRoutes,
+    {
+      path: '*',
+      component: ErrorPage
+    }
   ]
 })
