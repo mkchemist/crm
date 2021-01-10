@@ -19,8 +19,8 @@ class RepsCustomerReportResource extends JsonResource
         return [
           'id'            =>  $this->id,
           'date'          =>  $this->visit_date,
-          'coach'         =>  $this->coach ? $this->coach->name : null,
-          'coach2'        =>  $this->coach2 ? $this->coach2->name: null,
+          'coach1'        =>  $this->coach?$this->coach->name: null,
+          'coach2'        =>  $this->coach2?$this->coach2->name:null,
           'comment'       =>  $this->comment,
           'feedback'      =>  $this->general_feedback,
           'reported_at'   =>  $this->created_at,
@@ -35,7 +35,10 @@ class RepsCustomerReportResource extends JsonResource
           'parameter'     =>  count($this->customer->params) ? $this->customer->params[0]->current: "NN",
           'frequency'     =>  count($this->customer->frequency) ? $this->customer->frequency[0]->current : 0,
           'rep'           =>  $this->user->name,
-          'user_id'       =>  $this->user_id
+          'user_id'       =>  $this->user_id,
+          'reports'       =>  count($this->customer->report),
+          'plans'         =>  count($this->customer->planner),
+          'diff'          =>  count($this->customer->planner) - count($this->customer->report)
         ];
     }
 }

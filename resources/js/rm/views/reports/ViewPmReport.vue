@@ -100,7 +100,6 @@ export default {
         title: "Specialty",
         name: "specialty"
       },
-      ...ProductWithLader,
       {
         title: "Parameter",
         name: "parameter"
@@ -108,6 +107,43 @@ export default {
       {
         title: "Frequency",
         name: "frequency"
+      },
+      {
+        title: 'Plans',
+        name: 'plans'
+      },
+      {
+        title: 'Visits',
+        name: 'reports'
+      },
+      {
+        title: 'Diff',
+        name: 'diff'
+      },
+      {
+        title: 'Coach 1',
+        name: 'coach1'
+      },
+      {
+        title: 'Coach 2',
+        name: 'coach2'
+      },
+      ...ProductWithLader,
+      {
+        title: 'Brick',
+        name: 'birck'
+      },
+      {
+        title: 'Area',
+        name: 'area'
+      },
+      {
+        title: 'District',
+        name: 'district'
+      },
+      {
+        title: 'Territory',
+        name: 'territory'
       }
     ]
   }),

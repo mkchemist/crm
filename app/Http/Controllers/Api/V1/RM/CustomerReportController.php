@@ -23,7 +23,7 @@ class CustomerReportController extends Controller
         $reps = $relations->reps;
         $activeCycle = new ActiveCycleSetting;
         $cycleDates = $activeCycle->all();
-        $reports = CustomerReport::with(['user', 'customer', 'customer.params', 'customer.frequency', 'coach'])
+        $reports = CustomerReport::with(['user', 'customer', 'customer.params', 'customer.frequency', 'coach', 'coach2','customer.report', 'customer.planner'])
             ->whereIn('user_id', $reps)
             ->whereBetween('visit_date', [$cycleDates->start, $cycleDates->end])
             ->orderBy('id')

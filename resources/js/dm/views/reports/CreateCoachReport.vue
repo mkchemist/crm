@@ -48,6 +48,10 @@
           </div>
           <hr />
           <!-- Customer Select -->
+          <div class="form-check-inline">
+            <input type="checkbox" v-model="withInactive">
+            <label for="" class="form-check-label small text-muted mx-1">With inactive</label>
+          </div>
           <div class="form-group">
             <label for="customer" class="text-muted small">customer</label>
             <select
@@ -238,6 +242,9 @@ export default {
       return this.$store.getters.isRepsFetched;
     },
     activeCustomers() {
+      if(this.withInactive) {
+        return this.$store.getters.allCustomers;
+      }
       return this.$store.getters.activeCustomers;
     },
     bricks() {
@@ -279,7 +286,8 @@ export default {
     brick: "",
     customer: null,
     report: COACH_REPORT,
-    date: null
+    date: null,
+    withInactive: false
   }),
   methods: {
     closeSelectedCustomer() {

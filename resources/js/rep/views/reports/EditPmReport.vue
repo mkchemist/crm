@@ -111,7 +111,7 @@
                       <option value="">Select coach</option>
                       <option
                         :value="coach.id"
-                        v-for="coach in coaches"
+                        v-for="coach in coach2"
                         :key="coach.id"
                         >{{ coach.name }}</option
                       >
@@ -204,6 +204,9 @@ export default {
   computed: {
     coaches() {
       return this.$store.getters.coaches;
+    },
+    coach2() {
+      return this.$store.getters.coaches.filter(coach => coach.id !== this.visit.dual_with)
     },
     reportInterval() {
       return this.$store.getters.reportInterval;
