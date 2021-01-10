@@ -130,8 +130,16 @@ export default {
       },
       ...ProductWithLader,
       {
+        title: 'Comment',
+        name: 'comment'
+      },
+      {
+        title: 'Feedback',
+        name: "feedback"
+      },
+      {
         title: 'Brick',
-        name: 'birck'
+        name: 'brick'
       },
       {
         title: 'Area',
