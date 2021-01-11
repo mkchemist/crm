@@ -18,6 +18,8 @@
         id="date_from"
         class="form-control form-control-sm"
         v-model="date.to"
+        :disabled="!date.from"
+        :min="date.from"
       />
     </div>
     <div class="form-group text-right">
@@ -25,7 +27,7 @@
         <span class="fa fa-redo"></span>
         <span>reset</span>
       </button>
-      <button type="button" class="btn btn-sm btn-primary" @click="filterDates">
+      <button type="button" class="btn btn-sm btn-primary" @click="filterDates" :disabled="!date.from && !date.to">
         <span class="fa fa-check-circle"></span>
         <span>ok</span>
       </button>

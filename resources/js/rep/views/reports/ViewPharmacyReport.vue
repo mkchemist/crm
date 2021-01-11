@@ -1,6 +1,9 @@
 <template>
-  <div>
-    <div class="px-0 shadow">
+  <div class="row mx-auto pb-5">
+    <div class="col-lg-3">
+      <date-filter-box :data="$store.getters.pharmacyVisits" :onFilter="onFilter" :onReset="onReset" :dateField="`date`" />
+    </div>
+    <div class="col-lg-9 px-0 shadow pb-5">
       <p class="alert alert-success">
         <span><i class="fa fa-book-open"></i></span>
         <span class="font-weight-bold">View Pharmacy Reports</span>
@@ -49,21 +52,13 @@
         class="text-center"
         style="min-height:100px"
       >
-        <p class="lead font-weight-bold text-danger">
-          No pharmacy reports found
-        </p>
+        <no-data-to-show />
         <router-link to="/reports/add/pharmacy" class="btn btn-sm btn-primary">
           <span><i class="fa fa-plus-circle"></i></span>
           <span>add pharmacy report</span>
         </router-link>
       </div>
-      <div
-        class="p-2 my-2 d-flex justify-content-center align-items-center"
-        style="height:300px"
-        v-else
-      >
-        <div class="spinner-border"></div>
-      </div>
+      <loader-component v-else></loader-component>
     </div>
     <modal-fade
       id="delete_modal_fade"
@@ -106,12 +101,17 @@ import TableComponent from "../../../components/TableComponent";
 import ModalFade from "../../../components/ModalFade";
 import { httpCall } from "../../../helpers/http-service";
 import { ProductWithRate } from '../../../helpers/constants';
+import NoDataToShow from '../../../components/NoDataToShow.vue';
+import DateFilterBox from '../../../components/DateFilterBox.vue';
 export default {
   mounted() {
     this.$store.dispatch("pharmacyReportGetAll");
   },
   computed: {
     pharmacies() {
+      if(this.shouldRenderFilter) {
+        return this.filteredList
+      }
       return this.$store.getters.pharmacyVisits;
     },
 
@@ -153,13 +153,18 @@ export default {
       }
     ],
     selectedReport: null,
-    showDeleteModal: false
+    showDeleteModal: false,
+    shouldRenderFilter: false,
+    filteredList: []
   }),
   components: {
     TableComponent,
-    ModalFade
+    ModalFade,
+    NoDataToShow,
+    DateFilterBox,
   },
   methods: {
+
     openDeleteModal() {
       this.showDeleteModal = true;
     },
@@ -182,6 +187,17 @@ export default {
             this.selectedReport = null;
           });
         });
+    },
+    onFilter(data) {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      let async = ()=>Promise.resolve(data);
+      async().then(data => this.filteredList= data);
+    },
+    onReset() {
+      this.filteredList = [];
+      let async = ()=>Promise.resolve(this.$store.getters.pharmacyVisits);
+      async().then(data => this.filteredList= data);
     }
   }
 };

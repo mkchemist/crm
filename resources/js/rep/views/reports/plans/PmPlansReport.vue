@@ -9,9 +9,9 @@
         <table-component
           :data="plans"
           :heads="heads"
-          :notResponsive="true"
           headClass="bg-success text-light"
           orderBy='Date,asc'
+          :unselectable="true"
         >
         <template v-slot:head>
           <th>Unplanned</th>

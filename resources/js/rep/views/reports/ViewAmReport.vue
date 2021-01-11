@@ -1,6 +1,9 @@
 <template>
-  <div>
-    <div class="px-0 shadow">
+  <div class="row mx-auto pb-5">
+    <div class="col-lg-3">
+      <date-filter-box :data="$store.getters.amVisits" :onFilter="onFilter" :onReset="onReset" :dateField="`date`" />
+    </div>
+    <div class="col-lg-9 px-0 shadow pb-5">
       <p class="alert alert-success">
         <span><i class="fa fa-book-open"></i></span>
         <span class="font-weight-bold">View AM visits Report</span>
@@ -49,15 +52,13 @@
           class="text-center"
           style="min-height:100px"
         >
-          <p class="lead font-weight-bold text-danger">No am reports found</p>
+          <no-data-to-show />
           <router-link to="/reports/add/am" class="btn btn-sm btn-primary">
             <span><i class="fa fa-plus-circle"></i></span>
             <span>add new am report</span>
           </router-link>
         </div>
-        <div v-else class="d-flex justify-content-center align-items-center">
-          <div class="spinner-border"></div>
-        </div>
+        <loader-component v-else></loader-component>
       </div>
     </div>
     <modal-fade
@@ -101,20 +102,29 @@ import TableComponent from "../../../components/TableComponent";
 import ModalFade from "../../../components/ModalFade";
 import { httpCall } from "../../../helpers/http-service";
 import { ProductWithLader } from "../../../helpers/constants";
+import DateFilterBox from '../../../components/DateFilterBox.vue';
+import NoDataToShow from '../../../components/NoDataToShow.vue';
 export default {
   mounted() {
     this.$store.dispatch("amGetAll");
   },
   computed: {
     visits() {
+      if(this.shouldRenderFilter) {
+        return this.filteredList;
+      }
       return this.$store.getters.amVisits;
     }
   },
   components: {
     TableComponent,
-    ModalFade
+    ModalFade,
+    DateFilterBox,
+    NoDataToShow,
   },
   data: () => ({
+    shouldRenderFilter: false,
+    filteredList: [],
     headers: [
       {
         title: "Date",
@@ -182,6 +192,17 @@ export default {
             this.selectedReportId = null;
           });
         });
+    },
+    onFilter(data) {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      let async = ()=>Promise.resolve(data);
+      async().then(data => this.filteredList= data);
+    },
+    onReset() {
+      this.filteredList = [];
+      let async = ()=>Promise.resolve(this.$store.getters.amVisits);
+      async().then(data => this.filteredList= data);
     }
   }
 };

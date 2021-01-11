@@ -106,6 +106,7 @@ Route::group([
     // Coaching reports routes
     Route::get('/coaching', 'CoachReportsController@index');
     Route::get('/coaching/{id}', 'CoachReportsController@show');
+    Route::get('/missed-customers', 'MissedCustomerController@index');
   });
 
   /** other reps collections */

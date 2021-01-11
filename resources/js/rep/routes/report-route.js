@@ -6,6 +6,7 @@ import AddPharmacyReport from "../views/reports/AddPharmacyReport";
 import ViewAmReport from "../views/reports/ViewAmReport";
 import ViewPmReport from "../views/reports/ViewPmReport";
 import ViewPharmacyReport from "../views/reports/ViewPharmacyReport";
+import ViewMissedCustomers from '../views/reports/ViewMissedCustomers.vue';
 import EditPmReport from "../views/reports/EditPmReport";
 import EditAmReport from "../views/reports/EditAmReport";
 import EditPharmacyReport from "../views/reports/EditPharmacyReport";
@@ -62,6 +63,10 @@ export default {
     {
       path: 'view/coaching-report/:id',
       component: SingleCoachReport
+    },
+    {
+      path: 'view/missed-customers',
+      component: ViewMissedCustomers
     },
     {
       path: "add/am/:id?",

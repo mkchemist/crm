@@ -86,6 +86,11 @@ export default {
         title: 'View coach report',
         link: '/reports/view/coaching-report',
         icon: 'fa-book-reader'
+      },
+      {
+        title: 'View Missed Customers',
+        link: '/reports/view/missed-customers',
+        icon: 'fa-book-reader'
       }
     ],
     analysisLinks: [

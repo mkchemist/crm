@@ -9,9 +9,9 @@
         <table-component
           :heads="heads"
           :data="plans"
-          :notResponsive="true"
           headClass="bg-success text-light"
           orderBy="Date,asc"
+          :unselectable="true"
         ></table-component>
       </div>
       <div v-else-if="fetched" class="text-center">
