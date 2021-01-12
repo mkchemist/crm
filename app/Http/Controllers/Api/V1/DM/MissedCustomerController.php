@@ -33,7 +33,6 @@ class MissedCustomerController extends Controller
       $reports = DB::table('planners as plan')
       ->select(
         'user.name as rep',
-        'plan.plan_date as Date',
         'plan.user_id as user_id',
         'customer.name as customerName',
         'customer.specialty as specialty',
@@ -58,7 +57,7 @@ class MissedCustomerController extends Controller
       })
       ->whereBetween('plan.plan_date', [$from, $to])
       ->whereIn('plan.user_id',$reps)
-      ->groupBy('rep','customerName','specialty','brick', 'area','parameter', 'frequency','Date','user_id')
+      ->groupBy('rep','customerName','specialty','brick', 'area','parameter', 'frequency','user_id')
       ->having('difference', '!=', 0)
       ->get();
 

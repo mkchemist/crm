@@ -19,7 +19,6 @@ class MissedVisitsReportController extends Controller
 
         $reports = DB::table('planners AS plan')
             ->select(
-                'plan.plan_date AS Date',
                 'customer.name as Customer',
                 'customer.specialty as Specialty',
                 'customer.area as Area',
@@ -44,7 +43,7 @@ class MissedVisitsReportController extends Controller
         })->leftJoin('customer_reports AS visit', function ($join) {
             $join->on('visit.customer_id', '=', 'plan.customer_id');
             $join->on('visit.user_id', '=', 'plan.user_id');
-        })->groupBy('Date', 'Rep', 'user_id', 'Customer', 'Specialty', 'Parameter', 'Freq', 'Area', 'Brick', 'District', 'Territory')
+        })->groupBy('Rep', 'user_id', 'Customer', 'Specialty', 'Parameter', 'Freq', 'Area', 'Brick', 'District', 'Territory')
             ->having('diff', '!=', 0);
         $userData = null;
         if ($user !== null) {
