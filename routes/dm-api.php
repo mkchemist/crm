@@ -45,5 +45,7 @@ Route::prefix('v1')->group(function() {
       Route::get('/hospitals', 'WorkplaceReportController@hospitalsReports');
       Route::get('/pharmacies', 'WorkplaceReportController@pharmaciesReports');
     });
+
+    Route::get('/missed-customers', 'MissedCustomerController@index');
   });
 });

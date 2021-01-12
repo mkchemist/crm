@@ -11,6 +11,20 @@
       <div class="p-2">
         <div v-if="reports.length">
           <table-component :data="reports" :heads="heads" :unselectable="true" :headClass="`bg-dark text-light`">
+            <template v-slot:head>
+                  <th>Status</th>
+                  <th>Adreess</th>
+                  <th>Brick</th>
+                  <th>Area</th>
+                </template>
+                <template v-slot:body="{ item }">
+                  <td>
+                    <span v-html="getCustomerStatus(item)"></span>
+                  </td>
+                  <td>{{ item.Address }}</td>
+                  <td>{{ item.Brick }}</td>
+                  <td>{{ item.Area }}</td>
+                </template>
             </table-component>
         </div>
         <div v-else-if="fetched">
@@ -73,18 +87,6 @@ NoDataToShow,
       {
         title: 'Difference',
         name:'difference'
-      },
-      {
-        title: 'Address',
-        name: 'Address'
-      },
-      {
-        title: 'Brick',
-        name: 'Brick'
-      },
-      {
-        title: 'Area',
-        name: "Area"
       }
     ]
   }),
@@ -108,6 +110,23 @@ NoDataToShow,
       this.filteredList = [];
       let async = () => Promise.resolve(this.data);
       async().then(data => this.filteredList = data);
+    },
+    getCustomerStatus(item) {
+      let flag, style;
+      if (item.difference > 0 && item.difference === item.CountOfPlans) {
+        flag = "Uncovered";
+        style = "bg-danger text-light";
+      } else if (item.difference > 0 && item.difference !== item.CountOfPlans) {
+        flag = "Missed";
+        style = "bg-warning text-dark";
+      } else if (item.difference === 0) {
+        flag = "Accomplished";
+        style = "bg-success text-light";
+      } else {
+        flag = "Over";
+        style = "bg-primary text-light";
+      }
+      return `<span class="${style} p-1">${flag}</span>`;
     }
   }
 }

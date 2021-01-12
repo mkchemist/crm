@@ -25,9 +25,9 @@ class MissedCustomerController extends Controller
         'customer.brick as Brick',
         'customer.address as Address',
         'customer.area as Area',
-        DB::raw('count(plan.plan_date) as CountOfPlans'),
-        DB::raw('count(report.customer_id) as CountOfVisits'),
-        DB::raw('count(plan.plan_date) - count(report.customer_id) as difference')
+        DB::raw('count(DISTINCT plan.plan_date) as CountOfPlans'),
+        DB::raw('count(DISTINCT report.visit_date) as CountOfVisits'),
+        DB::raw('count(DISTINCT plan.plan_date) - count(DISTINCT report.visit_date) as difference')
       )->join('customers as customer', 'customer.id', '=', 'plan.customer_id')
       ->join('users as rep', 'rep.id', '=', 'plan.user_id')
       ->leftJoin('customer_parameters as param' , function($join) {
@@ -40,7 +40,7 @@ class MissedCustomerController extends Controller
       ->where('plan.user_id',$user->id)
       ->whereBetween('plan.plan_date', [$cycle->start, $today])
       ->groupBy('Customer','Specialty','Rep','Parameter','brick','address','area')
-      ->having('Difference', '>', 0)
+      ->having('Difference', '!=', 0)
       ->get();
 
       return response([

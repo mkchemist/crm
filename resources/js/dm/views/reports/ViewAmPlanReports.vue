@@ -2,7 +2,7 @@
   <div class="p-2 row mx-auto">
     <div class="col-lg-3">
       <user-filter-box :users="reps" :data="data" :onFilter="onFilter" :onReset="onReset" />
-      <date-filter-box :data="data" :onFilter="onFilter" :onReset="onReset" :dateField="`plan_date`"/>
+      <date-filter-box :data="data" :onFilter="onFilter" :onReset="onReset" :dateField="`start`"/>
     </div>
     <div class="col-lg-9">
       <div class="px-0 shadow rounded">
@@ -12,7 +12,7 @@
         </p>
         <div class="p-2">
           <div v-if="data.length">
-            <table-component :data="data" :heads="tableHeads" :headClass="`bg-success text-light`" :unselectable="true">
+            <table-component :data="data" :heads="tableHeads" :headClass="`bg-success text-light`" :unselectable="true" :orderBy="`Rep`">
 
             </table-component>
           </div>
@@ -55,11 +55,11 @@ export default {
     tableHeads: [
       {
         title: 'Rep',
-        name: 'user.name'
+        name: 'rep'
       },
       {
         title: 'Date',
-        name: 'plan_date'
+        name: 'start'
       },
       {
         title: 'Workplace',

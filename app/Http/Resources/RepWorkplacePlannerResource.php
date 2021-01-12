@@ -26,7 +26,8 @@ class RepWorkplacePlannerResource extends JsonResource
         'workplace' =>  $this->workplace,
         'submitted' =>  $this->submitted,
         'workplace_id'  =>  $this->workplace->id,
-        'user_id'     =>  $this->user_id
+        'user_id'     =>  $this->user_id,
+        'rep'       =>  $this->user->name
       ];
     }
 }

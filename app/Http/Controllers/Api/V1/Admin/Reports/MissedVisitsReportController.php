@@ -30,9 +30,9 @@ class MissedVisitsReportController extends Controller
                 'plan.user_id as user_id',
                 'param.current as Parameter',
                 'freq.current as Freq',
-                DB::raw('count(plan.plan_date) AS countOfPlans'),
-                DB::raw('count(visit.visit_date) AS countOfVisits'),
-                DB::raw('count(plan.plan_date) - count(visit.visit_date) as diff')
+                DB::raw('count(DISTINCT plan.plan_date) AS countOfPlans'),
+                DB::raw('count(DISTINCT visit.visit_date) AS countOfVisits'),
+                DB::raw('count(DISTINCT plan.plan_date) - count(DISTINCT visit.visit_date) as diff')
             )->join('customers as customer', 'customer.id', '=', 'plan.customer_id')
             ->join('users as rep', 'rep.id', '=', 'plan.user_id')
             ->leftJoin('customer_parameters as param', function ($join) {
@@ -45,7 +45,7 @@ class MissedVisitsReportController extends Controller
             $join->on('visit.customer_id', '=', 'plan.customer_id');
             $join->on('visit.user_id', '=', 'plan.user_id');
         })->groupBy('Date', 'Rep', 'user_id', 'Customer', 'Specialty', 'Parameter', 'Freq', 'Area', 'Brick', 'District', 'Territory')
-            ->having('diff', '>', 0);
+            ->having('diff', '!=', 0);
         $userData = null;
         if ($user !== null) {
             $userData = User::find($user);

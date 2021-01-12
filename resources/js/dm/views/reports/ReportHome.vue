@@ -88,6 +88,11 @@ export default {
         link: '/reports/view/am-plans',
         icon: 'fa-book-open',
         title: 'View AM Plans reports'
+      },
+      {
+        link: '/reports/view/missed-customers',
+        icon: 'fa-book-reader',
+        title: 'View Missed customers'
       }
     ],
     analysis_links: [

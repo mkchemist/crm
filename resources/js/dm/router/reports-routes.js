@@ -9,6 +9,7 @@ import ViewHospitalReport from '../views/reports/ViewHospitalReport.vue'
 import ViewPharmacyReport from '../views/reports/VIewPharmacyReport.vue';
 import ViewPmAnalysis from '../views/reports/analysis/ViewPmAnalysis.vue';
 import ViewPlanAnalysis from "../views/reports/analysis/ViewPlanAnalysis.vue"
+import ViewMissedCustomers from '../views/reports/ViewMissedCustomers.vue';
 import CreateCoachReport from "../views/reports/CreateCoachReport.vue";
 import ActivityReportContainer from '../views/reports/ActivityReportContainer.vue';
 import AddActivityReport from '../../components/AddActivityReport.vue';
@@ -52,6 +53,10 @@ export default {
     {
       path: 'view/pharmacy',
       component: ViewPharmacyReport
+    },
+    {
+      path: 'view/missed-customers',
+      component:ViewMissedCustomers
     },
     {
       path: 'analysis/pm',

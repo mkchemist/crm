@@ -65,6 +65,20 @@
               <th>{{ getAreaManagerName(item.user_id) }}</th>
               <th>{{ getDistrictManagerName(item.user_id) }}</th>
             </template>
+            <template v-slot:head>
+              <th>Status</th>
+              <th>Brick</th>
+              <th>Area</th>
+              <th>District</th>
+              <th>Territory</th>
+            </template>
+            <template v-slot:body="{item}">
+              <td><span v-html="getCustomerStatus(item)"></span></td>
+              <td>{{ item.Brick }}</td>
+              <td>{{ item.Area }}</td>
+              <td>{{ item.District }}</td>
+              <td>{{ item.Territory }}</td>
+            </template>
           </table-component>
         </div>
         <div v-else-if="!isLoaded">
@@ -163,27 +177,6 @@ export default {
         title: 'Count Of Visits',
         name: 'countOfVisits'
       },
-      {
-        title: 'Status',
-        name: 'VisitDate',
-        fallback: 'Missed'
-      },
-      {
-        title: "Brick",
-        name: "Brick"
-      },
-      {
-        title: "Area",
-        name: "Area"
-      },
-      {
-        title: 'District',
-        name:'District'
-      },
-      {
-        title: 'Territory',
-        name: 'Territory'
-      }
     ],
     filteredList: [],
     shouldRenderFilter: false
@@ -247,6 +240,25 @@ export default {
       this.filteredList = [];
       let async = () => Promise.resolve(this.reports);
       async().then(data => this.filteredList = data);
+    },
+    getCustomerStatus(item) {
+      let {countOfPlans,countOfVisits,diff} = item;
+      let flag,style;
+      if(diff > 0 && diff === countOfPlans) {
+        flag = "Uncovered";
+        style = "bg-danger text-light"
+      } else if(diff > 0 && diff !== countOfPlans) {
+        flag = "Missed";
+        style = "bg-warning text-dark"
+      } else if(diff === 0) {
+        flag = "Accomplished";
+        style = "bg-success text-light"
+      } else {
+        flag = "Over";
+        style = "bg-primary text-light"
+      }
+
+      return `<span class="${style} p-1">${flag}</span>`
     }
   }
 };
