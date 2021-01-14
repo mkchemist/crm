@@ -68,6 +68,11 @@ export default {
         title: 'View Plan reports',
         icon: 'fa-book-reader',
         link: '/reports/view/plan'
+      },
+      {
+        title: 'View Missed customer',
+        icon: 'fa-book-reader',
+        link: '/reports/view/missed-customers'
       }
     ],
      analysisLinks: [

@@ -150,10 +150,6 @@ export default {
         name: "Rep"
       },
       {
-        title: "Date",
-        name: "Date"
-      },
-      {
         title: "Customer",
         name: "Customer"
       },

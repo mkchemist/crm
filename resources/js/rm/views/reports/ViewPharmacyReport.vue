@@ -90,10 +90,6 @@ export default {
     filteredList: [],
     heads: [
       {
-        title: "ID",
-        name: "id"
-      },
-      {
         title: "Rep",
         name: "rep"
       },

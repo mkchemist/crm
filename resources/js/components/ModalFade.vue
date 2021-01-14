@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div :class="`modal-header  ${headerStyle}`">
           <slot name="header" :data="data ? data: {}"></slot>
-          <button class="close" @click="closeModal">&times;</button>
+          <button class="close" @click="closeModal" type="button">&times;</button>
         </div>
         <div class="modal-body">
           <slot name="body" :data="data ? data: {}"></slot>

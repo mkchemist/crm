@@ -29,6 +29,13 @@ Route::group([
     Route::get('pm', 'CustomerReportController@index');
     Route::get('am', 'WorkplaceReportController@index');
     Route::get('pharmacy', 'PharmacyReportController@index');
+    Route::get('missed-customers', 'MissedCustomerController@index');
+    Route::get('coach-reports', 'CoachReportController@index');
+    // Analysis routes
+    Route::group(['prefix' => 'analysis'], function () {
+      Route::get('pm', 'AnalysisController@pmAnalysis');
+      Route::get('am', 'AnalysisController@amAnalysis');
+    });
   });
 });
 

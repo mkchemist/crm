@@ -178,7 +178,7 @@
               <select
                 name="reps"
                 id="reps"
-                v-model="relations.rm"
+                v-model="relations.am"
                 class="form-control small"
                 multiple
                 style="min-height:250px"
@@ -203,7 +203,7 @@
               <select
                 name="reps"
                 id="reps"
-                v-model="relations.am"
+                v-model="relations.rm"
                 class="form-control small"
                 multiple
                 style="min-height:250px"

@@ -5,6 +5,7 @@ import ViewAmReport from '../views/reports/ViewAmReport.vue';
 import ViewPharmacyReport from '../views/reports/ViewPharmacyReport.vue';
 import ViewPlanReport from '../views/reports/ViewPlanReport.vue';
 import ViewCoachReport from '../views/reports/ViewCoachReport.vue';
+import ViewMissedCustomers from '../views/reports/ViewMissedCustomers.vue';
 import PmAnalysisReport from '../views/reports/PmAnalysisReport.vue';
 import AmAnalysisReport from '../views/reports/AmAnalysisReport.vue';
 import PlanAnalysisReport from '../views/reports/PlanAnalysisReport.vue';
@@ -65,6 +66,10 @@ export default {
           component: RepPmPlanView
         }
       ]
+    },
+    {
+      path: 'view/missed-customers',
+      component: ViewMissedCustomers
     },
     {
       path: 'analysis/pm',

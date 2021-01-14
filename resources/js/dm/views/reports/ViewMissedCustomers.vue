@@ -111,10 +111,6 @@ export default {
     today: new Date().format(),
     heads: [
       {
-        title: 'Date',
-        name: 'Date'
-      },
-      {
         title: "Rep",
         name: "rep"
       },

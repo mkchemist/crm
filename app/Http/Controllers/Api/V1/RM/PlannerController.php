@@ -28,7 +28,7 @@ class PlannerController extends Controller
       $plans = CoachPlanner::with(['coach', 'rep']);
       $plans = CycleHelper::getCycleData($plans, 'plan_date');
 
-      $plans = $this->queryRequestUsers($plans, 'rep_id','userId');
+      $plans = $this->queryRequestUsers($plans, 'rep_id','userID');
       $plans = $plans->orderBy('plan_date')->get();
       return response([
         'code'  =>  200,
