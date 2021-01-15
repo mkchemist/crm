@@ -23,9 +23,12 @@
               <span>Export</span>
             </button>
           </div>
-          <table class="table table-sm small" id="am_analysis">
-            <thead>
+          <table class="table table-sm small table-responsive" id="am_analysis">
+            <thead class="bg-success text-light">
               <tr>
+                <th>Business Unit</th>
+                <th>Area Manager</th>
+                <th>District Manager</th>
                 <th>Rep</th>
                 <th>Total Plans</th>
                 <th>Total visits</th>
@@ -37,6 +40,9 @@
             </thead>
             <tbody>
               <tr v-for="report in reports" :key="report.user_id">
+                <td>{{ $store.state.UserModule.user.name }}</td>
+                <td>{{ getAreaManagerName(report.user_id) }}</td>
+                <td>{{ getDistrictManagerName(report.user_id) }}</td>
                 <td>{{ report.rep }}</td>
                 <td>{{ report.total_planned }}</td>
                 <td>{{ report.visits }}</td>
@@ -67,6 +73,14 @@ import { ExportToExcel } from '../../../helpers/helpers'
 import { httpCall } from '../../../helpers/http-service'
 export default {
   components: { NoDataToShow },
+  computed: {
+    districtManagers() {
+      return this.$store.getters.allDm
+    },
+    areaManagers() {
+      return this.$store.getters.allAreaManagers
+    }
+  },
   data: () => ({
     reports: [],
     fetched: false,
@@ -81,6 +95,26 @@ export default {
     },
     exportToExcel() {
       ExportToExcel('#am_analysis', 'AM analysis report')
+    },
+    getDistrictManagerName(id) {
+      let manager = "-----";
+      this.districtManagers.map(dm => {
+        let reps = JSON.parse(dm.user_relations).reps;
+        if(reps.includes(id)) {
+          manager = dm.name;
+        }
+      })
+      return manager;
+    },
+    getAreaManagerName(id) {
+      let manager = "-----";
+      this.areaManagers.map(dm => {
+        let reps = JSON.parse(dm.user_relations).reps;
+        if(reps.includes(id)) {
+          manager = dm.name;
+        }
+      })
+      return manager;
     }
   }
 }
