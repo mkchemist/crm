@@ -2,13 +2,45 @@
 
 namespace App\Http\Controllers\Api\V1\RM;
 
+use App\Customer;
 use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RM\CustomerResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AnalysisController extends Controller
 {
+    /**
+     * current auth user
+     *
+     */
+    private $user;
+
+    /**
+     * current active cycle
+     *
+     */
+    private $cycle;
+
+    /**
+     * user related reps
+     *
+     * @var array
+     */
+    private $reps;
+
+    public function __construct()
+    {
+      $this->middleware(function($request, $next) {
+        $this->user = Auth::user();
+        $this->reps = json_decode($this->user->user_relations)->reps;
+        $cycle = new ActiveCycleSetting;
+        $this->cycle = $cycle->all();
+        return $next($request);
+      });
+    }
+
     /**
      * generate PM reports analysis
      *
@@ -17,18 +49,13 @@ class AnalysisController extends Controller
      */
     public function pmAnalysis()
     {
-        $user = Auth::user();
-        $reps = json_decode($user->user_relations)->reps;
-        $activeCycle = new ActiveCycleSetting;
-        $cycle = $activeCycle->all();
-        $today = date('20y-m-d');
-        $range = [
-            $cycle->start,
-            $today,
+        $range =[
+          $this->cycle->start,
+          date('20y-m-d')
         ];
-        $plans = $this->getPlanDetails($reps, $range);
+        $plans = $this->getPlanDetails($this->reps, $range);
 
-        $reports = $this->getReportDetails($reps, $range);
+        $reports = $this->getReportDetails($this->reps, $range);
         return response([
             'code' => 200,
             'plans' => $plans,
@@ -86,45 +113,61 @@ class AnalysisController extends Controller
         return $reports;
     }
 
-
+    /**
+     * AM report analysis
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function amAnalysis()
     {
-      $user = Auth::user();
-      $reps = json_decode($user->user_relations)->reps;
-      $activeCycle = new ActiveCycleSetting;
-      $start = $activeCycle->all()->start;
       $end = date('20y-m-d');
       $reports = DB::table('workplace_planners as plan')
       ->select(
         'user.name as rep',
+        'user.id as user_id',
         DB::raw('count(DISTINCT plan.id) as total_planned'),
         DB::raw('count(DISTINCT report.id) as visits'),
         DB::raw('count(DISTINCT plan.workplace_id) as planned_workplaces'),
         DB::raw('count(DISTINCT report.workplace_id) as covered_workplaces'),
         DB::raw('count(DISTINCT report.visit_date) as working_days'),
         DB::raw('(count(DISTINCT report.id)/count(DISTINCT report.visit_date)) as avg')
-       /*  DB::raw('count(distinct plan.plan_date) as total_planned'),
-        DB::raw('count(DISTINCT plan.workplace_id) as plan_total_covered'),
-        DB::raw('count(report.customer_id) as visits'),
-        DB::raw('count(DISTINCT report.workplace_id) as total_workplace_covered'),
-        DB::raw('count(DISTINCT report.customer_id) as total_customers_covered'),
-        DB::raw('count(DISTINCT report.visit_date) as working_days'),
-        DB::raw('count(report.workplace_id)/count(DISTINCT report.visit_date) as avg'),
-        DB::raw('count(report.workplace_id)/count(plan.workplace_id) as achieved') */
       )->join('users as user', 'user.id', '=', 'plan.user_id')
       ->leftJoin('workplace_reports as report', function($join) {
           $join->on('report.user_id', '=', 'plan.user_id');
           $join->on('report.workplace_id', '=', 'plan.workplace_id');
       })
-      ->groupBy('rep')
-      ->whereIn('plan.user_id', $reps)
-      ->whereBetween('plan.plan_date', [$start, $end])
+      ->groupBy('rep', 'user_id')
+      ->whereIn('plan.user_id', $this->reps)
+      ->whereBetween('plan.plan_date', [$this->cycle->start, $end])
       ->get();
 
 
       return response([
         'code'  =>  200,
         'data'  =>  $reports
+      ]);
+    }
+
+    /**
+     * Plan analysis report
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function planAnalysis()
+    {
+      $customers = Customer::with(['params', 'frequency', 'planner','frequency.user'])
+      ->whereIn('id', function($query) {
+        $query->from('customer_frequencies')
+        ->select('customer_id')
+        ->whereIn('user_id', $this->reps)
+        ->get();
+      })
+      ->orderBy('name')
+      ->get();
+
+      return response([
+        'code'  =>  200,
+        'data'  =>  CustomerResource::collection($customers)
       ]);
     }
 }
