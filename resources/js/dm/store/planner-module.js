@@ -22,7 +22,8 @@ export default {
     isPlanFetched: state => state.fetched,
     currentUserId: state => state.currentUserId,
     repPlans: state => state.repPlans,
-    planValidationData: state => state.planValidationData
+    coachPlans: state => state.coachPlans,
+    planValidationData: state => state.planValidationData,
   },
   mutations: {
     setCurrentUserId(state, id) {

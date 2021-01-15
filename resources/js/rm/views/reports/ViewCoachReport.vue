@@ -60,6 +60,16 @@
             :headClass="`bg-success text-light`"
             :orderBy="`Date|Customer`"
           >
+          <template v-slot:head:before>
+            <th>Action</th>
+          </template>
+          <template v-slot:body:before="{item}">
+            <td>
+              <router-link :to="`/reports/read/coach-report/${item.id}`" class="btn btn-sm btn-primary">
+                <span class="fa fa-eye"></span>
+              </router-link>
+            </td>
+          </template>
           </table-component>
         </div>
         <div v-else-if="!loadingStarted" class="py-5 text-center text-primary">
@@ -171,7 +181,6 @@ export default {
       httpCall
         .get("rm/v1/reports/coach-reports", query)
         .then(({ data }) => {
-          console.log(data);
           this.data = data.data;
           this.fetched = true;
         })

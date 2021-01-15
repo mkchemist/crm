@@ -31,10 +31,13 @@ Route::group([
     Route::get('pharmacy', 'PharmacyReportController@index');
     Route::get('missed-customers', 'MissedCustomerController@index');
     Route::get('coach-reports', 'CoachReportController@index');
+    Route::get('coach-report/single/{id}', 'CoachReportController@show');
+    Route::get('coach-follow-up', 'CoachReportController@coachingFollowUp');
     // Analysis routes
     Route::group(['prefix' => 'analysis'], function () {
       Route::get('pm', 'AnalysisController@pmAnalysis');
       Route::get('am', 'AnalysisController@amAnalysis');
+      Route::get('plan', 'AnalysisController@planAnalysis');
     });
   });
 });

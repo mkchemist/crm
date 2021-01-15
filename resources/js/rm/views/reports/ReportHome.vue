@@ -93,13 +93,18 @@ export default {
       },
     ],
      otherLinks: [
+       {
+         title: 'Coach Follow up',
+         icon: 'fa-chart-bar',
+         link: '/reports/read/coach-follow-up'
+       },
       {
         title: 'View Filed Activity report',
         icon: 'fa-book-reader',
         link: '/reports/activity?type=field-activity'
       },
       {
-        title: 'View Filed Activity report',
+        title: 'View Non Filed Activity report',
         icon: 'fa-book-reader',
         link: '/reports/activity?type=non-field-activity'
       },

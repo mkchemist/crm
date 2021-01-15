@@ -16,6 +16,8 @@ import ActivityReportContainer from '../views/reports/ActivityReportContainer.vu
 import RequestReportContainer from '../views/reports/RequestReportContainer.vue'
 import CreateActivityReport from '../views/reports/CreateActivityReport.vue';
 import CreateRequestReport from '../views/reports/CreateRequestReport.vue';
+import SingleCoachReport from '../views/reports/SingleCoachReport.vue';
+import CoachFollowUp from "../views/reports/CoachFollowUp.vue";
 
 export default {
   path: '/reports',
@@ -70,6 +72,14 @@ export default {
     {
       path: 'view/missed-customers',
       component: ViewMissedCustomers
+    },
+    {
+      path: 'read/coach-report/:id',
+      component: SingleCoachReport
+    },
+    {
+      path: 'read/coach-follow-up',
+      component: CoachFollowUp
     },
     {
       path: 'analysis/pm',
