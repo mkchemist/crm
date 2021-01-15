@@ -8,6 +8,10 @@
           :onFilter="onFilter"
           :onReset="onReset"
         />
+        <router-link to="/reports" class="btn btn-sm btn-dark btn-block my-2">
+        <span class="fa fa-chevron-circle-left"></span>
+        <span>back</span>
+      </router-link>
       </div>
       <div class="col-lg-9 px-0 shadow rounded pb-5">
         <p class="alert alert-success">

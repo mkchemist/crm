@@ -13,6 +13,10 @@
         :onReset="onReset"
         :dateField="`query_date`"
       />
+      <router-link :to="`${backLink ? backLink : '/reports'}`" class="btn btn-sm btn-dark btn-block my-2">
+        <span class="fa fa-chevron-circle-left"></span>
+        <span>back</span>
+      </router-link>
     </div>
     <div class="col-lg-9 px-0 shadow rounded pb-5">
       <p class="alert alert-success">
@@ -211,6 +215,9 @@ export default {
     ownerId: {
       type: Number,
       required: true
+    },
+    backLink: {
+      type: String
     }
   },
   components: {

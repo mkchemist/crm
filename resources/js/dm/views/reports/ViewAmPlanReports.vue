@@ -3,6 +3,10 @@
     <div class="col-lg-3">
       <user-filter-box :users="reps" :data="data" :onFilter="onFilter" :onReset="onReset" />
       <date-filter-box :data="data" :onFilter="onFilter" :onReset="onReset" :dateField="`start`"/>
+      <router-link to="/reports" class="btn btn-sm btn-dark btn-block my-2">
+        <span class="fa fa-chevron-circle-left"></span>
+        <span>back</span>
+      </router-link>
     </div>
     <div class="col-lg-9">
       <div class="px-0 shadow rounded">
