@@ -18,7 +18,7 @@
               :disabled="!allReps.length"
               v-if="activeCustomers.length"
             >
-              <option value="">All</option>
+              <option :value="null">All</option>
               <option v-for="rep in allReps" :key="rep.id" :value="rep">{{
                 rep.name
               }}</option>
@@ -36,7 +36,7 @@
               class="form-control form-control-sm"
               :disabled="!Object.keys(bricks).length || !rep"
             >
-              <option value="">All</option>
+              <option :value="null">All</option>
               <option
                 v-for="brick in Object.keys(bricks)"
                 :key="`brick_${brick}`"
@@ -248,7 +248,7 @@ export default {
       return this.$store.getters.activeCustomers;
     },
     bricks() {
-      if (this.rep !== "") {
+      if (this.rep) {
         let area = JSON.parse(this.rep.area);
         let district = JSON.parse(this.rep.district);
         let territory = JSON.parse(this.rep.territory);
@@ -260,9 +260,7 @@ export default {
               return area.includes(item.area)
             } else if(district.length && district[0] !== 'all') {
               return district.includes(item.district)
-            } else if(territory.length && territory[0] !== 'all') {
-              return territory.includes(item.territory)
-            } else {
+            }else {
               return false
             }
 
@@ -272,7 +270,7 @@ export default {
       return filterData(this.activeCustomers, "brick");
     },
     customers() {
-      if (this.brick !== "") {
+      if (this.brick) {
         return this.bricks[this.brick];
       }
       return this.activeCustomers;
@@ -282,8 +280,8 @@ export default {
     }
   },
   data: () => ({
-    rep: "",
-    brick: "",
+    rep: null,
+    brick: null,
     customer: null,
     report: COACH_REPORT,
     date: null,
@@ -332,8 +330,7 @@ export default {
           });
           console.log(err);
         });
-    },
-
+    }
   }
 };
 </script>
