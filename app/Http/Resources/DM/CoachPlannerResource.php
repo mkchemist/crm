@@ -24,7 +24,8 @@ class CoachPlannerResource extends JsonResource
           'user_id' =>  $this->coach->id,
           'type'    =>  'coach-plan',
           'date_start'=>  $this->plan_date,
-          'date_end'  =>  $this->plan_date
+          'date_end'  =>  $this->plan_date,
+          'rep_id'    =>  $this->rep_id
         ];
     }
 }

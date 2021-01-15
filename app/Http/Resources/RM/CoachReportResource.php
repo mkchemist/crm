@@ -15,6 +15,7 @@ class CoachReportResource extends JsonResource
     public function toArray($request)
     {
         return [
+          'id'      =>  $this->id,
           'rep_id'  =>  $this->rep_id,
           'coach_id'  =>  $this->coach_id,
           'rep'       =>  $this->rep->name,

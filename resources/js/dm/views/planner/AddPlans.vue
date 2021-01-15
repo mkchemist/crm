@@ -6,43 +6,47 @@
     </p>
     <div class="p-2" style="min-height:400px">
       <div class="row mx-auto">
-        <div class="col-lg px-0">
+        <div class="col-lg-6 px-0" style="overflow:auto">
           <div class="border px-0">
             <p class="mb-0 px-2 bg-dark text-light">Selected </p>
-            <table class="table table-sm small" v-if="reps" id="reps_table">
+            <table class="table table-sm small table-responsive" v-if="reps" id="reps_table">
               <thead>
                 <tr>
                   <th><i class="fa fa-check"></i></th>
                   <th>Rep Name</th>
-                  <th>Area</th>
+                  <th>Planned Brick</th>
+                  <th>Plans</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="rep in reps" :key="rep.id">
                   <td> <input type="checkbox" @click="setSelectedPlanRep(rep.id)"> </td>
                   <td>{{ rep.name }}</td>
-                  <td>{{ rep.area }}</td>
+                  <td class="font-weight-bold text-primary">{{ repPlanBrick(rep.id) }}</td>
+                  <td><span class="badge badge-primary p-1">{{ totalRepPlans(rep.id) }}</span></td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-        <div class="col-lg">
+        <div class="col-lg-6" style="overflow:auto">
           <p class="mb-0 px-2 bg-dark text-light">Total date {{ $attrs.date }} plans : {{ plans.length }}</p>
           <div class="px-0 border">
-            <table class="table table-sm small" id="plans_table">
+            <table class="table table-sm small table-responsive" id="plans_table">
               <thead>
                 <tr>
                   <th><i class="fa fa-check"></i></th>
                   <th>Rep Name</th>
-                  <th>Area</th>
+                  <th>Planned Brick</th>
+                  <th>Plans</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="plan in plans" :key="plan.id">
                   <td> <input type="checkbox" @click="setRemovePlanRep(plan.id)"> </td>
                   <td>{{ plan.title }}</td>
-                  <td>{{ plan.area }}</td>
+                  <td class="font-weight-bold text-primary">{{ repPlanBrick(plan.rep_id) }}</td>
+                  <td><span class="badge badge-primary p-1">{{ totalRepPlans(plan.rep_id) }}</span></td>
                 </tr>
               </tbody>
             </table>
@@ -69,6 +73,7 @@
 </template>
 
 <script>
+import { sortBy } from '../../../helpers/helpers';
 import { httpCall } from '../../../helpers/http-service';
 export default {
   created() {
@@ -80,7 +85,7 @@ export default {
   }),
   computed:{
     reps(){
-      return this.$store.getters.dmReps;
+      return sortBy(this.$store.getters.dmReps, 'name');
     },
     isRepsFetched() {
       return this.$store.getters.isRepsFetched;
@@ -90,6 +95,12 @@ export default {
       let dayPlans = [];
       dayPlans = plans.filter(plan => plan.start === this.$attrs.date);
       return dayPlans
+    },
+    repPlans() {
+      return this.$store.getters.repPlans;
+    },
+    coachPlans() {
+      return this.$store.getters.coachPlans
     }
   },
   methods: {
@@ -176,6 +187,16 @@ export default {
       let inputs = document.querySelectorAll(`${id} input[type="checkbox"]`);
       inputs.forEach(input => input.checked = false);
       el.checked = true;
+    },
+    repPlanBrick(id) {
+      let plan =  this.repPlans.filter(plan => plan.user_id ===id && plan.start === this.$attrs.date)[0];
+      if(plan) {
+        return plan.brick;
+      }
+      return "--------";
+    },
+    totalRepPlans(id) {
+      return this.repPlans.filter(plan => plan.user_id === id && plan.start === this.$attrs.date).length
     }
   }
 }
