@@ -37,11 +37,11 @@ export default {
         icon: 'fa-plus-circle',
         title: 'Add PM Visit'
       },
-      {
+      /* {
         link: '/reports/add/am',
         icon : 'fa-plus-circle',
         title: 'Add AM visit'
-      },
+      }, */
       {
         link: '/reports/add/pharmacy',
         icon: 'fa-plus-circle',
