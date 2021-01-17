@@ -30,7 +30,8 @@ class CustomerReportResource extends JsonResource
           'products'     =>  json_decode($this->products),
           'user_id'     =>  $this->user_id,
           'plans'       =>  count($this->customer->planner),
-          'reports'     =>  count($this->customer->report)
+          'reports'     =>  count($this->customer->report),
+          'id'          => $this->id
         ];
     }
 }

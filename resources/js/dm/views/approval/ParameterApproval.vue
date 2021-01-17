@@ -8,13 +8,13 @@
 
       <div class="p-2">
         <div class="btn-group btn-group-sm">
-          <button class="btn btn-secondary" @click="approveRequests">
+          <button class="btn btn-secondary" @click="approveRequests" :disabled="!customers.length">
             <span>Approve</span>
             <span v-if="selected_customers.length" class="text-primary bg-light px-1 rounded-circle">{{
               selected_customers.length
             }}</span>
           </button>
-          <button class="btn btn-secondary" @click="rejectRequests">
+          <button class="btn btn-secondary" @click="rejectRequests" :disabled="!customers.length">
             <span>Reject</span>
             <span v-if="selected_customers.length" class="text-primary bg-light px-1 rounded-circle">{{
               selected_customers.length
@@ -42,7 +42,7 @@
             </template>
           </table-component>
           <div v-else-if="isFetched">
-            <p class="text-dark text-center lead">No data to show</p>
+            <no-data-to-show :title="`No Requests found`" />
           </div>
           <div v-else>
             <loader-component></loader-component>
@@ -56,11 +56,14 @@
 <script>
 import { httpCall } from "../../../helpers/http-service";
 import TableComponent from "../../../components/TableComponent";
+import NoDataToShow from '../../../components/NoDataToShow.vue';
 export default {
   components: {
-    TableComponent
+    TableComponent,
+     NoDataToShow
   },
   created() {
+
     this.fetchList();
   },
   data: () => ({

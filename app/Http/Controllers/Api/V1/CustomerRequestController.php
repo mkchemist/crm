@@ -162,12 +162,19 @@ class CustomerRequestController extends Controller
     private function getUserRelatedRequests($user, $model)
     {
       switch ($user->role) {
-        case 'dm':
-         $relations = json_decode($user->user_relations);
-         $reps = $relations->reps;
-         return $model->whereIn('user_id', $reps);
-        default:
+        case 'rep':
           return $model->where(['user_id' => $user->id]);
+        default:
+          $relations = json_decode($user->user_relations);
+          $users = $relations->reps;
+          $users[] = $user->id;
+          if($user->role === "rm" || $user->role === "am") {
+            $users = array_merge($users, $relations->dm);
+          }
+          if($user->role === "rm") {
+            $users = array_merge($users, $relations->am);
+          }
+          return $model->whereIn('user_id', $users);
       }
     }
 }

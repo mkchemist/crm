@@ -13,6 +13,8 @@ import ViewMissedCustomers from '../views/reports/ViewMissedCustomers.vue';
 import CreateCoachReport from "../views/reports/CreateCoachReport.vue";
 import ActivityReportContainer from '../views/reports/ActivityReportContainer.vue';
 import AddActivityReport from '../../components/AddActivityReport.vue';
+import AddPmVisit from '../views/reports/AddPmVisit.vue';
+import EditPmVisit from '../views/reports/EditPmVisit.vue';
 import RequestReportContainer from '../views/reports/RequestReportContainer.vue'
 export default {
   path: '/reports',
@@ -33,6 +35,10 @@ export default {
     {
       path: 'add/activity-report',
       component: AddActivityReport
+    },
+    {
+      path : 'add/pm',
+      component: AddPmVisit
     },
     {
       path: 'view/pm',
@@ -77,6 +83,10 @@ export default {
     {
       path: 'requests',
       component: RequestReportContainer,
+    },
+    {
+      path: 'edit/pm/:id',
+      component: EditPmVisit
     }
   ]
 }

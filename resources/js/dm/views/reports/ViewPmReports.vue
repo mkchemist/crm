@@ -37,6 +37,16 @@
               :unselectable="true"
               head-class="bg-success text-light"
             >
+              <template v-slot:head:before>
+                <th>Action</th>
+              </template>
+              <template v-slot:body:before="{item}">
+                <td>
+                  <router-link :to="`/reports/edit/pm/${item.id}`" class="btn btn-sm btn-warning" v-if="item.user_id === $store.getters.user.id">
+                    <span class="fa fa-edit"></span>
+                  </router-link>
+                </td>
+              </template>
               <template v-slot:head>
                 <th>Plans</th>
                 <th>Visits</th>
@@ -81,7 +91,7 @@ import { ProductWithLader, ProductWithRate } from '../../../helpers/constants';
 import { sortBy } from "../../../helpers/helpers";
 import DataFilter from "../../components/DataFilter";
 export default {
-  created() {
+  mounted() {
     this.$store.dispatch("getAllRepPmReports");
   },
   components: {

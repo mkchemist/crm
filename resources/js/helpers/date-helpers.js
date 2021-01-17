@@ -1,4 +1,7 @@
 export const Calendar = function (date) {
+  if(undefined === date) {
+    date = new Date()
+  }
   this.date = new Date(date);
   this.day = this.date.getDate();
   this.month= this.date.getMonth()+1;

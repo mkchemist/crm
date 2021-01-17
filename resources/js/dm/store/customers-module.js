@@ -33,12 +33,13 @@ export default{
      */
     customersGetAll({state}, force) {
       if(!state.customers.length || force) {
+        state.fetched = false;
+        state.customers = [];
         return httpCall.get("dm/v1/customers")
         .then(({data}) => {
           state.customers = data.data
-          Vue.toasted.success('customer list loaded')
-        }).finally(() => {
           state.fetched = true;
+          Vue.toasted.success('customer list loaded')
         })
       }
     },

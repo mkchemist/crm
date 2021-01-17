@@ -256,4 +256,35 @@ export const ProductWithRate = [
     title: 'Product 4 competitor_rate',
     name: 'products.3.competitor_rate'
   },
-]
+];
+
+
+export const lader_of_adaption = [
+  "Never heard",
+  "Aware and not use",
+  "Tried in a few Rx",
+  "Sharing with competitor",
+  "2nd line Rx",
+  "1st line Rx",
+  "1st in all Rx",
+  "Advocator"
+];
+
+export const visit_actions = [
+  "Remind message",
+  "Finding new indication",
+  "Competitor attack",
+  "Thanking visit",
+  "Sharpen Commitment",
+  "Demonstrate a new message",
+  "Handle Objections",
+  "Make a deal",
+  "Finding new needs"
+];
+
+export const visitTypes = [
+  "pm face to face",
+  "am face to face",
+  "sample visit",
+  "double visit"
+];

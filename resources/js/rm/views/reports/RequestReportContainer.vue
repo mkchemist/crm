@@ -1,6 +1,6 @@
 <template>
   <div>
-    <requests-report :users="[]" :manager="true" :ownerId="null" />
+    <requests-report :users="[]" :manager="true" :ownerId="$store.state.UserModule.user.id" />
   </div>
 </template>
 

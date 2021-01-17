@@ -134,13 +134,19 @@ class ActivityReportController extends Controller
     private function getUserReports(User $user, $model)
     {
       switch ($user->role) {
-        case 'dm':
+        case 'rep':
+          return $model->where(['user_id'=> $user->id]);
+        default:
           $relations = json_decode($user->user_relations);
           $users = $relations->reps;
           $users[] = $user->id;
+          if($user->role === "rm" || $user->role === "am") {
+            $users = array_merge($users, $relations->dm);
+          }
+          if($user->role === "rm") {
+            $user = array_merge($users, $relations->am);
+          }
           return $model->whereIn('user_id', $users);
-        default:
-         return $model->where(['user_id'=> $user->id]);
       }
     }
 }

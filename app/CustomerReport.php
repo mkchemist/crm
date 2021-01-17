@@ -21,6 +21,11 @@ class CustomerReport extends Model
     'visit_type'
   ];
 
+
+  protected $attributes = [
+  "visit_type"  =>  "PM face to face"
+  ];
+
   public function customer()
   {
     return $this->belongsTo("App\Customer", "customer_id", "id");

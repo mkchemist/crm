@@ -28,7 +28,7 @@
         </table-component>
       </div>
       <div v-else-if="isFetched" class="p-3 text-center">
-        <p>No data to show</p>
+        <no-data-to-show :title="`No Requests found`" />
       </div>
       <div class="p-2" v-else>
         <loader-component></loader-component>
@@ -40,12 +40,14 @@
 <script>
 import { httpCall } from '../../../helpers/http-service'
 import TableComponent from "../../../components/TableComponent"
+import NoDataToShow from '../../../components/NoDataToShow.vue';
 export default {
   created() {
     this.getRequestsList();
   },
   components: {
-    TableComponent
+    TableComponent,
+    NoDataToShow
   },
   data: () => ({
     customers: [],
