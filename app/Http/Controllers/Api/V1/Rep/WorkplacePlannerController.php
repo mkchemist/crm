@@ -23,11 +23,13 @@ class WorkplacePlannerController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cycle = new ActiveCycleSetting;
-        $date = $cycle->all();
+        $activeCycle = new ActiveCycleSetting;
+        $cycle = $activeCycle->all();
+        $start = $cycle->start;
+        $end = $cycle->end;
         $WorkplacePlannerQuery = WorkplacePlanner::with('workplace')
         ->where('user_id', $user->id)->orderBy('plan_date');
-        if(request()->start && request()->end) {
+        /* if(request()->start && request()->end) {
           $plans = $WorkplacePlannerQuery->whereBetween('plan_date', [request()->start, request()->end])
           ->get();
         }elseif($date) {
@@ -36,7 +38,14 @@ class WorkplacePlannerController extends Controller
 
         } else {
           $plans = $WorkplacePlannerQuery->get();
+        } */
+        if((integer)request()->start) {
+          $start = request()->start;
         }
+        if((integer)request()->end) {
+          $end = request()->end;
+        }
+        $plans = $WorkplacePlannerQuery->whereBetween('plan_date', [$start, $end])->get();
         $submitted = $WorkplacePlannerQuery->where('submitted', true)->first();
         return response()->json([
             'code' => 201,

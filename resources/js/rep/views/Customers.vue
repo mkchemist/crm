@@ -18,7 +18,7 @@ export default {
   components: {
     SidebarComponent
   },
-  created() {
+  mounted() {
     this.$store.dispatch("customerGetAll");
   },
   data: () => ({

@@ -13,6 +13,21 @@
           <span><i class="fa fa-plus-circle"></i></span>
           <span>new</span>
         </router-link>
+        <button class="btn btn-sm btn-primary" @click="openFilterModal">
+          <span class="fa fa-filter"></span>
+          <span>Filter</span>
+        </button>
+        <div class="text-left">
+          <data-filter-box
+          :show="showFilterModal"
+          :onClose="closeFilterModal"
+          :data="all"
+          :onFilter="onFilter"
+          :onReset="onReset"
+          :queryKeys="['area','brick', 'plans', 'visits']"
+          :queryOnly="false"
+          />
+        </div>
       </div>
       <div v-if="all.length" class="p-2">
         <!-- <hospital-table :data="all" /> -->
@@ -51,7 +66,7 @@
             <th>State</th>
           </template>
           <template v-slot:body="{ item }">
-            <td :class="`${calculateState(item).class}`">{{ calculateState(item).title }}</td>
+            <td><span v-html="calculateState(item)"></span></td>
             <td>{{ item.address }}</td>
             <td>{{ item.phone }}</td>
             <td>{{ item.brick }}</td>
@@ -79,12 +94,16 @@
 <script>
 import TableComponent from "../../../components/TableComponent";
 import NoDataToShow from "../../../components/NoDataToShow";
+import DataFilterBox from '../../../components/DataFilterBox.vue';
 export default {
   mounted() {
     this.$store.dispatch("workplaceGetAll");
   },
   computed: {
     all() {
+      if(this.shouldRenderFilter) {
+        return this.filteredList
+      }
       return this.$store.getters.allWorkplaces;
     },
     fetched() {
@@ -93,10 +112,12 @@ export default {
   },
   components: {
     TableComponent,
-    NoDataToShow
+    NoDataToShow,
+    DataFilterBox
   },
   data: () => ({
-    heads: [
+
+       heads: [
       {
         title: "Name",
         name: "name"
@@ -117,39 +138,47 @@ export default {
         title: 'Diff',
         name:'diff'
       }
-    ]
+    ],
+    showFilterModal: false,
+    shouldRenderFilter: false,
+    filteredList: []
   }),
   methods: {
     calculateState(item) {
-      let diff = item.diff;
-      let plans = item.plans;
-      let visits = item.visits;
-      if(diff === 0 && plans === 0) {
-        return  {
-          title: 'Not Planned',
-          class: 'bg-dark text-light'
-        };
-      } else if(diff ===0 && plans !== 0) {
-        return {
-          title: 'Accomplished',
-          class: 'bg-success text-light'
-        }
-      }else if (diff > 0 && visits !== 0){
-        return {
-          title: 'missed',
-          class: "bg-warning text-dark"
-        }
-      }else if(diff > 0 && visits === 0) {
-        return {
-          title: 'uncoverd',
-          class: "bg-danger text-light"
-        }
+      let diff = item.diff,
+          plans = item.plans,
+          flag, style;
+      if(diff > 0 && diff === plans) {
+        flag = "Not targeted";
+        style = "bg-dark text-light"
+      } else if(diff > 0 && diff !== plans) {
+        flag = "Missed";
+        style = "bg-warning text-dark"
+      } else if(diff === 0) {
+        flag = "Accomplished";
+        style = "bg-success text-light"
       } else {
-        return {
-          title: 'over',
-          class: 'bg-primary text-light'
-        }
+        flag = "Over";
+        style = "bg-info text-light"
       }
+      return `<span class="p-1 rounded ${style}">${flag}</span>`
+    },
+    openFilterModal() {
+       this.showFilterModal = true;
+    },
+    closeFilterModal() {
+      this.showFilterModal = false;
+    },
+    onFilter(query,data) {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      let asyncDataFlow = () => Promise.resolve(data)
+      asyncDataFlow().then(data => this.filteredList = data);
+    },
+    onReset() {
+      this.filteredList = [];
+      let asyncDataFlow = () => Promise.resolve(this.$store.getters.allWorkplaces)
+      asyncDataFlow().then(data => this.filteredList = data);
     }
   }
 };

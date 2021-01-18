@@ -21,9 +21,21 @@ class WorkplaceReportController extends Controller
    */
   public function index()
   {
+    $user = Auth::user();
     $cycle = new ActiveCycleSetting;
     $date = $cycle->all();
-    if($date) {
+    $start = $date->start;
+    $end =$date->end;
+    if((integer)request()->start) {
+      $start = request()->start;
+    }
+    if((integer)request()->end) {
+      $end = request()->end;
+    }
+    $visits = WorkplaceReport::with(['customer', 'workplace']);
+    $visits = $visits->whereBetween('visit_date', [$start, $end])
+              ->where('user_id', $user->id)->get();
+    /* if($date) {
       $visits = WorkplaceReport::with(['customer', 'workplace'])
       ->where([
         'user_id' =>  Auth::user()->id
@@ -36,7 +48,8 @@ class WorkplaceReportController extends Controller
         'user_id' =>  Auth::user()->id
       ])->orderBy('visit_date', 'asc')->get();
 
-    }
+    } */
+
 
     return response()->json([
       'code'  =>  201,

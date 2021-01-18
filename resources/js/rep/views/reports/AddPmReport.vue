@@ -11,7 +11,9 @@
             <!-- visit customer and date -->
             <div class="row mx-auto my-2 border rounded p-2">
               <div class="col-lg row mx-auto align-items-center">
-                <label for="customer" class="text-muted col-lg-2">Customer</label>
+                <label for="customer" class="text-muted col-lg-2"
+                  >Customer</label
+                >
                 <div class="col-lg-7">
                   <ValidationProvider
                     name="customer"
@@ -81,6 +83,8 @@
                     id="date"
                     class="form-control form-control-sm"
                     v-model="visit.date"
+                    :max="new Date().format()"
+                    :min="minReportInterval"
                   />
                 </ValidationProvider>
               </div>
@@ -109,7 +113,7 @@
                   >
                     <option
                       :value="type"
-                      v-for="(type, i) in $store.state.AppModule.visitTypes"
+                      v-for="(type, i) in visit_types"
                       :key="`visit_type_${i}`"
                       >{{ type | capital }}</option
                     >
@@ -144,24 +148,22 @@
                   </ValidationProvider>
                 </div>
                 <div class="form-group">
+                  <label for="" class="text-muted small">Coach 2</label>
 
-                    <label for="" class="text-muted small">Coach 2</label>
-
-                    <select
-                      name="coach2_id"
-                      id="coach2_id"
-                      class="form-control form-control-sm"
-                      v-model="visit.coach2_id"
+                  <select
+                    name="coach2_id"
+                    id="coach2_id"
+                    class="form-control form-control-sm"
+                    v-model="visit.coach2_id"
+                  >
+                    <option value="">Select coach</option>
+                    <option
+                      :value="coach.id"
+                      v-for="coach in coach2"
+                      :key="coach.id"
+                      >{{ coach.name }}</option
                     >
-                      <option value="">Select coach</option>
-                      <option
-                        :value="coach.id"
-                        v-for="coach in coach2"
-                        :key="coach.id"
-                        >{{ coach.name }}</option
-                      >
-                    </select>
-
+                  </select>
                 </div>
               </div>
             </div>
@@ -226,6 +228,7 @@
 import { httpCall } from "../../../helpers/http-service";
 import VisitProducts from "../../components/VisitProducts";
 import CustomerSelectFilter from "../../components/CustomerSelectFilter";
+import { visitTypes } from "../../../helpers/constants";
 export default {
   mounted() {
     this.$store.dispatch("customerGetAll");
@@ -244,13 +247,14 @@ export default {
       date: new Date().format("YYYY-MM-DD"),
       dual: false,
       dual_with: "",
-      coach2_id: '',
+      coach2_id: "",
       comment: "",
       products: [],
       general_feedback: "",
       visit_type: "pm face to face"
     },
-    is_single_customer: false
+    is_single_customer: false,
+    visit_types: visitTypes
   }),
   methods: {
     /**
@@ -307,10 +311,15 @@ export default {
       return this.$store.getters.coaches;
     },
     coach2() {
-      return this.$store.getters.coaches.filter(coach => coach.id !== this.visit.dual_with)
+      return this.$store.getters.coaches.filter(
+        coach => coach.id !== this.visit.dual_with
+      );
     },
     fetched() {
       return this.$store.getters.fetched;
+    },
+    minReportInterval() {
+     return this.$store.getters.reportIntervalMin;
     }
   },
   filters: {

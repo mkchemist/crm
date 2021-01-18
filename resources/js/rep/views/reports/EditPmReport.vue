@@ -65,7 +65,7 @@
                 >
                   <option
                     :value="type"
-                    v-for="(type, i) in $store.state.AppModule.visitTypes"
+                    v-for="(type, i) in visit_types"
                     :key="`visit_type_${i}`"
                     >{{ type | capital }}</option
                   >
@@ -185,6 +185,7 @@
 import { httpCall } from "../../../helpers/http-service";
 import { Calendar } from "../../../helpers/date-helpers";
 import VisitProducts from "../../components/VisitProducts";
+import { visitTypes } from '../../../helpers/constants';
 
 export default {
   mounted() {
@@ -220,7 +221,8 @@ export default {
     }
   },
   data: () => ({
-    visit: null
+    visit: null,
+    visit_types: visitTypes
   }),
   methods: {
     /**

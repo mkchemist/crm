@@ -22,59 +22,20 @@
               v-for="(customer, i) in plannedCustomers"
               :key="customer.id + '_' + i"
             >
-            <span :class="generateVisitLink(customer).icon"></span>
-        <span class="text-muted">{{ customer.title }}</span>
-        <router-link
-          :to="generateVisitLink(customer).link"
-          class="float-right"
-        >
-          <span><i :class="`fa fa-hands-helping ${generateVisitLink(customer).color}`"></i></span>
-        </router-link>
-              <!-- <span>
-                <i
-                  v-if="['AM', 'submitted AM'].includes(customer.class)"
-                  class="fa fa-hospital text-success"
-                ></i>
-                <i
-                  v-if="
-                    !['AM', 'submitted AM', 'PM', 'submitted PM'].includes(
-                      customer.class
-                    )
-                  "
-                  class="fa fa-user-plus text-dark"
-                ></i>
-                <i
-                  v-if="['PM', 'submitted PM'].includes(customer.class)"
-                  class="fa fa-user-md text-primary"
-                ></i>
-              </span>
-              <span class="text-muted small">{{ customer.title }}</span>
+              <span :class="generateVisitLink(customer).icon"></span>
+              <span class="text-muted">{{ customer.title }}</span>
               <router-link
-                :to="`/reports/add/pm/${customer.customer_id}`"
-                v-if="['PM', 'submitted PM'].includes(customer.class)"
+                :to="generateVisitLink(customer).link"
                 class="float-right"
               >
-                <span><i class="fa fa-hands-helping text-success"></i></span>
+                <span
+                  ><i
+                    :class="
+                      `fa fa-hands-helping ${generateVisitLink(customer).color}`
+                    "
+                  ></i
+                ></span>
               </router-link>
-              <router-link
-                :to="`/reports/add/am/${customer.workplace_id}`"
-                v-if="['AM', 'submitted AM'].includes(customer.class)"
-                class="float-right"
-              >
-                <span><i class="fa fa-hands-helping text-primary"></i></span>
-              </router-link>
-              <router-link
-                :to="`/reports/add/activity-report?type=${customer.class}`"
-                v-if="
-                  !['PM', 'submitted PM', 'AM', 'submitted AM'].includes(
-                    customer.class
-                  )
-                "
-                class="float-right"
-              >
-                <span><i class="fa fa-hands-helping text-dark"></i></span>
-              </router-link> -->
-
             </li>
           </ul>
         </div>
@@ -133,22 +94,22 @@ export default {
     },
     generateVisitLink(customer) {
       let data = {
-        icon: '',
-        link: '',
-        color: ''
-      }
-      if(['AM', 'submitted AM'].includes(customer.class)) {
-        data.icon = 'fa fa-hospital text-success';
-        data.link = `/reports/add/am/${customer.workplace_id}`
-        data.color = 'text-success'
-      } else if(['PM', 'submitted PM'].includes(customer.class)) {
-        data.icon = 'fa fa-user-md text-primary';
-        data.link = `/reports/add/pm/${customer.customer_id}`
-        data.color = 'text-primary'
+        icon: "",
+        link: "",
+        color: ""
+      };
+      if (["AM", "submitted AM"].includes(customer.class)) {
+        data.icon = "fa fa-hospital text-success";
+        data.link = `/reports/add/am/${customer.workplace_id}`;
+        data.color = "text-success";
+      } else if (["PM", "submitted PM"].includes(customer.class)) {
+        data.icon = "fa fa-user-md text-primary";
+        data.link = `/reports/add/pm/${customer.customer_id}`;
+        data.color = "text-primary";
       } else {
-        data.icon = 'fa fa-user-plus text-dark';
-        data.link = `/reports/add/activity-report?type=${customer.class}`
-        data.color = 'text-dark'
+        data.icon = "fa fa-user-plus text-dark";
+        data.link = `/reports/add/activity-report?type=${customer.class}`;
+        data.color = "text-dark";
       }
       return data;
     }

@@ -3,6 +3,7 @@
     <div class="p-2 row mx-auto">
       <!-- side controller -->
       <div class="col-lg-3">
+        <cycle-selection :onSelect="getReports" :onReset="resetCycle" />
         <!-- user control -->
         <user-filter-box
           :users="users"
@@ -18,7 +19,7 @@
           :on-reset="resetDataFilter"
           :dateField="`start`"
         />
-        <router-link :to="`${backLink ? backLink : '/reports'}`" class="btn btn-sm btn-dark btn-block my-2">
+        <router-link :to="backLink" class="btn btn-sm btn-dark btn-block my-2">
           <span class="fa fa-chevron-circle-left"></span>
           <span>back</span>
         </router-link>
@@ -54,12 +55,19 @@
 
 <script>
 import { httpCall } from "../helpers/http-service";
+import CycleSelection from "./CycleSelection.vue";
 import DateFilterBox from "./DateFilterBox.vue";
 import NoDataToShow from "./NoDataToShow.vue";
 import TableComponent from "./TableComponent.vue";
 import UserFilterBox from "./UserFilterBox.vue";
 export default {
-  components: { UserFilterBox, DateFilterBox, NoDataToShow, TableComponent },
+  components: {
+    UserFilterBox,
+    DateFilterBox,
+    NoDataToShow,
+    TableComponent,
+    CycleSelection
+  },
   mounted() {
     if (!this.$route.query.type) {
       this.$router.push("/reports/activity-report?type=field-activity");
@@ -73,7 +81,23 @@ export default {
 
     this.getReports();
   },
-  props: ["users", "backLink"],
+  props: {
+    users: {
+      type: Array,
+      required: true
+    },
+    backLink: {
+      type: String,
+      default: "/reports"
+    },
+    cycle: {
+      type: Object,
+      default: () => ({
+        start: null,
+        end: null
+      })
+    }
+  },
   data: () => ({
     reportRawData: [],
     reportData: [],
@@ -113,7 +137,9 @@ export default {
   methods: {
     getReports() {
       let request = {
-        type: this.report_type
+        type: this.report_type,
+        start: this.cycle.start,
+        end: this.cycle.end
       };
       this.isReportsFetched = false;
       this.reports = [];
@@ -138,6 +164,10 @@ export default {
       let async = () => Promise.resolve(this.reportRawData);
       this.reportData = [];
       async().then(data => (this.reportData = data));
+    },
+    resetCycle() {
+      this.$store.commit("resetActiveCycle");
+      this.getReports();
     }
   }
 };

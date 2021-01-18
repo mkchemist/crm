@@ -22,7 +22,7 @@
           v-model="product.name"
         >
           <option
-            v-for="(item, i) in rep_products"
+            v-for="(item, i) in products"
             :key="i"
             :value="item.name"
             >{{ item.name }}</option
@@ -81,12 +81,6 @@
 
       <div class="col-lg">
         <label for="competitor" class="text-muted small">Competitor</label>
-        <!-- <input
-          type="text"
-          name="competitor"
-          class="form-control form-control-sm"
-          v-model="product.competitor"
-        /> -->
         <select
           name="competitor"
           id="competitor"
@@ -127,6 +121,7 @@
 </template>
 
 <script>
+import { lader_of_adaption, visit_actions } from '../../helpers/constants';
 import { httpCall } from "../../helpers/http-service";
 export default {
   mounted() {
@@ -134,18 +129,12 @@ export default {
   },
   props: ["data", "pharmacyProducts"],
   computed: {
-    products() {
-      return this.$store.getters.products;
-    },
-    lader() {
-      return this.$store.getters.lader;
-    },
-    visitActions() {
-      return this.$store.getters.visitActions;
-    }
+
   },
   data: () => ({
-    rep_products: []
+    products: [],
+    lader : lader_of_adaption,
+    visitActions: visit_actions
   }),
   methods: {
     addNewProduct() {
@@ -169,14 +158,14 @@ export default {
         .get("rep/v1/rep-line")
         .then(({ data }) => {
           this.handleResponse(data, data => {
-            this.rep_products = data.data;
+            this.products = data.data;
           });
         })
         .catch(err => console.log(err));
     },
     getProductCompetitors(product, i) {
       let competitors = [];
-      this.rep_products.map(product => {
+      this.products.map(product => {
         if (product.name === this.data[i].name) {
           competitors = Array.from(product.competitors);
         }

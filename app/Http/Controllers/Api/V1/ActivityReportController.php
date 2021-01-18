@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Helpers\ResponseHelper;
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ActivityReportResource;
 use App\NonFieldActivityReport;
@@ -24,10 +25,11 @@ class ActivityReportController extends Controller
       $user = Auth::user();
       $reports = NonFieldActivityReport::with(['user'])->where(['type'=>$type]);
       $reports = $this->getUserReports($user, $reports);
+      $reports = $this->withinPeriod($reports);
       $reports = $reports->orderBy('start','asc')->orderBy('end','asc')->get();
       return response([
         'code'  =>  200,
-        'data'  =>  ActivityReportResource::collection($reports),
+        'data'  =>  ActivityReportResource::collection($reports)
       ]);
     }
 
@@ -148,5 +150,27 @@ class ActivityReportController extends Controller
           }
           return $model->whereIn('user_id', $users);
       }
+    }
+
+    /**
+     * get activity report withing the given periods
+     *
+     * @param Builder $model
+     * @return Builder
+     */
+    private function withinPeriod($model)
+    {
+      $activeCycle = new ActiveCycleSetting;
+      $cycle = $activeCycle->all();
+      $start = $cycle->start;
+      $end = $cycle->end;
+      if((integer)request()->start) {
+        $start = request()->start;
+      }
+      if((integer)request()->end) {
+        $end = request()->end;
+      }
+      $model = $model->whereBetween('start', [$start, $end]);
+      return $model;
     }
 }

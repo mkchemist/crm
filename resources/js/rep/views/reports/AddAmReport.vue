@@ -16,6 +16,8 @@
                   type="date"
                   v-model="visit.date"
                   class="form-control form-control-sm"
+                  :max="new Date().format()"
+                  :min="minReportInterval"
                 />
               </div>
               <!-- workplace -->
@@ -184,7 +186,7 @@ import VisitProducts from "../../components/VisitProducts";
 import { httpCall } from "../../../helpers/http-service";
 
 export default {
-  created() {
+  mounted() {
     this.$store.dispatch("customerGetAll").finally(() => {
       this.$store.dispatch("workplaceGetAll");
     });
@@ -220,15 +222,16 @@ export default {
       if (this.visit.workplace_id && this.filter_departs.length) {
         data = customers.filter(
           customer =>
-            parseInt(customer.workplace_id) === parseInt(this.visit.workplace_id) &&
+            parseInt(customer.workplace_id) ===
+              parseInt(this.visit.workplace_id) &&
             this.filter_departs.includes(customer.specialty)
         );
       }
       return data;
     },
     workplace() {
-      if (!this.workplaces.length) {
-        return;
+      if (!this.workplaces.length || !this.$route.params.id) {
+        return null;
       }
       let id = parseInt(this.$route.params.id);
       let workplace = this.workplaces.filter(
@@ -237,6 +240,9 @@ export default {
       this.departs = workplace.depart;
       this.visit.customers = [];
       return workplace;
+    },
+    minReportInterval() {
+      return this.$store.getters.reportIntervalMin;
     }
   },
   methods: {

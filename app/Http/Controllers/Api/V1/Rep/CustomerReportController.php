@@ -28,15 +28,23 @@ class CustomerReportController extends Controller
             'customer', 'customer.params', 'customer.frequency', 'customer.planner', 'user', 'coach', 'coach2',
         ])
             ->where(['user_id' => Auth::user()->id]);
+        $start = $activeCycle->start;
+        $end = $activeCycle->end;
+        if((integer)request()->start) {
+          $start = request()->start;
+        }
+        if((integer)request()->end) {
+          $end = request()->end;
+        }
         if ($activeCycle) {
-            $visits = $visits->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end]);
+            $visits = $visits->whereBetween('visit_date', [$start, $end]);
 
         }
         $visits = $visits->get();
         return response()->json([
             'code' => 201,
             'data' => ReportResource::collection($visits),
-            'cycle' => $activeCycle,
+            'cycle' => [$start, $end],
         ]);
     }
 

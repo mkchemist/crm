@@ -51,7 +51,7 @@ import { CUSTOMERS_TABLE_HEADS } from '../../../helpers/constants';
 import NoDataToShow from "../../../components/NoDataToShow";
 
 export default {
-  created() {
+  mounted() {
     this.getFavoriteList();
   },
   data: () => ({

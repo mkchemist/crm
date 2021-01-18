@@ -53,7 +53,9 @@ import { filterBy, filterByDate, sortBy } from "../../helpers/helpers";
 export default {
   computed: {
     reps() {
-      return sortBy(this.$store.getters.allReps, "name");
+      let reps = sortBy(this.$store.getters.allReps, 'name');
+      reps = [this.$store.getters.user, ... reps];
+      return reps;
     }
   },
   props: {

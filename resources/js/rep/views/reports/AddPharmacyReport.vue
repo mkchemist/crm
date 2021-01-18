@@ -55,6 +55,8 @@
                     name="date"
                     v-model="visit.date"
                     class="form-control form-control-sm"
+                    :max="new Date().format()"
+                    :min="minReportInterval"
                   />
                 </ValidationProvider>
               </div>
@@ -233,7 +235,7 @@ export default {
     VisitProducts,
     ModalFade
   },
-  created() {
+  mounted() {
     this.$store.dispatch("pharmacyGetAll");
     if (this.$route.params.id) {
       this.is_single_pharmacy = true;
@@ -342,6 +344,9 @@ export default {
       let pharmacies = this.$store.getters.pharmacies;
       let data = filterData(pharmacies, "brick");
       return data;
+    },
+    minReportInterval() {
+      return this.$store.getters.reportIntervalMin
     }
   }
 };

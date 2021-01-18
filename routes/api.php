@@ -47,6 +47,8 @@ Route::group([
   Route::apiResource('/customer-requests', 'Api\V1\CustomerRequestController');
   /** Requests type */
   Route::get('/request-types', 'Api\V1\RequestsTypeController@index');
+  /* application setting */
+  Route::get('app-setting', 'Api\V1\ApplicationSetting@index');
 });
 
 

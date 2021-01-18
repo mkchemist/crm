@@ -8,18 +8,18 @@
 </template>
 
 <script>
-/**
- * //TODO creating planner page
- * //TODO creating reports page
- * //TODO createing reps reports page
- */
+
 import Navbar from "./components/Navbar"
 export default {
   components: {
     Navbar
   },
-  created(){
-    this.$store.dispatch('getAllReps')
+  mounted(){
+    this.$store.dispatch('fetchingApplicationSettings')
+    .then(() => {
+      this.$store.dispatch('getAllReps');
+
+    })
   }
 }
 </script>

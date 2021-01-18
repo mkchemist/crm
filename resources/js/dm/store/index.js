@@ -6,6 +6,8 @@ import WorkplaceModule from "./workplace-module";
 import PlannerModule from "./planner-module";
 import ReportModule from './reports-module';
 import CoachModule from './coach-module';
+import SettingModule from "../../shared/store/setting-module";
+
 Vue.use(Vuex);
 
 let user = document.getElementById("user");
@@ -22,7 +24,8 @@ export default new Vuex.Store({
     WorkplaceModule,
     PlannerModule,
     ReportModule,
-    CoachModule
+    CoachModule,
+    SettingModule
   },
   state: {
     reps: [],

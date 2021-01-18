@@ -24,24 +24,29 @@ class PlannerController extends Controller
     {
         $activeCycle = new ActiveCycleSetting;
         $activeCycleData = $activeCycle->all();
+        $start = $activeCycleData->start;
+        $end = $activeCycleData->end;
         $user = Auth::user();
         $model = Planner::query();
-        $plans = $model->with(['customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user'])
-        ->where('user_id', $user->id)->orderBy('plan_date', 'asc');
-        if(request()->start && request()->end) {
-          $plans = $plans->whereBetween('plan_date', [request()->start, request()->end])->get();
-        } elseif($activeCycleData) {
-          $plans = $plans->whereBetween('plan_date', [$activeCycleData->start, $activeCycleData->end])
-          ->get();
-        } else {
-          $plans = $plans->get();
+        $plans = $model->with([
+            'customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user',
+        ])
+            ->where('user_id', $user->id)->orderBy('plan_date', 'asc');
+        if((integer)request()->start) {
+          $start = request()->start;
+        }
+        if((integer) request()->end) {
+          $end = request()->end;
         }
 
-        $isSubmitted = $model->where(['submitted'=> true, 'user_id' => $user->id])->first();
+        $plans = $plans->whereBetween('plan_date', [$start, $end])->get();
+
+
+        $isSubmitted = $model->where(['submitted' => true, 'user_id' => $user->id])->first();
         return response()->json([
             'code' => 201,
             'data' => RepPlannerResource::collection($plans),
-            'submitted' => $isSubmitted ? true : false
+            'submitted' => $isSubmitted ? true : false,
         ]);
     }
 
@@ -56,20 +61,20 @@ class PlannerController extends Controller
         $ids = json_decode($request->customers);
         $exists = [];
         $user = Auth::user();
-        if($this->isPassedDay($request->date)) {
-          return $this->isPassedDay($request->date);
+        if ($this->isPassedDay($request->date)) {
+            return $this->isPassedDay($request->date);
         }
-       /*  $isNotValidDate = $this->isNotValidDate($request->date);
+        /*  $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
-            return response($isNotValidDate);
+        return response($isNotValidDate);
         } */
         $accepted = [];
         foreach ($ids as $id) {
-          Planner::updateOrCreate([
-              'customer_id' => $id,
-              'user_id' => $user->id,
-              'plan_date' => $request->date,
-          ]);
+            Planner::updateOrCreate([
+                'customer_id' => $id,
+                'user_id' => $user->id,
+                'plan_date' => $request->date,
+            ]);
         }
         return response()->json([
             'code' => 201,
@@ -99,8 +104,8 @@ class PlannerController extends Controller
     public function update(Request $request, $id)
     {
         $plan = $this->getPlanById($id);
-        if($this->isPassedDay($request->date)) {
-          return $this->isPassedDay($request->date);
+        if ($this->isPassedDay($request->date)) {
+            return $this->isPassedDay($request->date);
         }
         $check = $this->checkIfExists($plan->customer_id, $request->date);
         if ($check) {
@@ -108,7 +113,7 @@ class PlannerController extends Controller
         }
         /* $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
-            return response($isNotValidDate);
+        return response($isNotValidDate);
         } */
         $plan->plan_date = $request->date;
         $plan->save();
@@ -151,7 +156,7 @@ class PlannerController extends Controller
         Planner::where([
             'user_id' => Auth::user()->id,
             'plan_date' => $request->date,
-            'submitted' =>  false
+            'submitted' => false,
         ])->whereIn('id', $ids)->delete();
         return response()->json([
             'code' => 201,
@@ -174,19 +179,19 @@ class PlannerController extends Controller
         if ($validator->fails()) {
             return response()->json(ResponseHelper::validationErrorResponse($validator));
         }
-        if($this->isPassedDay($request->date)) {
-          return $this->isPassedDay($request->date);
+        if ($this->isPassedDay($request->date)) {
+            return $this->isPassedDay($request->date);
         }
-      /*   $isNotValidDate = $this->isNotValidDate($request->date);
+        /*   $isNotValidDate = $this->isNotValidDate($request->date);
         if ($isNotValidDate) {
-            return response($isNotValidDate);
+        return response($isNotValidDate);
         } */
         $rejected = [];
         $accepted = [];
         $plans = Planner::where([
             'plan_date' => $request->date,
             'user_id' => Auth::user()->id,
-            'submitted' => false
+            'submitted' => false,
         ])->get();
         foreach ($plans as $plan) {
             $check = $this->checkIfExists($plan->customer_id, $request->replan_date);
@@ -226,7 +231,7 @@ class PlannerController extends Controller
         Planner::where([
             'plan_date' => $request->date,
             'user_id' => Auth::user()->id,
-            'submitted' =>  false
+            'submitted' => false,
         ])->delete();
         return response()->json([
             'code' => 201,
@@ -262,39 +267,38 @@ class PlannerController extends Controller
         $plan = Planner::where([
             'id' => $id,
             'user_id' => Auth::user()->id,
-            'submitted' =>  false
+            'submitted' => false,
         ])->first();
         return $plan;
     }
 
-
     public function submitPlan()
     {
-      $user = Auth::user();
-      $activeCycle = new ActiveCycleSetting;
-      $data = $activeCycle->all();
-      if(!$data) {
-        return response([
-          'code'  =>  400,
-          'data' => [
-            'errors' => [
-              'No active cycle selected'
-            ]
-          ]
+        $user = Auth::user();
+        $activeCycle = new ActiveCycleSetting;
+        $data = $activeCycle->all();
+        if (!$data) {
+            return response([
+                'code' => 400,
+                'data' => [
+                    'errors' => [
+                        'No active cycle selected',
+                    ],
+                ],
+            ]);
+        }
+        $start = $data->start;
+        $end = $data->end;
+        $plans = Planner::where([
+            'user_id' => $user->id,
+            'submitted' => false,
+        ])->whereBetween('plan_date', [$start, $end])->update([
+            'submitted' => true,
         ]);
-      }
-      $start = $data->start;
-      $end = $data->end;
-      $plans = Planner::where([
-        'user_id' =>  $user->id,
-        'submitted'  =>  false
-      ])->whereBetween('plan_date', [$start, $end])->update([
-        'submitted' => true
-      ]);
-      return response([
-        'code'  =>  200,
-        'message' =>  'PM plans have been submitted'
-      ]);
+        return response([
+            'code' => 200,
+            'message' => 'PM plans have been submitted',
+        ]);
     }
 
 }

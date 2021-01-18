@@ -127,7 +127,10 @@
               class="form-control form-control-sm col"
               id="replan_date"
               v-model="selected_event.start"
-              :disabled="isSubmittedPlans"
+              :disabled="isSubmittedPlans || !Object.keys(activeCycle).length"
+              :min="activeCycle.start"
+              :max="activeCycle.end"
+
             />
           </div>
           <div class="Form-group text-right">
@@ -181,6 +184,9 @@
             type="date"
             v-model="duplicate_date"
             class="form-control form-control-sm"
+            :min="activeCycle.start"
+            :max="activeCycle.end"
+            :disabled="!Object.keys(activeCycle).length"
           />
         </div>
         <div class="form-group text-right">
@@ -213,6 +219,7 @@
             id="date_from"
             v-model="selected_event.date_start"
             class="form-control form-controls-m"
+            :min="new Date().format()"
           />
         </div>
         <div class="form-group">
@@ -222,6 +229,7 @@
             name="date_to"
             id="date_to"
             v-model="selected_event.date_end"
+            :min="new Date().format()"
             class="form-control form-controls-m"
           />
         </div>
@@ -593,6 +601,9 @@ export default {
     },
     isSubmittedPlans() {
       return this.$store.getters.isSubmittedPlans;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle;
     }
   }
 };

@@ -198,7 +198,7 @@ export default {
     error: false,
     error_code: null
   }),
-  created() {
+  mounted() {
     this.loading = true;
     this.$store.dispatch("workplaceGetAll");
     this.fetchCustomer();

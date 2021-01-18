@@ -8,7 +8,9 @@
     <div class="p-2 row mx-auto">
       <!-- add plans controller -->
       <div class="col-lg-6 p-2 border rounded" id="workplace_list">
-        <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">This day is submitted , you can't add or delete</p>
+        <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">
+          This day is submitted , you can't add or delete
+        </p>
         <p class="bg-dark text-light p-2" v-if="selected_workplaces.length">
           Selected : {{ selected_workplaces.length }}
         </p>
@@ -26,12 +28,26 @@
             <div>
               <div class="p-2">
                 <label>Brick</label>
-                <select name="brick" id="brick" class="form-control form-control-sm" :disabled="!filterBricks.length" v-model="selectedBrick">
-                  <option v-for="(brick, i) in filterBricks" :key="`brick_${i}`" :value="brick">{{ brick }}</option>
+                <select
+                  name="brick"
+                  id="brick"
+                  class="form-control form-control-sm"
+                  :disabled="!filterBricks.length"
+                  v-model="selectedBrick"
+                >
+                  <option
+                    v-for="(brick, i) in filterBricks"
+                    :key="`brick_${i}`"
+                    :value="brick"
+                    >{{ brick }}</option
+                  >
                 </select>
               </div>
               <div class="p-2 text-right">
-                <button class="btn btn-sm btn-primary" @click="filterWorkplaces">
+                <button
+                  class="btn btn-sm btn-primary"
+                  @click="filterWorkplaces"
+                >
                   <span class="fa fa-check-circle"></span>
                   <span>ok</span>
                 </button>
@@ -60,7 +76,11 @@
             <tbody>
               <tr v-for="workplace in workplaces" :key="workplace.id">
                 <td>
-                  <input type="checkbox" @click="addToSelected(workplace.id)" :disabled="isSubmittedPlans" />
+                  <input
+                    type="checkbox"
+                    @click="addToSelected(workplace.id)"
+                    :disabled="isSubmittedPlans"
+                  />
                 </td>
                 <td>{{ workplace.name }}</td>
                 <td>{{ workplace.address }}</td>
@@ -71,7 +91,10 @@
         </div>
         <div v-else-if="isWorkplaceFetched" class="text-center pt-5">
           <p class="font-weight-bold">No workplaces found</p>
-          <router-link to="/workplaces/add-hospital" class="btn btn-sm btn-primary">
+          <router-link
+            to="/workplaces/add-hospital"
+            class="btn btn-sm btn-primary"
+          >
             <span><i class="fa fa-plus-circle"></i></span>
             <span>add workplace</span>
           </router-link>
@@ -85,7 +108,9 @@
       </div>
       <!-- planned workplacess controller -->
       <div class="col-lg-6 p-2 rounded border" id="plans_list">
-        <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">This day is submitted , you can't add or delete</p>
+        <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">
+          This day is submitted , you can't add or delete
+        </p>
         <p class="bg-dark text-light p-2" v-if="deleted_workplaces.length">
           Selected : {{ deleted_workplaces.length }}
         </p>
@@ -102,7 +127,11 @@
             <tbody>
               <tr v-for="plan in amPlans" :key="plan.id">
                 <td>
-                  <input type="checkbox" @click="addToDeleted(plan.id)" :disabled="isSubmittedPlans" />
+                  <input
+                    type="checkbox"
+                    @click="addToDeleted(plan.id)"
+                    :disabled="isSubmittedPlans"
+                  />
                 </td>
                 <td>{{ plan.name }}</td>
                 <td>{{ plan.workplace.address }}</td>
@@ -121,7 +150,11 @@
         <span><i class="fa fa-chevron-circle-left"></i></span>
         <span class="font-weight-bold">back</span>
       </router-link>
-      <button class="btn btn-sm btn-success" @click="addPlans" :disabled="isSubmittedPlans">
+      <button
+        class="btn btn-sm btn-success"
+        @click="addPlans"
+        :disabled="isSubmittedPlans"
+      >
         <span
           class="px-1 text-success bg-light rounded-circle font-weight-bold"
           v-if="selected_workplaces.length"
@@ -129,7 +162,11 @@
         >
         <span class="font-weight-bold">add</span>
       </button>
-      <button class="btn btn-sm btn-danger" @click="deletePlans" :disabled="isSubmittedPlans">
+      <button
+        class="btn btn-sm btn-danger"
+        @click="deletePlans"
+        :disabled="isSubmittedPlans"
+      >
         <span
           class="px-1 text-danger bg-light rounded-circle font-weight-bold"
           v-if="deleted_workplaces.length"
@@ -155,12 +192,12 @@ export default {
     show_filter_modal: false,
     activeFilter: false,
     selectedBrick: null,
-    filteredList:[]
+    filteredList: []
   }),
   components: {
     ModalFade
   },
-  computed:{
+  computed: {
     amPlans() {
       let data = this.$store.getters.amPlans.filter(
         plan => plan.start === this.$attrs.date
@@ -169,10 +206,9 @@ export default {
     },
     rowWorkplaces() {
       return this.$store.getters.allWorkplaces;
-
     },
     workplaces() {
-      if(this.activeFilter) {
+      if (this.activeFilter) {
         return this.filteredList;
       }
       return this.$store.getters.allWorkplaces;
@@ -186,12 +222,12 @@ export default {
     filterBricks() {
       let workplaces = this.rowWorkplaces;
       let bricks = [];
-      if(workplaces.length) {
+      if (workplaces.length) {
         workplaces.forEach(workplace => {
-          if(!bricks.includes(workplace.brick)) {
+          if (!bricks.includes(workplace.brick)) {
             bricks.push(workplace.brick);
           }
-        })
+        });
       }
       return bricks;
     },
@@ -256,11 +292,11 @@ export default {
       httpCall
         .post("rep/v1/workplace-planner", data)
         .then(({ data }) => {
-          this.handleResponse(data, (data) => {
+          this.handleResponse(data, data => {
             data.rejected.forEach(item => {
-              this.$toasted.error(item)
+              this.$toasted.error(item);
             });
-          })
+          });
         })
         .finally(() => {
           /** get new workplace planner */
@@ -311,12 +347,12 @@ export default {
       this.activeFilter = true;
       let res = [];
       this.rowWorkplaces.map(workplace => {
-        if(workplace.brick === this.selectedBrick) {
-          res.push(workplace)
+        if (workplace.brick === this.selectedBrick) {
+          res.push(workplace);
         }
       });
-     this.filteredList = res;
-     this.show_filter_modal = false;
+      this.filteredList = res;
+      this.show_filter_modal = false;
     },
     reset() {
       this.activeFilter = false;

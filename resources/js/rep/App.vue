@@ -20,8 +20,11 @@ export default {
     Navbar
   },
   mounted() {
-    this.$store.dispatch('getCycles')
-    .then(() => this.$store.dispatch('getActiveCycle'))
+    this.$store.dispatch('fetchingApplicationSettings')
+    .then(() => {
+      this.$store.dispatch('getCycles')
+      .then(() => this.$store.dispatch('getActiveCycle'))
+    })
   }
 }
 </script>

@@ -29,6 +29,7 @@
                     }`
                   "
                   v-model="report.from"
+                  :max ="new Date().format()"
                 />
               </ValidationProvider>
             </div>
@@ -52,6 +53,8 @@
                     }`
                   "
                   v-model="report.to"
+                  :disabled="!report.from"
+                  :max="new Date().format()"
                 />
               </ValidationProvider>
             </div>

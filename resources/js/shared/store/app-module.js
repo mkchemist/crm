@@ -152,6 +152,46 @@ export default {
     canEditReportDate: false,
     reportInterval: 30
   },
+  getters: {
+    specialty: state => {
+      return state.specialties;
+    },
+    title: state => {
+      return state.titles;
+    },
+    param: state => {
+      return state.params;
+    },
+    hospitalTypes: state => {
+      return state.hospitalTypes;
+    },
+    pharmacyTypes: state => {
+      return state.pharmacyTypes;
+    },
+    visitTypes: state => {
+      return state.visitTypes;
+    },
+    products: state => {
+      return state.products;
+    },
+    lader: state => {
+      return state.lader_of_adaption;
+    },
+    visitActions: state => {
+      return state.visit_actions;
+    },
+    userLocations: state => {
+      return state.userLocations
+    },
+    isUserLocationsFetched: state => {
+      return state.isUserLocationsFetched;
+    },
+   /*  repCycles : state => state.cycles,
+    repActiveCycle: state => state.activeCycle,
+    canEditReportDate: state=> state.canEditReportDate,
+    reportInterval: state => state.reportInterval */
+  },
+  mutations: {},
   actions: {
     /**
      * get user locations
@@ -197,44 +237,6 @@ export default {
       }
     }
   },
-  mutations: {},
-  getters: {
-    specialty: state => {
-      return state.specialties;
-    },
-    title: state => {
-      return state.titles;
-    },
-    param: state => {
-      return state.params;
-    },
-    hospitalTypes: state => {
-      return state.hospitalTypes;
-    },
-    pharmacyTypes: state => {
-      return state.pharmacyTypes;
-    },
-    visitTypes: state => {
-      return state.visitTypes;
-    },
-    products: state => {
-      return state.products;
-    },
-    lader: state => {
-      return state.lader_of_adaption;
-    },
-    visitActions: state => {
-      return state.visit_actions;
-    },
-    userLocations: state => {
-      return state.userLocations
-    },
-    isUserLocationsFetched: state => {
-      return state.isUserLocationsFetched;
-    },
-    repCycles : state => state.cycles,
-    repActiveCycle: state => state.activeCycle,
-    canEditReportDate: state=> state.canEditReportDate,
-    reportInterval: state => state.reportInterval
-  }
+
+
 };

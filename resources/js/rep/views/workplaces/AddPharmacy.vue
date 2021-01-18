@@ -65,7 +65,7 @@
               </div>
             </div>
 
-            <!-- pharamcy location info -->
+            <!-- pharmacy location info -->
             <div class="row mx-auto">
               <div class="col-lg">
                 <label for="address" class="text-muted">Address</label>

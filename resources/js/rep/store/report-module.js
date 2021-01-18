@@ -35,15 +35,19 @@ export default {
      * @param {object} {state}
      * @param {boolean} force
      */
-    reportGetAll({state}, force) {
-      if(!state.pm_visits.length || force) {
-        state.fetched = false;
-        httpCall.get('rep/v1/reports/pm')
+    reportGetAll(module, payload = {}) {
+      if(!module.state.pm_visits.length || payload.force) {
+        module.state.fetched = false;
+        let query = {
+          start: payload.start || null,
+          end: payload.end || null
+        }
+        httpCall.get('rep/v1/reports/pm', query)
         .then(({data}) => {
           data.message = "PM reports loaded";
           ResponseHandler.methods.handleResponse(data, (data) => {
-            state.pm_visits = data.data;
-            state.fetched = true;
+            module.state.pm_visits = data.data;
+            module.state.fetched = true;
           });
         })
       }
@@ -54,10 +58,14 @@ export default {
      * @param {object} {state}
      * @param {boolean} force
      */
-    amGetAll({state}, force) {
-      if(!state.am_visits.length || force ) {
+    amGetAll({state}, payload = {}) {
+      if(!state.am_visits.length || payload ) {
         state.fetched = false;
-        httpCall.get('rep/v1/reports/am')
+        let query = {
+          start: payload.start || null,
+          end: payload.end || null
+        }
+        httpCall.get('rep/v1/reports/am', query)
         .then(({data}) => {
           data.message = "AM reports loaded";
           ResponseHandler.methods.handleResponse(data, data => {

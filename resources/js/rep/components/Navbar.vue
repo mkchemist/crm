@@ -3,9 +3,17 @@
     <nav class="navbar navbar-expand-lg navbar-light">
       <router-link to="/" class="navbar-brand">
         <img :src="`${base_url}images/logo.png`" alt="" class="img-fluid" />
-        <br />
         <span class="small text-muted d-none d-lg-block"
-          >Welcome {{ $store.state.AppModule.user.name }}</span
+          >Welcome
+          <span class="font-weight-bold text-success">{{
+            $store.state.UserModule.user.name
+          }}</span></span
+        >
+        <span class="small text-muted d-none d-lg-block"
+          >Line :
+          <span class="font-weight-bold text-success">{{
+            $store.getters.userLine
+          }}</span></span
         >
       </router-link>
       <button
@@ -131,7 +139,7 @@
                   <span class="fa fa-chevron-circle-right float-right"></span>
                 </span>
                 <ul class="dropdown-menu dropdown-menu-left">
-                   <li>
+                  <li>
                     <router-link
                       to="/reports/add/request"
                       class="drop-item small nav-link"
@@ -168,7 +176,6 @@
                       <span class="ml-1">New pharmacy</span>
                     </router-link>
                   </li>
-
                 </ul>
               </li>
             </ul>

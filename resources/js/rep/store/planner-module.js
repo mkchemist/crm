@@ -68,21 +68,35 @@ export default {
     }
   },
   actions: {
+    /* collect all plans */
+    collectPlans(Module, payload) {
+      let start = payload.start || null;
+      let end = payload.end || null
+
+      if(payload.force) {
+        Module.dispatch('getPlanner', {force: true ,start, end})
+        .then(() => {
+          Module.dispatch('getWorkplacePlanner', {force: true ,start, end})
+          .then(() => {
+            Module.dispatch('getNonFieldActivityPlans', {force: true ,start, end})
+          })
+        })
+      }
+    },
     /**
      * get all plans from API
      *
      * @param {object} {state}
      * @param {bool} force
      */
-    getPlanner({state, commit}, force) {
-      if(!state.plans.length || force) {
-        let queryString = {};
-        let activeCycle = this.state.AppModule.activeCycle;
-        if(activeCycle) {
-          queryString = activeCycle
+    getPlanner({state, commit}, payload) {
+      if(!state.plans.length || payload) {
+        let query = {
+          start: payload.start ,
+          end :payload.end
         }
 
-        return httpCall.get('rep/v1/planner', queryString)
+        return httpCall.get('rep/v1/planner', query)
         .then(({data}) => {
           state.fetched = true;
           data.message = "Planner loaded";
@@ -99,15 +113,15 @@ export default {
      * @param {object} {state}
      * @param {boolean} force
      */
-    getWorkplacePlanner({state, commit}, force) {
-      if(!state.workplacePlans.length || force) {
+    getWorkplacePlanner({state, commit}, payload) {
+      if(!state.workplacePlans.length || payload) {
         this.isWorkplacePlansFetched = false;
-        let queryString = {};
-        let activeCycle = this.state.AppModule.activeCycle;
-        if(activeCycle) {
-          queryString = activeCycle
+
+        let query = {
+          start: payload.start ,
+          end :payload.end
         }
-       return httpCall.get('rep/v1/workplace-planner',queryString)
+       return httpCall.get('rep/v1/workplace-planner',query)
         .then(({data}) => {
           this.isWorkplacePlansFetched = true;
           if(data.code === 201) {
@@ -127,10 +141,9 @@ export default {
      */
     getNonFieldActivityPlans({state}, payload) {
       if(!state.nonFieldActivityPlans.length || payload) {
-        let query = {};
-        let activeCycle = this.state.AppModule.activeCycle;
-        if(activeCycle) {
-          query = activeCycle
+        let query = {
+          start: payload.start ,
+          end :payload.end
         }
         state.nonFieldActivityPlans = [];
         return httpCall.get('activity-planner', query)

@@ -9,7 +9,9 @@
         <div class="col-lg-6 border rounded px-0">
           <p class="alert alert-info">Customers</p>
           <div class="p-2">
-            <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">This day is submitted , you can't add or delete</p>
+            <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">
+              This day is submitted , you can't add or delete
+            </p>
             <p
               v-if="selected_customers.length"
               class="bg-dark small text-light p-2"
@@ -17,7 +19,9 @@
               Selected : {{ selected_customers.length }}
             </p>
             <div class="d-flex flex-column mb-1">
-              <customer-select-filter :data="$store.getters.active"></customer-select-filter>
+              <customer-select-filter
+                :data="$store.getters.active"
+              ></customer-select-filter>
             </div>
             <div
               v-if="customers.length"
@@ -74,7 +78,9 @@
         <div class="col-lg-6 px-0 border rounded">
           <p class="alert alert-info">Date {{ $attrs.date }} plans</p>
           <div class="p-2">
-            <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">This day is submitted , you can't add or delete</p>
+            <p class="bg-warning text-dark p-2" v-if="isSubmittedPlans">
+              This day is submitted , you can't add or delete
+            </p>
             <p v-if="datePlan.length" class="p-2 bg-dark text-light small">
               total planned : {{ datePlan.length }}
             </p>
@@ -118,7 +124,11 @@
             <span><i class="fa fa-chevron-circle-left"></i></span>
             <span>back</span>
           </router-link>
-          <button class="btn btn-sm btn-success" @click="addPlan" :disabled="isSubmittedPlans||!selected_customers.length">
+          <button
+            class="btn btn-sm btn-success"
+            @click="addPlan"
+            :disabled="isSubmittedPlans || !selected_customers.length"
+          >
             <span
               class="bg-white text-success rounded-circle px-1 font-weight-bold"
               v-if="selected_customers.length"
@@ -130,7 +140,7 @@
             class="btn btn-sm btn-danger"
             v-if="deleted_customers.length"
             @click="deletePlans"
-            :disabled="isSubmittedPlans||!deleted_customers.length"
+            :disabled="isSubmittedPlans || !deleted_customers.length"
           >
             <span
               class="bg-white text-danger rounded-circle px-1 font-weight-bold"
@@ -145,12 +155,10 @@
 </template>
 
 <script>
-/**
- * //TODO create customer filters
- *
- */
+import { Calendar } from '../../../helpers/date-helpers';
+
 import { httpCall } from "../../../helpers/http-service";
-import CustomerSelectFilter from '../../components/CustomerSelectFilter';
+import CustomerSelectFilter from "../../components/CustomerSelectFilter";
 export default {
   data: () => ({
     selected_customers: [],
@@ -174,14 +182,13 @@ export default {
      * get customers
      */
     customers() {
-
       return this.$store.getters.customerFilter;
     },
     isFetched() {
       return this.$store.getters.fetched;
     },
     isSubmittedPlans() {
-      return this.$store.getters.isSubmittedPlans
+      return this.$store.getters.isSubmittedPlans;
     }
   },
   methods: {
@@ -193,10 +200,10 @@ export default {
     addToSelected(id) {
       let checked = event.target.checked;
       let customer = this.customers.filter(customer => customer.id === id)[0];
-      if(checked && !this.selected_customers.includes(customer.id)) {
+      if (checked && !this.selected_customers.includes(customer.id)) {
         this.selected_customers.push(customer.id);
       } else {
-        if(this.selected_customers.includes(customer.id)) {
+        if (this.selected_customers.includes(customer.id)) {
           let i = this.selected_customers.indexOf(customer.id);
           this.selected_customers.splice(i, 1);
         }
@@ -285,7 +292,8 @@ export default {
             });
         });
       });
-    }
+    },
+
   }
 };
 </script>

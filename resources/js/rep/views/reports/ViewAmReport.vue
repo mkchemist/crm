@@ -1,6 +1,7 @@
 <template>
   <div class="row mx-auto pb-5">
     <div class="col-lg-3">
+      <cycle-selection :onSelect="onSelect" :onReset="onResetCycle" />
       <date-filter-box :data="$store.getters.amVisits" :onFilter="onFilter" :onReset="onReset" :dateField="`date`" />
     </div>
     <div class="col-lg-9 px-0 shadow pb-5">
@@ -104,6 +105,7 @@ import { httpCall } from "../../../helpers/http-service";
 import { ProductWithLader } from "../../../helpers/constants";
 import DateFilterBox from '../../../components/DateFilterBox.vue';
 import NoDataToShow from '../../../components/NoDataToShow.vue';
+import CycleSelection from '../../../components/CycleSelection.vue';
 export default {
   mounted() {
     this.$store.dispatch("amGetAll");
@@ -114,6 +116,9 @@ export default {
         return this.filteredList;
       }
       return this.$store.getters.amVisits;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle
     }
   },
   components: {
@@ -121,6 +126,7 @@ export default {
     ModalFade,
     DateFilterBox,
     NoDataToShow,
+    CycleSelection,
   },
   data: () => ({
     shouldRenderFilter: false,
@@ -203,6 +209,19 @@ export default {
       this.filteredList = [];
       let async = ()=>Promise.resolve(this.$store.getters.amVisits);
       async().then(data => this.filteredList= data);
+    },
+    onSelect() {
+      this.$store.dispatch("amGetAll", {
+        start: this.activeCycle.start,
+        end: this.activeCycle.end
+      });
+    },
+    onResetCycle() {
+      this.$store.commit('resetActiveCycle');
+      this.$store.dispatch("amGetAll", {
+        start: this.activeCycle.start,
+        end: this.activeCycle.end
+      });
     }
   }
 };

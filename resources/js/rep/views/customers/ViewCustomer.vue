@@ -264,10 +264,7 @@
 </template>
 
 <script>
-/**
- * //TODO add other reps plans for the customer
- * //TODO add other reps reports for the customer
- */
+
 import { httpCall } from "../../../helpers/http-service";
 import ModalFade from "../../../components/ModalFade";
 import { filterByDate } from '../../../helpers/helpers';

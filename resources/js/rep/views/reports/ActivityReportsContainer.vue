@@ -1,6 +1,6 @@
 <template>
   <div>
-    <activity-report :users="[]"/>
+    <activity-report :users="[]" :cycle="activeCycle"/>
   </div>
 </template>
 
@@ -8,7 +8,11 @@
 import ActivityReport from '../../../components/ActivityReport.vue'
 export default {
   components: { ActivityReport },
-
+  computed: {
+    activeCycle() {
+      return this.$store.getters.activeCycle;
+    }
+  }
 }
 </script>
 

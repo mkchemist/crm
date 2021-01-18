@@ -2,6 +2,7 @@
   <div>
     <div class="row mx-auto">
       <div class="col-lg-3">
+        <cycle-selection :onSelect="selectCycle" :onReset="resetCycle"/>
         <date-filter-box :data="$store.getters.pmVisits" :onFilter="onFilter" :onReset="onReset" :dateField="`date`" />
       </div>
       <div class="col-lg-9">
@@ -92,6 +93,7 @@
 </template>
 
 <script>
+import CycleSelection from '../../../components/CycleSelection.vue';
 import DateFilterBox from '../../../components/DateFilterBox.vue';
 import ModalFade from '../../../components/ModalFade.vue';
 import NoDataToShow from '../../../components/NoDataToShow.vue';
@@ -108,16 +110,20 @@ export default {
         return this.filteredList;
       }
       return this.$store.getters.pmVisits;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle
     }
   },
   components: {
     TableComponent,
     DateFilterBox,
     NoDataToShow,
-    ModalFade
+    ModalFade,
+    CycleSelection
   },
   data: () => ({
-    headers: [
+       headers: [
       {
         title: "ID",
         name: "id"
@@ -214,6 +220,17 @@ export default {
       this.filteredList = [];
       let async = ()=>Promise.resolve(this.$store.getters.pmVisits);
       async().then(data => this.filteredList= data);
+    },
+    selectCycle() {
+       this.$store.dispatch("reportGetAll", {
+         force: true,
+         start: this.activeCycle.start,
+         end: this.activeCycle.end
+       })
+    },
+    resetCycle() {
+      this.$store.commit('resetActiveCycle');
+      this.$store.dispatch('reportGetAll');
     }
   }
 };
