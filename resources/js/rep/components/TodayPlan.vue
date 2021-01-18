@@ -55,11 +55,12 @@
 <script>
 export default {
   mounted() {
-    this.$store.dispatch("getNonFieldActivityPlans").finally(() => {
+    this.$store.dispatch('collectPlans')
+    /* this.$store.dispatch("getNonFieldActivityPlans").finally(() => {
       this.$store.dispatch("getWorkplacePlanner").finally(() => {
         this.$store.dispatch("getPlanner");
       });
-    });
+    }); */
   },
   data: () => ({
     isLoading: false,
