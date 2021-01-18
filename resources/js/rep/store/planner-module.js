@@ -89,7 +89,7 @@ export default {
      * @param {object} {state}
      * @param {bool} force
      */
-    getPlanner({state, commit}, payload) {
+    getPlanner({state, commit}, payload = {}) {
       if(!state.plans.length || payload) {
         let query = {
           start: payload.start ,
@@ -113,7 +113,7 @@ export default {
      * @param {object} {state}
      * @param {boolean} force
      */
-    getWorkplacePlanner({state, commit}, payload) {
+    getWorkplacePlanner({state, commit}, payload = {}) {
       if(!state.workplacePlans.length || payload) {
         this.isWorkplacePlansFetched = false;
 
@@ -139,7 +139,7 @@ export default {
      * get non field activity plans
      *
      */
-    getNonFieldActivityPlans({state}, payload) {
+    getNonFieldActivityPlans({state}, payload = {}) {
       if(!state.nonFieldActivityPlans.length || payload) {
         let query = {
           start: payload.start ,

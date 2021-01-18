@@ -55,7 +55,11 @@
 <script>
 export default {
   mounted() {
-    this.$store.dispatch('collectPlans')
+    this.$store.dispatch('collectPlans', {
+      force: true,
+      start: null,
+      end: null
+    })
     /* this.$store.dispatch("getNonFieldActivityPlans").finally(() => {
       this.$store.dispatch("getWorkplacePlanner").finally(() => {
         this.$store.dispatch("getPlanner");
@@ -79,6 +83,9 @@ export default {
     },
     fetched() {
       return this.$store.getters.isPlansFetched;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle
     }
   },
   methods: {
