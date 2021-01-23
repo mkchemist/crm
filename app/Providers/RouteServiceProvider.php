@@ -51,6 +51,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapDMApiRoute();
 
         $this->mapRMApiRoute();
+
+        $this->mapOTCRepRoutes();
         //
     }
 
@@ -109,5 +111,12 @@ class RouteServiceProvider extends ServiceProvider
       ->middleware(['api', 'auth:api', 'rmOnly'])
       ->namespace('App\Http\Controllers\Api\V1\RM')
       ->group(base_path('routes/rm-api.php'));
+    }
+
+    protected function mapOTCRepRoutes() {
+      Route::prefix('api/otc-rep')
+      ->middleware(['api','auth:api','otc-rep'])
+      ->namespace('App\Http\Controllers\Api\V1\OTCRep')
+      ->group(base_path('routes/otc-rep-api.php'));
     }
 }

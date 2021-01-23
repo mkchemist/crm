@@ -91,7 +91,8 @@ export default {
       required: true
     },
     queryKeys: {
-      type: Array
+      type: Array,
+      default: () => []
     },
     extraKeys: {
       type: Array
@@ -163,6 +164,6 @@ export default {
 
 <style lang="scss" scoped>
 .flex-item {
-  min-width: 50% !important;
+  width: 50% !important;
 }
 </style>

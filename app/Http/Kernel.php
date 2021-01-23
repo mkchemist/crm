@@ -65,6 +65,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'adminOnly'=> \App\Http\Middleware\AdminsOnly::class,
         'dmOnly'=> \App\Http\Middleware\dmOnly::class,
-        'rmOnly'  =>  \App\Http\Middleware\RMonly::class
+        'rmOnly'  =>  \App\Http\Middleware\RMonly::class,
+        'otc-rep' => \App\Http\Middleware\OTCRepOnly::class,
+        'otc-manager' => \App\Http\Middleware\OTCManagerOnly::class
     ];
 }

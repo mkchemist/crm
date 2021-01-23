@@ -58,7 +58,7 @@
             </td>
           </template>
           <template v-slot:head>
-            <th>Achievment state</th>
+            <th>Achievement state</th>
             <th>Address</th>
             <th>Phone</th>
             <th>Brick</th>
@@ -148,13 +148,16 @@ export default {
       let diff = item.diff,
           plans = item.plans,
           flag, style;
-      if(diff > 0 && diff === plans) {
-        flag = "Not targeted";
-        style = "bg-dark text-light"
+      if(diff > 0 && diff === plans ) {
+        flag = "Uncovered";
+        style = "bg-danger text-light"
       } else if(diff > 0 && diff !== plans) {
         flag = "Missed";
         style = "bg-warning text-dark"
-      } else if(diff === 0) {
+      } else if(diff === 0 && plans === 0) {
+        flag = "Not targeted";
+        style = "bg-dark text-light"
+      }else if(diff === 0 && plans !== 0) {
         flag = "Accomplished";
         style = "bg-success text-light"
       } else {

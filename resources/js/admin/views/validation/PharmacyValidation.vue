@@ -68,6 +68,10 @@ export default {
     requestState: null,
     heads: [
       {
+        title: "State",
+        name: "state"
+      },
+      {
         title: "Area",
         name: "area"
       },

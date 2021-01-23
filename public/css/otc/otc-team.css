@@ -1,0 +1,90 @@
+.navbar .nav-link {
+  transition: 0.5;
+}
+
+.navbar .nav-link:hover {
+  border-bottom: 2px solid #38c172;
+  color: #38c172 !important;
+}
+
+.navbar .active {
+  font-weight: bolder;
+  color: #38c172 !important;
+}
+
+@media (min-width: 992px) {
+  .navbar .active {
+    transition: 0.5s;
+    background-color: #38c172;
+    color: #fff !important;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+
+  .navbar .active:hover {
+    color: #fff !important;
+  }
+}
+
+.sidebar-list-group .list-group-item {
+  transition: 0.2s;
+}
+
+.sidebar-list-group .list-group-item:hover {
+  border-left: 3px solid #38c172;
+  background-color: #1111;
+}
+
+.sidebar-list-group .active-list-item {
+  background-color: #38c172;
+  color: white;
+}
+
+.sidebar-list-group .active-list-item:hover {
+  color: #1119;
+}
+
+.dt-buttons .btn {
+  margin-left: 5px !important;
+  background-color: #38c172 !important;
+  border-color: #38c172 !important;
+  color: white !important;
+}
+
+td,
+th {
+  white-space: nowrap;
+}
+
+.vuecal__cell-events {
+  padding: 0.25rem;
+}
+
+.pharmacy-plan {
+  background-color: royalblue !important;
+  color: white !important;
+  margin: 0.5rem 0rem;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.pharmacy-plan:hover {
+  opacity: 0.8;
+}
+
+.health-day {
+  background-color: #bd2a2a !important;
+  color: #fff !important;
+  margin: 0.5rem 0;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 0.7rem;
+  border-radius: 5px;
+}
+
+.health-day:hover {
+  background-color: #d64444 !important;
+}
+

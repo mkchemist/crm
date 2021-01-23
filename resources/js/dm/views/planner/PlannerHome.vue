@@ -20,17 +20,23 @@
         <span>Plan Non-Field activity</span>
       </router-link>
       <button
-        :class="`btn btn-sm ${isRepPlanApproved()?'btn-success' :`btn-primary`}`"
+        :class="
+          `btn btn-sm ${isRepPlanApproved() ? 'btn-success' : `btn-primary`}`
+        "
         v-if="!isOwnerPlans && isRepPlansNeedToApproval() === true"
         @click="approveCurrentUserPlans"
         :disabled="isRepPlanApproved()"
       >
         <span class="fa fa-check-circle"></span>
-        <span>{{ isRepPlanApproved() ? 'Already approved' : 'approve' }} </span>
+        <span>{{ isRepPlanApproved() ? "Already approved" : "approve" }} </span>
       </button>
       <button
         class="btn btn-sm btn-secondary"
-        v-if="!isOwnerPlans &&!isRepPlanApproved() &&isRepPlansNeedToApproval() === true"
+        v-if="
+          !isOwnerPlans &&
+            !isRepPlanApproved() &&
+            isRepPlansNeedToApproval() === true
+        "
         @click="rejectCurrentUserPlans"
       >
         <span class="fa fa-check-circle"></span>

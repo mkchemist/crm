@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Customer;
 use App\Helpers\Setting\ActiveCycleSetting;
 use App\Helpers\Setting\CyclesSetting;
 use App\Helpers\Setting\LineSetting;
 use App\Helpers\Setting\ReportIntervalSetting;
+use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class ApplicationSetting extends Controller
 {
+    use UserWithAssignment;
+
     public function index()
     {
       $activeCycle = new ActiveCycleSetting;
@@ -41,5 +45,19 @@ class ApplicationSetting extends Controller
         }
       }
       return $line;
+    }
+
+
+    public function locations()
+    {
+      $user = Auth::user();
+      $locations = Customer::select('brick','area', 'district', 'territory', 'region');
+      $locations = $this->getQueryWithAssignment($user, $locations)
+      ->distinct()->get();
+
+      return response([
+        'code'  =>  200,
+        'data'  =>  $locations
+      ]);
     }
 }

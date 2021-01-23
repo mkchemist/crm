@@ -61,6 +61,8 @@ $success: #38c172;
 
 .PM,
 .AM,
+.field-activity,
+.non-field-activity,
 .submitted {
   width: 90% !important;
   margin: 0.2rem auto;
@@ -89,13 +91,11 @@ $success: #38c172;
 .field-activity {
   background-color: #eee12d !important;
   color: #111 !important;
-  cursor: pointer;
 }
 
 .non-field-activity {
   background-color: #313130 !important;
   color: white !important;
-  cursor: pointer;
 }
 
 #side_datepicker {

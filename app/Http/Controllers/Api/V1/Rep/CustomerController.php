@@ -34,10 +34,10 @@ class CustomerController extends Controller
      */
     public function __construct()
     {
-      $this->middleware(function($request, $next) {
-        $this->user= Auth::user();
-        return $next($request);
-      });
+        $this->middleware(function ($request, $next) {
+            $this->user = Auth::user();
+            return $next($request);
+        });
     }
 
     /**
@@ -48,7 +48,7 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::with([
-          'params', 'frequency', 'workplace', 'report', 'planner'
+            'params', 'frequency', 'workplace', 'report', 'planner',
         ])->where('state', 'approved')
         /* ->whereIn('area', json_decode($this->user->area)) */;
 
@@ -69,11 +69,12 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'specialty' => 'required|string',
             'brick' => 'required|string',
-            'address' => 'required|string'
+            'address' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -88,18 +89,19 @@ class CustomerController extends Controller
             return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
         }
         $customer = new Customer;
-        $customer->name  =  $request->name;
-        $customer->title =  $request->title;
-        $customer->specialty =  $request->specialty;
-        $customer->workplace_id  =  $request->workplace_id;
-        $customer->brick         =  $request->brick;
-        $customer->address         =  $request->address;
-          $customer->phone         =  $request->phone;
-          $customer->area         =  $request->area;
-          $customer->district         =  $request->district;
-          $customer->territory         =  $request->territory;
-          $customer->region         =  $request->region;
-          $customer->save();
+        $customer->name = $request->name;
+        $customer->title = $request->title;
+        $customer->specialty = $request->specialty;
+        $customer->workplace_id = $request->workplace_id;
+        $customer->brick = $request->brick;
+        $customer->address = $request->address;
+        $customer->phone = $request->phone;
+        $customer->area = $request->area;
+        $customer->district = $request->district;
+        $customer->territory = $request->territory;
+        $customer->region = $request->region;
+        $customer->state = "New Added by $user->name";
+        $customer->save();
         return response()->json([
             "code" => 201,
             "data" => $customer,
@@ -152,8 +154,8 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'parameter' => 'required',
             'next_freq' => 'required|numeric',
-            'address'   =>  'required|string',
-            'phone'     =>  'required|string'
+            'address' => 'required|string',
+            'phone' => 'required|string',
         ]);
         if ($validator->fails()) {
             return response()->json(ResponseHelper::validationErrorResponse($validator));
@@ -162,7 +164,7 @@ class CustomerController extends Controller
         // is already exists
 
         $customer = Customer::where('id', $id);
-        $customer = $this->getQueryWithAssignment($this->user, $customer,true);
+        $customer = $this->getQueryWithAssignment($this->user, $customer, true);
         $customer = $customer->first();
         if (!$customer) {
             return response()->json(ResponseHelper::INVALID_ID);
@@ -262,7 +264,7 @@ class CustomerController extends Controller
             ->where([
                 'id' => $id,
             ]);
-        $customer = $this->getQueryWithAssignment($this->user, $customer,true);
+        $customer = $this->getQueryWithAssignment($this->user, $customer, true);
         $customer = $customer->first();
         return $customer;
     }
@@ -275,14 +277,14 @@ class CustomerController extends Controller
      */
     public function getWorkplaceRelatedCustomers($workplace)
     {
-      $customers = Customer::where('workplace_id', $workplace);
-      $customers = $this->getQueryWithAssignment($this->user, $customers);
-      $customers = $customers->get();
+        $customers = Customer::where('workplace_id', $workplace);
+        $customers = $this->getQueryWithAssignment($this->user, $customers);
+        $customers = $customers->get();
 
-      return response([
-        'code'  =>  200,
-        'data'  =>  $customers
-      ]);
+        return response([
+            'code' => 200,
+            'data' => $customers,
+        ]);
     }
 
     /**
@@ -294,34 +296,34 @@ class CustomerController extends Controller
      */
     public function bindWorkplaceCustomer(Request $request, $workplace)
     {
-      CustomerValidation::updateOrCreate([
-        'user_id' =>  $this->user->id,
-        'customer_id' =>  $request->id
-      ],[
-        'workplace_id' => $workplace,
-        'approved' => false,
-        'approved_by' => null,
-      ]);
-      return response([
-        'code'  =>  200,
-        'message' =>  'Customer link request sent'
-      ]);
+        CustomerValidation::updateOrCreate([
+            'user_id' => $this->user->id,
+            'customer_id' => $request->id,
+        ], [
+            'workplace_id' => $workplace,
+            'approved' => false,
+            'approved_by' => null,
+        ]);
+        return response([
+            'code' => 200,
+            'message' => 'Customer link request sent',
+        ]);
     }
 
     public function unlinkWorkplaceCustomer(Request $request)
     {
-      $customer = $request->customer;
-      CustomerValidation::updateOrCreate([
-        'user_id' =>  $this->user->id,
-        'customer_id' =>  $customer
-      ],[
-        'workplace_id'  =>  null,
-        'approved'  =>  false,
-        'approved_by' =>  null
-      ]);
-      return response([
-        'code'  =>  200,
-        'message' =>  'Customer unlink request sent'
-      ]);
+        $customer = $request->customer;
+        CustomerValidation::updateOrCreate([
+            'user_id' => $this->user->id,
+            'customer_id' => $customer,
+        ], [
+            'workplace_id' => null,
+            'approved' => false,
+            'approved_by' => null,
+        ]);
+        return response([
+            'code' => 200,
+            'message' => 'Customer unlink request sent',
+        ]);
     }
 }

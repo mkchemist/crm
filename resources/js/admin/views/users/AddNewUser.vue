@@ -121,7 +121,9 @@
                     >
                       <option value="">Select Role</option>
                       <option value="rep">Rep</option>
+                      <option value="otc-rep">OTC Rep</option>
                       <option value="dm">District Manager</option>
+                      <option value="otc-manager">OTC Manager</option>
                       <option value="am">Area Manager</option>
                       <option value="rm">Regional Manager</option>
                       <option value="tm">Top manager</option>

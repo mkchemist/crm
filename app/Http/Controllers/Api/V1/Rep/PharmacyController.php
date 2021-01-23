@@ -58,6 +58,7 @@ class PharmacyController extends Controller
    */
   public function store(Request $request)
   {
+    $user = Auth::user();
     $validator = Validator::make($request->all(), [
       'name'  =>  'required|string',
       'type'  =>  'required|string',
@@ -75,7 +76,10 @@ class PharmacyController extends Controller
     if ($check) {
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
-    $pharmacy = Pharmacy::create($request->all());
+
+    $data = $request->all();
+    $data['state'] = "New Added by $user->name";
+    $pharmacy = Pharmacy::create($data);
 
     return response()->json([
       'code'  =>  201,

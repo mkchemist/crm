@@ -28,7 +28,7 @@
             :disabled="!rep"
           >
             <span class="fa fa-check-circle"></span>
-            <span>ok</span>
+            <span>Select</span>
           </button>
           <button
             class="btn btn-sm btn-secondary"
@@ -38,6 +38,14 @@
             <span class="fa fa-redo"></span>
             <span>reset</span>
           </button>
+          <button class="btn btn-sm btn-primary" @click="approveAllPlans">
+            <span class="fa fa-check-circle"></span>
+            <span>Approve All</span>
+          </button>
+          <button class="btn btn-sm btn-danger" @click="resetAllPlans">
+            <span class="fa fa-calendar"></span>
+            <span>Reset All</span>
+          </button>
         </div>
       </div>
       <div class="p-2">
@@ -46,10 +54,6 @@
             <button class="btn btn-sm btn-primary" @click="approvePlans">
               <span class="fa fa-check-circle"></span>
               <span>Approve</span>
-            </button>
-            <button class="btn btn-sm btn-secondary" @click="rejectPlans">
-              <span class="fa fa-times-circle"></span>
-              <span>Reject</span>
             </button>
             <button class="btn btn-sm btn-danger" @click="resetPlans">
               <span class="fa fa-calendar"></span>
@@ -61,7 +65,18 @@
             :heads="heads"
             :unselectable="true"
             :headClass="`bg-success text-light`"
-          ></table-component>
+          >
+            <template v-slot:head:before>
+              <th>Business Unit</th>
+              <th>Area Manager</th>
+              <th>District Manager</th>
+            </template>
+            <template v-slot:body:before="{ item }">
+              <td>{{ getRegionalManagerName(item.user_id) }}</td>
+              <td>{{ getAreaManagerName(item.user_id) }}</td>
+              <td>{{ getDistrictManagerName(item.user_id) }}</td>
+            </template>
+          </table-component>
         </div>
         <div class="" v-else-if="isPlanFetched">
           <no-data-to-show :title="`Select Rep First`" />
@@ -86,6 +101,28 @@ export default {
   mounted() {
     this.$store.dispatch("getAllUsers");
   },
+  computed: {
+    reps() {
+      let users = this.$store.getters.users;
+      let reps = users.filter(user => user.role === "rep");
+      return sortBy(reps, "name");
+    },
+    isRepsFetched() {
+      return this.$store.getters.allUsersFetched;
+    },
+    planUser() {
+      return this.$store.getters.planUser;
+    },
+    dms() {
+      return this.$store.getters.dms;
+    },
+    ams() {
+      return this.$store.getters.ams;
+    },
+    rms() {
+      return this.$store.getters.rms;
+    }
+  },
   data: () => ({
     rep: null,
     plans: [],
@@ -93,12 +130,12 @@ export default {
     approvalAction: null,
     heads: [
       {
-        title: "Date",
-        name: "Date"
-      },
-      {
         title: "Rep",
         name: "Rep"
+      },
+      {
+        title: "Date",
+        name: "Date"
       },
       {
         title: "Customer",
@@ -123,8 +160,8 @@ export default {
         name: "submitted"
       },
       {
-        title: 'Approved',
-        name: 'approved'
+        title: "Approved",
+        name: "approved"
       },
       {
         title: "Brick",
@@ -144,19 +181,6 @@ export default {
       }
     ]
   }),
-  computed: {
-    reps() {
-      let users = this.$store.getters.users;
-      let reps = users.filter(user => user.role === "rep");
-      return sortBy(reps, "name");
-    },
-    isRepsFetched() {
-      return this.$store.getters.allUsersFetched;
-    },
-    planUser() {
-      return this.$store.getters.planUser;
-    }
-  },
   methods: {
     /**
      * select rep and get rep plans
@@ -175,33 +199,75 @@ export default {
         })
         .catch(err => console.log(err));
     },
+    /* reset plans data */
     reset() {
       this.plans = [];
       this.isPlanFetched = true;
     },
+    /* approve plans */
     approvePlans() {
+
       this.approvalAction = "approved";
       this.sendApprovalRequest();
     },
-    rejectPlans() {
-      this.approvalAction = "rejected";
-      this.sendApprovalRequest();
-    },
+    /* reset plans approval */
     resetPlans() {
       this.approvalAction = "reset";
       this.sendApprovalRequest();
     },
+    approveAllPlans() {
+      this.approvalAction = "approved-all";
+      this.sendApprovalRequest();
+    },
+
+    resetAllPlans() {
+      this.approvalAction = "reset-all";
+      this.sendApprovalRequest();
+    },
+    /* send approval request */
     sendApprovalRequest() {
       let request = {
         user: this.rep,
         action: this.approvalAction
-      }
-      httpCall.post('admin/v1/planner/approval', request)
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.selectRep();
-        });
-      }).catch(err => console.log(err));
+      };
+      httpCall
+        .post("admin/v1/planner/approval", request)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.selectRep();
+          });
+        })
+        .catch(err => console.log(err));
+    },
+    getDistrictManagerName(id) {
+      let name = "----";
+      this.dms.map(user => {
+        let reps = user.relations.reps;
+        if (reps.includes(id)) {
+          name = user.name;
+        }
+      });
+      return name;
+    },
+    getAreaManagerName(id) {
+      let name = "----";
+      this.ams.map(user => {
+        let reps = user.relations.reps;
+        if (reps.includes(id)) {
+          name = user.name;
+        }
+      });
+      return name;
+    },
+    getRegionalManagerName(id) {
+      let name = "----";
+      this.rms.map(user => {
+        let reps = user.relations.reps;
+        if (reps.includes(id)) {
+          name = user.name;
+        }
+      });
+      return name;
     }
   }
 };

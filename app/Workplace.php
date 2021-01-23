@@ -19,7 +19,10 @@ class Workplace extends Model
       'district',
       'territory',
       'region',
-      'phone'
+      'phone',
+      'state',
+      'approved',
+      'approved_by'
     ];
 
     public function departs()

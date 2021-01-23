@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Helpers\CycleHelper;
 use App\Http\Controllers\Controller;
 use App\Helpers\ResponseHelper;
 use App\Helpers\Setting\ActiveCycleSetting;
@@ -27,14 +28,14 @@ class ActivityPlansController extends Controller
       $data  = $activeCycle->all();
 
       $plans = $this->getUserPlans($user);
-      if($start && $end) {
+     /*  if($start && $end) {
         $plans = $plans->whereBetween('start', [$start, $end]);
       } else {
         if($data) {
           $plans = $plans->whereBetween('start', [$data->start, $data->end]);
         }
-      }
-
+      } */
+      $plans = CycleHelper::getCycleData($plans, 'start');
       $plans = $plans->with('user')->get();
       return response([
         'code'  =>  200,

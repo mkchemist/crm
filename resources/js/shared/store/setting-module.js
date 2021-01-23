@@ -17,6 +17,8 @@ export default {
     line : null,
     /** report Interval min date */
     reportIntervalMin: null,
+    /* user locations */
+    appUserLocations: []
   },
   getters: {
     /** current active cycle of plans and reports */
@@ -32,7 +34,9 @@ export default {
     /* user line */
     line : state => state.line,
     /** report Interval Min date */
-    reportIntervalMin: state => state.reportIntervalMin
+    reportIntervalMin: state => state.reportIntervalMin,
+    /* user locations */
+    appUserLocations: state => state.appUserLocations
   },
   mutations: {
     /**
@@ -77,6 +81,12 @@ export default {
         module.state.currentViewCycle = data.data.activeCycle;
         module.commit('setMinReportInterval');
       }).catch(err => console.log(err));
+    },
+    getAppUserLocations(module) {
+      return httpCall.get('user-locations')
+      .then(({data}) => {
+        module.state.appUserLocations = data.data
+      }).catch(err => console.log(err))
     }
   }
 };

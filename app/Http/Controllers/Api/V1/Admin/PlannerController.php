@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Planner;
 use App\WorkplacePlanner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -92,40 +93,61 @@ class PlannerController extends Controller
     return $plans;
   }
 
+  /**
+   * approve or reset plans
+   *
+   *
+   * @param \Illuminate\Http\Request $request
+   * @return \Illuminate\Http\Response
+   */
   public function approvalAction(Request $request)
   {
     $validator = Validator::make($request->all(),[
-      'user'  =>  'required|int',
       'action'  =>  [
         'required',
-        Rule::in(['approved','rejected','reset'])
+        Rule::in(['approved','approved-all','reset', 'reset-all'])
       ]
     ]);
     if($validator->fails()) {
       return response(ResponseHelper::validationErrorResponse($validator));
     }
-    $state = $request->action === 'approved' ? true : false;
-    $activeCycle= new ActiveCycleSetting;
-    $data = $activeCycle->all();
-    $plans = Planner::where([
-      'user_id' =>  $request->user
-    ]);
-    $workplacePlans =WorkplacePlanner::where('user_id', $request->user);
-    if($data) {
-      $plans = $plans->whereBetween('plan_date', [$data->start, $data->end]);
-      $workplacePlans = $workplacePlans->whereBetween('plan_date', [$data->start, $data->end]);
+    $admin = Auth::user();
+
+    $active = new ActiveCycleSetting;
+    $cycle = $active->all();
+
+    $plans = Planner::whereBetween('plan_date', [$cycle->start, $cycle->end]);
+    $workplacePlans = WorkplacePlanner::whereBetween('plan_date', [$cycle->start, $cycle->end]);
+    // detect if action for single user or for all
+    if(in_array($request->action,['approved', 'reset'])) {
+      $plans = $plans->where(['user_id' => $request->user]);
+      $workplacePlans = $workplacePlans->where(['user_id' => $request->user]);
     }
+    // detect action type
+    $action = in_array($request->action,['approved', 'approved-all']) ? true : false;
+
+    if($action) {
+      $plans = $plans->where(['submitted' => false]);
+    } else {
+      $plans = $plans->where(['submitted' => true]);
+    }
+
     $plans->update([
-      'submitted' => $state,
-      'approved'  =>  $state
+      'submitted' => $action,
+      'approved' => $action,
+      'approved_by' =>  $admin->id
     ]);
     $workplacePlans->update([
-      'submitted' => $state,
-      'approved'  =>  $state
+      'submitted' => $action,
+      'approved' => $action,
+      'approved_by' =>  $admin->id
     ]);
     return response([
       'code'  =>  200,
-      'message' =>  sprintf("Plan %s", $request->action)
+      'message' =>  sprintf("%s", $action === true ? 'Plans approved': 'Plans rejected' ),
+      'action'  =>  $action,
+      'status'  =>  $request->action
     ]);
   }
+
 }

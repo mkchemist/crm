@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Helpers\Traits\CustomData;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,6 +19,10 @@ class Pharmacy extends Model
 
   public function report() {
     $model = $this->hasMany('App\PharmacyReport')->orderBy('visit_date');
-    return $this->getRelatedUserData($model);
+    $activeCycle = new ActiveCycleSetting;
+    $cycle = $activeCycle->all();
+    return $this->getRelatedUserData($model,'visit_date', [$cycle->start, $cycle->end]);
   }
+
+
 }

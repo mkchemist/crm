@@ -20,19 +20,19 @@ class UserController extends Controller
     {
         // request validation
         $request->validate([
-            'username'      =>  'required',
-            'password'      =>  'required'
+            'username' => 'required',
+            'password' => 'required',
         ]);
 
         // user credentials
         $credentials = [
-            'username'  =>  $request->username,
-            'password'  =>  $request->password,
-            "active"    =>  1
+            'username' => $request->username,
+            'password' => $request->password,
+            "active" => 1,
         ];
 
         // user login
-        if(Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $user->api_token = Str::random(15);
             $user->save();
@@ -50,17 +50,21 @@ class UserController extends Controller
      */
     private function redirectUserAccordingToRole($user)
     {
-        switch($user->role) {
-            case 'admin' :
+        switch ($user->role) {
+            case 'admin':
                 return redirect('/admin');
-            case 'dm' :
+            case 'dm':
                 return redirect('/dm');
-            case 'tm' :
+            case 'tm':
                 return redirect('/tm');
-            case 'rm' :
+            case 'rm':
                 return redirect('/rm');
             case 'gm':
                 return redirect('/gm');
+            case 'otc-rep':
+                return redirect('/otc-rep');
+            case 'otc-manager':
+                return redirect('/otc-manager');
             default:
                 return redirect('/rep');
         }
@@ -73,7 +77,7 @@ class UserController extends Controller
      */
     public function changePassword()
     {
-      return view('pages.change-password');
+        return view('pages.change-password');
     }
 
     /**
@@ -84,22 +88,22 @@ class UserController extends Controller
      */
     public function updatePassword(Request $request)
     {
-      $request->validate([
-        'old_password'  =>  'required',
-        'password'      =>  'required|confirmed'
-      ]);
-
-      $user = User::where([
-        'id'  =>  Auth::user()->id
-      ])->first();
-      if(Hash::check($request->old_password, $user->password)) {
-        $user->password = Hash::make($request->password);
-        $user->save();
-        return redirect(Auth::user()->role);
-      } else {
-        return redirect()->back()->with([
-          'old_pass' => 'Old password is not valid'
+        $request->validate([
+            'old_password' => 'required',
+            'password' => 'required|confirmed',
         ]);
-      }
+
+        $user = User::where([
+            'id' => Auth::user()->id,
+        ])->first();
+        if (Hash::check($request->old_password, $user->password)) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+            return redirect(Auth::user()->role);
+        } else {
+            return redirect()->back()->with([
+                'old_pass' => 'Old password is not valid',
+            ]);
+        }
     }
 }

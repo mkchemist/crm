@@ -31,6 +31,7 @@
             :selectDate="date"
             @cell-click="d => (date = new Date(d).format('YYYY-MM-DD'))"
             :startWeekOnSunday="true"
+            :hide-weekdays="[5]"
           />
         </div>
       </div>
@@ -46,7 +47,7 @@ import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 export default {
   mounted() {
-    this.$store.dispatch('fetchAllPlans', {force: true});
+    this.$store.dispatch("fetchAllPlans", { force: true });
     this.setPlannerUser(this.$store.state.user.id);
   },
   components: {
@@ -69,7 +70,6 @@ export default {
       this.plannerUser = id;
       this.getUserPlanner();
     }
-
   }
 };
 </script>

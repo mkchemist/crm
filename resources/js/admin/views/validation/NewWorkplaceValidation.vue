@@ -68,6 +68,10 @@ export default {
     requestState: null,
     heads: [
       {
+        title : "State",
+        name: "state"
+      },
+      {
         title: "Area",
         name: "area"
       },
@@ -153,15 +157,15 @@ export default {
       this.sendRequests();
     },
     sendRequests() {
-      if(!this.validated.length) {
-        this.$toasted.show('You must pick one request at least');
+      if (!this.validated.length) {
+        this.$toasted.show("You must pick one request at least");
         return;
       }
       let request = {
-        _method: 'PUT',
+        _method: "PUT",
         ids: JSON.stringify(this.validated),
         state: this.requestState
-      }
+      };
       console.log(request, this.requestState);
       httpCall
         .post("admin/v1/validation/workplaces", request)

@@ -29,3 +29,22 @@ httpCall.post = (path, data) => {
   return axios.post(generateApiUrl(path),data);
 }
 
+
+
+export const UrlHelper = {
+  base: function () {
+    let base = document.getElementById('APP_API_URL');
+      base = base.value.replace('api/', '');
+      return base;
+  },
+  generate: function(url="") {
+    return this.base()+url;
+  }
+}
+
+
+export const asyncDataFlow = (data, cb) => {
+  let promise = () => Promise.resolve(data);
+
+  promise().then((data) => cb(data));
+}

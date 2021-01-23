@@ -61,6 +61,7 @@ class WorkplaceController extends Controller
    */
   public function store(Request $request)
   {
+    $user = Auth::user();
     /**
      * validate incoming data
      */
@@ -85,13 +86,10 @@ class WorkplaceController extends Controller
     if($check) {
       return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
     }
-    /* $hospital = Workplace::create(array_merge($request->all(),[
-      'area'      =>  Auth::user()->area,
-      'district'  =>  Auth::user()->district,
-      'territory' =>  Auth::user()->territory,
-      'region'    =>  Auth::user()->region
-    ])); */
-    $hospital = Workplace::create($request->all());
+
+    $data = $request->all();
+    $data["state"] = "New Added by $user->name";
+    $hospital = Workplace::create($data);
     return response()->json([
       'code'  =>  201,
       'data'  =>  $hospital

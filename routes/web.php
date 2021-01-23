@@ -67,7 +67,21 @@ Route::group(['middleware' => ['auth']], function () {
       $hash_key = new ForceRefreshHashKeySetting;
 
         return view('pages.gm.index', ['hash_key' => $hash_key->all()]);
-    });
+    })->where("name", ".*");
+
+    // OTC rep application
+    Route::get('/otc-rep/{name?}', function() {
+      $hash_key = new ForceRefreshHashKeySetting;
+
+        return view('pages.otc-rep.index', ['hash_key' => $hash_key->all()]);
+    })->where("name", ".*")->middleware('otc-rep');
+
+    // OTC manager application
+    Route::get('/otc-manager/{name?}', function() {
+      $hash_key = new ForceRefreshHashKeySetting;
+
+        return view('pages.otc-manager.index', ['hash_key' => $hash_key->all()]);
+    })->where("name", ".*")->middleware('otc-manager');
 
     // admin application
     Route::get('/admin/{name?}', function() {
