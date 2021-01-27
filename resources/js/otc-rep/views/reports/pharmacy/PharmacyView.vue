@@ -15,6 +15,7 @@
         <table class="table table-sm small table-responsive table-bordered table-striped" id="pharmacy_reports">
           <thead>
             <tr class="bg-success text-light">
+              <th>Actions</th>
               <th>Pharmacy</th>
               <th>Date</th>
               <th>Type</th>
@@ -35,25 +36,35 @@
               <th>Feedback</th>
             </tr>
           </thead>
-          <template v-for="(key, i) in Object.keys(reports)">
-            <tbody class="_removed__raw">
+          <template v-for="(key, i) in Object.keys(reports)" >
+            <tbody class="_removed__raw" v-bind:key="`pharmacy_${key}_report_${i}`">
               <tr class="bg-dark text-light">
-                <td colspan="18">
+                <td colspan="19">
                   <a
                     href=""
                     class="text-decoration-none text-light"
                     data-toggle="collapse"
                     :data-target="`#pharmacy_report_${i}`"
-                    >Pharmacy : {{ key }}</a
-                  >
+                    >
+                    <span>Pharmacy : {{ key }} </span>
+                    <span class="ml-3">no. of visits :  <span class="badge badge-light">{{ calculateNoOfDays(key) }}</span></span>
+
+
+                    </a>
                 </td>
               </tr>
             </tbody>
-            <tbody :id="`pharmacy_report_${i}`" class="collapse">
+            <tbody :id="`pharmacy_report_${i}`" class="collapse" :key="`report_body_${i}`">
               <tr
                 v-for="(row, index) in reports[key]"
                 :key="`pharmacy_report_${key}_${i}_${index}`"
               >
+                <td>
+                  <router-link :to="`/reports/edit/pharmacy/${row.id}`" class="btn btn-sm btn-warning">
+                    <span class="fa fa-edit"></span>
+                  </router-link>
+                  <delete-report-button :itemId="row.id"/>
+                </td>
                 <td>{{ row.pharmacy }}</td>
                 <td>{{ row.date }}</td>
                 <td>{{ row.type }}</td>
@@ -87,7 +98,9 @@
 
 <script>
 import { ExportToExcel } from '../../../../helpers/helpers';
+import DeleteReportButton from '../../../components/DeleteReportButton.vue';
 export default {
+  components: { DeleteReportButton },
   computed: {
     reports() {
       return this.$store.getters.pharmacyReportsPharmacyView;
@@ -109,6 +122,16 @@ export default {
         row.remove();
       })
       ExportToExcel(target,filename)
+    },
+    calculateNoOfDays(name) {
+      let reports = this.reports[name];
+      let count = []
+      reports.map(report => {
+        if(!count.includes(report.date)) {
+          count.push(report.date)
+        }
+      });
+      return count.length
     }
   }
 };

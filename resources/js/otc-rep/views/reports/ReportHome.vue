@@ -15,7 +15,7 @@
 
       </div>
       <div class="col-lg-6">
-
+        <sidebar-component :links="performanceLinks" />
       </div>
     </div>
 
@@ -68,6 +68,14 @@ export default {
         icon: 'fa-plus-circle',
         link: '/reports/add/health-day'
       }
+    ],
+    performanceLinks: [
+      {
+        title: 'Market Feedback',
+        icon: 'fa-chart-line',
+        link: '/reports/analysis/market'
+      },
+
     ]
   })
 }

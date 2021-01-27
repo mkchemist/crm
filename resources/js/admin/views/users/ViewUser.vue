@@ -64,12 +64,13 @@
 </template>
 
 <script>
+import { sortBy } from '../../../helpers/helpers';
 export default {
   mounted() {
   },
   computed: {
     users() {
-      return this.$store.getters.users;
+      return sortBy(this.$store.getters.users,'name');
     },
     isUsesFetched() {
       return this.$store.getters.allUsersFetched;

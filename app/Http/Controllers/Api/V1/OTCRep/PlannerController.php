@@ -33,13 +33,20 @@ class PlannerController extends Controller
     {
         $plans = OtcPlanner::with(['user', 'pharmacy'])
             ->where('user_id', $this->user->id);
-        $plans = CycleHelper::getCycleData($plans, 'plan_date');
+        $cycle = null;
+        if((integer)request()->start && (integer) request()->end) {
+          $cycle = [request()->start, request()->end];
+        };
 
+        $plans = CycleHelper::getCycleData($plans, 'plan_date', $cycle);
         $plans = $plans->orderBy('plan_date')->get();
+
+        $isSubmitted = $this->isSubmitted();
 
         return response([
             'code' => 200,
             'data' => PlannerResource::collection($plans),
+            'isSubmitted' => $isSubmitted
         ]);
     }
 
@@ -59,6 +66,17 @@ class PlannerController extends Controller
 
         if ($validator->fails()) {
             return response(ResponseHelper::validationErrorResponse($validator));
+        }
+
+        if($this->isSubmitted()) {
+          return response([
+            'code'  =>  400,
+            'data' => [
+              'errors' => [
+                'Plan is Submitted'
+              ]
+            ]
+          ]);
         }
 
         if ($request->type === "health_day" && !$request->pharmacy) {
@@ -122,8 +140,9 @@ class PlannerController extends Controller
         }
 
         $ids = json_decode($request->ids);
-        $plans = OtcPlanner::whereIn('id', $ids)
+        OtcPlanner::whereIn('id', $ids)
             ->where('user_id', $this->user->id)
+            ->where('submitted', '!=', true)
             ->update([
                 'plan_date' => $request->date,
             ]);
@@ -162,7 +181,8 @@ class PlannerController extends Controller
         }
         $ids = json_decode($request->ids);
         $plans = OtcPlanner::whereIn('id', $ids)
-            ->where('user_id', $this->user->id);
+            ->where('user_id', $this->user->id)
+            ->where('submitted', '!=', true);
         $plans->delete();
         return response([
             'code' => 200,
@@ -202,5 +222,41 @@ class PlannerController extends Controller
           'code'  =>  200,
           'message' =>  'Plan duplicated'
         ]);
+    }
+
+    /**
+     * Submit Plans
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function submit()
+    {
+      $plans = OtcPlanner::where('user_id', $this->user->id);
+      $plans = CycleHelper::getCycleData($plans, 'plan_date');
+      $plans->update([
+        'submitted' => true
+      ]);
+
+      return response([
+        'code'  =>  200,
+        'message' =>  'Planner submitted'
+      ]);
+    }
+
+    /**
+     * check if plan is submitted
+     *
+     * @return bool
+     */
+    private function isSubmitted()
+    {
+      $isSubmitted = OtcPlanner::where('user_id', $this->user->id)
+        ->where('submitted', true);
+        $isSubmitted = CycleHelper::getCycleData($isSubmitted,'plan_date');
+        $isSubmitted = $isSubmitted->first();
+      if($isSubmitted) {
+        return true;
+      }
+      return false;
     }
 }

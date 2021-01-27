@@ -135,6 +135,9 @@ class PlannerController extends Controller
         if (!$plan) {
             return response()->json(ResponseHelper::BAD_REQUEST_INPUT);
         }
+        if(CycleDateValidation::isOldDate($plan->plan_date)) {
+          return ResponseHelper::UnableToDeleteOldDate();
+        }
         if ($plan->delete()) {
             return response()->json([
                 'code' => 201,
@@ -152,12 +155,16 @@ class PlannerController extends Controller
     public function groupDelete(Request $request)
     {
         $ids = json_decode($request->customers);
-
-        Planner::where([
+        $model = Planner::where([
             'user_id' => Auth::user()->id,
             'plan_date' => $request->date,
             'submitted' => false,
-        ])->whereIn('id', $ids)->delete();
+        ])->whereIn('id', $ids);
+        $plans = $model->get();
+        if(CycleDateValidation::isOldDate($plans[0]->plan_date)) {
+          return ResponseHelper::UnableToDeleteOldDate();
+        }
+        $model->delete();
         return response()->json([
             'code' => 201,
             'data' => sprintf('%d customer deleted', count($ids)),
@@ -182,10 +189,6 @@ class PlannerController extends Controller
         if ($this->isPassedDay($request->date)) {
             return $this->isPassedDay($request->date);
         }
-        /*   $isNotValidDate = $this->isNotValidDate($request->date);
-        if ($isNotValidDate) {
-        return response($isNotValidDate);
-        } */
         $rejected = [];
         $accepted = [];
         $plans = Planner::where([
@@ -228,11 +231,17 @@ class PlannerController extends Controller
         if ($validator->fails()) {
             return response()->json(ResponseHelper::validationErrorResponse($validator));
         }
-        Planner::where([
+        $model = Planner::where([
             'plan_date' => $request->date,
             'user_id' => Auth::user()->id,
             'submitted' => false,
-        ])->delete();
+        ]);
+        $plans = $model->get();
+        if(CycleDateValidation::isOldDate($plans[0]->plan_date)) {
+          return ResponseHelper::UnableToDeleteOldDate();
+        }
+
+        $model->delete();
         return response()->json([
             'code' => 201,
             'data' => sprintf("Date %s cleared successfully", $request->date),

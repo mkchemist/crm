@@ -29,16 +29,6 @@ class WorkplacePlannerController extends Controller
         $end = $cycle->end;
         $WorkplacePlannerQuery = WorkplacePlanner::with('workplace')
         ->where('user_id', $user->id)->orderBy('plan_date');
-        /* if(request()->start && request()->end) {
-          $plans = $WorkplacePlannerQuery->whereBetween('plan_date', [request()->start, request()->end])
-          ->get();
-        }elseif($date) {
-          $plans = $WorkplacePlannerQuery->whereBetween('plan_date', [$date->start, $date->end])
-          ->get();
-
-        } else {
-          $plans = $WorkplacePlannerQuery->get();
-        } */
         if((integer)request()->start) {
           $start = request()->start;
         }
@@ -74,10 +64,6 @@ class WorkplacePlannerController extends Controller
         if($this->isPassedDay($request->date)) {
           return $this->isPassedDay($request->date);
         }
-        /* $isNotValidDate = $this->isNotValidDate($request->date);
-        if ($isNotValidDate) {
-            return response($isNotValidDate);
-        } */
         /** convert workplaces IDs json to normal array */
         $ids = json_decode($request->workplaces);
         /** rejected plans */
@@ -125,10 +111,7 @@ class WorkplacePlannerController extends Controller
         }
         $plan = $this->getPlanById($id);
         $check = $this->getPlanByWorkplaceId($plan->workplace_id, $request->date);
-       /*  $isNotValidDate = $this->isNotValidDate($request->date);
-        if ($isNotValidDate) {
-            return response($isNotValidDate);
-        } */
+
         if ($check) {
             return response()->json(ResponseHelper::ITEM_ALREADY_EXIST);
         }
@@ -149,6 +132,9 @@ class WorkplacePlannerController extends Controller
     public function destroy($id)
     {
         $plan = $this->getPlanById($id);
+        if(CycleDateValidation::isOldDate($plan->plan_date)) {
+          return ResponseHelper::UnableToDeleteOldDate();
+        }
         $plan->delete();
         return response()->json([
             'code' => 201,
@@ -172,12 +158,16 @@ class WorkplacePlannerController extends Controller
             return response()->json(ResponseHelper::validationErrorResponse($validator));
         }
         $ids = json_decode($request->workplaces);
-        $plans = WorkplacePlanner::whereIn('id', $ids)
+        $model = WorkplacePlanner::whereIn('id', $ids)
             ->where([
                 'user_id' => Auth::user()->id,
                 'plan_date' => $request->date,
-            ])
-            ->delete();
+            ]);
+        $plans = $model->get();
+        if(CycleDateValidation::isOldDate($plans[0]->plan_date)) {
+          return ResponseHelper::UnableToDeleteOldDate();
+        }
+        $model->delete();
         return response()->json([
             'code' => 201,
             'data' => sprintf("%d workplace plans removed successfully", count($ids)),

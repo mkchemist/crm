@@ -11,9 +11,11 @@ use App\NonFieldActivityPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\Traits\CycleDateValidation;
 
 class ActivityPlansController extends Controller
 {
+    use CycleDateValidation;
     /**
      * Display a listing of the resource.
      *
@@ -26,15 +28,8 @@ class ActivityPlansController extends Controller
       $user = Auth::user();
       $activeCycle = new ActiveCycleSetting;
       $data  = $activeCycle->all();
-
       $plans = $this->getUserPlans($user);
-     /*  if($start && $end) {
-        $plans = $plans->whereBetween('start', [$start, $end]);
-      } else {
-        if($data) {
-          $plans = $plans->whereBetween('start', [$data->start, $data->end]);
-        }
-      } */
+
       $plans = CycleHelper::getCycleData($plans, 'start');
       $plans = $plans->with('user')->get();
       return response([
@@ -132,10 +127,16 @@ class ActivityPlansController extends Controller
     public function destroy($id)
     {
       $user = Auth::user();
-      NonFieldActivityPlan::where([
+      $plan = NonFieldActivityPlan::where([
         'id'  =>  $id,
         'user_id' =>  $user->id
-      ])->delete();
+      ])->first();
+
+      if(CycleDateValidation::isOldDate($plan->start)) {
+        return ResponseHelper::UnableToDeleteOldDate();
+      }
+
+      $plan->delete();
       return response([
         'code'  =>  200,
         'message' =>  'Plan deleted'

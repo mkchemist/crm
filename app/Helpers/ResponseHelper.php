@@ -99,4 +99,17 @@ class ResponseHelper
         ]
       ];
     }
+
+
+    public static function UnableToDeleteOldDate()
+    {
+      return response([
+        'code'  =>  204,
+        'data'  =>  [
+          'errors' => [
+            "Unable to delete date before ".date('20y-m-d')
+          ]
+        ]
+      ]);
+    }
 }

@@ -27,4 +27,17 @@ trait CycleDateValidation {
       }
       return null;
   }
+
+  /**
+   *
+   *
+   *
+   */
+  public static function isOldDate($date)
+  {
+      if($date < date('20y-m-d')) {
+        return true;
+      }
+      return false;
+  }
 }

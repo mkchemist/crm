@@ -5,7 +5,7 @@
         class="btn btn-sm btn-primary"
         type="button"
         @click="addProduct"
-        :disabled="productData.length >= 4"
+        :disabled="productData.length >= maxProductCount"
       >
         <span class="fa fa-plus"></span>
         <span>Product</span>
@@ -181,7 +181,7 @@
             class="btn btn-sm btn-primary"
             @click="addCompetitor(_PI)"
             type="button"
-            :disabled="productData[_PI].competitors.length >= 3"
+            :disabled="productData[_PI].competitors.length >= maxCompetitorCount"
           >
             <span class="fa fa-plus"></span>
             <span>competitor</span>
@@ -303,6 +303,14 @@ export default {
     pharmacyProducts: {
       type: Boolean,
       default: () => false
+    },
+    maxProductCount :{
+      type: Number,
+      default: () => 4
+    },
+    maxCompetitorCount: {
+      type: Number,
+      default: () => 3
     }
   },
   computed: {
@@ -337,7 +345,7 @@ export default {
   methods: {
     /* add product */
     addProduct() {
-      if (this.data.length >= 4) {
+      if (this.data.length >= this.maxProductCount) {
         return;
       }
       let productScheme = {
@@ -372,7 +380,7 @@ export default {
      * @param {int} i [product index]
      */
     addCompetitor(_PI) {
-      if (this.data[_PI].competitors.length >= 3) {
+      if (this.data[_PI].competitors.length >= this.maxCompetitorCount) {
         return;
       }
       this.data[_PI].competitors.push({ name: null, rate: null });

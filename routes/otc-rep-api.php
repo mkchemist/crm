@@ -17,6 +17,7 @@ Route::group([
   /* Planner Routes */
   Route::post('planner/group-delete', 'PlannerController@deleteGroup');
   Route::post('planner/duplicate', 'PlannerController@duplicate');
+  Route::post('planner/submit', 'PlannerController@submit');
   Route::apiResource('planner', 'PlannerController');
   /* Reports Routes */
   Route::group(['prefix' => 'reports'], function() {

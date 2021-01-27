@@ -1,8 +1,8 @@
 {
-    "/js/admin/admin.js": "/js/admin/admin.js",
-    "/js/dm/dm.js": "/js/dm/dm.js",
     "/js/dm/manifest.js": "/js/dm/manifest.js",
     "/js/dm/vendor.js": "/js/dm/vendor.js",
+    "/js/admin/admin.js": "/js/admin/admin.js",
+    "/js/dm/dm.js": "/js/dm/dm.js",
     "/js/otc-manager/otc-manager.js": "/js/otc-manager/otc-manager.js",
     "/js/otc-rep/otc-rep.js": "/js/otc-rep/otc-rep.js",
     "/js/rep/app.js": "/js/rep/app.js",

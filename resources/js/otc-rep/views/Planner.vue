@@ -1,6 +1,6 @@
 <template>
   <div class="p-2 row mx-auto bg-light pb-5">
-    <div class="col-lg-3 shadow p-2 rounded bg-white">
+    <div class="col-lg-3 shadow p-2 rounded bg-white" id="date_picker">
       <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
       <vue-cal
         :disableViews="['year','years','day','week']"
@@ -12,7 +12,7 @@
         style="max-height:300px"
         :startWeekOnSunday="true"
         :hide-weekdays="[5]"
-
+        :min-date="activeCycle.start"
         :events="$store.getters.allPlans"
       />
     </div>
@@ -48,10 +48,13 @@ export default {
       this.date = new Date(e).format()
     },
     onSelectCycle() {
-
+     let {start, end} = this.activeCycle;
+    this.$store.dispatch('fetchPlans', {force: true, start, end});
     },
     onResetCycle() {
       this.$store.commit('resetActiveCycle')
+       let {start, end} = this.activeCycle;
+    this.$store.dispatch('fetchPlans', {force: true, start, end});
     }
   }
 }

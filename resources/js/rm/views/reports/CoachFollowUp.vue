@@ -160,7 +160,29 @@ export default {
         .catch(err => console.log(err));
     },
     exportToExcel() {
-      ExportToExcel('#rep_follow_up', `${this.rep.name} coach follow up`)
+      let table = document.getElementById('rep_follow_up');
+      let target = table.cloneNode();
+      target.innerHTML = table.innerHTML;
+      this.createTableExcelStyling(target);
+      ExportToExcel(target, `${this.rep.name} coach follow up`)
+    },
+    createTableExcelStyling(dom) {
+      let tables = dom.querySelectorAll('table');
+      let rows = dom.querySelectorAll('tr');
+      let cells = dom.querySelectorAll('td');
+      let headers = dom.querySelectorAll('.export-table-headers');
+      tables.forEach(table => {
+        table.style.border="1px solid";
+      })
+      rows.forEach(row => {
+        row.style.border="1px solid";
+      })
+      cells.forEach(cell => {
+        cell.style.border="1px solid";
+      })
+      headers.forEach(header => {
+        header.style.backgroundColor = "lightblue";
+      })
     }
   }
 };

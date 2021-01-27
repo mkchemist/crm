@@ -17,7 +17,7 @@
           :hideWeekdays="[5]"
           :events="plans"
           :min-date="activeCycle.start"
-        :hide-weekdays="[5]"
+
 
         >
           <template v-slot:arrow-prev>

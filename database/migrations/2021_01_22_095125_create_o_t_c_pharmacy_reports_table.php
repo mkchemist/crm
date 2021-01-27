@@ -22,13 +22,13 @@ class CreateOTCPharmacyReportsTable extends Migration
             $table->string('product');
             $table->string('competitor1');
             $table->string('competitor1_rate');
-            $table->string('competitor1_stock')->nullable();
+            $table->integer('competitor1_stock')->default(0);
             $table->string('competitor2')->nullable();
             $table->string('competitor2_rate')->nullable();
-            $table->string('competitor2_stock')->nullable();
+            $table->integer('competitor2_stock')->default(0);
             $table->string('competitor3')->nullable();
             $table->string('competitor3_rate')->nullable();
-            $table->string('competitor3_stock')->nullable();
+            $table->integer('competitor3_stock')->default(0);
             $table->string('rate')->nullable();
             $table->integer('stock')->default(0);
             $table->integer('order')->default(0);

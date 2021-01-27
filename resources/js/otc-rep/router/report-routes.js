@@ -1,40 +1,65 @@
-import Report from '../views/Report.vue'
-import ReportHome from '../views/reports/ReportHome.vue';
-import AddPharmacyReport from '../views/reports/AddPharmacyReport.vue';
-import PharmacyReportList from '../views/reports/PharmacyReportList.vue';
-import PharmacyView from '../views/reports/pharmacy/PharmacyView.vue';
-import DateView from '../views/reports/pharmacy/DateView.vue';
-import ProductView from '../views/reports/pharmacy/ProductView.vue';
+import Report from "../views/Report.vue";
+import ReportHome from "../views/reports/ReportHome.vue";
+import AddPharmacyReport from "../views/reports/AddPharmacyReport.vue";
+import AddHealthDayReport from "../views/reports/AddHealthDayReport.vue";
+import EditHealthDayReport from "../views/reports/EditHealthDayReport.vue";
+import PharmacyReportList from "../views/reports/PharmacyReportList.vue";
+import PharmacyView from "../views/reports/pharmacy/PharmacyView.vue";
+import DateView from "../views/reports/pharmacy/DateView.vue";
+import ProductView from "../views/reports/pharmacy/ProductView.vue";
+import EditPharmacyReport from "../views/reports/EditPharmacyReport.vue";
+import HealthDayReportList from "../views/reports/HealthDayReportList.vue";
+import MarketShareAnalysis from '../views/reports/MarketShareAnalysis.vue';
 
 export default {
-  path: '/reports',
+  path: "/reports",
   component: Report,
   children: [
     {
-      path: '',
+      path: "",
       component: ReportHome
     },
     {
-      path: 'add/pharmacy',
+      path: "add/pharmacy",
       component: AddPharmacyReport
     },
     {
-      path: 'view/pharmacy',
+      path: "view/pharmacy",
       component: PharmacyReportList,
       children: [
         {
-          path: '',
+          path: "",
           component: PharmacyView
         },
         {
-          path: 'date',
+          path: "date",
           component: DateView
         },
         {
-          path: 'product',
+          path: "product",
           component: ProductView
         }
       ]
+    },
+    {
+      path: "edit/pharmacy/:id",
+      component: EditPharmacyReport
+    },
+    {
+      path: "add/health-day",
+      component: AddHealthDayReport
+    },
+    {
+      path: "view/health-day",
+      component: HealthDayReportList
+    },
+    {
+      path: 'edit/health-day/:id',
+      component: EditHealthDayReport
+    },
+    {
+      path: 'analysis/market',
+      component: MarketShareAnalysis
     }
   ]
-}
+};

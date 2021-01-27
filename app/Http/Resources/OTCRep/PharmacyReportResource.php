@@ -35,7 +35,9 @@ class PharmacyReportResource extends JsonResource
           'competitor3_rate' =>  $this->competitor3_rate,
           'competitor3_stock' =>  $this->competitor3_stock,
           'feedback'        =>  $this->general_feedback,
-          'type'            =>  $this->pharmacy->type
+          'type'            =>  $this->pharmacy->type,
+          'report_type'     =>  $this->type,
+          'comment'         =>  isset($this->comment) ? json_decode($this->comment) : []
         ];
     }
 }

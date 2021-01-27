@@ -121,11 +121,11 @@
             class="row mx-auto my-1"
             v-if="!['rep', 'marketing', 'admin'].includes(user.role)"
           >
-            <div class="col">
+            <div class="col-lg-4">
               <label for="">Reps</label>
             </div>
-            <div class="col">
-              <select
+            <div class="col-lg-8 border p-2 rounded" style="max-height:200px;overflow:auto">
+              <!-- <select
                 name="reps"
                 id="reps"
                 v-model="relations.reps"
@@ -137,7 +137,13 @@
                 <option v-for="user in reps" :key="user.id" :value="user.id"
                   >{{ user.name }}-({{ user.role }})</option
                 >
-              </select>
+              </select> -->
+              <ul class="nav">
+                <li class="nav-item col-12 small border-bottom" v-for="user in reps" :key="user.id">
+                  <input type="checkbox" v-model="relations.reps" :value="user.id">
+                  <span class="form-check-inline text-dark font-weight-bold">{{ user.name }} ({{ user.territory.join(' | ') }})</span>
+                </li>
+              </ul>
             </div>
           </div>
           <!-- End of Reps -->
@@ -146,11 +152,11 @@
             class="row mx-auto my-1"
             v-if="!['dm', 'marketing', 'admin'].includes(user.role)"
           >
-            <div class="col">
+            <div class="col-lg-4">
               <label for="">District Manager</label>
             </div>
-            <div class="col">
-              <select
+            <div class="col-lg-8 border p-2 rounded" style="max-height:200px;overflow:auto">
+              <!-- <select
                 name="reps"
                 id="reps"
                 v-model="relations.dm"
@@ -162,7 +168,13 @@
                 <option v-for="user in dm" :key="user.id" :value="user.id"
                   >{{ user.name }}-({{ user.role }})</option
                 >
-              </select>
+              </select> -->
+              <ul class="nav">
+                <li class="nav-item col-12 small border-bottom" v-for="user in dm" :key="user.id">
+                  <input type="checkbox" v-model="relations.dm" :value="user.id">
+                  <span class="form-check-inline text-dark font-weight-bold">{{ user.name }} ({{ user.territory.join(' | ') }})</span>
+                </li>
+              </ul>
             </div>
           </div>
           <!-- End of District Manager -->
@@ -171,11 +183,11 @@
             class="row mx-auto my-1"
             v-if="!['am', 'marketing', 'admin'].includes(user.role)"
           >
-            <div class="col">
+            <div class="col-lg-4">
               <label for="">Area Manager</label>
             </div>
-            <div class="col">
-              <select
+            <div class="col-lg-8 border p-2 rounded" style="max-height:200px;overflow:auto">
+              <!-- <select
                 name="reps"
                 id="reps"
                 v-model="relations.am"
@@ -187,7 +199,13 @@
                 <option v-for="user in am" :key="user.id" :value="user.id"
                   >{{ user.name }}-({{ user.role }})</option
                 >
-              </select>
+              </select> -->
+              <ul class="nav">
+                <li class="nav-item col-12 small border-bottom" v-for="user in am" :key="user.id">
+                  <input type="checkbox" v-model="relations.am" :value="user.id">
+                  <span class="form-check-inline text-dark font-weight-bold">{{ user.name }} ({{ user.territory.join(' | ') }})</span>
+                </li>
+              </ul>
             </div>
           </div>
           <!-- End of Area Manager -->
@@ -196,11 +214,11 @@
             class="row mx-auto my-1"
             v-if="!['rm', 'marketing', 'admin'].includes(user.role)"
           >
-            <div class="col">
+            <div class="col-lg-4">
               <label for="">Regional Manager</label>
             </div>
-            <div class="col">
-              <select
+            <div class="col-lg-8 border p-2 rounded" style="max-height:200px;overflow:auto">
+              <!-- <select
                 name="reps"
                 id="reps"
                 v-model="relations.rm"
@@ -212,7 +230,13 @@
                 <option v-for="user in rm" :key="user.id" :value="user.id"
                   >{{ user.name }}-({{ user.role }})</option
                 >
-              </select>
+              </select> -->
+              <ul class="nav">
+                <li class="nav-item col-12 small border-bottom" v-for="user in rm" :key="user.id">
+                  <input type="checkbox" v-model="relations.rm" :value="user.id">
+                  <span class="form-check-inline text-dark font-weight-bold">{{ user.name }} ({{ user.territory.join(' | ') }})</span>
+                </li>
+              </ul>
             </div>
           </div>
           <!-- End of Regional Manager -->
@@ -221,11 +245,11 @@
             class="row mx-auto my-1"
             v-if="!['rm', 'am', 'marketing', 'admin'].includes(user.role)"
           >
-            <div class="col">
+            <div class="col-lg-4">
               <label for="">Marketing</label>
             </div>
-            <div class="col">
-              <select
+            <div class="col-lg-8 border p-2 rounded" style="max-height:200px;overflow:auto">
+              <!-- <select
                 name="reps"
                 id="reps"
                 v-model="relations.marketing"
@@ -240,7 +264,13 @@
                   :value="user.id"
                   >{{ user.name }}-({{ user.role }})</option
                 >
-              </select>
+              </select> -->
+              <ul class="nav">
+                <li class="nav-item col-12 small border-bottom" v-for="user in marketing" :key="user.id">
+                  <input type="checkbox" v-model="relations.marketing" :value="user.id">
+                  <span class="form-check-inline text-dark font-weight-bold">{{ user.name }} ({{ user.territory.join('|') }})</span>
+                </li>
+              </ul>
             </div>
           </div>
           <!-- End of Marketing -->

@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { sortBy } from '../../../helpers/helpers';
 import { httpCall } from '../../../helpers/http-service';
 import UserList from '../../components/UserList.vue'
 export default {
@@ -37,7 +38,7 @@ export default {
   },
   computed: {
     users() {
-      return this.$store.getters.users;
+      return sortBy(this.$store.getters.users, 'name');
     },
     fetched() {
       return this.$store.getters.allUsersFetched;

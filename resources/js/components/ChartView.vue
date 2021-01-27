@@ -23,9 +23,6 @@ export default {
       required: true
     }
   },
-  created() {
-
-  },
   mounted() {
     let id = "chart_view";
     if(this.id) {

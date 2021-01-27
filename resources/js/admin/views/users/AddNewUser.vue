@@ -128,6 +128,8 @@
                       <option value="rm">Regional Manager</option>
                       <option value="tm">Top manager</option>
                       <option value="marketing">Marketing</option>
+                      <option value="account">Account</option>
+                      <option value="hr">HR</option>
                       <option value="admin">Admin</option>
                     </select>
                   </ValidationProvider>

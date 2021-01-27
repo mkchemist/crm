@@ -16,10 +16,11 @@ class CycleHelper {
    */
   public static function getCycleData( $model, string $field, array $cycle = null)
   {
+    $active = new ActiveCycleSetting;
+    $active = $active->all();
     if(!$cycle) {
-      $cycle = new ActiveCycleSetting;
-      $cycle = $cycle->all();
+      $cycle = [$active->start, $active->end];
     }
-    return $model->whereBetween($field, [$cycle->start, $cycle->end]);
+    return $model->whereBetween($field, $cycle);
   }
 }

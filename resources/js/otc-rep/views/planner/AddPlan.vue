@@ -2,9 +2,13 @@
   <div class="px-0 shadow rounded pb-5 my-2 bg-light">
     <p class="alert alert-success">
       <span class="fa fa-calendar-plus"></span>
-      <span>Plan a day</span>
+      <span class="font-weight-bold">Plan a day</span>
     </p>
     <div class="p-2">
+      <p v-if="locked" class="alert alert-warning">
+        <span class="fa fa-exclamation-triangle"></span>
+        <span class="font-weight-bold">You cannot add or update plans while plan is submitted or approved</span>
+      </p>
       <div class="row mx-auto">
         <!-- Brick list -->
         <div class="col-lg-6 px-2">
@@ -102,6 +106,9 @@ export default {
     },
     appUserLocations() {
       return this.$store.getters.appUserLocations;
+    },
+    locked() {
+      return this.$store.getters.isPlannerLocked;
     }
   },
   data: () => ({

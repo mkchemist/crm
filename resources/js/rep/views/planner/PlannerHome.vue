@@ -90,6 +90,7 @@
         :on-event-click="onEventClick"
         @cell-click="onDayClick"
         :startWeekOnSunday="true"
+        :hide-weekdays="[5]"
       >
         <template v-slot:arrow-prev>
           <i class="fa fa-chevron-circle-left text-success"></i>
@@ -363,7 +364,7 @@ export default {
       }
       eventDetails.data._method = "DELETE";
       httpCall.post(eventDetails.url, eventDetails.data).then(({ data }) => {
-        data.message = data.date;
+        //data.message = data.data;
         this.handleResponse(data, data => {
           this.show_event_modal = false;
           eventDetails.model();

@@ -62,28 +62,44 @@ th {
   padding:.25rem;
 }
 
-.pharmacy-plan {
-  background-color: royalblue !important;
-  color: white !important;
+
+/*--------------------------------------------------------------------------------*/
+/*                          Calendar Styling                                      */
+/*--------------------------------------------------------------------------------*/
+.pharmacy-plan,
+.health-day {
   margin:.5rem 0rem;
-  border-radius: 5px;
-  cursor: pointer;
+  border-radius: 2px;
   padding:.25rem;
+  cursor: pointer;
   font-size: .8rem;
+
   &:hover{
     opacity: .8;
   }
 }
 
+.pharmacy-plan {
+  background-color: royalblue !important;
+  color: white !important;
+}
+
 .health-day{
-  background-color: $danger!important;
+  background-color: $success!important;
   color: $white !important;
-  margin:.5rem 0;
-  cursor:pointer;
-  padding:.25rem;
-  font-size: .7rem;
-  border-radius: 5px;
-  &:hover {
-    background-color: lighten($danger,10%) !important;
+}
+
+.submitted {
+  opacity:.8;
+  border-left:4px solid orangered;
+}
+
+#date_picker {
+
+  .vuecal__cell--today {
+    .vuecal__cell-content {
+      background-color: orangered !important;
+      border: 0 !important;
+    }
   }
 }

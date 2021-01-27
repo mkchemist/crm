@@ -95,25 +95,36 @@
           <!-- end of date and pharmacy -->
           <!-- Visit products -->
           <div class="form-group border p-2">
-            <otc-visit-products :data="visit.products" :pharmacyProducts="true" />
+            <otc-visit-products
+              :data="visit.products"
+              :pharmacyProducts="true"
+            />
           </div>
           <!-- end of visit products -->
           <div class="form-group p-2">
             <label for="feedback" class="text-muted">Feedback</label>
-            <ValidationProvider name="Feedback" rules="required" v-slot="{errors}">
+            <ValidationProvider
+              name="Feedback"
+              rules="required"
+              v-slot="{ errors }"
+            >
               <span class="text-danger small">{{ errors[0] }}</span>
               <textarea
                 name="feedback"
                 id="feedback"
                 cols="30"
                 rows="5"
-                :class="`form-control form-control-sm ${errors[0] ? 'border border-danger': ''}`"
+                :class="
+                  `form-control form-control-sm ${
+                    errors[0] ? 'border border-danger' : ''
+                  }`
+                "
                 v-model="visit.general_feedback"
                 placeholder="write general feedback"
               ></textarea>
             </ValidationProvider>
           </div>
-          <hr>
+          <hr />
           <!-- controller -->
           <div class="form-group text-right">
             <router-link to="/reports" class="btn btn-sm btn-dark">
@@ -164,7 +175,8 @@ export default {
       pharmacy: null,
       date: new Date().format(),
       products: [],
-      general_feedback: null
+      general_feedback: null,
+      type: 'regular'
     }
   }),
   methods: {
@@ -172,19 +184,21 @@ export default {
     saveReport() {
       if (!this.visit.products.length) {
         this.$toasted.error("You must add one product at least", {
-          icon: 'fa-exclamation'
+          icon: "fa-exclamation"
         });
         return;
       }
       let request = Object.assign({}, this.visit);
       request.products = JSON.stringify(request.products);
-      httpCall.post('otc-rep/v1/reports/pharmacy', request)
-      .then(({data}) => {
-        this.handleResponse(data ,data => {
-          this.$store.dispatch('fetchPharmacyReports', {force: true});
-          this.$router.push("/reports/view/pharmacy");
-        });
-      }).catch(err => console.log(err));
+      httpCall
+        .post("otc-rep/v1/reports/pharmacy", request)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.$store.dispatch("fetchPharmacyReports", { force: true });
+            this.$router.push("/reports/view/pharmacy");
+          });
+        })
+        .catch(err => console.log(err));
     },
     /**
      * filter pharmacy list

@@ -25,11 +25,12 @@
 </template>
 
 <script>
+import { sortBy } from '../../helpers/helpers';
 export default {
   props: ['users-filter'],
   computed: {
     users() {
-      let users = this.$store.getters.users;
+      let users = sortBy(this.$store.getters.users,'name');
       if(this.usersFilter) {
         return this.usersFilter(users);
       }

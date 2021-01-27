@@ -51,6 +51,10 @@
             <th>
               <input type="checkbox" @click="selectAllRequests" />
             </th>
+            <th>Business Unit Manager</th>
+            <th>Area Manager</th>
+            <th>District Manager</th>
+            <th>Rep</th>
             <th>
               State
             </th>
@@ -63,6 +67,10 @@
                 :disabled="item.state === false && item.approval === true"
               />
             </td>
+            <td>{{ getRepRegionalManager(item.user_id) }}</td>
+            <td>{{ getRepAreaManager(item.user_id) }}</td>
+            <td>{{ getRepManager(item.user_id) }}</td>
+            <td>{{ item.user }}</td>
             <td>
               <span>{{
                 item.state === false && item.approval === true
@@ -100,10 +108,6 @@ export default {
     validated: [],
     requestState: null,
     heads: [
-      {
-        title: "Rep",
-        name: "user"
-      },
       {
         title: "Area",
         name: "area"
@@ -166,6 +170,17 @@ export default {
       }
     ]
   }),
+  computed: {
+    dms() {
+      return this.$store.getters.dms
+    },
+    rms() {
+      return this.$store.getters.rms
+    },
+    ams(){
+      return this.$store.getters.ams
+    }
+  },
   methods: {
     /**
      * get all customer validation requests
@@ -282,6 +297,36 @@ export default {
           this.getAllRequests();
         })
       })
+    },
+    getRepManager(id) {
+      let manager ="-------";
+      this.dms.map(user => {
+        let reps =user.relations.reps;
+        if(reps.includes(id)) {
+          manager = user.name;
+        }
+      })
+      return manager;
+    },
+    getRepAreaManager(id) {
+      let manager ="-------";
+      this.ams.map(user => {
+        let reps =user.relations.reps;
+        if(reps.includes(id)) {
+          manager = user.name;
+        }
+      })
+      return manager;
+    },
+    getRepRegionalManager(id) {
+      let manager ="-------";
+      this.rms.map(user => {
+        let reps =user.relations.reps;
+        if(reps.includes(id)) {
+          manager = user.name;
+        }
+      })
+      return manager;
     }
   }
 };

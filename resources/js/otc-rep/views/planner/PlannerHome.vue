@@ -1,5 +1,5 @@
 <template>
-  <div class="shadow px-0 rounded pb-5">
+  <div class="shadow px-0 rounded pb-5 pt-2">
     <p class="alert alert-success">
       <span class="fa fa-calendar-check"></span>
       <span>Planner</span>
@@ -17,9 +17,10 @@
           <span class="fa fa-plus-circle"></span>
           <span>Plan a health day</span>
         </router-link>
-        <button class="btn btn-sm btn-success">
+        <button class="btn btn-sm btn-success" @click="submitPlans" :disabled="locked">
           <span class="fa fa-check-circle"></span>
-          <span>Submit</span>
+          <span v-if="locked">Already Submitted</span>
+          <span v-else>Submit</span>
         </button>
       </div>
       <div>
@@ -32,12 +33,8 @@
           :time="false"
           class="vuecal--green-theme"
           style="max-height:400px;overflow:auto"
-          v-if="plans.length"
           :hide-weekdays="[5]"
         />
-        <div class="py-5" v-else>
-          <no-data-to-show />
-        </div>
       </div>
     </div>
   </div>
@@ -46,6 +43,7 @@
 <script>
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
+import { httpCall } from '../../../helpers/http-service';
 
 export default {
   components: {
@@ -54,6 +52,23 @@ export default {
   computed: {
     plans() {
       return this.$store.getters.allPlans
+    },
+    locked() {
+      return this.$store.getters.isPlannerLocked;
+    }
+  },
+  methods: {
+    submitPlans() {
+      let confirmSubmit = confirm('Do yo want to submit plan');
+      if(confirmSubmit) {
+        return  httpCall
+        .post('otc-rep/v1/planner/submit')
+        .then(({data}) => {
+          this.handleResponse(data, data => this.$store.dispatch('fetchPlans', {force: true}));
+        }).catch(err => console.log(err))
+      }
+      this.$toasted.success('Plan is not submitted')
+      return;
     }
   }
 };

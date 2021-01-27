@@ -7,35 +7,35 @@
       </router-link>
       <button
         class="btn btn-sm btn-success"
-        :disabled="!store.length"
+        :disabled="!store.length || locked"
         @click="add"
       >
         <span class="fa fa-plus-circle"></span>
-        <span>Add</span>
+        <span :class="locked ? 'line-through' : ''">Add</span>
       </button>
       <button
         class="btn btn-sm btn-primary"
-        :disabled="!update.length"
+        :disabled="!update.length || locked"
         @click="openDuplicateModal"
       >
         <span class="fa fa-redo"></span>
-        <span>Duplicate</span>
+        <span :class="locked ? 'line-through' : ''">Duplicate</span>
       </button>
       <button
         class="btn btn-sm btn-warning"
-        :disabled="!update.length"
+        :disabled="!update.length || locked"
         @click="openEditModal"
       >
         <span class="fa fa-edit"></span>
-        <span>Edit</span>
+        <span :class="locked ? 'line-through' : ''">Edit</span>
       </button>
       <button
         class="btn btn-sm btn-danger"
-        :disabled="!update.length"
+        :disabled="!update.length || locked"
         @click="deletePlans"
       >
         <span class="fa fa-times-circle"></span>
-        <span>Delete</span>
+        <span :class="locked ? 'line-through' : ''">Delete</span>
       </button>
     </div>
     <modal-fade
@@ -130,6 +130,21 @@ import ModalFade from "../../components/ModalFade.vue";
 import { httpCall } from "../../helpers/http-service";
 export default {
   components: { ModalFade },
+  computed: {
+    locked() {
+      return this.$store.getters.isPlannerLocked;
+    },
+    activeCycle(){
+      return this.$store.getters.activeCycle;
+    },
+    fetchingPlanPayload() {
+      return {
+        force: true,
+        start: this.activeCycle.start,
+        end: this.activeCycle.end
+      }
+    },
+  },
   props: {
     type: {
       type: String,
@@ -188,6 +203,7 @@ export default {
       }
       return request;
     },
+
     /* Adding plans */
     add() {
       if (!this.store.length) {
@@ -201,7 +217,7 @@ export default {
         .post("otc-rep/v1/planner", request)
         .then(({ data }) => {
           this.handleResponse(data, data => {
-            this.$store.dispatch("fetchPlans", { force: true });
+            this.$store.dispatch("fetchPlans", this.fetchingPlanPayload);
           });
         })
         .catch(err => console.log(err));
@@ -220,7 +236,7 @@ export default {
         })
         .then(({ data }) => {
           this.handleResponse(data, data => {
-            this.$store.dispatch("fetchPlans", { force: true });
+            this.$store.dispatch("fetchPlans", this.fetchingPlanPayload);
           });
         })
         .catch(err => console.log(err));
@@ -248,7 +264,7 @@ export default {
         .post("otc-rep/v1/planner/" + this.edit_date, request)
         .then(({ data }) => {
           this.handleResponse(data, data => {
-            this.$store.dispatch("fetchPlans", { force: true });
+            this.$store.dispatch("fetchPlans", this.fetchingPlanPayload);
             this.edit_date = null;
             this.closeEditModal();
           });
@@ -282,7 +298,7 @@ export default {
         .post("otc-rep/v1/planner/duplicate", request)
         .then(({ data }) => {
           this.handleResponse(data, data => {
-            this.$store.dispatch("fetchPlans", { force: true });
+            this.$store.dispatch("fetchPlans", this.fetchingPlanPayload);
             this.duplicate_date = null;
             this.closeDuplicateModal();
           });
@@ -306,4 +322,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+  .line-through {
+    text-decoration: line-through;
+  }
+</style>
