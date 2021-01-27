@@ -159,7 +159,7 @@ class ApprovalController extends Controller
       'planner', 'report','params', 'frequency', 'workplace'
       ]);
       $customers = $this->getQueryWithAssignment($user, $customers);
-      $customers = $customers->where('state', 'new')
+      $customers = $customers->whereNotIn('state', ['approved'])
       ->orderBy('name')->get();
     return response([
       'code'  =>  200,
