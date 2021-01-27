@@ -2,16 +2,45 @@
   <div class="p-2">
     <div class="row mx-auto">
       <div class="col-lg-3">
+        <div class="border small rounded p-2">
+          <div class="form-group">
+            <label for="" class="">Status</label>
+            <select
+              name="view_status"
+              id="view_status"
+              class="form-control form-control-sm"
+              v-model="view_status"
+            >
+              <option value="all">All</option>
+              <option
+                :value="val"
+                v-for="(val, key) in status"
+                :key="`status_${key}`"
+                >{{ val }}</option
+              >
+            </select>
+          </div>
+          <div class="form-group text-right">
+            <button class="btn btn-sm btn-primary" @click="filterStatus">
+              <span class="fa fa-check-circle"></span>
+              <span>ok</span>
+            </button>
+            <button class="btn btn-sm btn-secondary" @click="resetStatus">
+              <span class="fa fa-reset"></span>
+              <span>reset</span>
+            </button>
+          </div>
+        </div>
         <user-filter-box
           :users="reps"
-          :data="data"
+          :data="reports"
           :onFilter="onFilter"
           :onReset="onReset"
         />
         <router-link to="/reports" class="btn btn-sm btn-dark btn-block my-2">
-        <span class="fa fa-chevron-circle-left"></span>
-        <span>back</span>
-      </router-link>
+          <span class="fa fa-chevron-circle-left"></span>
+          <span>back</span>
+        </router-link>
       </div>
       <div class="col-lg-9 px-0 shadow rounded pb-5">
         <p class="alert alert-success">
@@ -60,8 +89,8 @@
                   <th>Area</th>
                 </template>
                 <template v-slot:body="{ item }">
-                  <td>
-                    <span v-html="getCustomerStatus(item)"></span>
+                  <td :class="item.style">
+                    {{ item.status }}
                   </td>
                   <td>{{ item.brick }}</td>
                   <td>{{ item.area }}</td>
@@ -84,7 +113,7 @@
 import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent.vue";
 import UserFilterBox from "../../../components/UserFilterBox.vue";
-import { httpCall } from "../../../helpers/http-service";
+import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
 export default {
   mounted() {
     this.fetchData();
@@ -113,6 +142,8 @@ export default {
     startDate: null,
     endDate: null,
     today: new Date().format(),
+    status: new Set(),
+    view_status: 'all',
     heads: [
       {
         title: "Rep",
@@ -150,9 +181,7 @@ export default {
   }),
   methods: {
     generateFetchQuery() {
-      let query = {
-
-      }
+      let query = {};
     },
     fetchData() {
       this.data = [];
@@ -160,8 +189,17 @@ export default {
       this.shouldRenderFilter = false;
       this.filteredList = [];
       httpCall
-        .get("dm/v1/reports/missed-customers", {from_date :this.startDate, to_date: this.endDate})
+        .get("dm/v1/reports/missed-customers", {
+          from_date: this.startDate,
+          to_date: this.endDate
+        })
         .then(({ data }) => {
+          data.data.forEach(item => {
+            let { flag, style } = this.calculateStatus(item);
+            item["status"] = flag;
+            item["style"] = style;
+            this.status.add(item['status']);
+          });
           this.data = data.data;
           this.fetched = true;
         })
@@ -175,10 +213,11 @@ export default {
     },
     onReset() {
       this.filteredList = [];
+      this.view_status = "all"
       let async = () => Promise.resolve(this.data);
       async().then(data => (this.filteredList = data));
     },
-    getCustomerStatus(item) {
+    calculateStatus(item) {
       let flag, style;
       if (item.difference > 0 && item.difference === item.countOfPlans) {
         flag = "Uncovered";
@@ -193,7 +232,24 @@ export default {
         flag = "Over";
         style = "bg-primary text-light";
       }
-      return `<span class="${style} p-1">${flag}</span>`;
+      return { flag, style };
+    },
+    filterStatus() {
+      let data;
+      if (this.view_status === "all") {
+        data = this.data;
+      } else {
+        data = this.data.filter(report => report.status === this.view_status);
+      }
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      asyncDataFlow(data, data => (this.filteredList = data));
+    },
+    resetStatus() {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      this.view_status = "all";
+      asyncDataFlow(this.data, data => (this.filteredList = data));
     }
   }
 };

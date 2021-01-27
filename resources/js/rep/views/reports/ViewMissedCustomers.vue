@@ -1,6 +1,25 @@
 <template>
   <div class="row mx-auto pb-5">
     <div class="col-lg-3">
+      <div class="border small rounded p-2">
+        <div class="form-group">
+          <label for="" class="">Status</label>
+          <select name="view_status" id="view_status" class="form-control form-control-sm" v-model="view_status">
+            <option value="all">All</option>
+            <option :value="val" v-for="(val, key) in status" :key="`status_${key}`">{{ val }}</option>
+          </select>
+        </div>
+        <div class="form-group text-right">
+          <button class="btn btn-sm btn-primary" @click="filterStatus">
+            <span class="fa fa-check-circle"></span>
+            <span>ok</span>
+          </button>
+          <button class="btn btn-sm btn-secondary" @click="resetStatus">
+            <span class="fa fa-reset"></span>
+            <span>reset</span>
+          </button>
+        </div>
+      </div>
       <date-filter-box  :data="data" :onFilter="onFilter" :onReset="onReset" :dateField="`Date`" />
     </div>
     <div class="col-lg-9 shadow rounded px-0 pb-5">
@@ -18,8 +37,8 @@
                   <th>Area</th>
                 </template>
                 <template v-slot:body="{ item }">
-                  <td>
-                    <span v-html="getCustomerStatus(item)"></span>
+                  <td :class="item.style">
+                    {{ item.status }}
                   </td>
                   <td>{{ item.Address }}</td>
                   <td>{{ item.Brick }}</td>
@@ -40,7 +59,7 @@
 import DateFilterBox from '../../../components/DateFilterBox.vue';
 import NoDataToShow from '../../../components/NoDataToShow.vue';
 import TableComponent from '../../../components/TableComponent.vue';
-import { httpCall } from '../../../helpers/http-service'
+import { asyncDataFlow, httpCall } from '../../../helpers/http-service'
 export default {
   mounted() {
     this.fetchData();
@@ -63,6 +82,8 @@ NoDataToShow,
     fetched:true,
     shouldRenderFilter: false,
     filteredList: [],
+    status: new Set(),
+    view_status: 'all',
     heads: [
       {
         title: 'Customer',
@@ -87,8 +108,8 @@ NoDataToShow,
       {
         title: 'Difference',
         name:'difference'
-      }
-    ]
+      },
+    ],
   }),
   methods: {
     fetchData() {
@@ -96,6 +117,12 @@ NoDataToShow,
       this.fetched = false;
       httpCall.get('rep/v1/reports/missed-customers')
       .then(({data}) => {
+        data.data.forEach(item => {
+          let {flag, style} = this.calculateStatus(item)
+          item['status'] = flag;
+          item['style'] = style;
+          this.status.add(item['status'])
+        })
         this.data = data.data;
         this.fetched = true
       }).catch(err => console.log(err))
@@ -111,7 +138,7 @@ NoDataToShow,
       let async = () => Promise.resolve(this.data);
       async().then(data => this.filteredList = data);
     },
-    getCustomerStatus(item) {
+    calculateStatus(item) {
       let flag, style;
       if (item.difference > 0 && item.difference === item.CountOfPlans) {
         flag = "Uncovered";
@@ -126,8 +153,28 @@ NoDataToShow,
         flag = "Over";
         style = "bg-primary text-light";
       }
-      return `<span class="${style} p-1">${flag}</span>`;
-    }
+      return {
+        flag,
+        style
+      }
+    },
+    filterStatus(){
+      let data;
+      if(this.view_status === "all") {
+        data = this.data;
+      } else {
+        data = this.data.filter(report => report.status === this.view_status);
+      }
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      asyncDataFlow(data, data => this.filteredList = data);
+    },
+    resetStatus() {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      this.view_status = "all"
+      asyncDataFlow(this.data, data => this.filteredList = data);
+    },
   }
 }
 </script>

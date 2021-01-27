@@ -84,22 +84,60 @@
           <span class="font-weight-bold">View Missed Customers</span>
         </p>
         <div class="p-2">
-          <div class="p-2">
-            <user-filter-box
-              :data="data"
-              :users="reps"
-              :onFilter="onFilter"
-              :onReset="onReset"
-            />
+          <div class="p-2 row mx-auto">
+            <div class="col-lg">
+              <user-filter-box
+                :data="reports"
+                :users="reps"
+                :onFilter="onFilter"
+                :onReset="onReset"
+              />
+            </div>
+            <div class="col-lg">
+              <div class="border small rounded p-2">
+                <div class="form-group">
+                  <label for="" class="">Status</label>
+                  <select
+                    name="view_status"
+                    id="view_status"
+                    class="form-control form-control-sm"
+                    v-model="view_status"
+                  >
+                    <option value="all">All</option>
+                    <option
+                      :value="val"
+                      v-for="(val, key) in status"
+                      :key="`status_${key}`"
+                      >{{ val }}</option
+                    >
+                  </select>
+                </div>
+                <div class="form-group text-right">
+                  <button class="btn btn-sm btn-primary" @click="filterStatus">
+                    <span class="fa fa-check-circle"></span>
+                    <span>ok</span>
+                  </button>
+                  <button class="btn btn-sm btn-secondary" @click="resetStatus">
+                    <span class="fa fa-reset"></span>
+                    <span>reset</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
           <div v-if="reports.length" class="p-2 border rounded">
-            <table-component :heads="heads" :data="reports" :headClass="`bg-dark text-light`" :unselectable="true">
+            <table-component
+              :heads="heads"
+              :data="reports"
+              :headClass="`bg-dark text-light`"
+              :unselectable="true"
+            >
               <template v-slot:head:before>
                 <th>Business Unit</th>
                 <th>Area Manager</th>
                 <th>District Manager</th>
               </template>
-              <template v-slot:body:before="{item}">
+              <template v-slot:body:before="{ item }">
                 <td>{{ $store.state.UserModule.user.name }}</td>
                 <td>{{ getAreaManager(item.user_id) }}</td>
                 <td>{{ getDistrictManager(item.user_id) }}</td>
@@ -110,15 +148,18 @@
                 <th>Area</th>
                 <th>District</th>
               </template>
-              <template v-slot:body="{item}">
-                <td><span v-html="getCustomerStatus(item)"></span></td>
+              <template v-slot:body="{ item }">
+                <td :class="item.style">{{ item.status }}</td>
                 <td>{{ item.brick }}</td>
                 <td>{{ item.area }}</td>
                 <td>{{ item.district }}</td>
               </template>
             </table-component>
           </div>
-          <div v-else-if="!loadingStarted" class="py-5 text-center text-primary">
+          <div
+            v-else-if="!loadingStarted"
+            class="py-5 text-center text-primary"
+          >
             <p>Choose district manager and click Go</p>
             <span class="fa fa-download fa-4x"></span>
           </div>
@@ -136,8 +177,8 @@
 import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent.vue";
 import UserFilterBox from "../../../components/UserFilterBox.vue";
-import { sortBy } from '../../../helpers/helpers';
-import { httpCall } from '../../../helpers/http-service';
+import { sortBy } from "../../../helpers/helpers";
+import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
 export default {
   mounted() {},
   components: { NoDataToShow, TableComponent, UserFilterBox },
@@ -149,14 +190,13 @@ export default {
         let reps = JSON.parse(this.selectedDistrict.user_relations).reps;
         data = this.$store.getters.allReps.filter(rep => reps.includes(rep.id));
       } else {
-        data =  this.$store.getters.allReps;
+        data = this.$store.getters.allReps;
       }
-      return sortBy(data, 'name');
+      return sortBy(data, "name");
     },
     /* all district managers */
     districtManagers() {
-
-      return sortBy(this.$store.getters.allDm, 'name');
+      return sortBy(this.$store.getters.allDm, "name");
     },
     /* all area managers */
     areaManagers() {
@@ -180,40 +220,42 @@ export default {
     selectedRep: null,
     startDate: null,
     endDate: null,
+    status: new Set(),
+    view_status: 'all',
     heads: [
       {
-        title: 'Rep',
-        name: 'rep_name'
+        title: "Rep",
+        name: "rep_name"
       },
       {
-        title: 'Customer',
-        name: 'customer_name'
+        title: "Customer",
+        name: "customer_name"
       },
       {
-        title : 'Specialty',
-        name: 'specialty'
+        title: "Specialty",
+        name: "specialty"
       },
       {
-        title: 'Parameter',
-        name: 'parameter',
-        fallback: 'NN'
+        title: "Parameter",
+        name: "parameter",
+        fallback: "NN"
       },
       {
-        title: 'Frequency',
-        name : 'frequency',
+        title: "Frequency",
+        name: "frequency",
         fallback: 0
       },
       {
-        title: 'Count Of plans',
-        name: 'count_of_plans'
+        title: "Count Of plans",
+        name: "count_of_plans"
       },
       {
-        title: 'Count Of Visits',
-        name: 'count_of_visits'
+        title: "Count Of Visits",
+        name: "count_of_visits"
       },
       {
-        title: 'Difference',
-        name: 'difference'
+        title: "Difference",
+        name: "difference"
       }
     ]
   }),
@@ -229,11 +271,19 @@ export default {
       this.loadingStarted = true;
       this.data = [];
       this.fetched = false;
-      httpCall.get('rm/v1/reports/missed-customers', scheme)
-      .then(({data}) => {
-        this.data = data.data;
-        this.fetched =true;
-      }).catch(err => console.log(err));
+      httpCall
+        .get("rm/v1/reports/missed-customers", scheme)
+        .then(({ data }) => {
+          data.data.forEach(item => {
+          let {flag, style} = this.calculateStatus(item)
+          item['status'] = flag;
+          item['style'] = style;
+          this.status.add(item['status'])
+        })
+          this.data = data.data;
+          this.fetched = true;
+        })
+        .catch(err => console.log(err));
     },
     /**
      * generate query scheme
@@ -253,7 +303,7 @@ export default {
         users: JSON.stringify(users),
         start: this.startDate,
         end: this.endDate
-      }
+      };
     },
     /**
      * reset selected rep when district manager changed
@@ -273,7 +323,7 @@ export default {
       this.districtManagers.map(manager => {
         let reps = JSON.parse(manager.user_relations).reps;
 
-        if(reps.includes(id)) {
+        if (reps.includes(id)) {
           managerName = manager.name;
         }
       });
@@ -290,7 +340,7 @@ export default {
       this.areaManagers.map(manager => {
         let reps = JSON.parse(manager.user_relations).reps;
 
-        if(reps.includes(id)) {
+        if (reps.includes(id)) {
           managerName = manager.name;
         }
       });
@@ -304,35 +354,58 @@ export default {
     onFilter(data) {
       this.shouldRenderFilter = true;
       this.filteredList = [];
-      let asyncDataFlow  = () => Promise.resolve(data);
-      asyncDataFlow().then(data => this.filteredList = data);
+      this.view_status = "all"
+
+      asyncDataFlow(data, data => this.filteredList = data);
+     /*  let asyncDataFlow = () => Promise.resolve(data);
+      asyncDataFlow().then(data => (this.filteredList = data)); */
     },
     /**
      * handle reset
      */
     onReset() {
       this.filteredList = [];
-      let asyncDataFlow  = () => Promise.resolve(this.data);
-      asyncDataFlow().then(data => this.filteredList = data);
+      /* let asyncDataFlow = () => Promise.resolve(this.data);
+      asyncDataFlow().then(data => (this.filteredList = data)); */
+      asyncDataFlow(this.data, data => this.filteredList = data);
     },
-    getCustomerStatus(item) {
-      let {count_of_plans, count_of_visits, difference} = item;
+    calculateStatus(item) {
       let flag, style;
-      if(difference > 0 && difference === count_of_plans) {
+      if (item.difference > 0 && item.difference === item.count_of_plans) {
         flag = "Uncovered";
-        style= "bg-danger text-light"
-      } else if (difference > 0 && difference !== count_of_plans) {
+        style = "bg-danger text-light";
+      } else if (item.difference > 0 && item.difference !== item.count_of_plans) {
         flag = "Missed";
-        style= "bg-warning text-dark"
-      } else if (difference === 0) {
+        style = "bg-warning text-dark";
+      } else if (item.difference === 0) {
         flag = "Accomplished";
-        style= "bg-success text-light"
+        style = "bg-success text-light";
       } else {
         flag = "Over";
-        style= "bg-primary text-light"
+        style = "bg-primary text-light";
       }
-      return `<span class="${style}">${flag}</span>`
-    }
+      return {
+        flag,
+        style
+      }
+    },
+    filterStatus(){
+      let data;
+      if(this.view_status === "all") {
+        data = this.data;
+      } else {
+        data = this.data.filter(report => report.status === this.view_status);
+      }
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      asyncDataFlow(data, data => this.filteredList = data);
+    },
+    resetStatus() {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      this.view_status = "all"
+      asyncDataFlow(this.data, data => this.filteredList = data);
+    },
   }
 };
 </script>

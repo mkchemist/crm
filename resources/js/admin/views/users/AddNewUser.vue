@@ -2,9 +2,9 @@
   <div class="p-2">
     <div class="px-0 shadow pb-5">
       <p class="alert alert-success">
-        <span><i class="fa fa-edit"></i></span>
+        <span><i class="fa fa-plus-circle"></i></span>
         <span class="font-weight-bold"
-          >Edit user {{ user ? user.name : "" }}</span
+          >Add new user</span
         >
       </p>
       <div class="p-2">
@@ -80,7 +80,7 @@
                     name="line"
                   >
                     <span class="text-danger small">{{ errors[0] }}</span>
-                    <select
+                   <!--  <select
                       name="line"
                       v-model="user.line"
                       :class="
@@ -98,7 +98,15 @@
                         :value="val.name"
                         >{{ val.name }}</option
                       >
-                    </select>
+                    </select> -->
+                     <div style="height:200px;overflow:auto" class="border rounded p-2">
+                      <ul class="nav">
+                        <li class="nav-item col-12 p-2 border-bottom small" v-for="(val,key) in lines" :key="`line_${key}`">
+                          <input type="checkbox" v-model="user.line" :value="val.name">
+                          <span class="form-check-label mx-1">{{ val.name }}</span>
+                        </li>
+                      </ul>
+                    </div>
                   </ValidationProvider>
                 </div>
 
@@ -147,7 +155,7 @@
                     v-slot="{ errors }"
                   >
                     <span class="text-danger small">{{ errors[0] }}</span>
-                    <select
+                    <!-- <select
                       name="region"
                       id="regoin"
                       v-model="user.region"
@@ -167,7 +175,15 @@
                         :value="name"
                         >{{ name }}</option
                       >
-                    </select>
+                    </select> -->
+                    <div style="height:200px;overflow:auto" class="border rounded p-2">
+                      <ul class="nav">
+                        <li class="nav-item col-12 p-2 border-bottom small" v-for="(val,key) in regions" :key="`region_${key}`">
+                          <input type="checkbox" v-model="user.region" :value="val">
+                          <span class="form-check-label mx-1">{{ val }}</span>
+                        </li>
+                      </ul>
+                    </div>
                   </ValidationProvider>
                 </div>
                 <!-- User Territory -->
@@ -181,7 +197,7 @@
                     v-slot="{ errors }"
                   >
                     <span class="text-danger small">{{ errors[0] }}</span>
-                    <select
+                    <!-- <select
                       name="territory"
                       id="territory"
                       v-model="user.territory"
@@ -202,7 +218,19 @@
                         :value="name"
                         >{{ name }}</option
                       >
-                    </select>
+                    </select> -->
+                    <div style="height:200px;overflow:auto" class="border rounded p-2">
+                      <ul class="nav">
+                        <li class="nav-item col-12 p-2 border-bottom small">
+                          <input type="checkbox" v-model="user.territory" :value="`all`">
+                          <span class="form-check-label mx-1">{{ 'All' }}</span>
+                        </li>
+                        <li class="nav-item col-12 p-2 border-bottom small" v-for="(val,key) in territories" :key="`line_${key}`">
+                          <input type="checkbox" v-model="user.territory" :value="val">
+                          <span class="form-check-label mx-1">{{ val }}</span>
+                        </li>
+                      </ul>
+                    </div>
                   </ValidationProvider>
                 </div>
               </div>
@@ -218,7 +246,7 @@
                     v-slot="{ errors }"
                   >
                     <span class="text-danger small">{{ errors[0] }}</span>
-                    <select
+                    <!-- <select
                       name="district"
                       id="district"
                       v-model="user.district"
@@ -239,7 +267,19 @@
                         :value="name"
                         >{{ name }}</option
                       >
-                    </select>
+                    </select> -->
+                    <div style="height:200px;overflow:auto" class="border rounded p-2">
+                      <ul class="nav">
+                        <li class="nav-item col-12 p-2 border-bottom small">
+                          <input type="checkbox" v-model="user.district" :value="'all'">
+                          <span class="form-check-label mx-1">{{ 'All' }}</span>
+                        </li>
+                        <li class="nav-item col-12 p-2 border-bottom small" v-for="(val,key) in districts" :key="`line_${key}`">
+                          <input type="checkbox" v-model="user.district" :value="val">
+                          <span class="form-check-label mx-1">{{ val }}</span>
+                        </li>
+                      </ul>
+                    </div>
                   </ValidationProvider>
                 </div>
                 <!-- User Area -->
@@ -251,7 +291,7 @@
                     v-slot="{ errors }"
                   >
                     <span class="text-danger small">{{ errors[0] }}</span>
-                    <select
+                    <!-- <select
                       name="area"
                       id="area"
                       v-model="user.area"
@@ -272,7 +312,19 @@
                         :value="name"
                         >{{ name }}</option
                       >
-                    </select>
+                    </select> -->
+                    <div style="height:200px;overflow:auto" class="border rounded p-2">
+                      <ul class="nav">
+                        <li class="nav-item col-12 p-2 border-bottom small">
+                          <input type="checkbox" v-model="user.area" :value="'all'">
+                          <span class="form-check-label mx-1">{{ 'All' }}</span>
+                        </li>
+                        <li class="nav-item col-12 p-2 border-bottom small" v-for="(val,key) in areas" :key="`line_${key}`">
+                          <input type="checkbox" v-model="user.area" :value="val">
+                          <span class="form-check-label mx-1">{{ val }}</span>
+                        </li>
+                      </ul>
+                    </div>
                   </ValidationProvider>
                 </div>
               </div>
@@ -291,7 +343,7 @@
                   class="col"
                   v-if="assignBricks || user.assigned_brick.length"
                 >
-                  <select
+                  <!-- <select
                     name="assigned_bricks"
                     id="assigned_bricks"
                     multiple
@@ -306,7 +358,15 @@
                       :value="item"
                       >{{ item }}</option
                     >
-                  </select>
+                  </select> -->
+                   <div style="height:200px;overflow:auto" class="border rounded p-2">
+                      <ul class="nav">
+                        <li class="nav-item col-12 p-2 border-bottom small" v-for="(val,key) in bricks" :key="`line_${key}`">
+                          <input type="checkbox" v-model="user.assigned_brick" :value="val">
+                          <span class="form-check-label mx-1">{{ val }}</span>
+                        </li>
+                      </ul>
+                    </div>
                 </div>
                 <div v-else>
                   <span class="text-muted small"
