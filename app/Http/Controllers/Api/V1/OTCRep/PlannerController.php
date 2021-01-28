@@ -41,12 +41,17 @@ class PlannerController extends Controller
         $plans = CycleHelper::getCycleData($plans, 'plan_date', $cycle);
         $plans = $plans->orderBy('plan_date')->get();
 
-        $isSubmitted = $this->isSubmitted();
-
+        $checkCase = OtcPlanner::where('user_id', $this->user->id)
+                      ->where('approved', true)
+                      ->orWhere('submitted', true)->first();
+        $isSubmitted = $checkCase && (bool)$checkCase->submitted === true ? true : false;
+        $isApproved = $checkCase && (bool)$checkCase->approved === true ? true : false;
         return response([
             'code' => 200,
             'data' => PlannerResource::collection($plans),
-            'isSubmitted' => $isSubmitted
+            'isSubmitted' => $isSubmitted,
+            'isApproved'  =>  $isApproved,
+            "check_case"  =>  $checkCase
         ]);
     }
 
@@ -243,20 +248,5 @@ class PlannerController extends Controller
       ]);
     }
 
-    /**
-     * check if plan is submitted
-     *
-     * @return bool
-     */
-    private function isSubmitted()
-    {
-      $isSubmitted = OtcPlanner::where('user_id', $this->user->id)
-        ->where('submitted', true);
-        $isSubmitted = CycleHelper::getCycleData($isSubmitted,'plan_date');
-        $isSubmitted = $isSubmitted->first();
-      if($isSubmitted) {
-        return true;
-      }
-      return false;
-    }
+
 }

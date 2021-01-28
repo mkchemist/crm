@@ -13,14 +13,11 @@ trait CustomData {
   {
     $user = Auth::user();
     switch($user->role) {
-      case 'dm' :
-        $model= $this->getRelatedRepsData($user, $model);
-        break;
-      case 'rm' :
-        $model = $this->getRelatedRepsData($user, $model);
+      case 'rep' :
+        $model= $model->where('user_id', $user->id);
         break;
       default:
-        $model= $model->where('user_id', $user->id);
+        $model = $this->getRelatedRepsData($user, $model);
         break;
     }
     if($range) {

@@ -49,37 +49,13 @@
       </div>
       <div class="p-2">
         <div v-if="reportsData.length">
-          <table-component
-            :heads="heads"
+          <data-table-component
+            :cols="heads"
             :data="reportsData"
-            :unselectable="true"
-            :headClass="`bg-success text-light`"
+            :tableHeadClass="`bg-success text-light`"
+            :notSearchCols="[]"
           >
-            <template v-slot:head:before>
-              <th>Regional</th>
-              <th>Area Manager</th>
-              <th>District Manager</th>
-            </template>
-            <template v-slot:body:before="{item}">
-              <th>{{ getRegionalManagerName(item.user_id) }}</th>
-              <th>{{ getAreaManagerName(item.user_id) }}</th>
-              <th>{{ getDistrictManagerName(item.user_id) }}</th>
-            </template>
-            <template v-slot:head>
-              <th>Status</th>
-              <th>Brick</th>
-              <th>Area</th>
-              <th>District</th>
-              <th>Territory</th>
-            </template>
-            <template v-slot:body="{item}">
-              <td><span v-html="getCustomerStatus(item)"></span></td>
-              <td>{{ item.Brick }}</td>
-              <td>{{ item.Area }}</td>
-              <td>{{ item.District }}</td>
-              <td>{{ item.Territory }}</td>
-            </template>
-          </table-component>
+          </data-table-component>
         </div>
         <div v-else-if="!isLoaded">
           <div
@@ -104,7 +80,7 @@
 <script>
 import DateFilterBox from "../../../components/DateFilterBox.vue";
 import NoDataToShow from '../../../components/NoDataToShow.vue';
-import TableComponent from "../../../components/TableComponent.vue";
+import DataTableComponent from "../../../components/DataTableComponent.vue";
 import UserFilterBox from "../../../components/UserFilterBox.vue";
 import { sortBy } from "../../../helpers/helpers";
 import { httpCall } from "../../../helpers/http-service";
@@ -112,7 +88,7 @@ export default {
   components: {
     UserFilterBox,
     DateFilterBox,
-    TableComponent,
+    DataTableComponent,
     NoDataToShow
   },
   mounted() {},
@@ -146,8 +122,20 @@ export default {
     manager: null,
     heads: [
       {
+        title: 'Business Unit',
+        name: 'regional_manager'
+      },
+      {
+        title: 'Area Manager',
+        name: 'area_manager'
+      },
+      {
+        title: 'District Manager',
+        name: 'district_manager'
+      },
+      {
         title: "Rep",
-        name: "Rep"
+        name: "Rep",
       },
       {
         title: "Customer",
@@ -173,6 +161,26 @@ export default {
         title: 'Count Of Visits',
         name: 'countOfVisits'
       },
+      {
+        title: 'Status',
+        name: 'state'
+      },
+      {
+        title: 'Brick',
+        name: 'Brick'
+      },
+      {
+        title: 'Area',
+        name: 'Area'
+      },
+      {
+        title: 'District',
+        name: 'District'
+      },
+      {
+        title: 'Territory',
+        name: 'Territory'
+      }
     ],
     filteredList: [],
     shouldRenderFilter: false
@@ -188,6 +196,12 @@ export default {
       httpCall
         .get("admin/v1/reports/missed", query)
         .then(({ data }) => {
+          data.data.forEach(item => {
+            item['regional_manager'] = this.getRegionalManagerName(item.user_id)
+            item['area_manager'] = this.getAreaManagerName(item.user_id)
+            item['district_manager'] = this.getDistrictManagerName(item.user_id)
+            item['state'] = this.getCustomerStatus(item);
+          });
           this.reports = data.data;
           this.isReportsFetched = true;
         })

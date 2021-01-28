@@ -190,7 +190,7 @@ export default {
     }
   },
   destroyed() {
-    this.table.destroy();
+    /* this.table.destroy(); */
   }
 };
 </script>

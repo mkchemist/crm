@@ -5,7 +5,7 @@
       <span class="font-weight-bold">Pharmacies list</span>
     </p>
     <!-- pharmacy control -->
-    <div class="p-2">
+    <!-- <div class="p-2">
       <button type="button" class="btn btn-sm btn-primary" @click="openFilterModal">
         <span class="fa fa-filter"></span>
         <span>Filter</span>
@@ -23,11 +23,11 @@
         :onReset="onReset"
         :queryOnly="false"
       />
-    </div>
+    </div> -->
     <!-- data view -->
     <div class="p-2">
       <div v-if="pharmacies.length">
-        <table-component
+        <!-- <table-component
           :data="pharmacies"
           :heads="heads"
           :unselectable="true"
@@ -47,7 +47,8 @@
               </router-link>
             </td>
           </template>
-        </table-component>
+        </table-component> -->
+        <data-table-component :data="pharmacies" :cols="heads" :buttons="tableButtons" />
       </div>
       <div v-else-if="isPharmaciesFetched">
         <no-data-to-show />
@@ -59,11 +60,15 @@
 
 <script>
 import DataFilterBox from "../../../components/DataFilterBox";
+import DataTableComponent from '../../../components/DataTableComponent.vue';
 import { asyncDataFlow } from '../../../helpers/http-service';
+import { createDataTableButton, createEditButton, createViewButton } from '../../../helpers/data-table-helpers';
 
 export default {
   components: {
-    DataFilterBox
+    DataFilterBox,
+    DataTableComponent,
+
   },
   computed: {
     pharmacies() {
@@ -74,6 +79,34 @@ export default {
     },
     isPharmaciesFetched() {
       return this.$store.getters.isPharmaciesFetched;
+    },
+    tableButtons() {
+      return [
+        createDataTableButton(this, {
+          icon: 'fa-filter',
+          title: 'Filter',
+          action: () => this.openFilterModal(),
+          className: 'filter-btn'
+        }),
+        createDataTableButton(this, {
+          icon: 'fa-plus-circle',
+          title: 'New Pharmacy',
+          action: () => this.$router.push('/pharmacies/new'),
+          className: 'new-btn'
+        }),
+        createViewButton(this,{
+          field: 'id',
+          url: '/pharmacies/view/',
+          onError: () => this.$toasted.show('Must select an item'),
+          className:'view-btn'
+        }),
+        createEditButton(this, {
+          field: 'id',
+          url: '/pharmacies/edit/',
+          onError: () => this.$toasted.show('Must select an item'),
+          className:'edit-btn'
+        })
+      ]
     }
   },
   data: () => ({

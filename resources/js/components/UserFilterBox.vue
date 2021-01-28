@@ -1,7 +1,7 @@
 <template>
   <div class="p-2 border rounded" v-if="users.length">
     <div class="form-group">
-      <label for="">User</label>
+      <label for="" class="text-muted">User</label>
       <select
         name="user"
         id="user"
@@ -18,13 +18,13 @@
       </select>
     </div>
     <div class="form-group text-right">
-      <button type="button" class="btn btn-sm btn-secondary" @click="reset">
-        <span class="fa fa-redo"></span>
-        <span>reset</span>
-      </button>
       <button type="button" class="btn btn-sm btn-primary" @click="filterUsers">
         <span class="fa fa-check-circle"></span>
         <span>ok</span>
+      </button>
+      <button type="button" class="btn btn-sm btn-secondary" @click="reset">
+        <span class="fa fa-redo"></span>
+        <span>reset</span>
       </button>
     </div>
   </div>
@@ -69,7 +69,7 @@ export default {
         return this.data;
       }
       let data = filterBy(this.data, key, this.user);
-      this.onFilter(data)
+      this.onFilter(data, this.user)
     },
     reset() {
       this.onReset();

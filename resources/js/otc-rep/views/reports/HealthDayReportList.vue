@@ -49,6 +49,11 @@
                   <th>Competitor 3 Rate</th>
                   <th>Competitor 3 Stock</th>
                   <th>Health Day Summery</th>
+                  <th>Address</th>
+                  <th>Brick</th>
+                  <th>Area</th>
+                  <th>District</th>
+                  <th>Territory</th>
                 </tr>
               </thead>
               <tbody>
@@ -84,6 +89,11 @@
                   <td>{{ report.competitor3_rate }}</td>
                   <td>{{ report.competitor3_stock }}</td>
                   <td>{{ report.comment.summery }}</td>
+                  <td>{{ report.address }}</td>
+                  <td>{{ report.brick }}</td>
+                  <td>{{ report.area }}</td>
+                  <td>{{ report.district }}</td>
+                  <td>{{ report.territory }}</td>
                 </tr>
               </tbody>
             </table>

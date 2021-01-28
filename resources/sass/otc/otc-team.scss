@@ -1,6 +1,8 @@
 $success : #38c172;
 $white: #fff;
 $danger: #bd2a2a;
+$info: #6688f0;
+$primary: royalblue;
 .navbar {
   .nav-link {
     transition:.5;
@@ -101,5 +103,37 @@ th {
       background-color: orangered !important;
       border: 0 !important;
     }
+  }
+}
+
+
+
+.page-fade {
+  animation-name: page_fade_animation;
+  animation-duration: 1s;
+}
+
+@keyframes page_fade_animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.dt-buttons {
+
+  .filter-btn {
+    background-color: $primary!important;
+    border-color:$primary!important;
+  }
+  .view-btn {
+    background-color: orangered!important;
+    border-color: orangered !important;
+  }
+  .edit-btn {
+    background-color: #f7f038!important;
+    border-color: #f7f038!important;
+    color: #111 !important;
   }
 }

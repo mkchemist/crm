@@ -16,7 +16,23 @@ export default {
     rms : state => state.users.filter(user => user.role === 'rm'),
     allUsersFetched: state => state.allUsersFetched,
     allLocations: state => state.locations,
-    isAllLocationFetched : state => state.isLocationsFetched
+    isAllLocationFetched : state => state.isLocationsFetched,
+    allTerritories: state => {
+      try {
+
+        let data = new Set();
+        state.locations.map(item => {
+          data.add(item.territory)
+        });
+        let dataObject = [];
+        data.forEach(item => {
+          dataObject.push({name: item})
+        })
+        return dataObject;
+      }catch(e) {
+        console.log(e)
+      }
+    }
   },
   actions: {
     /**

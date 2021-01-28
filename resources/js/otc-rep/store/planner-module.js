@@ -4,14 +4,16 @@ export default {
   state: {
     plans: [],
     fetched: false,
-    locked: false
+    locked: false,
+    approvalLock: false
   },
   getters: {
     allPlans: state => state.plans,
     isPlannerFetched: state => state.fetched,
     regularPlans: state => state.plans.filter(plan => plan.type === "regular"),
     healthDayPlans: state => state.plans.filter(plan => plan.type !== "regular"),
-    isPlannerLocked: state => state.locked
+    isPlannerLocked: state => state.locked,
+    isPlannerApproved: state => state.approvalLock
   },
   mutations: {
     /**
@@ -40,6 +42,16 @@ export default {
      */
     changePlannerLockState(state, payload = false) {
       state.locked = payload
+    },
+    /**
+     * change approval state
+     *
+     * @param {Object} state
+     * @param {boolean} payload
+     */
+    changePlannerApprovalLockState(state, payload = false)
+    {
+      state.approvalLock = payload
     }
 
   },
@@ -57,12 +69,14 @@ export default {
 
         module.commit('loadPlanner');
         module.commit('changePlannerFetchedState');
-        module.commit('changePlannerLockState')
+        module.commit('changePlannerLockState');
+        module.commit("changePlannerApprovalLockState");
         return httpCall.get('otc-rep/v1/planner', {start, end})
         .then(({data}) => {
           module.commit('changePlannerFetchedState', true);
           module.commit('loadPlanner', data.data);
           module.commit('changePlannerLockState', data.isSubmitted);
+          module.commit("changePlannerApprovalLockState", data.isApproved);
         }).catch(err => console.log(err));
       }
     }

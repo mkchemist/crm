@@ -11,7 +11,13 @@ export const Api = document.getElementById('APP_API_URL').value;
 export const Token = document.getElementById('token').value;
 
 const generateApiUrl = (path,query = {}) => {
-  let queryString = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+  let q = {};
+  for(let key in query) {
+    if(query[key]) {
+      q[key] = query[key];
+    }
+  }
+  let queryString = Object.keys(q).map(key => `${key}=${q[key]}`).join('&');
   return Api+path+'?api_token='+Token+'&'+queryString;
 }
 

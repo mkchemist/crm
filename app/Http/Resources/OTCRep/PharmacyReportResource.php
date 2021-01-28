@@ -37,7 +37,12 @@ class PharmacyReportResource extends JsonResource
           'feedback'        =>  $this->general_feedback,
           'type'            =>  $this->pharmacy->type,
           'report_type'     =>  $this->type,
-          'comment'         =>  isset($this->comment) ? json_decode($this->comment) : []
+          'comment'         =>  isset($this->comment) ? json_decode($this->comment) : [],
+          'address'         =>  $this->pharmacy->address,
+          'brick'           =>  $this->pharmacy->brick,
+          'area'            =>  $this->pharmacy->area,
+          'district'        =>  $this->pharmacy->district,
+          'territory'       =>  $this->pharmacy->territory
         ];
     }
 }

@@ -17,6 +17,11 @@ class Pharmacy extends Model
     'approved_by'
   ];
 
+  /**
+   * regular rep reports
+   *
+   *
+   */
   public function report() {
     $model = $this->hasMany('App\PharmacyReport')->orderBy('visit_date');
     $activeCycle = new ActiveCycleSetting;
@@ -24,5 +29,19 @@ class Pharmacy extends Model
     return $this->getRelatedUserData($model,'visit_date', [$cycle->start, $cycle->end]);
   }
 
+  /**
+   * otc rep reports
+   *
+   *
+   *
+   */
+  public function otcReport()
+  {
+    $model = $this->hasMany('App\OTCPharmacyReport','pharmacy_id', 'id')
+    ->orderBy('visit_date');
+    $active = new ActiveCycleSetting;
+    $cycle = $active->all();
+    return $this->getRelatedUserData($model,'visit_date',[$cycle->start, $cycle->end]);
+  }
 
 }

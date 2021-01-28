@@ -53,6 +53,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapRMApiRoute();
 
         $this->mapOTCRepRoutes();
+
+        $this->mapOTCManagerRoutes();
         //
     }
 
@@ -118,5 +120,12 @@ class RouteServiceProvider extends ServiceProvider
       ->middleware(['api','auth:api','otc-rep'])
       ->namespace('App\Http\Controllers\Api\V1\OTCRep')
       ->group(base_path('routes/otc-rep-api.php'));
+    }
+
+    protected function mapOTCManagerRoutes() {
+      Route::prefix('api/otc-manager')
+      ->middleware(['api','auth:api','otc-manager'])
+      ->namespace('App\Http\Controllers\Api\V1\OTCManager')
+      ->group(base_path('routes/otc-manager-api.php'));
     }
 }

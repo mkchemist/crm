@@ -5,8 +5,8 @@ export default {
   state: {
     customers: [],
     isCustomersFetched: false,
-    total_pages: null,
-    current_page: null,
+    total_pages: 'loading',
+    current_page: 1,
     startLoading: false
   },
   getters: {
@@ -27,12 +27,16 @@ export default {
       module.state.isCustomersFetched = false;
       if(payload.reset) {
         module.state.customers = [];
+        module.state.total_pages = 'loading';
+        module.state.current_page = 1;
       }
       let url = `${base_url}admin/v1/customers?api_token=${token}`;
       if(payload && payload.url) {
         url = payload.url;
       }
-      url= `${url}&territory=${payload.territory}`
+      if(payload.territory) {
+        url= `${url}&territory=${payload.territory}`
+      }
       return fetch(url)
       .then(res => res.json())
       .then(data => {

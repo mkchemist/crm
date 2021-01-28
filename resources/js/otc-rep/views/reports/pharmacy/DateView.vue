@@ -37,25 +37,31 @@
               <th>Competitor 3 Rate</th>
               <th>Competitor 3 Stock</th>
               <th>Feedback</th>
+              <th>Address</th>
+              <th>Brick</th>
+              <th>Area</th>
+              <th>District</th>
+              <th>Territory</th>
             </tr>
           </thead>
           <template v-for="(key, i) in Object.keys(reports)">
             <tbody class="_removed__raw" :key="`report_date_${key}_${i}`">
               <tr class="bg-dark text-light">
-                <td colspan="18">
+                <td colspan="24">
                   <a
                     href=""
                     class="text-decoration-none text-light"
                     data-toggle="collapse"
                     :data-target="`#pharmacy_report_${i}`"
-                    >
-                      <span>Date : {{ key }}</span>
-                      <span class="ml-3">
-                        <span>No. of pharmacies</span>
-                        <span class="badge badge-light">{{ calculateNoOfPharmacy(key) }}</span>
-                      </span>
-                    </a
                   >
+                    <span>Date : {{ key }}</span>
+                    <span class="ml-3">
+                      <span>No. of pharmacies</span>
+                      <span class="badge badge-light">{{
+                        calculateNoOfPharmacy(key)
+                      }}</span>
+                    </span>
+                  </a>
                 </td>
               </tr>
             </tbody>
@@ -95,6 +101,11 @@
                 <td>{{ row.competitor3_rate }}</td>
                 <td>{{ row.competitor3_stock }}</td>
                 <td>{{ row.feedback }}</td>
+                <td>{{ row.address }}</td>
+                <td>{{ row.brick }}</td>
+                <td>{{ row.area }}</td>
+                <td>{{ row.district }}</td>
+                <td>{{ row.territory }}</td>
               </tr>
             </tbody>
           </template>
@@ -141,11 +152,11 @@ export default {
       let reports = this.reports;
       let count = [];
       reports[date].map(report => {
-        if(!count.includes(report.pharmacy)) {
+        if (!count.includes(report.pharmacy)) {
           count.push(report.pharmacy);
         }
       });
-      return count.length
+      return count.length;
     }
   }
 };

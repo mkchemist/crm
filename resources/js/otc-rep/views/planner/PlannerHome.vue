@@ -6,6 +6,13 @@
     </p>
     <div class="p-2">
       <div class="p-2 text-center shadow-sm rounded my-2">
+        <button
+          class="btn btn-sm btn-primary"
+          @click="refreshPlans"
+        >
+          <span class="fa fa-redo"></span>
+          <span>Refresh planner</span>
+        </button>
         <router-link to="/planner/add/day" class="btn btn-sm btn-primary">
           <span class="fa fa-plus-circle"></span>
           <span>Plan a day</span>
@@ -17,9 +24,10 @@
           <span class="fa fa-plus-circle"></span>
           <span>Plan a health day</span>
         </router-link>
-        <button class="btn btn-sm btn-success" @click="submitPlans" :disabled="locked">
+        <button class="btn btn-sm btn-success" @click="submitPlans" :disabled="locked || approved">
           <span class="fa fa-check-circle"></span>
-          <span v-if="locked">Already Submitted</span>
+          <span v-if="approved">Plan approved</span>
+          <span v-else-if="locked">Already Submitted</span>
           <span v-else>Submit</span>
         </button>
       </div>
@@ -55,6 +63,9 @@ export default {
     },
     locked() {
       return this.$store.getters.isPlannerLocked;
+    },
+    approved() {
+      return this.$store.getters.isPlannerApproved;
     }
   },
   methods: {
@@ -69,6 +80,9 @@ export default {
       }
       this.$toasted.success('Plan is not submitted')
       return;
+    },
+    refreshPlans() {
+      this.$store.dispatch('fetchPlans', {force: true});
     }
   }
 };

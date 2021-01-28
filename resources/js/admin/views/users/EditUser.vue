@@ -96,6 +96,10 @@
                     </select> -->
                     <div style="height:200px;overflow:auto" class="border rounded p-2">
                       <ul class="nav">
+                        <li class="nav-item col-12 p-2 border-bottom small">
+                          <input type="checkbox" v-model="user.line" :value="'all'">
+                          <span class="form-check-label mx-1">{{ 'All' }}</span>
+                        </li>
                         <li class="nav-item col-12 p-2 border-bottom small" v-for="(val,key) in lines" :key="`line_${key}`">
                           <input type="checkbox" v-model="user.line" :value="val.name">
                           <span class="form-check-label mx-1">{{ val.name }}</span>
