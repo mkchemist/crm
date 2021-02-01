@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <h2>Reports Page</h2>
+  <div class="p-2">
+    <router-view class="page-fade"></router-view>
   </div>
 </template>
 
 <script>
 export default {
-
+  mounted() {
+    this.$store.dispatch('fetchReports')
+  }
 }
 </script>
 

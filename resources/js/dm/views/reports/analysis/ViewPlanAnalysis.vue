@@ -188,10 +188,11 @@ export default {
       );
     },
     handlePlansFitler(resolve) {
-      resolve.then(d => this.filteredPlans = d)
-      .finally(() => {
-        this.isFiltered = true;
-      })
+      resolve
+        .then(d => (this.filteredPlans = d))
+        .finally(() => {
+          this.isFiltered = true;
+        });
     },
     handlePlansReset() {
       this.isFiltered = false;
@@ -202,8 +203,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  th, tr, td {
-    vertical-align: middle !important;
-    text-align: center;
-  }
+th,
+tr,
+td {
+  vertical-align: middle !important;
+  text-align: center;
+}
 </style>

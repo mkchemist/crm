@@ -126,7 +126,7 @@
             </div>
           </div>
           <div v-if="reports.length" class="p-2 border rounded">
-            <table-component
+            <!-- <table-component
               :heads="heads"
               :data="reports"
               :headClass="`bg-dark text-light`"
@@ -154,7 +154,8 @@
                 <td>{{ item.area }}</td>
                 <td>{{ item.district }}</td>
               </template>
-            </table-component>
+            </table-component> -->
+            <data-table-component :data="reports" :cols="heads" />
           </div>
           <div
             v-else-if="!loadingStarted"
@@ -175,13 +176,13 @@
 
 <script>
 import NoDataToShow from "../../../components/NoDataToShow.vue";
-import TableComponent from "../../../components/TableComponent.vue";
+import DataTableComponent from "../../../components/DataTableComponent.vue";
 import UserFilterBox from "../../../components/UserFilterBox.vue";
 import { sortBy } from "../../../helpers/helpers";
 import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
 export default {
   mounted() {},
-  components: { NoDataToShow, TableComponent, UserFilterBox },
+  components: { NoDataToShow, DataTableComponent, UserFilterBox },
   computed: {
     /* All reps */
     reps() {
@@ -221,8 +222,20 @@ export default {
     startDate: null,
     endDate: null,
     status: new Set(),
-    view_status: 'all',
+    view_status: "all",
     heads: [
+      {
+        title: "Business Unit",
+        name: "BU"
+      },
+      {
+        title: "Area Manager",
+        name: "AM"
+      },
+      {
+        title : "District Manager",
+        name: "DM"
+      },
       {
         title: "Rep",
         name: "rep_name"
@@ -256,6 +269,22 @@ export default {
       {
         title: "Difference",
         name: "difference"
+      },
+      {
+        title: 'Status',
+        name: 'status'
+      },
+      {
+        title: 'Brick',
+        name: 'brick'
+      },
+      {
+        title: 'Area',
+        name: 'area'
+      },
+      {
+        title: 'District',
+        name: 'district'
       }
     ]
   }),
@@ -275,11 +304,14 @@ export default {
         .get("rm/v1/reports/missed-customers", scheme)
         .then(({ data }) => {
           data.data.forEach(item => {
-          let {flag, style} = this.calculateStatus(item)
-          item['status'] = flag;
-          item['style'] = style;
-          this.status.add(item['status'])
-        })
+            let { flag, style } = this.calculateStatus(item);
+            item["status"] = flag;
+            item["style"] = style;
+            item["BU"] = this.$store.state.UserModule.user.name;
+            item["AM"] = this.getAreaManager(item.user_id);
+            item["DM"] = this.getDistrictManager(item.user_id);
+            this.status.add(item["status"]);
+          });
           this.data = data.data;
           this.fetched = true;
         })
@@ -354,10 +386,10 @@ export default {
     onFilter(data) {
       this.shouldRenderFilter = true;
       this.filteredList = [];
-      this.view_status = "all"
+      this.view_status = "all";
 
-      asyncDataFlow(data, data => this.filteredList = data);
-     /*  let asyncDataFlow = () => Promise.resolve(data);
+      asyncDataFlow(data, data => (this.filteredList = data));
+      /*  let asyncDataFlow = () => Promise.resolve(data);
       asyncDataFlow().then(data => (this.filteredList = data)); */
     },
     /**
@@ -367,14 +399,17 @@ export default {
       this.filteredList = [];
       /* let asyncDataFlow = () => Promise.resolve(this.data);
       asyncDataFlow().then(data => (this.filteredList = data)); */
-      asyncDataFlow(this.data, data => this.filteredList = data);
+      asyncDataFlow(this.data, data => (this.filteredList = data));
     },
     calculateStatus(item) {
       let flag, style;
       if (item.difference > 0 && item.difference === item.count_of_plans) {
         flag = "Uncovered";
         style = "bg-danger text-light";
-      } else if (item.difference > 0 && item.difference !== item.count_of_plans) {
+      } else if (
+        item.difference > 0 &&
+        item.difference !== item.count_of_plans
+      ) {
         flag = "Missed";
         style = "bg-warning text-dark";
       } else if (item.difference === 0) {
@@ -387,25 +422,25 @@ export default {
       return {
         flag,
         style
-      }
+      };
     },
-    filterStatus(){
+    filterStatus() {
       let data;
-      if(this.view_status === "all") {
+      if (this.view_status === "all") {
         data = this.data;
       } else {
         data = this.data.filter(report => report.status === this.view_status);
       }
       this.shouldRenderFilter = true;
       this.filteredList = [];
-      asyncDataFlow(data, data => this.filteredList = data);
+      asyncDataFlow(data, data => (this.filteredList = data));
     },
     resetStatus() {
       this.shouldRenderFilter = true;
       this.filteredList = [];
-      this.view_status = "all"
-      asyncDataFlow(this.data, data => this.filteredList = data);
-    },
+      this.view_status = "all";
+      asyncDataFlow(this.data, data => (this.filteredList = data));
+    }
   }
 };
 </script>

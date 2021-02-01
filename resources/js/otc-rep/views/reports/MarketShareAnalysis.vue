@@ -25,7 +25,7 @@
                 {{
                   (
                     analysis[product].share / analysis[product].totalMarketShare
-                  ).toFixed(1)
+                  ).toFixed(2)
                 }}%
               </td>
             </tr>
@@ -41,7 +41,7 @@
                   (
                     analysis[product].competitors[competitor].share /
                     analysis[product].totalMarketShare
-                  ).toFixed(1)
+                  ).toFixed(2)
                 }}%
               </td>
             </tr>
@@ -49,28 +49,24 @@
         </table>
       </div>
     </div>
-    <div class="p-2 my-2" v-if="Object.keys(analysis).length">
-
-      <div class="container">
-        <div class="form-group">
-          <select name="" id="" v-model="chart_type">
-            <option value="bar">Bar</option>
-            <option value="line">Line</option>
-            <option value="pie">Pie</option>
-          </select>
-        </div>
+    <div class="p-2 my-2 row mx-auto justify-content-center" v-if="Object.keys(analysis).length">
       <chart-view
-        :chartData="dataChart.data"
-        :labels="dataChart.labels"
-        :type="dataChart.type"
+        :chartData="product.data"
+        :labels="product.labels"
+        v-for="(product, i) in chartData"
+        :key="`chart_${i}`"
+        type="bar"
+        :id="`chart_${i}`"
+        class="col-lg min-50"
       />
-      </div>
     </div>
   </div>
 </template>
 
 <script>
 import ChartView from "../../../components/ChartView.vue";
+import { CHART_COLOR_LIST } from "../../../helpers/constants";
+import { filterData } from "../../../helpers/helpers";
 export default {
   components: { ChartView },
   mounted() {
@@ -89,108 +85,85 @@ export default {
       let reports = this.reports;
       let analysis = {};
       try {
-        reports.map(report => {
-          let product = report.product;
-          if (!analysis[product]) {
-            analysis[product] = {
-              competitors: {},
-              share: 0,
-              stock: 0,
-              order: 0,
-              totalMarketShare: 0
-            };
-          }
-          analysis[product].share += this._convertProductRateToInteger(
-            report.rate
-          );
-          analysis[
-            product
-          ].totalMarketShare += this._convertProductRateToInteger(report.rate);
-          analysis[product].competitors = this._createProductCompetitors(
-            analysis[product],
-            report.competitor1
-          );
-          analysis[product].competitors = this._createProductCompetitors(
-            analysis[product],
-            report.competitor2
-          );
-          analysis[product].competitors = this._createProductCompetitors(
-            analysis[product],
-            report.competitor3
-          );
-          analysis[product].competitors[
-            report.competitor1
-          ].share += this._convertProductRateToInteger(report.competitor1_rate);
-          analysis[product].competitors[
-            report.competitor2
-          ].share += this._convertProductRateToInteger(report.competitor2_rate);
-          analysis[product].competitors[
-            report.competitor3
-          ].share += this._convertProductRateToInteger(report.competitor3_rate);
-          analysis[
-            product
-          ].totalMarketShare += this._convertProductRateToInteger(
-            report.competitor1_rate
-          );
-          analysis[
-            product
-          ].totalMarketShare += this._convertProductRateToInteger(
-            report.competitor2_rate
-          );
-          analysis[
-            product
-          ].totalMarketShare += this._convertProductRateToInteger(
-            report.competitor3_rate
-          );
-
-          /*  analysis[product].competitors[report.competitor2].share += this._convertProductRateToInteger(report.competitor2_rate); */
-        });
+        let products = filterData(reports, "product");
+        for (let product in products) {
+          analysis[product] = {
+            competitors: {},
+            share: 0,
+            totalMarketShare: 0
+          };
+          let container = products[product];
+          container.map(item => {
+            analysis[product].share += this._convertProductRateToInteger(
+              item.rate
+            );
+            analysis[
+              product
+            ].totalMarketShare += this._convertProductRateToInteger(item.rate);
+            this._createProductCompetitors(
+              analysis[product],
+              item.competitor1,
+              item.competitor1_rate
+            );
+            this._createProductCompetitors(
+              analysis[product],
+              item.competitor2,
+              item.competitor2_rate
+            );
+            this._createProductCompetitors(
+              analysis[product],
+              item.competitor3,
+              item.competitor3_rate
+            );
+          });
+        }
       } catch (e) {
         console.log(e);
       }
       return analysis;
     },
-    dataChart() {
-      let color = {
-        Syno : 'orange',
-        'C-retard' : 'green',
-        'C-vit' : 'lightgreen',
-        'Rosha' : 'royalblue',
-        'V-drop' : 'aquamarine',
-        'D-Cal' : 'brown'
-      };
-      let labels = ['Share'];
-      let data = [];
-      let analysis = this.analysis;
-      for(let i in analysis) {
-        let _d = {};
-        _d['label'] = i;
-        _d['data'] = [(analysis[i].share/analysis[i].totalMarketShare)]
-        _d['borderColor'] = color[i];
-        _d['backgroundColor'] = color[i];
-        _d['borderWidth'] = 2;
-          data.push(_d)
-        for(let x in analysis[i].competitors) {
-          if(x !== "null") {
-            let _x = {};
-            _x['label'] = x;
-            _x['data'] = [(analysis[i].competitors[x].share/analysis[i].totalMarketShare)]
-            _x['borderColor'] = color[x];
-            _x['backgroundColor'] = color[x];
-          _x['borderWidth'] = 2;
-            data.push(_x)
-          }
-        }
+    chartData() {
+      let $data = [];
+      try {
+        Object.keys(this.analysis).forEach(product => {
+          let container = this.analysis[product],
+            labels = [product],
+            data = [this.calculateSharePercentage(container.share, container)];
+          let chart = {};
+
+          Object.keys(container.competitors).forEach(competitor => {
+            labels.push(competitor);
+            data.push(
+              this.calculateSharePercentage(
+                container.competitors[competitor].share,
+                container
+              )
+            );
+          });
+
+          $data.push({
+            labels,
+            data: [
+              {
+                data,
+                backgroundColor: CHART_COLOR_LIST.slice(0, data.length),
+                label: `${product.toUpperCase()} Market Share`,
+                borderColor: CHART_COLOR_LIST.slice(0, data.length),
+                borderWidth:2,
+                fill: false
+              }
+            ]
+          });
+        });
+        return $data;
+      } catch (e) {
+        console.log(e);
+        return $data;
       }
-      return {
-        labels,
-        data,
-        type: 'bar'
-      };
     }
   },
   data: () => ({
-    chart_type: 'bar'
+    chart_type: "bar"
   }),
   methods: {
     /**
@@ -224,7 +197,10 @@ export default {
      * @param {String} competitor
      * @return {Object}
      */
-    _createProductCompetitors(product, competitor) {
+    _createProductCompetitors(product, competitor, value) {
+      if (!competitor) {
+        return;
+      }
       let competitors = product.competitors;
       if (!competitors[competitor]) {
         competitors[competitor] = {
@@ -232,10 +208,27 @@ export default {
           share: 0
         };
       }
+      this._addCompetitorShare(product, competitor, value);
       return competitors;
+    },
+    _addCompetitorShare(product, competitor, value) {
+      if (product.competitors[competitor]) {
+        product.competitors[
+          competitor
+        ].share += this._convertProductRateToInteger(value);
+        product.totalMarketShare += this._convertProductRateToInteger(value);
+      }
+    },
+    calculateSharePercentage(item, product) {
+      return item / product.totalMarketShare;
     }
   }
 };
 </script>
 
-<style></style>
+<style lang="scss">
+
+  .min-50{
+    min-width: 50%;
+  }
+</style>

@@ -16,6 +16,13 @@ class CustomerPlannerResource extends JsonResource
     {
         $freq = count($this->customer->frequency) ? $this->customer->frequency[0]->current : 0;
         $param = count($this->customer->params) ? $this->customer->params[0]->current : 0;
+        $class = "PM";
+        if($this->submitted) {
+          $class .=" submitted";
+        }
+        if($this->approved) {
+          $class .= "  approved";
+        }
         return [
           'start'      =>  $this->plan_date,
           'end'      =>  $this->plan_date,
@@ -31,7 +38,9 @@ class CustomerPlannerResource extends JsonResource
           'parameter' =>  $param,
           'frequency' =>  $freq,
           'count_plans' =>  count($this->customer->planner),
-          'diff'      =>  $freq - count($this->customer->planner)
+          'diff'      =>  $freq - count($this->customer->planner),
+          'class'     =>  $class,
+          "type"      =>  "PM"
         ];
     }
 }

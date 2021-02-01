@@ -5,7 +5,7 @@
       <span class="font-weight-bold">Product View</span>
     </p>
     <div class="p-2">
-      <div class="p-2" v-if="reports.length">
+      <div class="p-2" >
         <div class="my-2 p-2">
           <button class="btn btn-sm btn-success" @click="exportToExcel">
             <span class="fa fa-file-excel"></span>
@@ -19,7 +19,8 @@
           <thead>
             <tr>
               <th>Pharmacy</th>
-              <th class="export-remove" >Action</th>
+              <th class="export-remove" v-if="!$attrs.withUsername">Action</th>
+              <th v-if="$attrs.withUsername">Rep</th>
               <th>Date</th>
               <th>Product</th>
               <th>Rate</th>
@@ -57,7 +58,7 @@
                 :key="`report_${i}_${index}`"
                 class="row-striped"
               >
-                <td class="export-remove">
+                <td class="export-remove" v-if="!$attrs.withUsername">
                   <router-link
                     :to="`/reports/edit/pharmacy/${report.id}`"
                     class="btn btn-sm btn-warning"
@@ -66,6 +67,7 @@
                   </router-link>
                   <delete-report-button :itemId="report.id"/>
                 </td>
+                <td v-if="$attrs.withUsername">{{ report.user }}</td>
                 <td>{{ report.date }}</td>
                 <td class="export-bold">{{ report.product }}</td>
                 <td>{{ report.rate }}</td>
@@ -92,10 +94,7 @@
           </tbody>
         </table>
       </div>
-      <div v-else-if="isFetched">
-        <no-data-to-show />
-      </div>
-      <loader-component v-else></loader-component>
+
     </div>
   </div>
 </template>
@@ -109,11 +108,9 @@ export default {
   },
   computed: {
     reports() {
-      return this.$store.getters.pharmacyReports;
+      return this.$attrs.data;
     },
-    isFetched() {
-      return this.$store.getters.pharmacyReportsFetched;
-    },
+
     reportCollection() {
       let reports;
       reports = filterData(this.reports, "pharmacy");

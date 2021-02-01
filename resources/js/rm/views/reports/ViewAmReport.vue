@@ -26,18 +26,8 @@
             <span class="font-weight-bold">View AM reports</span>
           </p>
           <div class="p-2" v-if="reports.length">
-            <table-component :data="reports" :heads="heads" :unselectable="true" :headClass="`bg-success text-light`">
-              <template v-slot:head:before>
-                <th>Business Unit Manager</th>
-                <th>Area Manager</th>
-                <th>District Manager</th>
-              </template>
-              <template v-slot:body:before="{ item }">
-                <td>{{ $store.state.UserModule.user.name }}</td>
-                <td>{{ getRepAreaManager(item.user_id) }}</td>
-                <td>{{ getRepManager(item.user_id) }}</td>
-              </template>
-            </table-component>
+            <data-table-component :data="reports" :cols="heads" >
+            </data-table-component>
           </div>
           <div v-else-if="isReportsFetched">
             <no-data-to-show />
@@ -52,21 +42,30 @@
 <script>
 import DateFilterBox from "../../../components/DateFilterBox.vue";
 import NoDataToShow from "../../../components/NoDataToShow.vue";
-import TableComponent from "../../../components/TableComponent.vue";
+import DataTableComponent from "../../../components/DataTableComponent.vue";
 import UserFilterBox from "../../../components/UserFilterBox.vue";
 import { ProductWithLader } from '../../../helpers/constants';
 import { sortBy } from "../../../helpers/helpers";
 export default {
-  components: { NoDataToShow, TableComponent, UserFilterBox, DateFilterBox },
+  components: { NoDataToShow, DataTableComponent, UserFilterBox, DateFilterBox },
   mounted() {
     this.$store.dispatch("getAllAmReports");
   },
   computed: {
+    reportData(){
+      let reports = this.$store.getters.allAmReports;
+      reports.forEach(report => {
+        report['BU'] = this.$store.state.UserModule.user.name;
+        report['AM'] = this.getRepAreaManager(report.user_id);
+        report['DM'] = this.getRepManager(report.user_id);
+      });
+      return reports;
+    },
     reports() {
       if (this.shouldRenderFilter) {
         return this.filteredList;
       }
-      return this.$store.getters.allAmReports;
+      return this.reportData;
     },
     isReportsFetched() {
       return this.$store.getters.isAmReportsFetched;
@@ -95,6 +94,18 @@ export default {
     shouldRenderFilter: false,
     filteredList: [],
     heads: [
+       {
+        title: "Business Unit",
+        name: "BU"
+      },
+      {
+        title: "Area Manager",
+        name: "AM"
+      },
+      {
+        title : "District Manager",
+        name: "DM"
+      },
       {
         title: "Rep",
         name: "rep"

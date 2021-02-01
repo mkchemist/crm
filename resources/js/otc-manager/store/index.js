@@ -5,6 +5,7 @@ import AppModule from '../../shared/store/app-module';
 import UserModule from '../../shared/store/user-module';
 import PharmacyModule from './PharmacyModule';
 import PlannerModule from './PlannerModule';
+import ReportModule from './ReportModule';
 import { httpCall } from '../../helpers/http-service';
 
 Vue.use(Vuex);
@@ -15,7 +16,8 @@ export default new Vuex.Store({
     AppModule,
     UserModule,
     PharmacyModule,
-    PlannerModule
+    PlannerModule,
+    ReportModule
   },
   state: {
     managerReps: []

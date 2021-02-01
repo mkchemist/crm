@@ -23,7 +23,13 @@ class PlannerResource extends JsonResource
           'start' =>  $this->plan_date,
           'user_id' =>  $this->user_id,
           'end'     =>  $this->plan_date,
-          "class"   =>  $class
+          "class"   =>  $class,
+          'rep'    =>  $this->user->name,
+          'pharmacy'  =>  $this->pharmacy ? $this->pharmacy->name: '',
+          'brick'   => $this->pharmacy ? $this->pharmacy->brick : $this->title,
+          "approved"  =>  $this->approved,
+          'submitted' =>  $this->submitted,
+          'type'    =>  $this->type,
         ];
     }
 }

@@ -51,34 +51,44 @@ export default {
       default: () => true
     }
   },
+  watch: {
+    data: function() {
+      /* this.table.destroy();
+      this.createTable(); */
+    }
+  },
   data: () => ({
     defaultButtons: [
       {
         extend: "excel",
         text: '<i class="fa fa-file-excel"></i> Excel'
       }
-    ]
+    ],
+    table: null
   }),
   mounted() {
-    let cols = this.prepareDataColumns(this.cols);
-    let buttons = [...this.defaultButtons, ...this.buttons];
-
-    let select = this.detectSelectionBehavior();
-
-    $(`#${this.tableId}`).DataTable({
-      data: this.data,
-      columns: cols,
-      buttons,
-      select,
-      dom: "Bflirtp",
-      lengthMenu: [20, 50, 100],
-      deferRender: true,
-      language: {
-        searchPlaceholder: 'Search ...'
-      }
-    });
+    this.createTable();
   },
   methods: {
+    createTable() {
+      let cols = this.prepareDataColumns(this.cols);
+      let buttons = [...this.defaultButtons, ...this.buttons];
+
+      let select = this.detectSelectionBehavior();
+
+      this.table = $(`#${this.tableId}`).DataTable({
+        data: this.data,
+        columns: cols,
+        buttons,
+        select,
+        dom: "Bflirtp",
+        lengthMenu: [20, 50, 100],
+        deferRender: true,
+        language: {
+          searchPlaceholder: "Search ..."
+        }
+      });
+    },
     prepareDataColumns(data) {
       let cols = [];
       this.cols.map(col => {
@@ -86,7 +96,8 @@ export default {
           data: col.name,
           searchable: true,
           className: col.style || "",
-          visible: col.visible
+          visible: col.visible,
+          defaultContent: "--------------"
         };
         if (this.notSearchCols.includes(col.nam)) {
           data["searchable"] = false;
@@ -104,6 +115,9 @@ export default {
       }
       return select;
     }
+  },
+  destroyed() {
+    this.table.destroy()
   }
 };
 </script>

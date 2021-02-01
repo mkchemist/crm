@@ -1,7 +1,7 @@
 <template>
-  <div class="px-0 border" style="min-height:200px">
+  <div class="px-0 shadow rounded" style="min-height:200px">
     <p class="bg-success text-light p-2">Today Plan</p>
-    <div>
+    <div class="p-2">
       <div class="row mx-auto justify-content-between">
         <input
           type="date"
@@ -12,7 +12,7 @@
       <div v-if="plans.length" class="my-2">
         <ul class="nav">
           <li
-            class="nav-item small col-12 clearfix border-bottom my-1 py-1"
+            class="nav-item small col-12 clearfix border-bottom my-1 py-1 todo-item"
             v-for="plan in plans"
             :key="plan.id"
           >
@@ -48,7 +48,8 @@ export default {
       );
     },
     fetched() {
-      return this.$store.getters.isPlannerFetched;
+      let fetched = this.$store.getters.isPlannerFetched || this.$store.getters.isPlansFetched;
+      return fetched;
     }
   },
   data: () => ({
@@ -68,4 +69,11 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+  .todo-item {
+    transition: .5s;
+    &:hover{
+      background-color: #1111;
+    }
+  }
+</style>

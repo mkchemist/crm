@@ -5,7 +5,7 @@
       <span class="font-weight-bold">Pharmacy View</span>
     </p>
     <div class="p-2">
-      <div v-if="Object.keys(reports).length" class="p-2">
+      <div class="p-2">
         <div class="p-2">
           <button class="btn btn-sm btn-success" @click="exportToExcel">
             <span class="fa fa-file-excel"></span>
@@ -18,7 +18,8 @@
         >
           <thead>
             <tr class="bg-success text-light">
-              <th>Actions</th>
+              <th v-if="!$attrs.withUsername">Actions</th>
+              <th v-if="$attrs.withUsername">Rep</th>
               <th>Pharmacy</th>
               <th>Date</th>
               <th>Type</th>
@@ -77,7 +78,7 @@
                 v-for="(row, index) in reports[key]"
                 :key="`pharmacy_report_${key}_${i}_${index}`"
               >
-                <td>
+                <td v-if="!$attrs.withUsername">
                   <router-link
                     :to="`/reports/edit/pharmacy/${row.id}`"
                     class="btn btn-sm btn-warning"
@@ -86,6 +87,7 @@
                   </router-link>
                   <delete-report-button :itemId="row.id" />
                 </td>
+                <td v-if="$attrs.withUsername">{{ row.user }}</td>
                 <td>{{ row.pharmacy }}</td>
                 <td>{{ row.date }}</td>
                 <td>{{ row.type }}</td>
@@ -114,29 +116,20 @@
           </template>
         </table>
       </div>
-      <div v-else-if="isFetched">
-        <no-data-to-show />
-      </div>
-      <loader-component v-else></loader-component>
     </div>
   </div>
 </template>
 
 <script>
-import { ExportToExcel } from "../../../../helpers/helpers";
+import { ExportToExcel, filterData } from "../../../../helpers/helpers";
 import DeleteReportButton from "../../../components/DeleteReportButton.vue";
 export default {
   components: { DeleteReportButton },
   computed: {
     reports() {
-      return this.$store.getters.pharmacyReportsPharmacyView;
+      let data = this.$attrs.data;
+      return filterData(data,'pharmacy');
     },
-    isFetched() {
-      return this.$store.getters.pharmacyReportsFetched;
-    },
-    totalReports() {
-      return this.$store.getters.totalPharmacyReportsCount;
-    }
   },
   methods: {
     exportToExcel() {

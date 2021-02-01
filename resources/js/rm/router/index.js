@@ -2,7 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomePage from '../views/HomePage.vue';
 import ReportRoutes from './reports-routes'
+import PlannerRouter from './planner-router';
+import CustomersRouter from './customers-router';
 import ErrorPage from "../../components/ErrorPage";
+
 
 Vue.use(VueRouter);
 
@@ -17,6 +20,8 @@ export default new VueRouter({
       component: HomePage
     },
     ReportRoutes,
+    PlannerRouter,
+    CustomersRouter,
     {
       path: '*',
       component: ErrorPage

@@ -22,7 +22,7 @@
     <div class="col-lg-9 px-0 shadow rounded pb-5">
       <p class="alert alert-success">
         <span><i class="fa fa-book-reader"></i></span>
-        <span>PM report analysis</span>
+        <span class="font-weight-bold">PM report analysis</span>
       </p>
       <div class="p-2">
         <div v-if="reports.length && plans.length">
@@ -210,6 +210,7 @@ import {
 } from "../../../../helpers/helpers";
 import DataFilter from "../../../components/DataFilter";
 import ChartView from "../../../../components/ChartView"
+import { CHART_COLOR_LIST } from '../../../../helpers/constants';
 export default {
   components: {
     DataFilter,
@@ -316,7 +317,7 @@ export default {
                     "param"
                   ]);
                   repReports["coach"] = reports[rep].filter(
-                    item => item.coach !== ""
+                    item => item.coach !== null
                   );
                   repReports["total"] = reports[rep].length;
                   resolve({ plans: repPlans, reports: repReports });
@@ -336,12 +337,13 @@ export default {
                   }
                   repDailyPerformance.push(len)
                 });
-                let colors = ['#4caf50', '#9c27b0', '#ff9800', ,'#009688','black', '#6c757d', '#ffed4a'];
+                let colors = CHART_COLOR_LIST;
                 this.chartData.push({
                   label: rep,
                   data: repDailyPerformance,
                   borderColor: colors[i],
                   borderWidth:2,
+                  backgroundColor: colors[i],
                   fill: false
                 })
                 res(kpi);

@@ -288,3 +288,28 @@ export const visitTypes = [
   "sample visit",
   "double visit"
 ];
+
+
+
+
+export const CHART_COLOR_LIST = [
+  '#ff5722',
+  '#9e9e9e',
+  '#009688',
+  '#38c172',
+  '#00bcd4',
+  '#3f51b5',
+  '#673ab7',
+  '#9c27b0',
+  '#e91e63',
+  '#ff9800',
+  '#ffc107',
+  '#f44336',
+  '#ffeb3b',
+  '#cddc39',
+  '#8bc34a',
+  '#4caf50',
+  '#607d8b',
+  '#795548',
+  '#1e7d18'
+]

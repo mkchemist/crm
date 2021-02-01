@@ -3,12 +3,12 @@ import { httpCall } from "../../helpers/http-service";
 export default {
   state: {
     plans: [],
-    fetch: false,
+    fetched: false,
     lock : []
   },
   getters: {
     allPlans: state => state.plans,
-    isPlansFetched : state => state.fetch,
+    isPlansFetched : state => state.fetched,
     lockedPlans: state => state.lock
   },
   mutations: {

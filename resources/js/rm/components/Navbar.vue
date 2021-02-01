@@ -47,6 +47,14 @@ export default {
         link: '/'
       },
       {
+        title: 'Customers',
+        link: '/customers'
+      },
+      {
+        title: 'Planner',
+        link: '/planner'
+      },
+      {
         title: 'Reports',
         link: '/reports'
       }

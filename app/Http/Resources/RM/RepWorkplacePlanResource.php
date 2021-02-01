@@ -21,12 +21,16 @@ class RepWorkplacePlanResource extends JsonResource
           'start'     =>  $this->plan_date,
           'end'     =>  $this->plan_date,
           'workplace' =>  $this->workplace->name,
+          'title' =>  $this->workplace->name,
           'address'   =>  $this->workplace->address,
           'area'      =>  $this->workplace->area,
           'district'  =>  $this->workplace->district,
           'brick'     =>  $this->workplace->brick,
           'territory' =>  $this->workplace->territory,
-          'type'      =>  $this->workplace->type
+          'type'      =>  'AM',
+          'workplace_type'      =>  $this->workplace->type,
+          'class'     =>  'AM'
+
         ];
     }
 }

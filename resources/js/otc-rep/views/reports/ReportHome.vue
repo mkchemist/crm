@@ -42,14 +42,9 @@ export default {
         link: '/reports/view/health-day'
       },
       {
-        title: 'View Pharmacy plan',
+        title: 'View plan Report',
         icon: 'fa-book-reader',
-        link: '/reports/view/plan/pharmacy'
-      },
-      {
-        title: 'View Health day Plan',
-        icon: 'fa-book-reader',
-        link: '/reports/view/plan/health-day'
+        link: '/reports/view/plan'
       },
       {
         title: 'View Orders',

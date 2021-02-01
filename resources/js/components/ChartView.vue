@@ -1,6 +1,15 @@
 <template>
   <div>
-    <canvas :id="id? id : 'chart_view'"></canvas>
+    <div class="p-2">
+      <select name="" id="" v-model="chartType" @change="changeType">
+        <option value="bar">Bar</option>
+        <option value="line">Line</option>
+        <option value="pie">Pie</option>
+      </select>
+    </div>
+    <div>
+      <canvas :id="id ? id : 'chart_view'" class="w-100 col-12"></canvas>
+    </div>
   </div>
 </template>
 
@@ -9,11 +18,9 @@ import Chart from "chart.js/dist/Chart.bundle";
 export default {
   props: {
     id: {
-      type: String,
-    },
-    type: {
       type: String
     },
+
     chartData: {
       type: Array,
       required: true
@@ -25,17 +32,18 @@ export default {
   },
   mounted() {
     let id = "chart_view";
-    if(this.id) {
-      id = this.id
+    if (this.id) {
+      id = this.id;
     }
-    let type = this.type || 'line';
+    let type = this.chartType;
     this.generateChartOptions(type, this.labels, this.chartData);
     let ctx = document.getElementById(id);
-    console.log(this.chart)
-    let chart = new Chart(ctx, this.chart);
+    this.chartInstance = new Chart(ctx, this.chart);
   },
-  data:() => ({
-    chart: null
+  data: () => ({
+    chartInstance: null,
+    chart: null,
+    chartType: "bar"
   }),
   methods: {
     generateChartOptions(type, labels, data) {
@@ -49,19 +57,21 @@ export default {
           scales: {
             yAxes: [
               {
-                ticks : {
+                ticks: {
                   beginAtZero: true
                 }
               }
             ]
           }
         }
-      }
+      };
+    },
+    changeType() {
+      this.chartInstance.config.type = this.chartType;
+      this.chartInstance.update();
     }
   }
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="px-0 border rounded">
+  <div class="px-0 shadow rounded">
     <p class="bg-success text-light p-2">
       <span class="fa fa-bullhorn"></span>
       <span class="font-weight-bold">Broadcasting messages</span>

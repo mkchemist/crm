@@ -27,7 +27,7 @@
       <div class="p-2" v-if="isFetched">
         <div v-if="customers.length">
           <!-- <table-component :data="customers" :heads="heads" :headClass="`bg-success text-light`"></table-component> -->
-          <data-table-component :data="customers" :cols="heads" />
+          <data-table-component :data="customers" :cols="heads" :buttons="buttons" />
         </div>
         <div v-else>
           <no-data-to-show />
@@ -82,6 +82,14 @@ export default {
     },
     territories() {
       return sortBy(this.$store.getters.allTerritories, 'name');
+    },
+    buttons(){
+      return [
+        {
+          text: 'Export CSV',
+          extend: 'csv'
+        }
+      ]
     }
   },
   data: () => ({

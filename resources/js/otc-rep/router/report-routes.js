@@ -10,7 +10,9 @@ import ProductView from "../views/reports/pharmacy/ProductView.vue";
 import EditPharmacyReport from "../views/reports/EditPharmacyReport.vue";
 import HealthDayReportList from "../views/reports/HealthDayReportList.vue";
 import MarketShareAnalysis from '../views/reports/MarketShareAnalysis.vue';
-
+import ViewPlanReport from '../views/reports/ViewPlanReport.vue';
+import ViewPharmacyPlan from '../components/ViewPharmacyPlan.vue';
+import ViewHealthDayPlan from '../components/ViewHealthDayPlan.vue';
 export default {
   path: "/reports",
   component: Report,
@@ -60,6 +62,20 @@ export default {
     {
       path: 'analysis/market',
       component: MarketShareAnalysis
+    },
+    {
+      path: 'view/plan',
+      component: ViewPlanReport,
+      children: [
+        {
+          path: '',
+          component: ViewPharmacyPlan
+        },
+        {
+          path: 'health-day',
+          component: ViewHealthDayPlan
+        }
+      ]
     }
   ]
 };

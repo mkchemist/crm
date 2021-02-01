@@ -27,7 +27,7 @@ class RepsPharmacyReportResource extends JsonResource
           'area'      =>  $this->pharmacy->area,
           'district'  =>  $this->pharmacy->district,
           'territory' =>  $this->pharmacy->territory,
-          'type'      =>  $this->type,
+          'type'      =>  $this->pharmacy->type,
           'key_person'  =>  $this->key_person
         ];
     }

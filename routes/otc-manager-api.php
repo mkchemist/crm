@@ -19,5 +19,7 @@ Route::group([
   /* Planner Routes */
   Route::get('/planner', 'PlannerController@index');
   Route::post('/planner/submit', 'PlannerController@submit');
+  /* Reports routes */
+  Route::apiResource('reports', 'PharmacyReportController');
 });
 

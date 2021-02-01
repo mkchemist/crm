@@ -17,7 +17,7 @@
         <div class="p-2 text-right">
         </div>
         <div v-if="reports.length">
-          <table-component
+         <!--  <table-component
             :heads="heads"
             :data="reports"
             :unselectable="true"
@@ -33,7 +33,8 @@
               <td>{{ getRepAreaManager(item.user_id) }}</td>
               <td>{{ getRepManager(item.user_id) }}</td>
             </template>
-          </table-component>
+          </table-component> -->
+          <data-table-component :data="reports" :cols="heads" />
         </div>
         <div v-else-if="isReportsFetched">
           <no-data-to-show />
@@ -47,13 +48,13 @@
 <script>
 import DateFilterBox from '../../../components/DateFilterBox.vue';
 import NoDataToShow from "../../../components/NoDataToShow.vue";
-import TableComponent from "../../../components/TableComponent.vue";
+import DataTableComponent from "../../../components/DataTableComponent.vue";
 import UserFilterBox from '../../../components/UserFilterBox.vue';
 import { ProductWithLader } from '../../../helpers/constants';
 export default {
   components: {
     NoDataToShow,
-    TableComponent,
+    DataTableComponent,
     UserFilterBox ,
     DateFilterBox
   },
@@ -61,11 +62,20 @@ export default {
    this.$store.dispatch("getAllPmReports");
   },
   computed: {
+    reportData(){
+      let reports = this.$store.getters.allPmReports;
+      reports.forEach(report => {
+        report['BU'] = this.$store.state.UserModule.user.name;
+        report['AM'] = this.getRepAreaManager(report.user_id);
+        report['DM'] = this.getRepManager(report.user_id);
+      });
+      return reports;
+    },
     reports() {
       if (this.shouldFilter) {
         return this.filteredReports;
       }
-      return this.$store.getters.allPmReports;
+      return this.reportData;
     },
     isReportsFetched() {
       return this.$store.getters.isReportsFetched;
@@ -84,6 +94,18 @@ export default {
     filteredReports: [],
     shouldFilter: false,
     heads: [
+      {
+        title: "Business Unit",
+        name: "BU"
+      },
+      {
+        title: "Area Manager",
+        name: "AM"
+      },
+      {
+        title : "District Manager",
+        name: "DM"
+      },
       {
         title: "Rep",
         name: "rep"

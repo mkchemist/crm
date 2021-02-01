@@ -13,7 +13,11 @@ Route::group([
   'prefix'  =>  'v1'
 ], function () {
 
+
   Route::get('user-relations', 'RepsController@index');
+  /* Customers Routes */
+  Route::apiResource('customers', 'CustomerController');
+
   /** Planner Routes */
   Route::group(['prefix' => 'planner'], function() {
     Route::get('coach', 'PlannerController@coachPlans');

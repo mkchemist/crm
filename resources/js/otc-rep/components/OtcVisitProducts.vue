@@ -383,7 +383,7 @@ export default {
       if (this.data[_PI].competitors.length >= this.maxCompetitorCount) {
         return;
       }
-      this.data[_PI].competitors.push({ name: null, rate: null });
+      this.data[_PI].competitors.push({ name: null, rate: null, stock: 0 });
     },
     /**
      * delete competitor of the given product

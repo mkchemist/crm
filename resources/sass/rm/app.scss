@@ -1,10 +1,27 @@
 $success: #38c172;
+$white: #fff;
+$danger: #bd2a2a;
+$info: #6688f0;
+$primary: royalblue;
 .dt-buttons {
   .btn {
     margin-left: 5px !important;
     background-color: $success !important;
     border-color: $success !important;
     color: white !important;
+  }
+  .filter-btn {
+    background-color: $primary!important;
+    border-color:$primary!important;
+  }
+  .view-btn {
+    background-color: orangered!important;
+    border-color: orangered !important;
+  }
+  .edit-btn {
+    background-color: #f7f038!important;
+    border-color: #f7f038!important;
+    color: #111 !important;
   }
 }
 
@@ -15,6 +32,17 @@ $success: #38c172;
 .disabled {
   .page-link {
     color: #1119 !important;
+  }
+}
+
+.active-link {
+  background-color: $success;
+  color: white;
+  transition: .5s;
+  &:hover {
+    background-color: lighten($success, 15%);
+    color: darken($success, 15%);
+    font-weight: bolder;
   }
 }
 
@@ -59,7 +87,7 @@ $success: #38c172;
   }
 }
 
-.PM , .AM{
+.PM , .AM, .COACH{
   width:90% !important;
   margin: 0.2rem auto;
   border-radius: 5px;
@@ -70,7 +98,7 @@ $success: #38c172;
   }
 }
 
-.PM {
+.PM,.COACH {
   background-color: #42b983 !important;
   color: white !important;
 
@@ -154,3 +182,4 @@ td,th {
     opacity:.9;
   }
 }
+
