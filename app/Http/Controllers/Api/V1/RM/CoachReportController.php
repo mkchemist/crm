@@ -33,7 +33,7 @@ class CoachReportController extends Controller
       $user = Auth::user();
       $users = json_decode($user->user_relations)->dm;
 
-      if(request()->user !== "null") {
+      if((integer)request()->userId) {
         $users = [request()->user];
       }
       return $users;

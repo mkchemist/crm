@@ -55,6 +55,13 @@ Route::group(['middleware' => ['auth']], function () {
         return view('pages.tm.index', ['hash_key' => $hash_key->all()]);
     });
 
+    // area Manager application
+    Route::get('/am/{name?}', function() {
+      $hash_key = new ForceRefreshHashKeySetting;
+
+        return view('pages.am.index', ['hash_key' => $hash_key->all()]);
+    })->where("name", ".*");
+
     // regional Manager application
     Route::get('/rm/{name?}', function() {
       $hash_key = new ForceRefreshHashKeySetting;

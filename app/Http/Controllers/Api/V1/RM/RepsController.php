@@ -19,9 +19,14 @@ class RepsController extends Controller
   {
     $user = Auth::user();
     $relations = json_decode($user->user_relations);
-    $dm = User::where('role', 'dm')->whereIn('id', $relations->dm)->get();
-    $reps = User::where('role', 'rep')->whereIn('id', $relations->reps)->get();
-    $areaMangers = User::where('role', 'rm')->whereIn('id', $relations->rm)->get();
+    $dm = [];
+    $areaMangers = [];
+    $reps = [];
+    if(!empty($relations)) {
+      $dm = User::where('role', 'dm')->whereIn('id', $relations->dm)->get();
+      $reps = User::where('role', 'rep')->whereIn('id', $relations->reps)->get();
+      $areaMangers = User::where('role', 'rm')->whereIn('id', $relations->rm)->get();
+    }
     return response([
       'code'  =>  200,
       'data'  =>  [

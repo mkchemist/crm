@@ -16,7 +16,7 @@ class RMonly
      */
     public function handle($request, Closure $next)
     {
-      if(Auth::user()->role === "rm") {
+      if(Auth::user()->role === "rm" || Auth::user()->role === "am") {
         return $next($request);
 
       } else {

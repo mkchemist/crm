@@ -59,6 +59,8 @@ class UserController extends Controller
                 return redirect('/tm');
             case 'rm':
                 return redirect('/rm');
+            case 'am':
+                return redirect('am');
             case 'gm':
                 return redirect('/gm');
             case 'otc-rep':

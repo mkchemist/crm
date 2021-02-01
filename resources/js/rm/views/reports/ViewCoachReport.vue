@@ -187,14 +187,14 @@ export default {
         .catch(err => console.log(err));
     },
     createFetchQuery() {
-      let user = null,
+      let userId = null,
         start = null,
         end = null;
       if (this.district) {
-        user = this.district.id;
+        userId = this.district.id;
       }
       return {
-        user
+        userId
       };
     },
     onFilter(data) {
