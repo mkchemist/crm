@@ -65,7 +65,7 @@ export default {
     reportData(){
       let reports = this.$store.getters.allPmReports;
       reports.forEach(report => {
-        report['BU'] = this.$store.state.UserModule.user.name;
+        report['BU'] = this.getRepRegionalManagerName(report.user_id);
         report['AM'] = this.getRepAreaManager(report.user_id);
         report['DM'] = this.getRepManager(report.user_id);
       });
@@ -88,6 +88,9 @@ export default {
     },
     reps() {
       return this.$store.getters.allReps
+    },
+    bu() {
+      return this.$store.getters.regionalManager;
     }
   },
   data: () => ({
@@ -189,8 +192,24 @@ export default {
       return manager;
     },
     getRepAreaManager(id) {
+      if(this.$store.state.UserModule.user.role === 'am') {
+        return this.$store.state.UserModule.user.name;
+      }
       let manager = "-----------";
       this.areaManagers.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
+    getRepRegionalManagerName(id) {
+      if(this.$store.state.UserModule.user.role === 'rm') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.bu.map(item => {
         let reps = JSON.parse(item.user_relations).reps;
         if (reps.includes(id)) {
           manager = item.name;

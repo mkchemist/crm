@@ -16,6 +16,7 @@ import AddActivityReport from '../../components/AddActivityReport.vue';
 import AddPmVisit from '../views/reports/AddPmVisit.vue';
 import EditPmVisit from '../views/reports/EditPmVisit.vue';
 import RequestReportContainer from '../views/reports/RequestReportContainer.vue'
+import CoachFollowUp from '../views/reports/CoachFollowUp.vue'
 export default {
   path: '/reports',
   component: Reports,
@@ -87,6 +88,10 @@ export default {
     {
       path: 'edit/pm/:id',
       component: EditPmVisit
+    },
+    {
+      path: 'coach-follow-up',
+      component: CoachFollowUp
     }
   ]
 }

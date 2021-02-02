@@ -109,6 +109,11 @@ export default {
     ],
     others_links: [
       {
+        title: 'Coach Follow Up',
+        icon: 'fa-chart-bar',
+        link: '/reports/coach-follow-up'
+      },
+      {
         link: '/reports/activity-report?type=field-activity',
         icon: 'fa-book-reader',
         title: 'Field Activity report'

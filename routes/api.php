@@ -49,6 +49,12 @@ Route::group([
     Route::get('app-setting', 'Api\V1\ApplicationSetting@index');
     /* locations routes */
     Route::get('user-locations', 'Api\V1\ApplicationSetting@locations');
+    /** coach Follow up */
+    Route::get('v1/coach-follow-up', 'Api\V1\CoachFollowUpController@index');
+    /* user relations */
+    Route::get('v1/user/relations', 'Api\V1\ApplicationSetting@relations');
+    /* coach routes */
+    Route::apiResource('v1/coach-reports', 'Api\V1\CoachReportModuleController');
 });
 
 /** Rep routes */

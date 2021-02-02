@@ -9,6 +9,7 @@ use App\Helpers\Setting\LineSetting;
 use App\Helpers\Setting\ReportIntervalSetting;
 use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class ApplicationSetting extends Controller
@@ -58,6 +59,30 @@ class ApplicationSetting extends Controller
       return response([
         'code'  =>  200,
         'data'  =>  $locations
+      ]);
+    }
+
+    /**
+     *
+     * get user relations
+     *
+     */
+    public function relations()
+    {
+      $user = Auth::user();
+      $relations = json_decode($user->user_relations);
+      $users = array_merge(
+        $relations->reps,
+        $relations->dm,
+        $relations->am,
+        $relations->rm
+      );
+
+      $data = User::whereIn('id', $users)->get();
+
+      return response([
+        'code'  =>  200,
+        'data'  => $data->groupBy('role')
       ]);
     }
 }

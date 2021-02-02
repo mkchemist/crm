@@ -89,51 +89,51 @@ export default {
         },
         {
           title: "Product 1",
-          name: "products[0].name"
+          name: "products.0.name"
         },
         {
           title: "Product 1 lader of adaption",
-          name: "products[0].lader"
+          name: "products.0.lader"
         },
         {
           title: "Product 1 action",
-          name: "products[0].action"
+          name: "products.0.action"
         },
         {
           title: "Product 1 competitor",
-          name: "products[0].competitor"
+          name: "products.0.competitor"
         },
         {
           title: "Product 2",
-          name: "products[0].name"
+          name: "products.1.name"
         },
         {
           title: "Product 2 lader of adaption",
-          name: "products[0].lader"
+          name: "products.1.lader"
         },
         {
           title: "Product 2 action",
-          name: "products[0].action"
+          name: "products.1.action"
         },
         {
           title: "Product 2 competitor",
-          name: "products[0].competitor"
+          name: "products.1.competitor"
         },
         {
           title: "Product 3",
-          name: "products[0].name"
+          name: "products.2.name"
         },
         {
           title: "Product 3 lader of adaption",
-          name: "products[0].lader"
+          name: "products.2.lader"
         },
         {
           title: "Product 3 action",
-          name: "products[0].action"
+          name: "products.2.action"
         },
         {
           title: "Product 3 competitor",
-          name: "products[0].competitor"
+          name: "products.2.competitor"
         },
         {
           title: 'Comment',

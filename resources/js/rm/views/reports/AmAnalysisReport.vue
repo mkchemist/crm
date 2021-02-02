@@ -40,8 +40,8 @@
             </thead>
             <tbody>
               <tr v-for="report in reports" :key="report.user_id">
-                <td>{{ $store.state.UserModule.user.name }}</td>
-                <td>{{ getAreaManagerName(report.user_id) }}</td>
+                <td>{{ getRepRegionalManagerName(report.user_id)}}</td>
+                <td>{{ getRepAreaManager(report.user_id) }}</td>
                 <td>{{ getDistrictManagerName(report.user_id) }}</td>
                 <td>{{ report.rep }}</td>
                 <td>{{ report.total_planned }}</td>
@@ -79,6 +79,9 @@ export default {
     },
     areaManagers() {
       return this.$store.getters.allAreaManagers
+    },
+    bu() {
+      return this.$store.getters.regionalManager;
     }
   },
   data: () => ({
@@ -106,16 +109,32 @@ export default {
       })
       return manager;
     },
-    getAreaManagerName(id) {
-      let manager = "-----";
-      this.areaManagers.map(dm => {
-        let reps = JSON.parse(dm.user_relations).reps;
-        if(reps.includes(id)) {
-          manager = dm.name;
+     getRepAreaManager(id) {
+      if(this.$store.state.UserModule.user.role === 'am') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.areaManagers.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
         }
-      })
+      });
       return manager;
-    }
+    },
+    getRepRegionalManagerName(id) {
+      if(this.$store.state.UserModule.user.role === 'rm') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.bu.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
   }
 }
 </script>

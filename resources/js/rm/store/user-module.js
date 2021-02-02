@@ -6,13 +6,23 @@ export default {
     reps: [],
     dm : [],
     areaManagers: [],
+    regionalManager: [],
     isRelationFetched: false
   },
   getters: {
     allReps: state => state.reps,
     allDm: state => state.dm,
     allAreaManagers: state => state.areaManagers,
-    isRelationFetched: state => state.isRelationFetched
+    regionalManager: state => state.regionalManager,
+    isRelationFetched: state => state.isRelationFetched,
+    allUsers: state => {
+      return {
+        reps: state.reps,
+        districtManagers: state.dm,
+        areaManagers:state.areaManagers,
+        regionalManagers: state.regionalManager
+      }
+    }
   },
   mutations: {
     setReps(state, payload) {
@@ -36,6 +46,7 @@ export default {
         module.commit('setReps', data.data.reps);
         module.commit('setDm', data.data.dm);
         module.commit('setAreaManagers', data.data.area_managers);
+        module.state.regionalManager = data.data.regional_managers;
         module.state.isRelationFetched = true
       }).catch(err => console.log(err))
     }

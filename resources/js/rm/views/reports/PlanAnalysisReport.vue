@@ -40,6 +40,8 @@
           >
             <thead>
               <tr>
+                <th rowspan="3">ِBusiness Unit</th>
+                <th rowspan="3">ِArea Manager</th>
                 <th rowspan="3">District Manager</th>
                 <th rowspan="3">Rep</th>
                 <th rowspan="3">Total Frequency</th>
@@ -72,12 +74,12 @@
               </tr>
               <tr>
                 <template v-for="(sp, i) in specialties">
-                  <th>Frequency</th>
-                  <th>Planned</th>
+                  <th :key="`sp_${sp}_${i}_freq`">Frequency</th>
+                  <th :key="`sp_${sp}_${i}_plan`">Planned</th>
                 </template>
-                <template v-for="param in parameter">
-                  <th>Frequency</th>
-                  <th>Planned</th>
+                <template v-for="(param,i) in parameter">
+                  <th :key="`sp_${param}_${i}_freq`">Frequency</th>
+                  <th :key="`sp_${param}_${i}_plan`">Planned</th>
                 </template>
               </tr>
             </thead>
@@ -86,6 +88,8 @@
                 v-for="rep in Object.keys(analysisReport)"
                 :key="`rep_${rep}_report`"
               >
+                <td>{{ getDistrictName(analysisReport[rep].user_id) }}</td>
+                <td>{{ getDistrictName(analysisReport[rep].user_id) }}</td>
                 <td>{{ getDistrictName(analysisReport[rep].user_id) }}</td>
                 <td>{{ rep }}</td>
                 <td>{{ analysisReport[rep].total_frequency }}</td>
@@ -96,15 +100,15 @@
                       analysisReport[rep].total_planned
                   }}
                 </td>
-                <template v-for="sp in specialties">
-                  <td>
+                <template v-for="(sp,i) in specialties">
+                  <td :key="`sp_${sp}_${i}_fre_res`">
                     {{
                       analysisReport[rep][sp]
                         ? analysisReport[rep][sp].frequency
                         : 0
                     }}
                   </td>
-                  <td>
+                  <td :key="`sp_${sp}_${i}_plan_res`">
                     {{
                       analysisReport[rep][sp]
                         ? analysisReport[rep][sp].planned
@@ -112,15 +116,15 @@
                     }}
                   </td>
                 </template>
-                <template v-for="sp in parameter">
-                  <td>
+                <template v-for="(sp,i) in parameter">
+                  <td :key="`param_${sp}_${i}_fre_res`">
                     {{
                       analysisReport[rep][sp]
                         ? analysisReport[rep][sp].frequency
                         : 0
                     }}
                   </td>
-                  <td>
+                  <td :key="`param_${sp}_${i}_plan_res`">
                     {{
                       analysisReport[rep][sp]
                         ? analysisReport[rep][sp].planned
@@ -198,6 +202,12 @@ export default {
         });
       }
       return report;
+    },
+    areaManagers() {
+      return this.$store.getters.allAreaManagers;
+    },
+    bu() {
+      return this.$store.getters.regionalManager;
     }
   },
   data: () => ({
@@ -230,6 +240,32 @@ export default {
       });
       return manager;
     },
+     getRepAreaManager(id) {
+      if(this.$store.state.UserModule.user.role === 'am') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.areaManagers.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
+    getRepRegionalManagerName(id) {
+      if(this.$store.state.UserModule.user.role === 'rm') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.bu.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
     exportToExcel() {
       ExportToExcel("#export_table", "Plan Analysis report");
     }
@@ -237,4 +273,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+
+  td,th{
+    vertical-align: middle !important;
+  }
+  th {
+    text-align: center!important;
+  }
+
+</style>

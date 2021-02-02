@@ -114,6 +114,12 @@ export default {
         return this.filteredList;
       }
       return this.data;
+    },
+    areaManagers() {
+      return this.$store.getters.allAreaManagers;
+    },
+    bu() {
+      return this.$store.getters.regionalManager;
     }
   },
   data: () => ({
@@ -125,12 +131,20 @@ export default {
     filteredList: [],
     heads: [
       {
-        title: "Coach",
-        name: "coach"
+        title: 'Business Unit',
+        name :"regional_manager"
+      },
+      {
+        title: 'Area Manager',
+        name: 'area_manager'
       },
       {
         title: "Rep",
         name: "rep"
+      },
+      {
+        title: "Coach",
+        name: "coach"
       },
       {
         title: "Date",
@@ -181,6 +195,10 @@ export default {
       httpCall
         .get("rm/v1/reports/coach-reports", query)
         .then(({ data }) => {
+          data.data.forEach(item => {
+            item['regional_manager'] = this.getRepRegionalManagerName(item.rep_id);
+            item['area_manager'] = this.getRepAreaManager(item.rep_id)
+          })
           this.data = data.data;
           this.fetched = true;
         })
@@ -207,7 +225,33 @@ export default {
       this.filteredList = [];
       let asyncDataFlow = () => Promise.resolve(this.data);
       asyncDataFlow().then(data => (this.filteredList = data));
-    }
+    },
+     getRepAreaManager(id) {
+      if(this.$store.state.UserModule.user.role === 'am') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.areaManagers.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
+    getRepRegionalManagerName(id) {
+      if(this.$store.state.UserModule.user.role === 'rm') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.bu.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
   }
 };
 </script>

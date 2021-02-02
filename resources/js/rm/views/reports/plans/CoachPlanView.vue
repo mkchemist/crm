@@ -78,29 +78,32 @@ import DateFilterBox from "../../../../components/DateFilterBox.vue";
 import NoDataToShow from "../../../../components/NoDataToShow.vue";
 import TableComponent from "../../../../components/TableComponent.vue";
 import UserFilterBox from "../../../../components/UserFilterBox.vue";
-import { sortBy } from '../../../../helpers/helpers';
+import { sortBy } from "../../../../helpers/helpers";
 import { httpCall } from "../../../../helpers/http-service";
 export default {
   components: { TableComponent, NoDataToShow, UserFilterBox, DateFilterBox },
   computed: {
     /** get all district managers */
     dms() {
-      return sortBy(this.$store.getters.allDm, 'name');
+      return sortBy(this.$store.getters.allDm, "name");
     },
     /** all reps */
     reps() {
-      if(this.district) {
-        return sortBy(this.$store.getters.allReps.filter(rep => {
-          let dm = JSON.parse(rep.user_relations).dm;
-          if(dm.includes(this.district)) {
-            return true;
-          } else {
-            return false;
-          }
-        }),'name')
+      if (this.district) {
+        return sortBy(
+          this.$store.getters.allReps.filter(rep => {
+            let dm = JSON.parse(rep.user_relations).dm;
+            if (dm.includes(this.district)) {
+              return true;
+            } else {
+              return false;
+            }
+          }),
+          "name"
+        );
       }
 
-      return sortBy(this.$store.getters.allReps, 'name');
+      return sortBy(this.$store.getters.allReps, "name");
     },
     /** reports data */
     reports() {
@@ -108,6 +111,12 @@ export default {
         return this.FilteredList;
       }
       return this.data;
+    },
+    areaManagers() {
+      return this.$store.getters.allAreaManagers;
+    },
+    bu() {
+      return this.$store.getters.regionalManager;
     }
   },
   data: () => ({
@@ -129,6 +138,14 @@ export default {
       {
         title: "Rep",
         name: "rep"
+      },
+      {
+        title: "Area Manager",
+        name: "area_manager"
+      },
+      {
+        title: "Business Manager",
+        name: "bu"
       }
     ]
   }),
@@ -146,10 +163,40 @@ export default {
       httpCall
         .get("rm/v1/planner/coach", { userID: this.district })
         .then(({ data }) => {
+          data.data.forEach(item => {
+            item["bu"] = this.getRepRegionalManagerName(item.rep_id);
+            item["area_manager"] = this.getRepAreaManager(item.rep_id);
+          });
           this.data = data.data;
           this.isFetched = true;
         })
         .catch(err => console.log(err));
+    },
+    getRepAreaManager(id) {
+      if (this.$store.state.UserModule.user.role === "am") {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.areaManagers.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
+    getRepRegionalManagerName(id) {
+      if (this.$store.state.UserModule.user.role === "rm") {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.bu.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
     },
     /**
      * filter data

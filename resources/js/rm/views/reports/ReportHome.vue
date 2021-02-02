@@ -50,6 +50,11 @@ export default {
         link: '/reports/view/coach-report'
       },
       {
+        title: 'Coach Report Module',
+        icon: 'fa-book-reader',
+        link: '/coach/reports'
+      },
+      {
         title: 'View PM reports',
         icon: 'fa-book-reader',
         link: '/reports/view/pm'

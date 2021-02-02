@@ -56,9 +56,13 @@
             :unselectable="true"
           >
             <template v-slot:head:before>
+              <th>Business Unit</th>
+              <th>Area Manager</th>
               <th>District Manager</th>
             </template>
             <template v-slot:body:before="{item}">
+              <td>{{ getRepRegionalManagerName(item.user_id) }}</td>
+              <td>{{ getRepAreaManager(item.user_id) }}</td>
               <td>{{ getManagerName(item.user_id) }}</td>
             </template>
           </table-component>
@@ -113,6 +117,12 @@ export default {
         return this.FilteredList;
       }
       return this.data;
+    },
+    areaManagers() {
+      return this.$store.getters.allAreaManagers;
+    },
+    bu() {
+      return this.$store.getters.regionalManager;
     }
   },
   data: () => ({
@@ -216,7 +226,33 @@ export default {
         }
       });
       return manager;
-    }
+    },
+    getRepAreaManager(id) {
+      if(this.$store.state.UserModule.user.role === 'am') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.areaManagers.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
+    getRepRegionalManagerName(id) {
+      if(this.$store.state.UserModule.user.role === 'rm') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.bu.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
   }
 };
 </script>

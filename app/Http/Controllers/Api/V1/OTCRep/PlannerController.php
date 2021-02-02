@@ -249,4 +249,15 @@ class PlannerController extends Controller
     }
 
 
+    private function isSubmitted()
+    {
+      $planner = OtcPlanner::where('submitted', true)
+      ->orWhere('approved', true);
+      $planner = CycleHelper::getCycleData($planner, 'plan_date');
+      $planner = $planner->first();
+      if($planner) {
+        return true;
+      }
+      return false;
+    }
 }

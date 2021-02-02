@@ -10,7 +10,6 @@ import ErrorPage from "../../components/ErrorPage";
 Vue.use(VueRouter);
 
 let delimiter = JSON.parse(document.getElementById('user').value).role;
-console.log(delimiter)
 let baseUrl = document.getElementById('APP_BASE_URI').value+delimiter;
 
 export default new VueRouter({

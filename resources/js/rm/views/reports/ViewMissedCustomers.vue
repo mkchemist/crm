@@ -126,35 +126,7 @@
             </div>
           </div>
           <div v-if="reports.length" class="p-2 border rounded">
-            <!-- <table-component
-              :heads="heads"
-              :data="reports"
-              :headClass="`bg-dark text-light`"
-              :unselectable="true"
-            >
-              <template v-slot:head:before>
-                <th>Business Unit</th>
-                <th>Area Manager</th>
-                <th>District Manager</th>
-              </template>
-              <template v-slot:body:before="{ item }">
-                <td>{{ $store.state.UserModule.user.name }}</td>
-                <td>{{ getAreaManager(item.user_id) }}</td>
-                <td>{{ getDistrictManager(item.user_id) }}</td>
-              </template>
-              <template v-slot:head>
-                <th>Status</th>
-                <th>Brick</th>
-                <th>Area</th>
-                <th>District</th>
-              </template>
-              <template v-slot:body="{ item }">
-                <td :class="item.style">{{ item.status }}</td>
-                <td>{{ item.brick }}</td>
-                <td>{{ item.area }}</td>
-                <td>{{ item.district }}</td>
-              </template>
-            </table-component> -->
+
             <data-table-component :data="reports" :cols="heads" />
           </div>
           <div
@@ -209,6 +181,9 @@ export default {
         return this.filteredList;
       }
       return this.data;
+    },
+    bu() {
+      return this.$store.getters.regionalManager;
     }
   },
   data: () => ({
@@ -307,7 +282,7 @@ export default {
             let { flag, style } = this.calculateStatus(item);
             item["status"] = flag;
             item["style"] = style;
-            item["BU"] = this.$store.state.UserModule.user.name;
+            item["BU"] = this.getRepRegionalManagerName(item.user_id);
             item["AM"] = this.getAreaManager(item.user_id);
             item["DM"] = this.getDistrictManager(item.user_id);
             this.status.add(item["status"]);
@@ -368,6 +343,9 @@ export default {
      * @return {string}
      */
     getAreaManager(id) {
+       if(this.$store.state.UserModule.user.role === 'am') {
+        return this.$store.state.UserModule.user.name;
+      }
       let managerName = "--------";
       this.areaManagers.map(manager => {
         let reps = JSON.parse(manager.user_relations).reps;
@@ -377,6 +355,19 @@ export default {
         }
       });
       return managerName;
+    },
+     getRepRegionalManagerName(id) {
+      if(this.$store.state.UserModule.user.role === 'rm') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.bu.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
+        }
+      });
+      return manager;
     },
     /**
      * handle data filter

@@ -34,7 +34,7 @@ class CoachReportController extends Controller
       $users = json_decode($user->user_relations)->dm;
 
       if((integer)request()->userId) {
-        $users = [request()->user];
+        $users = [request()->userId];
       }
       return $users;
     }
@@ -57,42 +57,6 @@ class CoachReportController extends Controller
       return response([
         'code'  =>  200,
         'data'  =>  $report
-      ]);
-    }
-
-    /**
-     * get all coaching reports for
-     * the given rep to evaluate rep skills
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function coachingFollowUp()
-    {
-      $user = Auth::user();
-      $relations = json_decode($user->user_relations);
-      $rep = request()->rep;
-      $coach = request()->coach;
-      if($rep === "null" && $coach === "null") {
-        return response([
-          'code'  =>  401,
-          'message' =>  "You must select a rep to view all rep coaching reports"
-        ]);
-      }
-      $reports = CoachReport::with(['coach', 'rep', 'customer', 'customer.params', 'customer.frequency']);
-
-      if($coach !== "null") {
-        $reports = $reports->where('coach_id', $coach);
-      }
-
-      if($rep !== "null") {
-        $reports = $reports->where("rep_id", $rep);
-      }
-
-      $reports = $reports->orderBy('visit_date')->get();
-
-      return response([
-        'code'  =>  200,
-        'data'  =>  $reports
       ]);
     }
 }

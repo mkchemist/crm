@@ -52,9 +52,9 @@
               <td>{{ analysisReport[rep].working_days }}</td>
               <td>{{ ((analysisReport[rep].total_visited/analysisReport[rep].total_planned)*100).toFixed(2) }}  </td>
               <td>{{ analysisReport[rep].report_average_day }}</td>
-              <td class="bg-danger text-light">{{ analysisReport[rep].uncovered.length }}</td>
-              <td class="bg-warning text-dark">{{ analysisReport[rep].missed.length }}</td>
-              <td class="bg-primary text-light">{{ analysisReport[rep].over.length }}</td>
+              <td class="bg-danger text-light">{{ analysisReport[rep].uncovered?analysisReport[rep].uncovered.length : 0 }}</td>
+              <td class="bg-warning text-dark">{{ analysisReport[rep].missed ? analysisReport[rep].missed.length : 0 }}</td>
+              <td class="bg-primary text-light">{{ analysisReport[rep].over? analysisReport[rep].over.length  :0}}</td>
             </tr>
           </tbody>
         </table>
@@ -88,6 +88,9 @@ export default {
     },
     areaManagers() {
       return this.$store.getters.allAreaManagers;
+    },
+    bu() {
+      return this.$store.getters.regionalManager;
     }
   },
   data: () => ({
@@ -160,8 +163,8 @@ export default {
         }
         let repData = analysisReport[rep];
         repData["district_manager"] = this.getDistrictManagerName(plan.user_id);
-        repData["area_manager"] = this.getAreaManagerName(plan.user_id);
-        repData["regional_manager"] = this.$store.state.UserModule.user.name;
+        repData["area_manager"] = this.getRepAreaManager(plan.user_id);
+        repData["regional_manager"] = this.getRepRegionalManagerName(plan.user_id);
         repData["user_id"] = plan.user_id;
         repData["covered_customers"] = plan.distinct_customer;
         repData["working_days"] = plan.days;
@@ -179,9 +182,9 @@ export default {
         repData["covered_customers"] = report.distinct_customer;
         repData["report_average_day"] = report.avg;
         repData["coach_visits"] = report.coach_visits;
-        repData['missed'] = this.metaData.missed.filter(item => item.user_id === report.user_id);
-        repData['uncovered'] = this.metaData.uncovered.filter(item => item.user_id === report.user_id);
-        repData['over'] = this.metaData.over.filter(item => item.user_id === report.user_id);
+        repData['missed'] = this.metaData.missed.filter(item => item.user_id === report.user_id) || 0;
+        repData['uncovered'] = this.metaData.uncovered.filter(item => item.user_id === report.user_id) || 0;
+        repData['over'] = this.metaData.over.filter(item => item.user_id === report.user_id) || 0;
       });
 
       return analysisReport;
@@ -203,12 +206,28 @@ export default {
       });
       return manager;
     },
-    getAreaManagerName(id) {
-      let manager = "------";
-      this.areaManagers.map(user => {
-        let reps = JSON.parse(user.user_relations).reps;
+    getRepAreaManager(id) {
+      if(this.$store.state.UserModule.user.role === 'am') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.areaManagers.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
         if (reps.includes(id)) {
-          manager = user.name;
+          manager = item.name;
+        }
+      });
+      return manager;
+    },
+    getRepRegionalManagerName(id) {
+      if(this.$store.state.UserModule.user.role === 'rm') {
+        return this.$store.state.UserModule.user.name;
+      }
+      let manager = "-----------";
+      this.bu.map(item => {
+        let reps = JSON.parse(item.user_relations).reps;
+        if (reps.includes(id)) {
+          manager = item.name;
         }
       });
       return manager;
