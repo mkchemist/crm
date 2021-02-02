@@ -7,6 +7,7 @@ use App\Helpers\CycleHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CoachReportModuleController extends Controller
 {
@@ -31,19 +32,33 @@ class CoachReportModuleController extends Controller
     public function index()
     {
       $reps = $this->coachReps();
-      $reports = CoachReport::with('coach','rep','customer')
+
+      $reports = DB::table('coach_reports as report')
+      ->select(
+        'report.visit_date as date',
+        'coach.name as coach_name',
+        'rep.name as rep_name',
+        'rep.line as line',
+        DB::raw('COUNT(report.customer_id) as visits')
+      )->join('users as coach','coach.id' ,'=','report.coach_id')
+      ->join('users as rep', 'rep.id', '=', 'report.rep_id')
+      ->join('customers as customer','customer.id', '=','report.customer_id')
       ->whereIn('rep_id', $reps);
+
       if(request()->coach) {
-        $reports = $reports->where('coach_id', request()->coach);
+        $reports = $reports->where('report.coach_id', request()->coach);
       }
-      $reports = CycleHelper::getCycleData($reports,'visit_date');
-      $reports = $reports->get();
+
+      $reports = CycleHelper::getCycleData($reports,'report.visit_date');
+
+      $reports = $reports->groupBy('report.visit_date','coach.name','rep.name', 'rep.line')->get();
 
       return response([
         'code'  =>  200,
-        'data'  =>  $reports->groupBy(['visit_date','coach.name','rep.name']),
+
         'reps'  =>  $reps,
         "coach" =>  request()->coach ?? null,
+        "data"     =>  $reports
       ]);
     }
 
@@ -92,7 +107,11 @@ class CoachReportModuleController extends Controller
         //
     }
 
-
+    /**
+     * get all reps related to current user
+     *
+     * @return array
+     */
     private function coachReps() {
       $relations = json_decode($this->user->user_relations);
       return  $relations->reps;

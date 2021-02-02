@@ -12,7 +12,6 @@
 
 <script>
 import DataTableComponent from '../../../../components/DataTableComponent.vue';
-import { filterData } from '../../../../helpers/helpers';
 export default {
   components: {
     DataTableComponent
@@ -20,23 +19,7 @@ export default {
   },
   computed: {
     reports() {
-      let reports = this.$attrs.data;
-      let data = [];
-      for(let day in reports) {
-        for(let coach in reports[day]) {
-
-          for(let rep in reports[day][coach]) {
-            let row = {};
-            row['date'] = day;
-            row['coach'] = coach;
-            row['rep'] = rep;
-            row ['visits'] = reports[day][coach][rep].length
-            row['line'] = JSON.parse(reports[day][coach][rep][0].rep.line).join(" | ");
-            data.push(row);
-          }
-        }
-      }
-     return data;
+     return this.$attrs.data;
     }
   },
   data:() => ({
@@ -47,19 +30,27 @@ export default {
       },
       {
         title: 'Coach',
-        name: 'coach'
+        name: 'coach_name'
       },
       {
         title: 'Rep',
-        name: 'rep'
+        name: 'rep_name'
       },
       {
         title: 'Line',
-        name: 'line'
+        name: (row) => {
+          return JSON.parse(row.line).join(" | ")
+        }
       },
       {
         title: 'Total Visits',
         name: 'visits'
+      },
+      {
+        title: 'Submitted',
+        name: (row) => {
+          return "False"
+        }
       }
     ]
   }),
