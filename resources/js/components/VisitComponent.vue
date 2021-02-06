@@ -222,7 +222,7 @@ export default {
         })
         return;
       }
-      if(!this.products.length) {
+      if(this.type === "single" && !this.products.length) {
         this.$swal({
           text: 'No Products Provided',
           title: 'You must pick at least one Product',
