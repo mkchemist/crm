@@ -335,8 +335,12 @@ class CoachReportModuleController extends Controller
      */
     public function rawReports()
     {
-        $reports = CoachReport::with('rep')
-            ->whereIn('rep_id', $this->coachReps());
+        $reports = CoachReport::with('rep');
+
+        if($this->user->role !== "admin") {
+
+          $reports = $reports->whereIn('rep_id', $this->coachReps());
+        }
 
         $reports = CycleHelper::getCycleData($reports, 'visit_date');
 
