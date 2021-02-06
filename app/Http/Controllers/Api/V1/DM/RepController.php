@@ -19,7 +19,7 @@ class RepController extends Controller
     {
       $user = Auth::user();
       $relations = json_decode($user->user_relations);
-      $reps = $relations->reps;
+      $reps = $relations->reps ?? [];
       $reps = User::whereIn('id', $reps)->get();
 
       return response([

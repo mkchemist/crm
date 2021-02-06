@@ -13,9 +13,10 @@
           <td>
             <span
               >Date:
-              <span class="font-weight-bold text-primary export-highlight">{{
+              <span class="font-weight-bold text-primary export-highlight" v-if="!editMode">{{
                 report.visit_date
               }}</span>
+              <input type="date" v-model="report.visit_date" v-if="editMode">
             </span>
           </td>
           <td>
@@ -58,7 +59,7 @@
             <span
               >Parameter:
               <span class="font-weight-bold text-primary export-highlight">{{
-                report.customer.params.length
+                report.customer.params && report.customer.params.length
                   ? report.customer.params[0].current
                   : "NN"
               }}</span>
@@ -78,7 +79,7 @@
             <span
               >Frequency:
               <span class="font-weight-bold text-primary export-highlight">{{
-                report.customer.frequency.length
+                report.customer.frequency && report.customer.frequency.length
                   ? report.customer.frequency[0].current
                   : 0
               }}</span>
@@ -105,92 +106,6 @@
         </tr>
       </tbody>
     </table>
-    <!-- <div class="row mx-auto p-2 border rounded">
-      <div class="col-lg">
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Date:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.visit_date
-            }}</span>
-          </span>
-        </p>
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Rep:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.rep.name
-            }}</span>
-          </span>
-        </p>
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Coach:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.coach.name
-            }}</span>
-          </span>
-        </p>
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Brick:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.customer.brick
-            }}</span>
-          </span>
-        </p>
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Area:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.customer.area
-            }}</span>
-          </span>
-        </p>
-      </div>
-      <div class="col-lg">
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Customer:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.customer.name
-            }}</span>
-          </span>
-        </p>
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Specialty:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.customer.specialty
-            }}</span>
-          </span>
-        </p>
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Parameter:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.customer.params.length ? report.customer.params[0].current : 'NN'
-            }}</span>
-          </span>
-        </p>
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Frequency:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.customer.frequency.length ? report.customer.frequency[0].current: 0
-            }}</span>
-          </span>
-        </p>
-        <p class="mb-1 pb-1 small border-bottom">
-          <span
-            >Adress:
-            <span class="font-weight-bold text-primary export-highlight">{{
-              report.customer.address
-            }}</span>
-          </span>
-        </p>
-      </div>
-    </div> -->
 
     <!-- Coach Report -->
     <div class="p-2 my-2 border rounded" v-if="report.data">
@@ -203,7 +118,7 @@
           </tr>
         </thead>
         <tbody
-          v-for="(row, key) in JSON.parse(report.data)"
+          v-for="(row, key) in report.data"
           :key="`report_${key}_data`"
         >
           <tr class="export-table-headers">
@@ -214,7 +129,13 @@
             :key="`report_evaluation_${degree}_${name}`"
           >
             <td>{{ name }}</td>
-            <td>{{ degree }}</td>
+            <td>
+              <span v-if="!editMode">{{ degree }}</span>
+              <select name="" id="" v-model="report.data[key][name]" v-else>
+                <option value="S">S</option>
+                <option value="U">U</option>
+              </select>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -233,7 +154,16 @@
 import NoDataToShow from "./NoDataToShow.vue";
 export default {
   components: { NoDataToShow },
-  props: ["report"]
+  props: {
+    report: {
+      type: Object,
+      required: true
+    },
+    editMode: {
+      type: Boolean,
+      default : () => false
+    }
+  },
 };
 </script>
 

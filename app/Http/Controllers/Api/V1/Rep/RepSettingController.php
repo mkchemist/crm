@@ -87,13 +87,15 @@ class RepSettingController extends Controller
       if($data && count($data)) {
         foreach($data as $line) {
           if(in_array($line->name,$userLine)) {
-            $products = $line->products;
+            $products = array_merge($products,$line->products);
           }
         }
       }
       return response([
         'code'  =>  200,
-        'data'  =>  $products
+        'data'  =>  $products,
+        'line'  =>  $userLine,
+        '$data'  =>  $data
       ]);
     }
 

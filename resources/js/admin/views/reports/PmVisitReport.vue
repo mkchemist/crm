@@ -48,23 +48,12 @@
         <!-- data view -->
         <div class="p-2">
           <div v-if="reports.length">
-            <table-component
-              :heads="heads"
+            <data-table-component
+              :cols="cols"
               :data="reports"
-              :unselectable="true"
-              :headClass="`bg-success text-light`"
             >
-              <template v-slot:head:before>
-                <th>Business Unit Manager</th>
-                <th>Area Manager</th>
-                <th>District Manager</th>
-              </template>
-              <template v-slot:body:before="{ item }">
-                <td>{{ getRm(item.user_id) }}</td>
-                <td>{{ getAm(item.user_id) }}</td>
-                <td>{{ getDm(item.user_id) }}</td>
-              </template>
-            </table-component>
+
+            </data-table-component>
           </div>
           <div v-else-if="!loadingStarted">
             <div
@@ -90,28 +79,31 @@
 <script>
 import DateFilterBox from "../../../components/DateFilterBox.vue";
 import NoDataToShow from "../../../components/NoDataToShow.vue";
-import TableComponent from "../../../components/TableComponent.vue";
+import DataTableComponent from "../../../components/DataTableComponent.vue";
 import UserFilterBox from "../../../components/UserFilterBox.vue";
 import { ProductWithLader } from "../../../helpers/constants";
-import { sortBy } from '../../../helpers/helpers';
+import { sortBy } from "../../../helpers/helpers";
 import { httpCall } from "../../../helpers/http-service";
 export default {
-  components: { NoDataToShow, TableComponent, UserFilterBox, DateFilterBox },
+  components: { NoDataToShow, DataTableComponent, UserFilterBox, DateFilterBox },
   mounted() {},
   computed: {
     rms() {
-      return sortBy(this.$store.getters.rms, 'name');
+      return sortBy(this.$store.getters.rms, "name");
     },
     ams() {
       return this.$store.getters.ams;
     },
     reps() {
       if (this.manager) {
-        return sortBy(this.$store.getters.reps.filter(rep =>
-          this.manager.relations.reps.includes(rep.id)
-        ), 'name');
+        return sortBy(
+          this.$store.getters.reps.filter(rep =>
+            this.manager.relations.reps.includes(rep.id)
+          ),
+          "name"
+        );
       }
-      return sortBy(this.$store.getters.reps, 'name');
+      return sortBy(this.$store.getters.reps, "name");
     },
     dms() {
       return this.$store.getters.dms;
@@ -121,6 +113,93 @@ export default {
         return this.filteredList;
       }
       return this.data;
+    },
+    cols() {
+      return [
+        {
+          title: "Business Unit Manager",
+          name: row => {
+            return this.getRm(row.user_id);
+          }
+        },
+        {
+          title: "Area Manager",
+          name: row => {
+            return this.getAm(row.user_id);
+          }
+        },
+        {
+          title: "District Manager",
+          name: row => {
+            return this.getDm(row.user_id);
+          }
+        },
+        {
+          title: "Rep",
+          name: "rep"
+        },
+        {
+          title: "Date",
+          name: "visit_date"
+        },
+        {
+          title: "Customer",
+          name: "customer"
+        },
+        {
+          title: "Specialty",
+          name: "specialty"
+        },
+        {
+          title: "Parameter",
+          name: "parameter"
+        },
+        {
+          title: "Frequency",
+          name: "frequency"
+        },
+        {
+          title: "Planned",
+          name: "planned"
+        },
+        {
+          title: "Coach1",
+          name: "coach1"
+        },
+        {
+          title: "Coach2",
+          name: "coach2"
+        },
+        ...ProductWithLader,
+        {
+          title: "Comment",
+          name: "comment"
+        },
+        {
+          title: "Feedback",
+          name: "feedback"
+        },
+        {
+          title: "Address",
+          name: "address"
+        },
+        {
+          title: "Brick",
+          name: "brick"
+        },
+        {
+          title: "Area",
+          name: "area"
+        },
+        {
+          title: "District",
+          name: "district"
+        },
+        {
+          title: "Territory",
+          name: "territory"
+        }
+      ];
     }
   },
   data: () => ({
@@ -169,12 +248,12 @@ export default {
       },
       ...ProductWithLader,
       {
-        title: 'Comment',
-        name: 'comment'
+        title: "Comment",
+        name: "comment"
       },
       {
-        title: 'Feedback',
-        name: 'feedback'
+        title: "Feedback",
+        name: "feedback"
       },
       {
         title: "Address",
@@ -227,22 +306,20 @@ export default {
       return manager;
     },
     getAm(id) {
-
       let manager = "-------";
       this.ams.map(user => {
         let reps = user.relations.reps;
-        if (reps.includes(id)) {
+        if (reps && reps.includes(id)) {
           manager = user.name;
         }
       });
       return manager;
     },
     getDm(id) {
-
       let manager = "-------";
       this.dms.map(user => {
         let reps = user.relations.reps;
-        if (reps.includes(id)) {
+        if (reps && reps.includes(id)) {
           manager = user.name;
         }
       });

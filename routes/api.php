@@ -54,7 +54,18 @@ Route::group([
     /* user relations */
     Route::get('v1/user/relations', 'Api\V1\ApplicationSetting@relations');
     /* coach routes */
+    Route::post('v1/coach-reports/day/submit','Api\V1\CoachReportModuleController@submitDay');
+    Route::post('v1/coach-reports/day/delete','Api\V1\CoachReportModuleController@clearDay');
+    Route::get('v1/coach-reports/raw/reports', 'Api\V1\CoachReportModuleController@rawReports');
     Route::apiResource('v1/coach-reports', 'Api\V1\CoachReportModuleController');
+    Route::get('v1/coach-reports/view/day','Api\V1\CoachReportModuleController@coachDay');
+    Route::get('v1/coach-reports/view/table','Api\V1\CoachReportModuleController@tableView');
+    /* user customers */
+    Route::get('v1/user-customers/customers/{brick}','Api\V1\UserCustomersController@customersInBrick');
+    Route::get('v1/user-customers/bricks/{id}','Api\V1\UserCustomersController@getUserCustomersLocations');
+    /* Single Visits */
+    Route::post('v1/single-visit/customer', 'Api\V1\SingleVisitsController@pmSingleVisit');
+
 });
 
 /** Rep routes */

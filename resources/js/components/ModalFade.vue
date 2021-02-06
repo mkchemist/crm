@@ -1,6 +1,6 @@
 <template>
-  <div class="modal fade" :id="id ? id :`modal_fade`">
-    <div :class="`modal-dialog ${centered ? 'modal-dialog-centered' : null}`">
+  <div class="modal fade" :id="id">
+    <div :class="`modal-dialog ${centered ? 'modal-dialog-centered' : null} ${scroll ? 'modal-dialog-scrollable' : ''}`">
       <div class="modal-content">
         <div :class="`modal-header  ${headerStyle}`">
           <slot name="header" :data="data ? data: {}"></slot>
@@ -20,7 +20,32 @@
 
 <script>
 export default {
-  props: ['show', 'data', 'centered', 'footer', 'id', 'headerStyle'],
+  props: {
+    show: {
+      type: Boolean,
+      required: true
+    },
+    data: {
+      type: Object || Array,
+    },
+    centered: {
+      type: Boolean
+    },
+    footer: {
+      type: Boolean
+    },
+    id: {
+      type: String,
+      default : () => "modal_fade"
+    },
+    headerStyle: {
+      type: String
+    },
+    scroll: {
+      type: Boolean,
+      default: () => false
+    }
+  },
   watch:{
     show: function() {
       let id = this.id ? `#${this.id}` : '#modal_fade'

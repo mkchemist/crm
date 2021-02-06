@@ -27,7 +27,7 @@ class PlannerController extends Controller
        $data = $activeCycle->all();
         $user = Auth::user();
         $relations = json_decode($user->user_relations);
-        $reps = $relations->reps;
+        $reps = $relations->reps ?? [];
         $repPlansModel = Planner::query();
         if($data) {
           $repPlansModel = $repPlansModel->whereBetween('plan_date', [$data->start, $data->end]);

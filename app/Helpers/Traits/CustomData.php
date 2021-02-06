@@ -29,6 +29,7 @@ trait CustomData {
   public function getRelatedRepsData($user, $model)
   {
     $relations = json_decode($user->user_relations);
-    return $model->whereIn('user_id', $relations->reps);
+    $reps = $relations->reps?? [];
+    return $model->whereIn('user_id', $reps);
   }
 }

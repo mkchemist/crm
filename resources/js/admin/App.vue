@@ -38,6 +38,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('getAllUsers')
+    this.$store.dispatch("fetchingApplicationSettings")
   }
 };
 </script>

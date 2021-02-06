@@ -22,7 +22,12 @@ class ApplicationSetting extends Controller
       $cycles = new CyclesSetting;
       $reportInterval = new ReportIntervalSetting;
       $lines = new LineSetting;
-      $userLine = $this->getUserLine($lines->all());
+      $user =Auth::user();
+      if($user->role !== "admin") {
+        $userLine = $this->getUserLine($lines->all(), $user);
+      } else {
+        $userLine = $lines->all();
+      }
       return response([
         'code'  =>  200,
         'data'  =>  [
@@ -35,9 +40,8 @@ class ApplicationSetting extends Controller
       ]);
     }
 
-    private function getUserLine($lines)
+    private function getUserLine($lines, $user)
     {
-      $user = Auth::user();
       $userLine = json_decode($user->line);
       $line = [];
       foreach($lines as $key => $val) {
@@ -71,11 +75,17 @@ class ApplicationSetting extends Controller
     {
       $user = Auth::user();
       $relations = json_decode($user->user_relations);
+      $reps = $relations->reps ?? [];
+      $dm = $relations->dm ?? [];
+      $am = $relations->am ?? [];
+      $rm = $relations->rm ?? [];
+      $marketing = $relations->marketing ?? [];
       $users = array_merge(
-        $relations->reps,
-        $relations->dm,
-        $relations->am,
-        $relations->rm
+        $reps,
+        $dm,
+        $am,
+        $rm,
+        $marketing
       );
 
       $data = User::whereIn('id', $users)->get();

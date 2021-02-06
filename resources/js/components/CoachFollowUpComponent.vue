@@ -51,7 +51,7 @@
             <span>View</span>
           </button>
 
-          <router-link to="/reports" class="btn btn-sm btn-block btn-dark">
+          <router-link :to="backUrl" class="btn btn-sm btn-block btn-dark">
             <span class="fa fa-chevron-circle-left"></span>
             <span>Back</span>
           </router-link>
@@ -113,6 +113,7 @@
 </template>
 
 <script>
+import { COACH_REPORT } from '../helpers/constants';
 import { ExportToExcel, filterData } from '../helpers/helpers';
 import { httpCall } from "../helpers/http-service";
 import CoachReportComponent from './CoachReportComponent.vue';
@@ -127,6 +128,10 @@ export default {
     districtManagers: {
       type: Array,
       default: () => []
+    },
+    backUrl: {
+      type: String,
+      default: () => "/reports"
     }
   },
   computed: {
@@ -178,6 +183,13 @@ export default {
           coach: this.coach ? this.coach.id : null
         })
         .then(({ data }) => {
+          data.data.forEach(report => {
+            try {
+              report.data = JSON.parse(report.data)
+            } catch(e) {
+              report.data = COACH_REPORT
+            }
+          })
           this.reports = data.data;
           this.fetched = true;
         })

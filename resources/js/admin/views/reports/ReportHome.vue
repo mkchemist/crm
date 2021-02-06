@@ -34,7 +34,12 @@ export default {
         title: 'Missed visits reports',
         icon : 'fa-book-reader',
         link: '/reports/view/missed'
-      }
+      },
+      {
+        title: 'Coaching Reports',
+        icon : 'fa-book-reader',
+        link: '/coach'
+      },
     ]
   })
 }

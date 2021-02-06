@@ -165,8 +165,9 @@ class ActivityPlansController extends Controller
       if($relations) {
         $relations = json_decode($relations);
       };
-      $relations->reps[] = $user->id;
-      $plans = NonFieldActivityPlan::whereIn('user_id', $relations->reps);
+      $reps = $relations->reps ?? [];
+      $reps[] = $user->id;
+      $plans = NonFieldActivityPlan::whereIn('user_id', $reps);
       return $plans;
     }
 

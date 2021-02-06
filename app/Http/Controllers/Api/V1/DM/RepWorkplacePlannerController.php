@@ -18,7 +18,7 @@ class RepWorkplacePlannerController extends Controller
     {
       $user = Auth::user();
       $relations = json_decode($user->user_relations);
-      $reps = $relations->reps;
+      $reps = $relations->reps ?? [];
       $activeCycle = new ActiveCycleSetting;
       $data =  $activeCycle->all();
       $plans = WorkplacePlanner::with(['workplace', 'user'])

@@ -40,11 +40,18 @@
               <template v-slot:head:before>
                 <th>Action</th>
               </template>
-              <template v-slot:body:before="{item}">
+              <template v-slot:body:before="{ item }">
                 <td>
-                  <router-link :to="`/reports/edit/pm/${item.id}`" class="btn btn-sm btn-warning" v-if="item.user_id === $store.getters.user.id">
+                  <router-link
+                    :to="`/reports/edit/pm/${item.id}`"
+                    class="btn btn-sm btn-warning"
+                    v-if="item.user_id === $store.getters.user.id"
+                  >
                     <span class="fa fa-edit"></span>
                   </router-link>
+                  <button class="btn btn-sm btn-danger" v-if="item.user_id === $store.getters.user.id" @click="removeVisit(item.id)">
+                    <span class="fa fa-trash"></span>
+                  </button>
                 </td>
               </template>
               <template v-slot:head>
@@ -61,9 +68,11 @@
               <template v-slot:body="{ item }">
                 <td>{{ item.plans }}</td>
                 <td>{{ item.reports }}</td>
-                <td>{{ item.plans-item.reports }}</td>
+                <td>{{ item.plans - item.reports }}</td>
                 <td>
-                  <span :class="customerState(item).style">{{ customerState(item).state }}</span>
+                  <span :class="customerState(item).style">{{
+                    customerState(item).state
+                  }}</span>
                 </td>
                 <td>{{ item.comment }}</td>
                 <td>{{ item.feedback }}</td>
@@ -87,8 +96,9 @@
 
 <script>
 import TableComponent from "../../../components/TableComponent";
-import { ProductWithLader, ProductWithRate } from '../../../helpers/constants';
+import { ProductWithLader, ProductWithRate } from "../../../helpers/constants";
 import { sortBy } from "../../../helpers/helpers";
+import { httpCall } from '../../../helpers/http-service';
 import DataFilter from "../../components/DataFilter";
 export default {
   mounted() {
@@ -104,7 +114,7 @@ export default {
     },
     fetched() {
       return this.$store.getters.isRepPmReportsFetched;
-    },
+    }
   },
   data: () => ({
     headers: [
@@ -123,9 +133,9 @@ export default {
         fallback: "-----"
       },
       {
-        title: 'Coach 2',
-        name: 'coach2',
-        fallback: '-------'
+        title: "Coach 2",
+        name: "coach2",
+        fallback: "-------"
       },
       {
         title: "Customer",
@@ -158,28 +168,49 @@ export default {
     },
     customerState(item) {
       let diff = item.plans - item.reports;
-      if(diff > 0) {
+      if (diff > 0) {
         return {
-          state: 'Missed',
-          style: 'bg-danger text-light p-1'
-        }
-      } else if(diff < 0) {
+          state: "Missed",
+          style: "bg-danger text-light p-1"
+        };
+      } else if (diff < 0) {
         return {
-          state : 'Over',
-          style: 'bg-primary text-light p-1'
-        }
-      } else if(diff === 0 && item.plans ===0) {
+          state: "Over",
+          style: "bg-primary text-light p-1"
+        };
+      } else if (diff === 0 && item.plans === 0) {
         return {
-          state: 'Not targeted',
-          style : 'bg-dark text-light p-1',
-        }
-        return 'Not targeted';
+          state: "Not targeted",
+          style: "bg-dark text-light p-1"
+        };
+        return "Not targeted";
       } else {
         return {
-          state : 'Accomplished',
-          style: 'bg-success text-light p-1'
-        }
+          state: "Accomplished",
+          style: "bg-success text-light p-1"
+        };
       }
+    },
+    removeVisit(id){
+      this.$swal({
+        title: "Are you sure ?",
+        text: "you want to delete this visit",
+        icon: "warning",
+        showCancelButton: true
+      }).then(res => {
+        if(res.isConfirmed) {
+          return httpCall.post("dm/v1/reports/pm/"+id, {_method: "DELETE"})
+          .then(({data}) => {
+            this.handleResponse(data, data => {
+              this.$store.dispatch("getAllRepPmReports",{force: true})
+              this.$swal({
+                title: "Deleted",
+                icon: "success"
+              })
+            });
+          }).catch(err => console.log(err))
+        }
+      })
     }
   }
 };

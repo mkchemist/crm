@@ -19,7 +19,7 @@ class MissedCustomerController extends Controller
     public function index()
     {
       $user = Auth::user();
-      $reps = json_decode($user->user_relations)->reps;
+      $reps = json_decode($user->user_relations)->reps ?? [];
       $active = new ActiveCycleSetting;
       $cycle = $active->all();
       $from = $cycle->start;

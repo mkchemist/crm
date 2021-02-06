@@ -63,6 +63,11 @@ export default {
     ],
     reportLinks: [
       {
+        title: "Coaching Reports",
+        link: '/coach',
+        icon: 'fa-book-open'
+      },
+      {
         title: "View PM report",
         link: "/reports/view/pm",
         icon: "fa-book-open"
@@ -82,11 +87,11 @@ export default {
         link: "/reports/view/plans",
         icon: "fa-book-open"
       },
-      {
+      /* {
         title: 'View coach report',
         link: '/reports/view/coaching-report',
         icon: 'fa-book-reader'
-      },
+      }, */
       {
         title: 'View Missed Customers',
         link: '/reports/view/missed-customers',

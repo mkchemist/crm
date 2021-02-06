@@ -12,17 +12,17 @@
         <option
           v-for="(user, i) in sortedUsers"
           :key="`filter_box_user_${i}`"
-          :value="user.id"
+          :value="user"
           >{{ user.name }}</option
         >
       </select>
     </div>
     <div class="form-group text-right">
-      <button type="button" class="btn btn-sm btn-primary" @click="filterUsers">
+      <button type="button" class="btn btn-sm btn-primary" @click="filterUsers" :disabled="singleSelect">
         <span class="fa fa-check-circle"></span>
         <span>ok</span>
       </button>
-      <button type="button" class="btn btn-sm btn-secondary" @click="reset">
+      <button type="button" class="btn btn-sm btn-secondary" @click="reset" :disabled="singleSelect">
         <span class="fa fa-redo"></span>
         <span>reset</span>
       </button>
@@ -52,6 +52,10 @@ export default {
     },
     userField: {
       type: String
+    },
+    singleUser: {
+      type: Boolean,
+      default: () => false
     }
   },
   data: () => ({
@@ -60,16 +64,25 @@ export default {
   computed: {
     sortedUsers() {
       return sortBy(this.users, 'name');
+    },
+    singleSelect() {
+      if(this.singleUser) {
+        if(this.user === null) {
+          return true;
+        }
+        return false
+      }
+      return false
     }
   },
   methods: {
     filterUsers() {
       let key  = this.userField || 'user_id'
-      if(user === null) {
+      if(this.user === null) {
         return this.data;
       }
-      let data = filterBy(this.data, key, this.user);
-      this.onFilter(data, this.user)
+      let data = filterBy(this.data, key, this.user.id);
+      this.onFilter(data, this.user.id, this.user)
     },
     reset() {
       this.onReset();

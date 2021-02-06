@@ -8,7 +8,14 @@ import en from "vee-validate/dist/locale/en.json";
 import Toasted from "vue-toasted";
 import LoaderComponent from "../components/LoaderComponent.vue";
 import { ResponseHandler } from "../helpers/response-handler";
+import CoachReportModule from "../shared/modules/coach-report-module";
+import VueSweetAlert2 from 'vue-sweetalert2';
+import "sweetalert2/dist/sweetalert2.min.css";
 
+store.registerModule(CoachReportModule.MODULE_NAME,CoachReportModule.store)
+router.addRoutes(CoachReportModule.router);
+
+Vue.use(VueSweetAlert2)
 
 Vue.use(Toasted, {
   duration: 4000,

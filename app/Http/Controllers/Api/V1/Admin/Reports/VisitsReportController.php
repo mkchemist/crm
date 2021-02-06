@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin\Reports;
 
+use App\Helpers\CycleHelper;
 use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\RepCustomerVisitResource;
@@ -50,11 +51,18 @@ class VisitsReportController extends Controller
         $user = User::find($userId);
         if($user) {
           $relations = json_decode($user->user_relations);
-          $reports = $reports->whereIn('report.user_id', $relations->reps);
+          $users = array_merge(
+            $relations->reps,
+            $relations->dm,
+            $relations->am,
+            [$user->id]
+          );
+          $reports = $reports->whereIn('report.user_id', $users);
         }
       }
-      $reports = $reports->whereBetween('report.visit_date', [$cycle->start, $cycle->end]);
-      $reports = $reports->get();
+     /*  $reports = $reports->whereBetween('report.visit_date', [$cycle->start, $cycle->end]); */
+     $reports = CycleHelper::getCycleData($reports,'report.visit_date');
+     $reports = $reports->get();
 
       return response([
         'code'  =>  200,

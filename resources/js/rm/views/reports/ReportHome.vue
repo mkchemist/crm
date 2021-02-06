@@ -44,15 +44,15 @@ export default {
       },
     ],
      viewLinks: [
-      {
+     /*  {
         title: 'View Coach reports',
         icon: 'fa-book-reader',
         link: '/reports/view/coach-report'
-      },
+      }, */
       {
-        title: 'Coach Report Module',
+        title: 'Coaching',
         icon: 'fa-book-reader',
-        link: '/coach/reports'
+        link: '/coach'
       },
       {
         title: 'View PM reports',
@@ -98,11 +98,11 @@ export default {
       },
     ],
      otherLinks: [
-       {
+       /* {
          title: 'Coach Follow up',
          icon: 'fa-chart-bar',
          link: '/reports/read/coach-follow-up'
-       },
+       }, */
       {
         title: 'View Filed Activity report',
         icon: 'fa-book-reader',

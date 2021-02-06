@@ -23,7 +23,7 @@ class CustomerReportController extends Controller
     {
         $user = Auth::user();
         $relations = json_decode($user->user_relations);
-        $reps = $relations->reps;
+        $reps = $relations->reps ?? [];
         $reps[] = $user->id;
         $activeCycle = new ActiveCycleSetting;
         $activeCycle = $activeCycle->all();
@@ -163,6 +163,14 @@ class CustomerReportController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = Auth::user();
+        CustomerReport::where([
+          'user_id' =>  $user->id,
+          'id'      =>  $id
+        ])->delete();
+        return response([
+          'code'  =>  200,
+          'message' =>  'Report Deleted'
+        ]);
     }
 }

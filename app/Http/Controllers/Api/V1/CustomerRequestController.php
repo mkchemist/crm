@@ -166,7 +166,7 @@ class CustomerRequestController extends Controller
           return $model->where(['user_id' => $user->id]);
         default:
           $relations = json_decode($user->user_relations);
-          $users = $relations->reps;
+          $users = $relations->reps ?? [];
           $users[] = $user->id;
           if($user->role === "rm" || $user->role === "am") {
             $users = array_merge($users, $relations->dm);

@@ -44,7 +44,7 @@ export default {
     getAllUsers({state}, force) {
       if(!state.users.length || force) {
         state.users = [];
-          state.allUsersFetched = false;
+        state.allUsersFetched = false;
         state.allUsersFetched = false;
         return httpCall.get('admin/v1/users')
         .then(({data}) => {

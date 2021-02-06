@@ -17,23 +17,7 @@
         <div class="p-2 text-right">
         </div>
         <div v-if="reports.length">
-         <!--  <table-component
-            :heads="heads"
-            :data="reports"
-            :unselectable="true"
-            :headClass="`bg-success text-light`"
-          >
-            <template v-slot:head:before>
-              <th>Business Unit Manager</th>
-              <th>Area Manager</th>
-              <th>District Manager</th>
-            </template>
-            <template v-slot:body:before="{ item }">
-              <td>{{ $store.state.UserModule.user.name }}</td>
-              <td>{{ getRepAreaManager(item.user_id) }}</td>
-              <td>{{ getRepManager(item.user_id) }}</td>
-            </template>
-          </table-component> -->
+
           <data-table-component :data="reports" :cols="heads" />
         </div>
         <div v-else-if="isReportsFetched">
@@ -218,7 +202,6 @@ export default {
       return manager;
     },
     onFilter(data) {
-      console.log(data)
       this.shouldFilter = true;
       this.filteredReports = [];
       let async = () => Promise.resolve(data);

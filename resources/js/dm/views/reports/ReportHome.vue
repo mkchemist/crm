@@ -27,11 +27,11 @@ export default {
   },
   data: () => ({
     add_links: [
-      {
+      /* {
         link : '/reports/add/coach',
         icon: 'fa-plus-circle',
         title: 'Add coach report'
-      },
+      }, */
       {
         link: '/reports/add/pm',
         icon: 'fa-plus-circle',
@@ -59,10 +59,15 @@ export default {
       },
     ],
     view_links: [
-      {
+      /* {
         link: '/reports/view/coach-report',
         icon: 'fa-book-open',
         title: 'View Coach reports'
+      }, */
+      {
+        link: '/coach',
+        icon: 'fa-book-open',
+        title: 'Coaching'
       },
       {
         link: '/reports/view/pm',
@@ -108,11 +113,11 @@ export default {
       }
     ],
     others_links: [
-      {
+     /*  {
         title: 'Coach Follow Up',
         icon: 'fa-chart-bar',
         link: '/reports/coach-follow-up'
-      },
+      }, */
       {
         link: '/reports/activity-report?type=field-activity',
         icon: 'fa-book-reader',

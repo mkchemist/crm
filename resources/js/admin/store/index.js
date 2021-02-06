@@ -6,7 +6,7 @@ import AdminSettingModule from "./setting-module";
 import BroadcastModule from './broadcast-module';
 import PlannerModule from './planner-module'
 import CustomerModule from './customer-module'
-
+import SettingModule from "../../shared/store/setting-module";
 Vue.use(Vuex);
 
 
@@ -17,6 +17,7 @@ export default new Vuex.Store({
     AdminSettingModule,
     BroadcastModule,
     PlannerModule,
-    CustomerModule
+    CustomerModule,
+    SettingModule
   }
 });
