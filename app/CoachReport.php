@@ -16,6 +16,11 @@ class CoachReport extends Model
       'rep_submit',
     ];
 
+    protected $attributes = [
+      "day_summery" =>  ""
+    ];
+
+
     public function rep() {
       return $this->belongsTo('App\User', 'rep_id', 'id');
     }

@@ -14,7 +14,7 @@ class AddDaySummeryToCoachReports extends Migration
     public function up()
     {
         Schema::table('coach_reports', function (Blueprint $table) {
-          $table->longText('day_summery')->after('data')->default('');
+          $table->longText('day_summery')->after('data');
           $table->boolean('day_submitted')->default(false)->after('rep_submit');
         });
     }
