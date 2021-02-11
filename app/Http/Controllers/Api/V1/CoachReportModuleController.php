@@ -102,6 +102,10 @@ class CoachReportModuleController extends Controller
             return response(ResponseHelper::validationErrorResponse($validator));
         }
 
+        if($this->checkIfReportAlreadyCreated($request->coach_id,$request->rep_id,$request->customer_id, $request->visit_date)) {
+          return response(ResponseHelper::ITEM_ALREADY_EXIST);
+        }
+
         CoachReport::create([
             'coach_id' => $request->coach_id,
             'rep_id' => $request->rep_id,
@@ -174,6 +178,11 @@ class CoachReportModuleController extends Controller
 
         if (!$report) {
             return response(ResponseHelper::INVALID_ID);
+        }
+
+
+        if($this->checkIfReportAlreadyCreated($report->coach_id, $report->rep_id, $report->customer_id, $request->date)) {
+          return response(ResponseHelper::ITEM_ALREADY_EXIST);
         }
 
         $report->update([
@@ -381,4 +390,19 @@ class CoachReportModuleController extends Controller
         ]);
     }
 
+
+    private function checkIfReportAlreadyCreated($user, $rep, $customer, $date)
+    {
+      $report = CoachReport::where([
+        'rep_id' => $rep,
+        'coach_id'  =>  $user,
+        'customer_id' =>  $customer,
+        'visit_date'  =>  $date
+      ])->first();
+
+      if($report) {
+        return true;
+      }
+      return false;
+    }
 }
