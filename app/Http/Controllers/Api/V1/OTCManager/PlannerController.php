@@ -36,7 +36,7 @@ class PlannerController extends Controller
     {
         $reps = json_decode($this->user->user_relations)->reps;
         $model = OtcPlanner::query();
-        $model = CycleHelper::getCycleData($model, 'plan_date');
+       // $model = CycleHelper::getCycleData($model, 'plan_date');
         $model = $model->whereIn('user_id', $reps)
               ->orderBy('user_id');
 
