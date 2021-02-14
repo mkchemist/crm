@@ -2,7 +2,7 @@
   <div class="px-0 shadow rounded pb-5">
     <p class="alert alert-success">
       <span class="fa fa-plus-circle"></span>
-      <span class="font-weight-bold">Add Coach Report</span>
+      <span class="font-weight-bold">Add {{ visitType }} visit Report</span>
     </p>
     <div class="p-2">
       <div class="row mx-auto">
@@ -47,7 +47,7 @@
           <div class="p-2 my-2 border rounded">
 
             <div class="form-group">
-              <label for="">Customer</label>
+              <label for="">{{ visitType === 'pharmacy' ? 'Pharmacy':'Customer' }}</label>
               <select
                 name=""
                 id=""
@@ -59,7 +59,7 @@
                   v-for="customer in customers"
                   :key="customer.id"
                   :value="customer"
-                  >{{ customer.name }} ({{ customer.specialty }})</option
+                  >{{ customer.name }} ({{ visitType === 'pharmacy' ? customer.type :customer.specialty }})</option
                 >
               </select>
             </div>
@@ -124,7 +124,7 @@ export default {
     },
     onSave: {
       type:Function
-    }
+    },
   },
   components: {
     VisitComponent,
@@ -140,7 +140,11 @@ export default {
   }),
   methods: {
     fetchCustomers() {
-      return httpCall.get('v1/user-customers/customers/'+this.brick)
+      let pharmacy = false
+      if(this.visitType === "pharmacy") {
+        pharmacy = true;
+      }
+      return httpCall.get('v1/user-customers/customers/'+this.brick, {pharmacy})
       .then(({data}) => {
         this.handleResponse(data, data => {
           this.customers = data.data;
@@ -149,8 +153,12 @@ export default {
     },
     fetchLocations() {
       let id = this.rep.id;
+      let pharmacy = false;
+      if(this.visitType === "pharmacy") {
+        pharmacy = true
+      }
       return httpCall
-        .get("v1/user-customers/bricks/" + id)
+        .get("v1/user-customers/bricks/" + id, {pharmacy})
         .then(({ data }) => {
           this.handleResponse(data ,data => {
             this.bricks = data.data;
@@ -182,8 +190,18 @@ export default {
         this.saveSingleVisit({
           customer_id: this.customer.id,
           products: JSON.stringify(data.products),
-          date: data.date
+          date: data.date,
+          comment: data.comment,
+          feedback: data.feedback
         });
+      }
+      if(this.visitType === 'pharmacy') {
+        this.savePharmacyVisit({
+          pharmacy_id: this.customer.id,
+          products: JSON.stringify(data.products),
+          date: data.date,
+          feedback: data.feedback
+        })
       }
     },
     saveCoachingVisit(data){
@@ -201,6 +219,14 @@ export default {
           this.onSave();
         });
       })
+    },
+    savePharmacyVisit(data) {
+      return httpCall.post('v1/single-visit/pharmacy',data)
+      .then(({data}) => {
+        this.handleResponse(data, data => {
+          this.onSave()
+        });
+      }).catch(err => console.log(err))
     }
   }
 };

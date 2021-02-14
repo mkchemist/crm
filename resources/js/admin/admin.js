@@ -10,11 +10,14 @@ import * as rules from "vee-validate/dist/rules"
 import en from "vee-validate/dist/locale/en.json";
 import { ResponseHandler } from "../helpers/response-handler"
 import CoachReportModule from '../shared/modules/coach-report-module'
+import CustomerRequestModule from "../shared/modules/request-module"
 import VueSweetAlert2 from 'vue-sweetalert2';
 import "sweetalert2/dist/sweetalert2.min.css";
 
 store.registerModule(CoachReportModule.MODULE_NAME,CoachReportModule.store)
 router.addRoutes(CoachReportModule.router)
+store.registerModule(CustomerRequestModule.MODULE_NAME, CustomerRequestModule.store)
+router.addRoutes(CustomerRequestModule.router);
 
 Vue.mixin(ResponseHandler);
 Vue.use(VueSweetAlert2)

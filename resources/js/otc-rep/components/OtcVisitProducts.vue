@@ -50,6 +50,7 @@
             </select>
           </ValidationProvider>
         </div>
+
         <!-- product lader of adaption -->
         <div class="form-group col-lg" v-if="pharmacyProducts !== true">
           <label for="" class="">Lader of adaption</label>
@@ -139,6 +140,35 @@
               <option value="medium">medium</option>
               <option value="low">low</option>
               <option value="weak">weak</option>
+            </select>
+          </ValidationProvider>
+        </div>
+        <!-- Product Rx Type  -->
+        <div class="form-group col-lg" v-if="!healthDayProducts">
+          <label for="" class=""
+            >Type</label
+          >
+          <ValidationProvider
+            :name="`Rx Type`"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <span v-if="errors[0]" class="text-danger small">{{
+              `* required`
+            }}</span>
+            <select
+              :name="`product_${_PI}_rx_type`"
+              :id="`product_${_PI}_rx_type`"
+              :class="
+                `form-control form-control-sm ${
+                  errors[0] ? 'border border-danger' : ''
+                }`
+              "
+              v-model="productData[_PI].product_type"
+            >
+              <option :value="null"></option>
+              <option value="Rx">Rx</option>
+              <option value="OTC">OTC</option>
             </select>
           </ValidationProvider>
         </div>
@@ -265,6 +295,35 @@
             </select>
           </ValidationProvider>
         </div>
+        <!-- Product Rx Type  -->
+        <div class="col-lg" v-if="!healthDayProducts">
+          <label for="" class=""
+            >Type</label
+          >
+          <ValidationProvider
+            :name="`Rx Type`"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <span v-if="errors[0]" class="text-danger small">{{
+              `* required`
+            }}</span>
+            <select
+              :name="`product_${_PI}_rx_type`"
+              :id="`product_${_PI}_rx_type`"
+              :class="
+                `form-control form-control-sm ${
+                  errors[0] ? 'border border-danger' : ''
+                }`
+              "
+              v-model="productData[_PI].competitors[_CI].type"
+            >
+              <option :value="null"></option>
+              <option value="Rx">Rx</option>
+              <option value="OTC">OTC</option>
+            </select>
+          </ValidationProvider>
+        </div>
         <div class="col-lg">
           <label for="">Stock</label>
           <input
@@ -311,6 +370,10 @@ export default {
     maxCompetitorCount: {
       type: Number,
       default: () => 3
+    },
+    healthDayProducts: {
+      type: Boolean,
+      default: () => false
     }
   },
   computed: {
@@ -351,6 +414,7 @@ export default {
       let productScheme = {
         name: null,
         lader: null,
+        product_type: null,
         actions: null,
         rate: null,
         stock: 0,
@@ -360,7 +424,8 @@ export default {
           {
             name: null,
             rate: null,
-            stock: 0
+            stock: 0,
+            type: null
           }
         ]
       };
@@ -383,7 +448,7 @@ export default {
       if (this.data[_PI].competitors.length >= this.maxCompetitorCount) {
         return;
       }
-      this.data[_PI].competitors.push({ name: null, rate: null, stock: 0 });
+      this.data[_PI].competitors.push({ name: null, rate: null, stock: 0, type: null });
     },
     /**
      * delete competitor of the given product

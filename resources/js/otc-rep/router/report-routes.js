@@ -13,6 +13,8 @@ import MarketShareAnalysis from '../views/reports/MarketShareAnalysis.vue';
 import ViewPlanReport from '../views/reports/ViewPlanReport.vue';
 import ViewPharmacyPlan from '../components/ViewPharmacyPlan.vue';
 import ViewHealthDayPlan from '../components/ViewHealthDayPlan.vue';
+import AddActivityReport from "../../components/AddActivityReport.vue";
+import ActivityReportContainer from "../views/reports/ActivityReportContainer.vue";
 export default {
   path: "/reports",
   component: Report,
@@ -76,6 +78,14 @@ export default {
           component: ViewHealthDayPlan
         }
       ]
+    },
+    {
+      path: "add/activity",
+      component: AddActivityReport
+    },
+    {
+      path: "activity-report",
+      component: ActivityReportContainer
     }
   ]
 };

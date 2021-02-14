@@ -323,3 +323,18 @@ export const checkerSelect = (data = [], item, event) => {
   return data;
 }
 
+/**
+ * Serialize the given keys of the object
+ *
+ *
+ * @param {Object} container
+ * @param {Array} keys
+ */
+export const serialize = (container, keys = []) => {
+  keys.map(key => {
+    if(container[key]) {
+      container[key] = JSON.stringify(container[key]);
+    }
+  })
+  return container;
+}

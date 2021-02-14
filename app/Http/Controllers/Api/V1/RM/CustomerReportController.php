@@ -20,13 +20,16 @@ class CustomerReportController extends Controller
     {
         $user = Auth::user();
         $relations = json_decode($user->user_relations);
-        $reps = $relations->reps;
+        $users = array_merge(
+          $relations->reps,
+          $relations->dm
+        );
         $activeCycle = new ActiveCycleSetting;
         $cycleDates = $activeCycle->all();
         $reports = CustomerReport::with([
           'user', 'customer', 'customer.params', 'customer.frequency',
           'coach', 'coach2','customer.report', 'customer.planner'
-          ])->whereIn('user_id', $reps)
+          ])->whereIn('user_id', $users)
             ->whereBetween('visit_date', [$cycleDates->start, $cycleDates->end])
             ->orderBy('id')
             ->get();

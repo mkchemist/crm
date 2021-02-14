@@ -16,6 +16,9 @@ trait CustomData {
       case 'rep' :
         $model= $model->where('user_id', $user->id);
         break;
+      case 'otc-rep' :
+        $model = $model->where('user_id', $user->id);
+        break;
       default:
         $model = $this->getRelatedRepsData($user, $model);
         break;

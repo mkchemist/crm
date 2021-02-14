@@ -101,35 +101,59 @@
               :maxCompetitorCount="3"
               :maxProductCount="1"
               :pharmacyProducts="true"
+              :healthDayProducts="true"
             />
           </div>
           <!-- End of Visit Products -->
           <!-- No of cases and  Summery-->
           <div class="row mx-auto p-2 border">
             <div class="col-lg-3 border p-2">
-              <label for="" class="text-muted">Total Cases</label>
-              <ValidationProvider
-                name="Total health day cases"
-                rules="required"
-                v-slot="{ errors }"
-              >
-                <span class="text-danger small" v-if="errors[0]">{{
-                  errors[0]
-                }}</span>
-                <input
-                  type="number"
-                  :class="
-                    `form-control form-control-sm ${
-                      errors[0] ? 'border border-danger' : ''
-                    }`
-                  "
-                  v-model="visit.no_cases"
-                  :min="0"
-                />
-                <span class="text-muted small">
-                  * write number of cases in health day
-                </span>
-              </ValidationProvider>
+              <div>
+
+                <label for="" class="text-muted">Total Cases</label>
+                <ValidationProvider
+                  name="Total health day cases"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small" v-if="errors[0]">{{
+                    errors[0]
+                  }}</span>
+                  <input
+                    type="number"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border border-danger' : ''
+                      }`
+                    "
+                    v-model="visit.no_cases"
+                    :min="0"
+                  />
+                </ValidationProvider>
+              </div>
+               <div>
+
+                <label for="" class="text-muted">Total Consumed</label>
+                <ValidationProvider
+                  name="Total consumed"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small" v-if="errors[0]">{{
+                    errors[0]
+                  }}</span>
+                  <input
+                    type="number"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border border-danger' : ''
+                      }`
+                    "
+                    v-model="visit.consumed"
+                    :min="0"
+                  />
+                </ValidationProvider>
+              </div>
             </div>
             <div class="col-lg mx-1 p-2 border">
               <label for="" class="text-muted">Summery</label>
@@ -209,6 +233,7 @@ export default {
     visit: {
       pharmacy: null,
       no_cases: 0,
+      consumed: 0,
       summery: null,
       date: new Date().format(),
       products: [],
@@ -228,7 +253,8 @@ export default {
       request.products = JSON.stringify(request.products);
       request.comment = JSON.stringify({
         no_cases: this.visit.no_cases,
-        summery: this.visit.summery
+        summery: this.visit.summery,
+        consumed: this.visit.consumed
       });
 
       httpCall

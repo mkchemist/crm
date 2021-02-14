@@ -47,6 +47,8 @@ Route::group([
     Route::get('/request-types', 'Api\V1\RequestsTypeController@index');
     /* application setting */
     Route::get('app-setting', 'Api\V1\ApplicationSetting@index');
+    /* application user line */
+    Route::get('line-products', 'Api\V1\ApplicationSetting@lineProducts');
     /* locations routes */
     Route::get('user-locations', 'Api\V1\ApplicationSetting@locations');
     /** coach Follow up */
@@ -62,9 +64,15 @@ Route::group([
     Route::get('v1/coach-reports/view/table','Api\V1\CoachReportModuleController@tableView');
     /* user customers */
     Route::get('v1/user-customers/customers/{brick}','Api\V1\UserCustomersController@customersInBrick');
-    Route::get('v1/user-customers/bricks/{id}','Api\V1\UserCustomersController@getUserCustomersLocations');
+    Route::get('v1/user-customers/pharmacies/{brick}','Api\V1\UserCustomersController@pharmaciesInBrick');
+    Route::get('v1/user-customers/bricks/{id?}','Api\V1\UserCustomersController@getUserCustomersLocations');
     /* Single Visits */
     Route::post('v1/single-visit/customer', 'Api\V1\SingleVisitsController@pmSingleVisit');
+    Route::post('v1/single-visit/pharmacy', 'Api\V1\SingleVisitsController@pharmacySingleVisit');
+    Route::put('v1/single-visit/pharmacy/{id}', 'Api\V1\SingleVisitsController@editSinglePharmacyVisit');
+    /* Requests Routes */
+    Route::get('v1/requests/search/{search}', 'Api\V1\RequestController@analysis');
+    Route::apiResource('v1/requests', 'Api\V1\RequestController');
 
 });
 

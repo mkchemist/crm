@@ -5,24 +5,27 @@
       <span class="font-weight-bold">View Pharmacy {{ pharmacy ? pharmacy.name : '' }}</span>
     </p>
     <div class="p-2">
+      <div class="p-2">
+        <ul class="nav nav-tabs">
+          <li class="nav-item mx-1 bg-light">
+            <router-link :to="generatePageLink()" class="nav-link" active-class="activePage" exact>
+              <span>Info.</span>
+            </router-link>
+          </li>
+          <li class="nav-item mx-1 bg-light">
+            <router-link :to="generatePageLink('report')" class="nav-link" active-class="activePage" exact>
+              <span>Report</span>
+            </router-link>
+          </li>
+          <li class="nav-item mx-1 bg-light">
+            <router-link :to="generatePageLink('health-day')" class="nav-link" active-class="activePage" exact>
+              <span>Health Day</span>
+            </router-link>
+          </li>
+        </ul>
+      </div>
       <div v-if="pharmacy">
-        <div class="my-2 px-0  rounded shadow-sm">
-          <p class="bg-primary text-light p-2 mb-0 lead">Pharmacy Info.</p>
-          <div class="p-2 row mx-auto small">
-            <div class="col-lg">
-              <p class="mb-0 border-bottom">Pharmacy Name : <span class="font-weight-bold text-primary">{{ pharmacy.name }}</span></p>
-              <p class="mb-0 border-bottom">Pharmacy Type : <span class="font-weight-bold text-primary">{{ pharmacy.type }}</span></p>
-              <p class="mb-0 border-bottom">Key Person : <span class="font-weight-bold text-primary">{{ pharmacy.key_person || '--------' }}</span></p>
-              <p class="mb-0 border-bottom">No. of visits : <span class="font-weight-bold text-primary">{{ pharmacy.reports }}</span></p>
-            </div>
-            <div class="col-lg">
-              <p class="mb-0 border-bottom">Address : <span class="font-weight-bold text-primary">{{ pharmacy.address }}</span></p>
-              <p class="mb-0 border-bottom">Brick: <span class="font-weight-bold text-primary">{{ pharmacy.brick }}</span></p>
-              <p class="mb-0 border-bottom">Area : <span class="font-weight-bold text-primary">{{ pharmacy.area }}</span></p>
-              <p class="mb-0 border-bottom">District : <span class="font-weight-bold text-primary">{{ pharmacy.district }}</span></p>
-            </div>
-          </div>
-        </div>
+        <router-view :pharmacy="pharmacy"></router-view>
       </div>
       <div v-else>
         <no-data-to-show />
@@ -52,11 +55,18 @@ export default {
         this.pharmacy = data.data;
         this.fetched = true;
       }).catch(err => console.log(err))
+    },
+    generatePageLink(url = "") {
+      let id = this.$route.params.id;
+      return `/pharmacies/view/${id}/${url}`
     }
   }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+  .activePage {
+    background-color: royalblue;
+    color: white !important;
+  }
 </style>

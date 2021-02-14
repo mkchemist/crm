@@ -69,35 +69,57 @@
                 :maxCompetitorCount="3"
                 :maxProductCount="1"
                 :pharmacyProducts="true"
+                :healthDayProducts="true"
               />
             </div>
             <!-- End of Visit Products -->
             <!-- No of cases and  Summery-->
             <div class="row mx-auto p-2 border">
               <div class="col-lg-3 border p-2">
-                <label for="" class="text-muted">Total Cases</label>
-                <ValidationProvider
-                  name="Total health day cases"
-                  rules="required"
-                  v-slot="{ errors }"
-                >
-                  <span class="text-danger small" v-if="errors[0]">{{
-                    errors[0]
-                  }}</span>
-                  <input
-                    type="number"
-                    :class="
-                      `form-control form-control-sm ${
-                        errors[0] ? 'border border-danger' : ''
-                      }`
-                    "
-                    v-model="visit.comment.no_cases"
-                    :min="0"
-                  />
-                  <span class="text-muted small">
-                    * write number of cases in health day
-                  </span>
-                </ValidationProvider>
+                <div>
+                  <label for="" class="text-muted">Total Cases</label>
+                  <ValidationProvider
+                    name="Total health day cases"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <span class="text-danger small" v-if="errors[0]">{{
+                      errors[0]
+                    }}</span>
+                    <input
+                      type="number"
+                      :class="
+                        `form-control form-control-sm ${
+                          errors[0] ? 'border border-danger' : ''
+                        }`
+                      "
+                      v-model="visit.comment.no_cases"
+                      :min="0"
+                    />
+                  </ValidationProvider>
+                </div>
+                <div>
+                  <label for="" class="text-muted">Total Consumed</label>
+                  <ValidationProvider
+                    name="Total consumed"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <span class="text-danger small" v-if="errors[0]">{{
+                      errors[0]
+                    }}</span>
+                    <input
+                      type="number"
+                      :class="
+                        `form-control form-control-sm ${
+                          errors[0] ? 'border border-danger' : ''
+                        }`
+                      "
+                      v-model="visit.comment.consumed"
+                      :min="0"
+                    />
+                  </ValidationProvider>
+                </div>
               </div>
               <div class="col-lg mx-1 p-2 border">
                 <label for="" class="text-muted">Summery</label>
@@ -126,7 +148,10 @@
             <!-- End of cases and Summery -->
             <!-- Report Control -->
             <div class="form-group text-right my-2 p-2">
-              <router-link to="/reports/view/health-day" class="btn btn-sm btn-dark">
+              <router-link
+                to="/reports/view/health-day"
+                class="btn btn-sm btn-dark"
+              >
                 <span class="fa fa-chevron-circle-left"></span>
                 <span>back</span>
               </router-link>
@@ -217,7 +242,7 @@ export default {
               this.error = null;
               this.error_code = null;
               this.visitProducts = this.createVisitProduct();
-              this.visit.comment = JSON.parse(this.visit.comment)
+              this.visit.comment = JSON.parse(this.visit.comment);
             },
             data => {
               if (data.code === 204) {

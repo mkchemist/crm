@@ -2,7 +2,9 @@
   <div class="px-0 shadow rounded pb-5">
     <p class="alert alert-warning">
       <span class="fa fa-plus-circle"></span>
-      <span class="font-weight-bold">Edit Pharmacy {{ pharmacy ? pharmacy.name : '' }}</span>
+      <span class="font-weight-bold"
+        >Edit Pharmacy {{ pharmacy ? pharmacy.name : "" }}</span
+      >
     </p>
     <div class="p-2">
       <div v-if="pharmacy">
@@ -24,9 +26,6 @@
                   :disabled="true"
                 />
               </div>
-            </div>
-            <!-- Pharmacy name and type -->
-            <div class="row mx-auto">
               <!-- Pharmacy Type -->
               <div class="col-lg form-group">
                 <label for="type" class="text-muted">Type</label>
@@ -58,6 +57,9 @@
                   </select>
                 </ValidationProvider>
               </div>
+            </div>
+            <!-- Pharmacy name and type -->
+            <div class="row mx-auto">
               <!-- Pharmacy Key person -->
               <div class="col-lg form-group">
                 <label for="key_person" class="text-muted">Key Person</label>
@@ -69,6 +71,31 @@
                   class="form-control form-control-sm"
                   placeholder="write ket person name"
                 />
+              </div>
+              <!-- Pharmacy phone -->
+              <div class="col-lg form-group">
+                <label for="phone" class="text-muted">Phone</label>
+                <ValidationProvider
+                  name="Phone"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span v-if="errors[0]" class="text-danger small">{{
+                    errors[0]
+                  }}</span>
+                  <input
+                    type="text"
+                    name="phone"
+                    id="phone"
+                    v-model="pharmacy.phone"
+                    :class="
+                      `form-control form-control-sm ${
+                        errors[0] ? 'border border-danger' : ''
+                      }`
+                    "
+                    placeholder="write pharmacy phone"
+                  />
+                </ValidationProvider>
               </div>
             </div>
             <!-- Pharmacy Locations -->
@@ -153,7 +180,7 @@ export default {
   },
   data: () => ({
     pharmacy: null,
-    fetched: false,
+    fetched: false
   }),
   methods: {
     id() {
@@ -174,15 +201,17 @@ export default {
       let id = this.id();
       let request = {
         ...this.pharmacy,
-        _method: 'PUT'
-      }
-      return httpCall.post('otc-rep/v1/pharmacies/'+id, request)
-      .then(({data}) => {
-        this.handleResponse(data ,data => {
-          this.$store.dispatch('fetchPharmacies',{force: true})
-          this.$router.push('/pharmacies')
-        });
-      }).catch(err => console.log(err))
+        _method: "PUT"
+      };
+      return httpCall
+        .post("otc-rep/v1/pharmacies/" + id, request)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.$store.dispatch("fetchPharmacies", { force: true });
+            this.$router.push("/pharmacies");
+          });
+        })
+        .catch(err => console.log(err));
     },
     getSelectedBrickLocation(brick) {}
   }

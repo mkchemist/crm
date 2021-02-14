@@ -66,6 +66,7 @@ class PharmacyReportController extends Controller
                 'pharmacy_id' => $request->pharmacy,
                 'visit_date' => $request->date,
                 'type' => $request->type,
+                'product_type' => $product->product_type,
                 'general_feedback' => $request->general_feedback ?? '',
                 'product' => $product->name,
                 'rate' => $product->rate,
@@ -75,12 +76,15 @@ class PharmacyReportController extends Controller
                 'competitor1' => $product->competitors[0]->name,
                 'competitor1_rate' => $product->competitors[0]->rate,
                 'competitor1_stock' => $product->competitors[0]->stock,
+                'competitor1_type' => $product->competitors[0]->type,
                 'competitor2' => isset($product->competitors[1]) ? $product->competitors[1]->name : null,
                 'competitor2_rate' => isset($product->competitors[1]) ? $product->competitors[1]->rate : null,
                 'competitor2_stock' => isset($product->competitors[1]) ? $product->competitors[1]->stock : 0,
+                'competitor2_type' => isset($product->competitors[1]) ? $product->competitors[1]->type : null,
                 'competitor3' => isset($product->competitors[2]) ? $product->competitors[2]->name : null,
                 'competitor3_rate' => isset($product->competitors[2]) ? $product->competitors[2]->rate : null,
                 'competitor3_stock' => isset($product->competitors[2]) ? $product->competitors[2]->stock : 0,
+                'competitor3_type' => isset($product->competitors[2]) ? $product->competitors[2]->type : null,
                 'comment' => $request->comment ?? '',
             ]);
         }
@@ -159,16 +163,20 @@ class PharmacyReportController extends Controller
         $report->stock = $request->stock;
         $report->rate = $request->rate;
         $report->order = $request->order;
+        $report->product_type = $request->product_type;
         $report->distributor = $request->dist;
         $report->competitor1 = $request->competitor1;
         $report->competitor1_rate = $request->competitor1_rate;
         $report->competitor1_stock = $request->competitor1_stock;
+        $report->competitor1_type = $request->competitor1_type;
         $report->competitor2 = (integer) $request->competitor2 ? $request->competitor2 : null;
         $report->competitor2_rate = (integer) $request->competitor2_rate ? $request->competitor2_rate : null;
         $report->competitor2_stock = (integer) $request->competitor2_stock ? $request->competitor2_stock : 0;
+        $report->competitor2_type = (integer) $request->competitor2_type ? $request->competitor2_type : null;
         $report->competitor3 = (integer) $request->competitor3 ? $request->competitor3 : null;
         $report->competitor3_rate = (integer) $request->competitor3_rate ? $request->competitor3_rate : null;
         $report->competitor3_stock = (integer) $request->competitor3_stock ? $request->competitor3_stock : 0;
+        $report->competitor3_type = (integer) $request->competitor3_type ? $request->competitor3_type : null;
         if ($request->comment) {
             $report->comment = $request->comment;
         }

@@ -11,7 +11,7 @@
         </div>
         <div class="modal-footer" v-if="footer">
           <slot name="footer" :data="data ? data: {}"></slot>
-          <button class="btn btn-dark btn-sm" @click="closeModal">cancel</button>
+          <button class="btn btn-dark btn-sm" @click="closeModal" type="button">cancel</button>
         </div>
       </div>
     </div>

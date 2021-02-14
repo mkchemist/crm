@@ -6,7 +6,7 @@ import ViewPmReports from '../views/reports/ViewPmReports.vue';
 import ViewPlanReports from '../views/reports/ViewPlanReports.vue';
 import ViewAmPlanReports from '../views/reports/ViewAmPlanReports.vue';
 import ViewHospitalReport from '../views/reports/ViewHospitalReport.vue'
-import ViewPharmacyReport from '../views/reports/VIewPharmacyReport.vue';
+import ViewPharmacyReport from '../views/reports/ViewPharmacyReport.vue';
 import ViewPmAnalysis from '../views/reports/analysis/ViewPmAnalysis.vue';
 import ViewPlanAnalysis from "../views/reports/analysis/ViewPlanAnalysis.vue"
 import ViewMissedCustomers from '../views/reports/ViewMissedCustomers.vue';
@@ -17,6 +17,8 @@ import AddPmVisit from '../views/reports/AddPmVisit.vue';
 import EditPmVisit from '../views/reports/EditPmVisit.vue';
 import RequestReportContainer from '../views/reports/RequestReportContainer.vue'
 import CoachFollowUp from '../views/reports/CoachFollowUp.vue'
+import AddPharmacyVisit from '../views/reports/AddPharmacyVisit.vue';
+import EditPharmacyVisit from '../views/reports/EditPharmacyVisit.vue';
 export default {
   path: '/reports',
   component: Reports,
@@ -58,8 +60,16 @@ export default {
       component: ViewHospitalReport
     },
     {
+      path: 'add/pharmacy',
+      component: AddPharmacyVisit
+    },
+    {
       path: 'view/pharmacy',
       component: ViewPharmacyReport
+    },
+    {
+      path: 'edit/pharmacy/:id',
+      component: EditPharmacyVisit
     },
     {
       path: 'view/missed-customers',

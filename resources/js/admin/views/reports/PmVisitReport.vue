@@ -51,6 +51,7 @@
             <data-table-component
               :cols="cols"
               :data="reports"
+              :selectable="false"
             >
 
             </data-table-component>

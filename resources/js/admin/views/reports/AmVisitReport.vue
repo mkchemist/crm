@@ -48,23 +48,13 @@
         <!-- data view -->
         <div class="p-2">
           <div v-if="reports.length">
-            <table-component
-              :heads="heads"
+            <data-table-component
+              :cols="heads"
               :data="reports"
-              :unselectable="true"
-              :headClass="`bg-success text-light`"
+              :selectable="false"
             >
-              <template v-slot:head:before>
-                <th>Business Unit Manager</th>
-                <th>Area Manager</th>
-                <th>District Manager</th>
-              </template>
-              <template v-slot:body:before="{ item }">
-                <td>{{ getRm(item.user_id) }}</td>
-                <td>{{ getAm(item.user_id) }}</td>
-                <td>{{ getDm(item.user_id) }}</td>
-              </template>
-            </table-component>
+
+            </data-table-component>
           </div>
           <div v-else-if="!loadingStarted">
             <div
@@ -90,13 +80,13 @@
 <script>
 import DateFilterBox from "../../../components/DateFilterBox.vue";
 import NoDataToShow from "../../../components/NoDataToShow.vue";
-import TableComponent from "../../../components/TableComponent.vue";
+import DataTableComponent from "../../../components/DataTableComponent.vue";
 import UserFilterBox from "../../../components/UserFilterBox.vue";
 import { ProductWithLader } from "../../../helpers/constants";
 import { sortBy } from "../../../helpers/helpers";
 import { httpCall } from "../../../helpers/http-service";
 export default {
-  components: { NoDataToShow, TableComponent, UserFilterBox, DateFilterBox },
+  components: { NoDataToShow, DataTableComponent, UserFilterBox, DateFilterBox },
   mounted() {},
   computed: {
     rms() {
@@ -124,16 +114,21 @@ export default {
         return this.filteredList;
       }
       return this.data;
-    }
-  },
-  data: () => ({
-    manager: null,
-    data: [],
-    isDataFetched: false,
-    loadingStarted: false,
-    shouldRenderFilter: false,
-    filteredList: [],
-    heads: [
+    },
+    heads() {
+      return [
+        {
+          title: "Business Unit",
+          name: row => this.getRm(row.user_id)
+        },
+        {
+          title: "Area Manager",
+          name: row => this.getAm(row.user_id)
+        },
+        {
+          title: "District Manager",
+          name: row => this.getDm(row.user_id)
+        },
       {
         title: "Rep",
         name: "rep"
@@ -188,6 +183,15 @@ export default {
         name: "territory"
       }
     ]
+    }
+  },
+  data: () => ({
+    manager: null,
+    data: [],
+    isDataFetched: false,
+    loadingStarted: false,
+    shouldRenderFilter: false,
+    filteredList: [],
   }),
   methods: {
     getReports() {
@@ -211,7 +215,7 @@ export default {
       let manager = "-------";
       this.rms.map(user => {
         let reps = user.relations.reps;
-        if (reps.includes(id)) {
+        if (reps && reps.includes(id)) {
           manager = user.name;
         }
       });
@@ -221,7 +225,7 @@ export default {
       let manager = "-------";
       this.ams.map(user => {
         let reps = user.relations.reps;
-        if (reps.includes(id)) {
+        if (reps && reps.includes(id)) {
           manager = user.name;
         }
       });
@@ -231,7 +235,7 @@ export default {
       let manager = "-------";
       this.dms.map(user => {
         let reps = user.relations.reps;
-        if (reps.includes(id)) {
+        if (reps && reps.includes(id)) {
           manager = user.name;
         }
       });

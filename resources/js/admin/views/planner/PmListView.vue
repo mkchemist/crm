@@ -7,27 +7,16 @@
           <span>Start loading</span>
         </button>
       </div>
-      <hr>
+      <hr />
       <div v-if="plans.length">
-        <table-component
-          :data="plans"
-          :heads="heads"
-          :headClass="`bg-success text-light`"
-          :unselectable="true"
-        >
-        <template v-slot:head:before>
-            <th>Business Unit Manager</th>
-            <th>Area Manager</th>
-            <th>District Manager</th>
-          </template>
-          <template v-slot:body:before="{ item }">
-            <td>{{ getRepRegionalManager(item.user_id) }}</td>
-            <td>{{ getRepAreaManager(item.user_id) }}</td>
-            <td>{{ getRepManager(item.user_id) }}</td>
-          </template>
-        </table-component>
+        <data-table-component :data="plans" :cols="heads" :selectable="false">
+        </data-table-component>
       </div>
-      <div v-else-if="!startRequest" class="d-flex align-items-center justify-content-lg-center" style="height:300px">
+      <div
+        v-else-if="!startRequest"
+        class="d-flex align-items-center justify-content-lg-center"
+        style="height:300px"
+      >
         <div class="text-center">
           <p>
             <span class="fa fa-download fa-4x text-primary"></span>
@@ -47,11 +36,10 @@
 
 <script>
 import NoDataToShow from "../../../components/NoDataToShow.vue";
-import TableComponent from "../../../components/TableComponent.vue";
+import DataTableComponent from "../../../components/DataTableComponent.vue";
 export default {
-  mounted(){
-  },
-  components: { TableComponent, NoDataToShow },
+  mounted() {},
+  components: { DataTableComponent, NoDataToShow },
   computed: {
     plans() {
       return this.$store.getters.pmPlans;
@@ -60,107 +48,118 @@ export default {
       return this.$store.getters.isPlanFetched;
     },
     dms() {
-      return this.$store.getters.dms
+      return this.$store.getters.dms;
     },
     rms() {
-      return this.$store.getters.rms
+      return this.$store.getters.rms;
     },
-    ams(){
-      return this.$store.getters.ams
+    ams() {
+      return this.$store.getters.ams;
+    },
+    heads() {
+      return [
+        {
+          title: "Business Unit",
+          name: row => {return this.getRepRegionalManager(row.user_id)}
+        },
+        {
+          title: "Area Manager",
+          name: row => this.getRepAreaManager(row.user_id)
+        },
+        {
+          title: "District Manager",
+          name: row => this.getRepManager(row.user_id)
+        },
+        {
+          title: "Rep",
+          name: "Rep"
+        },
+        {
+          title: "Date",
+          name: "Date"
+        },
+        {
+          title: "Customer",
+          name: "Customer"
+        },
+        {
+          title: "Specialty",
+          name: "Specialty"
+        },
+        {
+          title: "Parameter",
+          name: "Parameter",
+          fallback: "NN"
+        },
+        {
+          title: "Frequency",
+          name: "Frequency",
+          fallback: 0
+        },
+        {
+          title: "Submitted",
+          name: "submitted"
+        },
+        {
+          title: "Approved",
+          name: "approved"
+        },
+        {
+          title: "Brick",
+          name: "Brick"
+        },
+        {
+          title: "Area",
+          name: "Area"
+        },
+        {
+          title: "District",
+          name: "District"
+        },
+        {
+          title: "Territory",
+          name: "Territory"
+        }
+      ];
     }
   },
   data: () => ({
-    startRequest: false,
-    heads: [
-      {
-        title: "Date",
-        name: "Date"
-      },
-      {
-        title: "Rep",
-        name: "Rep"
-      },
-      {
-        title: "Customer",
-        name: "Customer"
-      },
-      {
-        title: "Specialty",
-        name: "Specialty"
-      },
-      {
-        title: 'Parameter',
-        name: 'Parameter',
-        fallback: 'NN'
-      },
-      {
-        title: 'Frequency',
-        name: 'Frequency',
-        fallback: 0
-      },
-      {
-        title: "Submitted",
-        name: "submitted"
-      },
-      {
-        title: "Approved",
-        name: "approved"
-      },
-      {
-        title: "Brick",
-        name: "Brick"
-      },
-      {
-        title: "Area",
-        name: "Area"
-      },
-      {
-        title: "District",
-        name: "District"
-      },
-      {
-        title: "Territory",
-        name: "Territory"
-      },
-
-    ]
+    startRequest: false
   }),
   methods: {
     startLoading() {
       this.startRequest = true;
-      this.$store.dispatch('fetchAllPlans')
-      .then(() => {
-
-      })
+      this.$store.dispatch("fetchAllPlans").then(() => {});
     },
     getRepManager(id) {
-      let manager ="-------";
+      let manager = "-------";
       this.dms.map(user => {
-        let reps =user.relations.reps;
-        if(reps.includes(id)) {
+        let reps = user.relations.reps;
+        if (reps && reps.includes(id)) {
           manager = user.name;
         }
-      })
+      });
       return manager;
     },
     getRepAreaManager(id) {
-      let manager ="-------";
+      let manager = "-------";
+
       this.ams.map(user => {
-        let reps =user.relations.reps;
-        if(reps.includes(id)) {
-          manager = user.name;
-        }
-      })
+        let reps = user.relations.reps;
+          if (reps && reps.includes(id)) {
+            manager = user.name;
+          }
+      });
       return manager;
     },
     getRepRegionalManager(id) {
-      let manager ="-------";
+      let manager = "-------";
       this.rms.map(user => {
-        let reps =user.relations.reps;
-        if(reps.includes(id)) {
+        let reps = user.relations.reps;
+        if (reps && reps.includes(id)) {
           manager = user.name;
         }
-      })
+      });
       return manager;
     }
   }

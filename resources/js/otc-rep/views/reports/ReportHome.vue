@@ -50,6 +50,16 @@ export default {
         title: 'View Orders',
         icon: 'fa-book-reader',
         link: '/reports/view/order'
+      },
+      {
+        title: "View Field Activity Report",
+        icon: "fa-book",
+        link: "/reports/activity-report?type=field-activity"
+      },
+      {
+        title: "View Non Field Activity Report",
+        icon: "fa-book",
+        link: "/reports/activity-report?type=non-field-activity"
       }
     ],
     addLinks: [
@@ -62,6 +72,16 @@ export default {
         title: 'Add health day report',
         icon: 'fa-plus-circle',
         link: '/reports/add/health-day'
+      },
+      {
+        title: "Add Field Activity Report",
+        icon: 'fa-plus-circle',
+        link: '/reports/add/activity?type=field-activity'
+      },
+      {
+        title: "Add Non Field Activity Report",
+        icon: "fa-plus-circle",
+        link : "/reports/add/activity?type=non-field-activity"
       }
     ],
     performanceLinks: [

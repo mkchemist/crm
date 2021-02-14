@@ -34,13 +34,19 @@
                 customer.name
               }}</span>
             </p>
-            <p class="mb-1 border-bottom small clearfix">
+            <p class="mb-1 border-bottom small clearfix" v-if="type === 'pharmacy'">
+              <span>Type</span>
+              <span class="font-weight-bold text-primary float-right">{{
+                customer.type
+              }}</span>
+            </p>
+            <p class="mb-1 border-bottom small clearfix" v-if="type!== 'pharmacy'">
               <span>Specialty</span>
               <span class="font-weight-bold text-primary float-right">{{
                 customer.specialty
               }}</span>
             </p>
-            <p class="mb-1 border-bottom small clearfix">
+            <p class="mb-1 border-bottom small clearfix" v-if="type!== 'pharmacy'">
               <span>Parameter</span>
               <span class="font-weight-bold text-primary float-right">{{
                 customer.params && customer.params.length
@@ -77,7 +83,7 @@
             <p class="mb-1 border-bottom small clearfix">
               <span>Territory</span>
               <span class="font-weight-bold text-primary float-right">{{
-                customer.district
+                customer.territory
               }}</span>
             </p>
           </div>
@@ -128,12 +134,12 @@
             </div>
             <!-- End of coach visits -->
             <!-- Single Visit -->
-            <div v-if="type==='single'">
+            <div v-if="['single','pharmacy'].includes(type)">
               <div class="p-2 border rounded">
-                <visit-products :data="products" />
+                <visit-products :data="products" :pharmacyProducts="type === 'pharmacy' ? true : false" />
               </div>
               <div class="row mx-auto border rounded my-1 p-2">
-                <div class="col-lg">
+                <div class="col-lg" v-if="type !== 'pharmacy'">
                   <label for="" class="text-muted">Comment</label>
                   <textarea
                     cols="30"
@@ -143,7 +149,7 @@
                     class="form-control form-control-sm"
                   ></textarea>
                 </div>
-                <div class="col-lg">
+                <div class="col-lg" v-if="type !== 'pharmacy'">
                   <label for="" class="text-muted">General Feedback</label>
                   <textarea
                     cols="30"
@@ -152,6 +158,19 @@
                     placeholder="write visit comment"
                     class="form-control form-control-sm"
                   ></textarea>
+                </div>
+                <div class="col-lg" v-if="type === 'pharmacy'">
+                  <label for="" class="text-muted">General Feedback</label>
+                  <ValidationProvider name="feedback" rules="required" v-slot="{errors}">
+                    <span v-if="errors[0]" class="text-danger small">{{ errors[0] }}</span>
+                    <textarea
+                      cols="30"
+                      rows="5"
+                      v-model="visit_feedback"
+                      placeholder="write visit comment"
+                      :class="`form-control form-control-sm ${errors[0] ? 'border border-danger': ''}`"
+                    ></textarea>
+                  </ValidationProvider>
                 </div>
               </div>
             </div>
@@ -222,10 +241,18 @@ export default {
         })
         return;
       }
-      if(this.type === "single" && !this.products.length) {
+      if(['single','pharmacy'].includes(this.type) && !this.products.length) {
         this.$swal({
           text: 'No Products Provided',
           title: 'You must pick at least one Product',
+          icon: 'warning'
+        })
+        return;
+      }
+      if(this.type === 'pharmacy' && !this.visit_feedback) {
+        this.$swal({
+          text: 'No Feedback Provided',
+          title: 'You provide a visit general feedback',
           icon: 'warning'
         })
         return;

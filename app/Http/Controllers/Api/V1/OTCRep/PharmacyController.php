@@ -22,13 +22,14 @@ class PharmacyController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $pharmacies = Pharmacy::with(['report']);
+        $pharmacies = Pharmacy::with(['otcReport']);
         $pharmacies = $this->getQueryWithAssignment($user, $pharmacies)
         ->orderBy('name')->get();
 
         return response([
             'code' => 200,
             'data' => PharmacyResource::collection($pharmacies),
+
         ]);
     }
 
@@ -50,6 +51,7 @@ class PharmacyController extends Controller
             'district' => 'required',
             'territory' => 'required',
             'region' => 'required',
+            'phone' =>  'required'
         ]);
 
         if ($validator->fails()) {
@@ -61,6 +63,7 @@ class PharmacyController extends Controller
             'type' => $request->type,
             'brick' => $request->brick,
             'area' => $request->area,
+            'phone' =>  $request->phone
         ])->first();
 
         if ($checkIfExists) {
@@ -89,7 +92,7 @@ class PharmacyController extends Controller
             return response(ResponseHelper::BAD_REQUEST_INPUT);
         }
         $user = Auth::user();
-        $pharmacy = Pharmacy::with('report')->where([
+        $pharmacy = Pharmacy::with('otcReport')->where([
             'id' => $id,
         ]);
         $pharmacy = $this->getQueryWithAssignment($user, $pharmacy)->first();
@@ -133,6 +136,7 @@ class PharmacyController extends Controller
 
         $pharmacy->type = $request->type;
         $pharmacy->address = $request->address;
+        $pharmacy->phone = $request->phone;
         $pharmacy->save();
 
         return response([

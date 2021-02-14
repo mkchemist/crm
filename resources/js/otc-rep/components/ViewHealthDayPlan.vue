@@ -25,7 +25,7 @@ export default {
       if(!this.locations.length) {
         return [];
       }
-      let plans = this.$attrs.data.filter(item => item.class==="health-day")
+      let plans = this.$attrs.data.filter(item => item.type==="health_day")
       try {
 
         plans.forEach(plan => {

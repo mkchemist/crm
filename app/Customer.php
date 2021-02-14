@@ -89,4 +89,8 @@ class Customer extends Model
       ])->get();
     });
   }
+
+  public function requests() {
+    return $this->hasMany('App\CustomerRequest','customer_id', 'id');
+  }
 }

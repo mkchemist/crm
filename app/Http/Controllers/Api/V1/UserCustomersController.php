@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Customer;
 use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
+use App\Pharmacy;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,27 +26,35 @@ class UserCustomersController extends Controller
     }
 
 
-    public function getUserCustomersLocations($id)
+    public function getUserCustomersLocations($id = null)
     {
-      if(!is_numeric($id)) {
-        return response([
-          'code'  =>  204,
-          'data'  =>  [
-            'errors' => [
-              'Rep ID must be Number '.gettype($id)." given"
-            ]
-          ]
-        ]);
-      }
-      $user = User::find($id);
 
-      $locations = Customer::query();
-      $locations = $this->getQueryWithAssignment($user,$locations);
+      if(!$id) {
+        $user =Auth::user();
+      } else {
+        $user = User::find($id);
+      }
+
+      if(request()->pharmacy) {
+        $locations = Pharmacy::query();
+      } else {
+        $locations = Customer::query();
+      }
+
+      if(!in_array($user->role, ['admin', 'accountant'])) {
+        $locations = $this->getQueryWithAssignment($user,$locations);
+      }
+
       $locations = $locations->select('brick')->distinct()->get();
 
       return response([
         'code' => 200,
-        'data'  =>  $locations
+        'data'  =>  $locations,
+        'user'  =>  [
+          'name'  =>  $user->name,
+          'role'  =>  $user->role,
+          'line'  =>  $user->line
+        ]
       ]);
     }
 
@@ -62,13 +71,31 @@ class UserCustomersController extends Controller
           ]
         ]);
       }
+      $withRelations = ['params'];
+      if(request()->withRequests) {
+        $withRelations[] = "requests";
+        $withRelations[] = "requests.user";
+      }
+      if(request()->pharmacy) {
+        $data = Pharmacy::where('brick', $brick);
+      } else {
 
-      $customers = Customer::where('brick', $brick)->with('params')
-      ->orderBy('name')->get();
-
+        $data = Customer::where('brick', $brick)->with($withRelations);
+      }
+      $data = $data->orderBy('name')->get();
       return response([
         'code'  =>  200,
-        'data'  =>  $customers
+        'data'  =>  $data
+      ]);
+    }
+
+
+    public function pharmaciesInBrick($brick) {
+      $pharmacies = Pharmacy::where('brick', $brick)
+      ->orderBy('name')->get();
+      return response([
+        'code'  =>  200,
+        'data'  =>  $pharmacies
       ]);
     }
 }

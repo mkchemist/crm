@@ -7,6 +7,40 @@
         </tr>
       </thead>
     </table>
+    <div class="modal" id="group_by_modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span class="">Group data</span>
+            <button class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="border p-2">
+              <ul class="nav">
+                <li
+                  v-for="(col, i) in cols"
+                  :key="`col_${i}`"
+                  class="nav-item small col-lg-6"
+                >
+                  <input type="checkbox" :value="col.name" v-model="groupBy" />
+                  <span>{{ col.title }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm btn-primary" type="button" @click="saveNewGroupBy">
+              <span class="fa fa-check-circle"></span>
+              <span>Ok</span>
+            </button>
+            <button class="btn btn-sm btn-danger" data-dismiss="modal">
+              <span class="fa fa-times"></span>
+              <span>cancel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -14,7 +48,7 @@
 export default {
   props: {
     data: {
-      type: Array,
+      type: Array | Object,
       required: true
     },
     cols: {
@@ -64,15 +98,29 @@ export default {
         text: '<i class="fa fa-file-excel"></i> Excel'
       }
     ],
-    table: null
+    table: null,
+    groupBy: []
   }),
+  computed: {
+    hasGroupByExt() {
+      if (!this.groupBy.length) {
+        return {};
+      }
+      return {
+        rowGroup: {
+          dataSrc: this.groupBy
+        }
+      };
+    }
+  },
   mounted() {
     this.createTable();
   },
   methods: {
     createTable() {
       let cols = this.prepareDataColumns(this.cols);
-      let buttons = [...this.defaultButtons, ...this.buttons];
+      let groupByBtn = this.createGroupByButton;
+      let buttons = [...this.defaultButtons, groupByBtn, ...this.buttons];
 
       let select = this.detectSelectionBehavior();
 
@@ -86,7 +134,10 @@ export default {
         deferRender: true,
         language: {
           searchPlaceholder: "Search ..."
-        }
+        },
+        ...this.hasGroupByExt,
+        colReorder: true,
+
       });
     },
     prepareDataColumns(data) {
@@ -114,16 +165,35 @@ export default {
         };
       }
       return select;
+    },
+    createGroupByButton() {
+      return {
+        text: "Group By",
+        action: () => {
+          $("#group_by_modal").modal({ show: true });
+        }
+      };
+    },
+    saveNewGroupBy() {
+      this.table.destroy();
+      this.createTable();
+      $("#group_by_modal").modal('hide')
     }
   },
   destroyed() {
-    this.table.destroy()
+    this.table.destroy();
   }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .data-table__container {
-  overflow-x: scroll !important;
+  overflow-x: auto !important;
+}
+.dtrg-group {
+  td {
+    font-weight: bold !important;
+    color: royalblue !important;
+  }
 }
 </style>

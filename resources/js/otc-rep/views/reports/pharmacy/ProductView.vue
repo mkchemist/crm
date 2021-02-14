@@ -24,18 +24,21 @@
               <th>Date</th>
               <th>Product</th>
               <th>Rate</th>
+              <th>Consumption type</th>
               <th>Stock</th>
               <th>Order</th>
               <th>Distributor</th>
               <th>Competitor 1</th>
               <th>Competitor 1 Rate</th>
+              <th>Consumption type</th>
               <th>Competitor 1 Stock</th>
               <th>Competitor 2</th>
               <th>Competitor 2 Rate</th>
+              <th>Consumption type</th>
               <th>Competitor 2 Stock</th>
               <th>Competitor 3</th>
               <th>Competitor 3 Rate</th>
-              <th>Competitor 3 Stock</th>
+              <th>Consumption type</th>
               <th>General Feedback</th>
               <th>Address</th>
               <th>Brick</th>
@@ -71,17 +74,21 @@
                 <td>{{ report.date }}</td>
                 <td class="export-bold">{{ report.product }}</td>
                 <td>{{ report.rate }}</td>
+                <td>{{ report.product_type}}</td>
                 <td>{{ report.stock }}</td>
                 <td>{{ report.order }}</td>
                 <td>{{ report.distributor }}</td>
                 <td>{{ report.competitor1 }}</td>
                 <td>{{ report.competitor1_rate }}</td>
+                <td>{{ report.competitor1_type }}</td>
                 <td>{{ report.competitor1_stock }}</td>
                 <td>{{ report.competitor2 }}</td>
                 <td>{{ report.competitor2_rate }}</td>
+                <td>{{ report.competitor2_type }}</td>
                 <td>{{ report.competitor2_stock }}</td>
                 <td>{{ report.competitor3 }}</td>
                 <td>{{ report.competitor3_rate }}</td>
+                <td>{{ report.competitor3_type }}</td>
                 <td>{{ report.competitor3_stock }}</td>
                 <td>{{ report.feedback }}</td>
                 <td>{{ report.address }}</td>

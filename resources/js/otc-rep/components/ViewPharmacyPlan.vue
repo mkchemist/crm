@@ -25,7 +25,7 @@ export default {
       if(!this.locations.length) {
         return [];
       }
-      let plans = this.$attrs.data.filter(item => item.class==="pharmacy-plan")
+      let plans = this.$attrs.data.filter(item => item.type==="regular")
       plans.forEach(plan => {
         let brick = this.locations.filter(item => item.brick === plan.brick)[0];
         plan['territory'] = brick.territory;

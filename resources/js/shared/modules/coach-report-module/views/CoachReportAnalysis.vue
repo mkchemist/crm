@@ -7,6 +7,13 @@
     <div class="p-2">
       <!-- page control start -->
       <div class="p-2 text-right">
+        <template>
+          <button class="btn btn-sm btn-primary" @click="openSelectModal">
+            <span class="fa fa-check"></span>
+            <span>Select</span>
+          </button>
+        </template>
+
         <button class="btn btn-sm btn-primary" @click="reportFetchRequest">
           <span class="fa fa-download"></span>
           <span>Start analysis</span>
@@ -19,12 +26,13 @@
       <!-- End of page control -->
       <!-- Analysis section -->
       <div class="p-2">
-        <div v-if="data.length">
+        <div v-if="reports.tableData.length">
           <div class="my-2 p-2">
             <data-table-component
               :data="reports.tableData"
               :cols="cols"
               :tableClass="`table table-sm small table-striped table-bordered`"
+              :selectable="false"
             />
           </div>
           <div class="my-2 p-2">
@@ -45,32 +53,69 @@
       </div>
       <!-- End of analysis section -->
     </div>
+    <modal-fade
+      :show="showSelectModal"
+      @onClose="closeSelectModal"
+      :headerStyle="`bg-primary text-light`"
+      :footer="true"
+    >
+      <template v-slot:header>
+        <span>Select Rep</span>
+      </template>
+      <template v-slot:body>
+        <div class="form-group">
+          <select v-model="selected_rep" multiple class="form-control form-control-sm" style="min-height:250px">
+            <option :value="null">All</option>
+            <option v-for="rep in reps" :key="rep.id" :value="rep.id">{{
+              rep.name
+            }}</option>
+          </select>
+        </div>
+      </template>
+      <template v-slot:footer>
+        <button class="btn btn-sm btn-primary" @click="selectRep">
+          <span class="fa fa-check-circle"></span>
+          <span>Select</span>
+        </button>
+      </template>
+    </modal-fade>
   </div>
 </template>
 
 <script>
 import ChartView from "../../../../components/ChartView.vue";
 import DataTableComponent from "../../../../components/DataTableComponent.vue";
+import ModalFade from "../../../../components/ModalFade.vue";
 import NoDataToShow from "../../../../components/NoDataToShow.vue";
 import { CHART_COLOR_LIST, COACH_REPORT } from "../../../../helpers/constants";
 import { filterData } from "../../../../helpers/helpers";
-import { httpCall } from "../../../../helpers/http-service";
+import { asyncDataFlow, httpCall } from "../../../../helpers/http-service";
 export default {
   components: {
     NoDataToShow,
     ChartView,
-    DataTableComponent
+    DataTableComponent,
+    ModalFade
   },
   computed: {
+    reps() {
+      return this.$store.getters.coachModuleReps;
+    },
+    reportsData() {
+      if (this.shouldRenderFilter) {
+        return this.filteredList;
+      }
+      return this.data;
+    },
     reports() {
       let analysis = {
         labels: Array.from(Object.keys(COACH_REPORT)),
         data: [],
         tableData: []
       };
+
       /**  rep reports clusters  */
-      let reports = filterData(this.data, "rep.name");
-      console.log(reports);
+      let reports = filterData(this.reportsData, "rep.name");
       try {
         /** looping through clusters */
         for (let rep in reports) {
@@ -114,13 +159,13 @@ export default {
            * collecting points
            */
           item.data = [
-            preCallPlanning/_d.length,
-            opening/_d.length,
-            initialProbe/_d.length,
-            promotionalPlan/_d.length,
-            handlingOfObjections/_d.length,
-            close/_d.length,
-            postCallAnalysis/_d.length
+            preCallPlanning / _d.length,
+            opening / _d.length,
+            initialProbe / _d.length,
+            promotionalPlan / _d.length,
+            handlingOfObjections / _d.length,
+            close / _d.length,
+            postCallAnalysis / _d.length
           ];
           analysis.tableData.push({
             rep,
@@ -140,7 +185,7 @@ export default {
                 handlingOfObjections +
                 close +
                 postCallAnalysis) /
-              (_d.length)
+              _d.length
             ).toFixed(1)
           });
           analysis.data.push(item);
@@ -174,7 +219,7 @@ export default {
         title: "% (30 point)",
         name: row => {
           let res = (row.preCallPlanning / row.visits).toFixed(1);
-          return ((res / 30) * 100).toFixed(1);
+          return ((res / 30) * 100).toFixed(1) + "%";
         },
         style: "font-weight-bold"
       },
@@ -188,77 +233,77 @@ export default {
         title: "% (30 point)",
         name: row => {
           let res = (row.opening / row.visits).toFixed(1);
-          return ((res / 30) * 100).toFixed(1);
+          return ((res / 30) * 100).toFixed(1) + "%";
         },
         style: "font-weight-bold"
       },
       {
         title: "Initial Probe",
         name: row => {
-          return (row.initialProbe/ row.visits).toFixed(1);
+          return (row.initialProbe / row.visits).toFixed(1);
         }
       },
       {
         title: "% (30 point)",
         name: row => {
           let res = (row.initialProbe / row.visits).toFixed(1);
-          return ((res / 30) * 100).toFixed(1);
+          return ((res / 30) * 100).toFixed(1) + "%";
         },
         style: "font-weight-bold"
       },
       {
         title: "PromotionalPlan",
         name: row => {
-          return (row.promotionalPlan/ row.visits).toFixed(1);
+          return (row.promotionalPlan / row.visits).toFixed(1);
         }
       },
       {
         title: "% (40 point)",
         name: row => {
           let res = (row.promotionalPlan / row.visits).toFixed(1);
-          return ((res / 40) * 100).toFixed(1);
+          return ((res / 40) * 100).toFixed(1) + "%";
         },
         style: "font-weight-bold"
       },
       {
         title: "Handling Of Objections",
         name: row => {
-          return (row.handlingOfObjections/ row.visits).toFixed(1);
+          return (row.handlingOfObjections / row.visits).toFixed(1);
         }
       },
       {
         title: "% (30 point)",
         name: row => {
           let res = (row.handlingOfObjections / row.visits).toFixed(1);
-          return ((res / 30) * 100).toFixed(1);
+          return ((res / 30) * 100).toFixed(1) + "%";
         },
         style: "font-weight-bold"
       },
       {
         title: "Close",
         name: row => {
-          return (row.close/ row.visits).toFixed(1);
+          return (row.close / row.visits).toFixed(1) + "%";
         }
       },
-       {
+      {
         title: "% (20 point)",
         name: row => {
           let res = (row.close / row.visits).toFixed(1);
-          return ((res / 20) * 100).toFixed(1);
+          return ((res / 20) * 100).toFixed(1) + "%";
         },
         style: "font-weight-bold"
       },
       {
         title: "Post-Call Analysis",
         name: row => {
-          return (row.postCallAnalysis/ row.visits).toFixed(1);
+          return (row.postCallAnalysis / row.visits).toFixed(1) + "%";
         }
       },
-       {
+      {
         title: "% (20 point)",
         name: row => {
           let res = (row.postCallAnalysis / row.visits).toFixed(1);
-          return ((res / 20) * 100).toFixed(1);
+          return ((res / 20) * 100).toFixed(1) + "%";
         },
         style: "font-weight-bold"
       },
@@ -267,7 +312,11 @@ export default {
         name: "overall",
         style: "font-weight-bold"
       }
-    ]
+    ],
+    showSelectModal: false,
+    selected_rep: [],
+    shouldRenderFilter: false,
+    filteredList: []
   }),
   methods: {
     reportFetchRequest() {
@@ -320,6 +369,25 @@ export default {
         res += this._convertStateToNumber(item[i]);
       }
       return res;
+    },
+    openSelectModal() {
+      this.showSelectModal = true;
+    },
+    closeSelectModal() {
+      this.showSelectModal = false;
+    },
+    selectRep() {
+      let data = [];
+      if (!this.selected_rep.length || this.selected_rep[0] === null) {
+        data = this.data;
+      } else {
+        data = this.data.filter(r => this.selected_rep.includes(r.rep_id));
+      }
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      asyncDataFlow(data, data => {
+        this.filteredList = data;
+      });
     }
   }
 };

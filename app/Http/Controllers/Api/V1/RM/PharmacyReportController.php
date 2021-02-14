@@ -19,12 +19,16 @@ class PharmacyReportController extends Controller
     public function index()
     {
       $user = Auth::user();
-      $reps = json_decode($user->user_relations)->reps;
+      $relations = json_decode($user->user_relations);
+      $users = array_merge(
+        $relations->reps,
+        $relations->dm
+      );
       $activeCycle = new ActiveCycleSetting;
       $activeCycle = $activeCycle->all();
 
       $reports = PharmacyReport::with(['user', 'pharmacy'])
-      ->whereIn('user_id', $reps)
+      ->whereIn('user_id', $users)
       ->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end])
       ->get();
 

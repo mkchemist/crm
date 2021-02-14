@@ -9,11 +9,15 @@ import Toasted from "vue-toasted";
 import LoaderComponent from "../components/LoaderComponent.vue";
 import { ResponseHandler } from "../helpers/response-handler";
 import CoachReportModule from "../shared/modules/coach-report-module";
+import RequestModule from "../shared/modules/request-module";
 import VueSweetAlert2 from 'vue-sweetalert2';
 import "sweetalert2/dist/sweetalert2.min.css";
 
 store.registerModule(CoachReportModule.MODULE_NAME,CoachReportModule.store)
 router.addRoutes(CoachReportModule.router);
+
+store.registerModule(RequestModule.MODULE_NAME, RequestModule.store);
+router.addRoutes(RequestModule.router)
 
 Vue.use(VueSweetAlert2)
 

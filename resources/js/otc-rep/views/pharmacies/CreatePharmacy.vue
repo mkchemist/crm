@@ -34,9 +34,6 @@
                 />
               </ValidationProvider>
             </div>
-          </div>
-          <!-- Pharmacy name and type -->
-          <div class="row mx-auto">
             <!-- Pharmacy Type -->
             <div class="col-lg form-group">
               <label for="type" class="text-muted">Type</label>
@@ -68,6 +65,10 @@
                 </select>
               </ValidationProvider>
             </div>
+          </div>
+          <!-- Pharmacy name and type -->
+          <div class="row mx-auto">
+
             <!-- Pharmacy Key person -->
             <div class="col-lg form-group">
               <label for="key_person" class="text-muted">Key Person</label>
@@ -77,8 +78,28 @@
                 id="key_person"
                 v-model="pharmacy.key_person"
                 class="form-control form-control-sm"
-                placeholder="write ket person name"
+                placeholder="write key person name"
               />
+            </div>
+
+            <!-- Pharmacy phone -->
+            <div class="col-lg form-group">
+              <label for="phone" class="text-muted">Phone</label>
+              <ValidationProvider name="Phone" rules="required" v-slot="{errors}">
+                <span v-if="errors[0]" class="text-danger small">{{ errors[0] }}</span>
+                <input
+                  type="text"
+                  name="phone"
+                  id="phone"
+                  v-model="pharmacy.phone"
+                  :class="
+                    `form-control form-control-sm ${
+                      errors[0] ? 'border border-danger' : ''
+                    }`
+                  "
+                  placeholder="write pharmacy phone"
+                />
+              </ValidationProvider>
             </div>
           </div>
           <!-- Pharmacy Locations -->
@@ -178,7 +199,8 @@ export default {
       name: null,
       key_person: null,
       type: null,
-      address: null
+      address: null,
+      phone: null
     },
     brick: null
   }),

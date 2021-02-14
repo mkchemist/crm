@@ -6,7 +6,7 @@
           notResponsive ? '' : 'table-responsive'
         }`
       "
-      :id="id ? id:`data-table`"
+      :id="id ? id : `data-table`"
       v-if="rows.length"
     >
       <thead>
@@ -20,13 +20,55 @@
         <tr v-for="(item, i) in rows" :key="i">
           <!-- <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td> -->
           <slot name="body:before" :item="item"></slot>
-          <td v-for="(head, i) in heads" :key="i" :class="`${head.style ? head.style : ''}`">
+          <td
+            v-for="(head, i) in heads"
+            :key="i"
+            :class="`${head.style ? head.style : ''}`"
+          >
             {{ _notation(item, head.name, head.fallback) }}
           </td>
           <slot name="body" :item="item"></slot>
         </tr>
       </tbody>
     </table>
+    <div class="modal" id="group_by_modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span class="">Group data</span>
+            <button class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="border p-2">
+              <ul class="nav">
+                <li
+                  v-for="(col, i) in heads"
+                  :key="`col_${i}`"
+                  class="nav-item small col-lg-6"
+                >
+                  <input type="checkbox" :value="i+1" v-model="groupBy" />
+                  <span>{{ col.title }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-sm btn-primary"
+              type="button"
+              @click="saveNewGroupBy"
+            >
+              <span class="fa fa-check-circle"></span>
+              <span>Ok</span>
+            </button>
+            <button class="btn btn-sm btn-danger" data-dismiss="modal">
+              <span class="fa fa-times"></span>
+              <span>cancel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -48,7 +90,8 @@ export default {
     "id"
   ],
   data: () => ({
-    table: null
+    table: null,
+    groupBy: []
   }),
   mounted() {
     this.createTable();
@@ -56,6 +99,16 @@ export default {
   computed: {
     rows() {
       return this.data;
+    },
+    hasGroupByExt() {
+      if (!this.groupBy.length) {
+        return {};
+      }
+      return {
+        rowGroup: {
+          dataSrc: this.groupBy
+        }
+      };
     }
   },
   methods: {
@@ -63,7 +116,7 @@ export default {
       return ObjectNotation(container, key, $default);
     },
     /**
-     * create datatable instance
+     * create data table instance
      *
      *
      */
@@ -76,12 +129,19 @@ export default {
         {
           extend: "pdf",
           text: '<i class="fa fa-file-pdf"></i> PDF'
+        },
+        {
+          text: "Group By",
+          action: () => {
+            $("#group_by_modal").modal({ show: true });
+          }
         }
       ];
+
       buttons = this.addFavoriteButton(buttons);
       buttons = this.addUnlinkButton(buttons);
-      let select = this.unselectable ? false : {style: 'single'}
-      this.table = $(`#${this.id ? this.id : 'data-table'}`).DataTable({
+      let select = this.unselectable ? false : { style: "single" };
+      this.table = $(`#${this.id ? this.id : "data-table"}`).DataTable({
         order: this.ordering(),
         language: {
           searchPlaceholder: "Search..."
@@ -93,7 +153,9 @@ export default {
         fixedHeader: {
           header: true,
           footer: true
-        }
+        },
+        colReorder: true,
+        ...this.hasGroupByExt,
       });
     },
     /**
@@ -187,6 +249,11 @@ export default {
         });
       });
       return order;
+    },
+    saveNewGroupBy() {
+      this.table.destroy();
+      this.createTable();
+      $("#group_by_modal").modal("hide");
     }
   },
   destroyed() {

@@ -25,17 +25,21 @@
               <th>Type</th>
               <th>Product</th>
               <th>Rate</th>
+              <th>Consumption type</th>
               <th>Stock</th>
               <th>Order</th>
               <th>Distributor</th>
               <th>Competitor 1</th>
               <th>Competitor 1 Rate</th>
+              <th>Consumption type</th>
               <th>Competitor 1 Stock</th>
               <th>Competitor 2</th>
               <th>Competitor 2 Rate</th>
+              <th>Consumption type</th>
               <th>Competitor 2 Stock</th>
               <th>Competitor 3</th>
               <th>Competitor 3 Rate</th>
+              <th>Consumption type</th>
               <th>Competitor 3 Stock</th>
               <th>Feedback</th>
               <th>Address</th>
@@ -51,7 +55,7 @@
               v-bind:key="`pharmacy_${key}_report_${i}`"
             >
               <tr class="bg-dark text-light">
-                <td colspan="24">
+                <td colspan="28">
                   <a
                     href=""
                     class="text-decoration-none text-light"
@@ -93,17 +97,21 @@
                 <td>{{ row.type }}</td>
                 <td>{{ row.product }}</td>
                 <td>{{ row.rate }}</td>
+                <td>{{ row.product_type }}</td>
                 <td>{{ row.stock }}</td>
                 <td>{{ row.order }}</td>
                 <td>{{ row.distributor }}</td>
                 <td>{{ row.competitor1 }}</td>
                 <td>{{ row.competitor1_rate }}</td>
+                <td>{{ row.competitor1_type}}</td>
                 <td>{{ row.competitor1_stock }}</td>
                 <td>{{ row.competitor2 }}</td>
                 <td>{{ row.competitor2_rate }}</td>
+                <td>{{ row.competitor2_type}}</td>
                 <td>{{ row.competitor2_stock }}</td>
                 <td>{{ row.competitor3 }}</td>
                 <td>{{ row.competitor3_rate }}</td>
+                <td>{{ row.competitor3_type}}</td>
                 <td>{{ row.competitor3_stock }}</td>
                 <td>{{ row.feedback }}</td>
                 <td>{{ row.address }}</td>

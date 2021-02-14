@@ -114,9 +114,9 @@ export default {
         link: '/reports/activity?type=non-field-activity'
       },
       {
-        title: 'View Request report',
+        title: 'Requests',
         icon: 'fa-chart-line',
-        link: '/reports/requests'
+        link: '/customers-requests'
       },
     ]
   })

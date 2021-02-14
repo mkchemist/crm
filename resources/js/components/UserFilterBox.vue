@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 border rounded" v-if="users.length">
+  <div :class="className" v-if="users.length">
     <div class="form-group">
       <label for="" class="text-muted">User</label>
       <select
@@ -8,7 +8,7 @@
         v-model="user"
         class="form-control form-control-sm"
       >
-        <option :value="null">All</option>
+        <option :value="null">{{ placeholderText }}</option>
         <option
           v-for="(user, i) in sortedUsers"
           :key="`filter_box_user_${i}`"
@@ -22,7 +22,7 @@
         <span class="fa fa-check-circle"></span>
         <span>ok</span>
       </button>
-      <button type="button" class="btn btn-sm btn-secondary" @click="reset" :disabled="singleSelect">
+      <button type="button" class="btn btn-sm btn-secondary" @click="reset" :disabled="singleSelect" v-if="showResetButton != false">
         <span class="fa fa-redo"></span>
         <span>reset</span>
       </button>
@@ -40,7 +40,7 @@ export default {
     },
     data: {
       type: Array,
-      required: true
+      default: () => []
     },
     onFilter: {
       type: Function,
@@ -48,7 +48,7 @@ export default {
     },
     onReset: {
       type: Function,
-      required: true
+      default: () => () => null
     },
     userField: {
       type: String
@@ -56,6 +56,18 @@ export default {
     singleUser: {
       type: Boolean,
       default: () => false
+    },
+    showResetButton: {
+      type: Boolean,
+      default: () => true
+    },
+    placeholderText: {
+      type: String,
+      default: () => 'All'
+    },
+    className: {
+      type: String,
+      default: () => 'p-2 border rounded'
     }
   },
   data: () => ({

@@ -120,6 +120,10 @@ export default {
         name: "type"
       },
       {
+        title: "Phone",
+        name: "phone"
+      },
+      {
         title: "Key Person",
         name: "key_person"
       },

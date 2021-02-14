@@ -56,6 +56,8 @@ Route::prefix('v1')->group(function () {
       Route::post('/refresh-hash-key', 'ForceRefreshHashKeySettingController@store');
       Route::get('/request-types', 'RequestSettingController@index');
       Route::post('/request-types', 'RequestSettingController@store');
+      Route::get('/products/price', 'ProductController@index');
+      Route::post('/products/price', 'ProductController@update');
     });
     Route::apiResource('broadcasting', 'MessageBroadcastingController');
     // Admin management routes

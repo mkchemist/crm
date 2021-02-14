@@ -1,7 +1,9 @@
 <template>
   <div class="p-2">
     <div class="row mx-auto">
-      <div class="col-lg"></div>
+      <div class="col-lg">
+        <sidebar-component :links="another"/>
+      </div>
       <div class="col-lg">
         <sidebar-component :links="viewLinks" />
       </div>
@@ -40,6 +42,13 @@ export default {
         icon : 'fa-book-reader',
         link: '/coach'
       },
+    ],
+    another: [
+      {
+        title: "Customer Requests",
+        icon: "fa-dollar-sign",
+        link: "/customers-requests"
+      }
     ]
   })
 }

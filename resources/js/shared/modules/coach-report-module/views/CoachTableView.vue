@@ -55,7 +55,7 @@
       <div class="col-lg-9">
         <div v-if="reports.length">
           <div class="p-2">
-            <data-table-component :cols="cols" :data="reports" />
+            <data-table-component :cols="cols" :data="reports" :selectable="false" />
           </div>
         </div>
         <div v-else-if="!loadingStarted">

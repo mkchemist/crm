@@ -208,11 +208,13 @@ export default {
           stock: visit.stock,
           order: visit.order,
           dist: visit.distributor,
+          product_type: visit.product_type,
           competitors: [
             {
               name: visit.competitor1,
               rate: visit.competitor1_rate,
-              stock: visit.competitor1_stock
+              stock: visit.competitor1_stock,
+              type: visit.competitor1_type
             }
           ]
         }
@@ -221,14 +223,16 @@ export default {
           product.competitors.push({
               name:   visit.competitor2,
               rate:   visit.competitor2_rate,
-              stock:  visit.competitor2_stock
+              stock:  visit.competitor2_stock,
+              type: visit.competitor2_type
           })
         }
         if(this.visit.competitor3) {
           product.competitors.push({
               name:   visit.competitor3,
               rate:   visit.competitor3_rate,
-              stock:  visit.competitor3_stock
+              stock:  visit.competitor3_stock,
+              type: visit.competitor3_type
           })
         }
         products.push(product)
@@ -249,8 +253,10 @@ export default {
         stock: product.stock,
         rate: product.rate,
         order: product.order,
+        product_type: product.product_type,
         distributor : product.dist,
         competitor1: product.competitors[0].name,
+        competitor1_type: product.competitors[0].type,
         competitor1_rate: product.competitors[0].rate,
         competitor1_stock : product.competitors[0].stock
       }
@@ -258,11 +264,14 @@ export default {
         res['competitor2'] = product.competitors[1].name;
         res['competitor2_rate'] = product.competitors[1].rate;
         res['competitor2_stock'] = product.competitors[1].stock;
+        res['competitor2_type'] = product.competitors[1].type;
+
       }
       if(product.competitors[2]) {
         res['competitor3'] = product.competitors[2].name;
         res['competitor3_rate'] = product.competitors[2].rate;
         res['competitor3_stock'] = product.competitors[2].stock;
+        res['competitor3_type'] = product.competitors[2].type;
       }
 
       return res;

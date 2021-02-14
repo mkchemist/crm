@@ -129,9 +129,9 @@ export default {
         title: 'Non-Field Activity report'
       },
       {
-        link: '/reports/requests',
+        link: '/customers-requests',
         icon: 'fa-dollar-sign',
-        title: 'Requests report'
+        title: 'Requests'
       }
     ]
   })

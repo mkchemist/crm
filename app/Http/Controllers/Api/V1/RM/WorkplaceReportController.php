@@ -15,12 +15,16 @@ class WorkplaceReportController extends Controller
     {
       $user = Auth::user();
       $relations = json_decode($user->user_relations);
+      $users = array_merge(
+        $relations->reps,
+        $relations->dm
+      );
       $activeCycle = new ActiveCycleSetting;
       $activeCycle = $activeCycle->all();
       $reports =WorkplaceReport::with([
         'workplace', 'customer','user'
       ])->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end])
-      ->whereIn('user_id', $relations->reps)
+      ->whereIn('user_id', $users)
       ->get();
 
       return response([

@@ -42,6 +42,8 @@ Route::prefix('v1')->group(function() {
     Route::apiResource('coach', 'CoachingReportController');
     // Workplace reports
     Route::group(['prefix' => 'workplaces'], function() {
+      Route::delete('/delete/pharmacy/{id}', 'WorkplaceReportController@deletePharmacy');
+      Route::get('/show/pharmacy/{id}', 'WorkplaceReportController@showPharmacyVisit');
       Route::get('/hospitals', 'WorkplaceReportController@hospitalsReports');
       Route::get('/pharmacies', 'WorkplaceReportController@pharmaciesReports');
     });

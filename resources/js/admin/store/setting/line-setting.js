@@ -3,11 +3,22 @@ import { httpCall } from "../../../helpers/http-service"
 export default {
   state: {
     lines: [],
-    isFetched: false
+    isFetched: false,
   },
   getters: {
     allLines : state => state.lines,
-    isLinesFetched: state => state.isFetched
+    isLinesFetched: state => state.isFetched,
+    products : state =>  {
+      let products = {};
+      state.lines.map(line => {
+        line.products.map(product => {
+          if(!products[product.name]) {
+            products[product.name] = "";
+          }
+        })
+      });
+      return products;
+    },
   },
   mutations: {
 
@@ -17,12 +28,13 @@ export default {
       if(!state.lines.length || force) {
         state.lines =[];
         state.isFetched  = false;
-        httpCall.get('admin/v1/setting/lines')
+        return httpCall.get('admin/v1/setting/lines')
         .then(({data}) => {
           state.lines = data.data
           state.isFetched = true;
         })
       }
-    }
+    },
+
   }
 }

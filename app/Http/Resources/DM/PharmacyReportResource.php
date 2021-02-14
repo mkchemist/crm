@@ -24,7 +24,8 @@ class PharmacyReportResource extends JsonResource
           'feedback'        =>  $this->general_feedback,
           'address'         =>  $this->pharmacy->address,
           'brick'           =>  $this->pharmacy->brick,
-          'area'            =>  $this->pharmacy->area
+          'area'            =>  $this->pharmacy->area,
+          'id'              =>  $this->id
         ];
     }
 }

@@ -24,8 +24,9 @@ class PharmacyResource extends JsonResource
           'area'        =>  $this->area,
           'district'    =>  $this->district,
           'territory'   =>  $this->territory,
-          'reports'     =>  count($this->report),
-          'reports_details'=> $this->report
+          'reports'     =>  count($this->otcReport),
+          'reports_details'=> $this->otcReport,
+          'phone'       =>  $this->phone
         ];
     }
 }

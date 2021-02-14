@@ -3,6 +3,9 @@ import PharmaciesList from '../views/pharmacies/PharmaciesList.vue'
 import CreatePharmacy from '../views/pharmacies/CreatePharmacy.vue'
 import EditPharmacy from '../views/pharmacies/EditPharmacy.vue'
 import ViewPharmacy from '../views/pharmacies/ViewPharmacy.vue'
+import ViewPharmacyInfo from "../views/pharmacies/ViewPharmacyInfo.vue"
+import ViewPharmacyReport from "../views/pharmacies/ViewPharmacyReport.vue";
+import ViewPharmacyHealthDayReport from "../views/pharmacies/ViewPharmacyHealthDayReport.vue";
 
 export default {
   path: '/pharmacies',
@@ -22,7 +25,21 @@ export default {
     },
     {
       path: "view/:id",
-      component: ViewPharmacy
+      component: ViewPharmacy,
+      children: [
+        {
+          path: '',
+          component: ViewPharmacyInfo
+        },
+        {
+          path: 'report',
+          component: ViewPharmacyReport
+        },
+        {
+          path: 'health-day',
+          component: ViewPharmacyHealthDayReport
+        }
+      ]
     }
   ]
 }

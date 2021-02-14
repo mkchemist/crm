@@ -42,7 +42,11 @@ class PharmacyReportResource extends JsonResource
           'brick'           =>  $this->pharmacy->brick,
           'area'            =>  $this->pharmacy->area,
           'district'        =>  $this->pharmacy->district,
-          'territory'       =>  $this->pharmacy->territory
+          'territory'       =>  $this->pharmacy->territory,
+          'product_type'    =>  $this->product_type,
+          'competitor1_type' => $this->competitor1_type,
+          'competitor2_type' => $this->competitor2_type,
+          'competitor3_type' => $this->competitor3_type,
         ];
     }
 }

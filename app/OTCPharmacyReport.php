@@ -14,6 +14,7 @@ class OTCPharmacyReport extends Model
       'visit_date',
       'type',
       'product',
+      'product_type',
       'competitor1',
       'competitor1_rate',
       'competitor1_stock',
@@ -28,7 +29,10 @@ class OTCPharmacyReport extends Model
       'order',
       'distributor',
       'comment',
-      'general_feedback'
+      'general_feedback',
+      'competitor1_type',
+      'competitor2_type',
+      'competitor3_type',
     ];
 
 

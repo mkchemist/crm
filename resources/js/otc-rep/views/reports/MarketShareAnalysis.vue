@@ -24,7 +24,7 @@
               <td :rowspan="4">
                 {{
                   (
-                    analysis[product].share / analysis[product].totalMarketShare
+                    (analysis[product].share / analysis[product].totalMarketShare) * 100
                   ).toFixed(2)
                 }}%
               </td>
@@ -39,8 +39,8 @@
               <td>
                 {{
                   (
-                    analysis[product].competitors[competitor].share /
-                    analysis[product].totalMarketShare
+                   ( analysis[product].competitors[competitor].share /
+                    analysis[product].totalMarketShare) * 100
                   ).toFixed(2)
                 }}%
               </td>
