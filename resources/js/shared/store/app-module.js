@@ -54,6 +54,7 @@ export default {
       "Rheumatology",
       "Surgical Oncology",
       "Tropical Medicine",
+      "Urology"
     ],
     // customer titles
     titles: ["Assistant", "Resident", "Specialist", "Physician", "Prof"],
