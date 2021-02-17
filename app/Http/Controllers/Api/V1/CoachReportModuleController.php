@@ -181,9 +181,9 @@ class CoachReportModuleController extends Controller
         }
 
 
-        if($this->checkIfReportAlreadyCreated($report->coach_id, $report->rep_id, $report->customer_id, $request->date)) {
+        /* if($this->checkIfReportAlreadyCreated($report->coach_id, $report->rep_id, $report->customer_id, $request->date)) {
           return response(ResponseHelper::ITEM_ALREADY_EXIST);
-        }
+        } */
 
         $report->update([
             'data' => $request->data,
