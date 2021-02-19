@@ -39,13 +39,12 @@ class PlannerController extends Controller
       'customer.district as District',
       'customer.territory as Territory',
       'plan.approved as approved',
-      DB::raw('DISTINCT plan.id AS plan_id')
     )->join('customers as customer', 'customer.id', '=', 'plan.customer_id')
     ->join('users as user', 'user.id', '=', 'plan.user_id')
-    ->leftJoin('customer_parameters as parameter', function($join) {
+    ->join('customer_parameters as parameter', function($join) {
       $join->on('parameter.customer_id', '=', 'plan.customer_id');
       $join->on('parameter.user_id', '=', 'plan.user_id');
-    })->leftJoin('customer_frequencies as frequency', function($join) {
+    })->join('customer_frequencies as frequency', function($join) {
       $join->on('frequency.customer_id', '=', 'plan.customer_id');
       $join->on('frequency.user_id', '=', 'plan.user_id');
     });
