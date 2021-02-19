@@ -56,7 +56,7 @@ class PlannerController extends Controller
     }
     $pm = $pm->get(); */
     $pm = Planner::with([
-      'customer','customer.parameter','customer.frequency'
+      'customer','customer.params','customer.frequency'
     ]);
     $pm = CycleHelper::getCycleData($pm,"plan_date");
     $pm = $pm->get();
