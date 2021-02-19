@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Helpers\CycleHelper;
 use App\Helpers\ResponseHelper;
 use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Controllers\Controller;
@@ -38,8 +39,8 @@ class PlannerController extends Controller
       'customer.district as District',
       'customer.territory as Territory',
       'plan.approved as approved'
-    )->leftJoin('customers as customer', 'customer.id', '=', 'plan.customer_id')
-    ->leftJoin('users as user', 'user.id', '=', 'plan.user_id')
+    )->join('customers as customer', 'customer.id', '=', 'plan.customer_id')
+    ->join('users as user', 'user.id', '=', 'plan.user_id')
     ->leftJoin('customer_parameters as parameter', function($join) {
       $join->on('parameter.customer_id', '=', 'plan.customer_id');
       $join->on('parameter.user_id', '=', 'plan.user_id');
@@ -54,6 +55,11 @@ class PlannerController extends Controller
       $pm = $pm->whereBetween('plan.plan_date', [$data->start, $data->end]);
     }
     $pm = $pm->get();
+   /*  $pm = Planner::with([
+      'customer','customer.parameter','customer.frequency'
+    ]);
+    $pm = CycleHelper::getCycleData($pm,"plan_date");
+    $pm = $pm->get(); */
     /**
      * am plans
      */
