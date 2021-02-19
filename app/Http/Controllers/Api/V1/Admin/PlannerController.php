@@ -24,7 +24,7 @@ class PlannerController extends Controller
     /**
      * pm plans
      */
-    /* $pm = DB::table('planners as plan')
+    $pm = DB::table('planners as plan')
     ->select(
       'plan.plan_date as Date',
       'user.name as Rep',
@@ -38,7 +38,8 @@ class PlannerController extends Controller
       'customer.area as Area',
       'customer.district as District',
       'customer.territory as Territory',
-      'plan.approved as approved'
+      'plan.approved as approved',
+      DB::raw('DISTINCT plan.id AS plan_id')
     )->join('customers as customer', 'customer.id', '=', 'plan.customer_id')
     ->join('users as user', 'user.id', '=', 'plan.user_id')
     ->leftJoin('customer_parameters as parameter', function($join) {
@@ -54,12 +55,12 @@ class PlannerController extends Controller
     if($data) {
       $pm = $pm->whereBetween('plan.plan_date', [$data->start, $data->end]);
     }
-    $pm = $pm->get(); */
-    $pm = Planner::with([
-      'customer','customer.params','customer.frequency'
+    $pm = $pm->get();
+  /*   $pm = Planner::with([
+      'customer','customer.params','user','customer.frequency'
     ]);
     $pm = CycleHelper::getCycleData($pm,"plan_date");
-    $pm = $pm->get();
+    $pm = $pm->get(); */
     /**
      * am plans
      */
