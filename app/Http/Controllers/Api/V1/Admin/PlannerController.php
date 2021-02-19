@@ -41,10 +41,10 @@ class PlannerController extends Controller
       'plan.approved as approved',
     )->join('customers as customer', 'customer.id', '=', 'plan.customer_id')
     ->join('users as user', 'user.id', '=', 'plan.user_id')
-    ->join('customer_parameters as parameter', function($join) {
+    ->leftJoin('customer_parameters as parameter', function($join) {
       $join->on('parameter.customer_id', '=', 'plan.customer_id');
       $join->on('parameter.user_id', '=', 'plan.user_id');
-    })->join('customer_frequencies as frequency', function($join) {
+    })->leftJoin('customer_frequencies as frequency', function($join) {
       $join->on('frequency.customer_id', '=', 'plan.customer_id');
       $join->on('frequency.user_id', '=', 'plan.user_id');
     });
