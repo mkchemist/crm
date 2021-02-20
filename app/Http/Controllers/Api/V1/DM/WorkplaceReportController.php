@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\DM;
 
 use App\Helpers\ResponseHelper;
+use App\Helpers\Setting\ActiveCycleSetting;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DM\PharmacyReportResource;
 use App\Http\Resources\DM\WorkplaceReportResource;
@@ -22,9 +23,21 @@ class WorkplaceReportController extends Controller
     {
       $user = Auth::user();
       $relations = json_decode($user->user_relations);
+      $activeCycle = new ActiveCycleSetting;
+        $activeCycle = $activeCycle->all();
+        $start = $activeCycle->start;
+        $end = $activeCycle->end;
+        if(request()->start) {
+          $start = request()->start;
+        }
+        if(request()->end) {
+          $end = request()->end;
+        }
       $reps = $relations->reps ?? [];
       $reports = WorkplaceReport::with(['customer', 'user', 'workplace'])
-      ->whereIn('user_id', $reps)->get();
+      ->whereIn('user_id', $reps);
+      $reports = $reports->whereBetween('visit_date', [$start, $end]);
+      $reports = $reports->get();
 
       return response([
         'code' => 201,
@@ -38,8 +51,20 @@ class WorkplaceReportController extends Controller
       $relations = json_decode($user->user_relations);
       $reps = $relations->reps ?? [];
       $reps[] = $user->id;
+      $activeCycle = new ActiveCycleSetting;
+      $activeCycle = $activeCycle->all();
+      $start = $activeCycle->start;
+      $end = $activeCycle->end;
+      if(request()->start) {
+        $start = request()->start;
+      }
+      if(request()->end) {
+        $end = request()->end;
+      }
       $reports = PharmacyReport::with(['pharmacy', 'user'])
-      ->whereIn('user_id', $reps)->get();
+      ->whereIn('user_id', $reps)
+      ->whereBetween('visit_date', [$start, $end])
+      ->get();
 
       return response([
         'code'  =>  201,

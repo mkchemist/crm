@@ -101,6 +101,7 @@ class CustomerController extends Controller
         $customer->territory = $request->territory;
         $customer->region = $request->region;
         $customer->state = "New Added by $user->name";
+        $customer->added_by = $user->id;
         $customer->save();
         return response()->json([
             "code" => 201,

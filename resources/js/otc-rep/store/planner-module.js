@@ -71,6 +71,7 @@ export default {
         module.commit('changePlannerFetchedState');
         module.commit('changePlannerLockState');
         module.commit("changePlannerApprovalLockState");
+
         return httpCall.get('otc-rep/v1/planner', {start, end})
         .then(({data}) => {
           module.commit('changePlannerFetchedState', true);

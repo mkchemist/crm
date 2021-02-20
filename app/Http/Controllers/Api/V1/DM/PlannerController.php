@@ -29,9 +29,15 @@ class PlannerController extends Controller
         $relations = json_decode($user->user_relations);
         $reps = $relations->reps ?? [];
         $repPlansModel = Planner::query();
-        if($data) {
-          $repPlansModel = $repPlansModel->whereBetween('plan_date', [$data->start, $data->end]);
+        $start = $data->start;
+        $end = $data->end;
+        if(request()->start) {
+          $start = request()->start;
         }
+        if(request()->end) {
+          $end = request()->end;
+        }
+        $repPlansModel = $repPlansModel->whereBetween('plan_date', [$start, $end]);
         $repPlans = $repPlansModel->with([
             'customer', 'customer.frequency', 'customer.planner', 'customer.params', 'user',
         ])->whereIn('user_id', $reps)
@@ -40,7 +46,10 @@ class PlannerController extends Controller
             ->distinct()->get();
 
         $coach = CoachPlanner::with(['rep', 'coach'])
-            ->where(['coach_id' => $user->id])->get();
+            ->where(['coach_id' => $user->id]);
+        $coach = $coach->whereBetween('plan_date', [$start, $end]);
+
+        $coach =$coach ->get();
 
         return response([
             'code' => 201,
@@ -48,7 +57,8 @@ class PlannerController extends Controller
                 'rep' => RepPlannerResource::collection($repPlans),
                 'coach' => CoachPlannerResource::collection($coach),
             ],
-            'validation'  =>  $repPlansSubmitted
+            'validation'  =>  $repPlansSubmitted,
+            'start' => $start
         ], 201);
     }
 

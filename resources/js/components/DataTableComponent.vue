@@ -153,6 +153,9 @@ export default {
         if (this.notSearchCols.includes(col.nam)) {
           data["searchable"] = false;
         }
+        if(col.renderAs) {
+          data['fnCreatedCell'] = col.renderAs
+        }
         cols.push(data);
       });
       return cols;
@@ -168,7 +171,7 @@ export default {
     },
     createGroupByButton() {
       return {
-        text: "Group By",
+        text: "<span class='fa fa-layer-group mx-1'></span>Group By",
         action: () => {
           $("#group_by_modal").modal({ show: true });
         }

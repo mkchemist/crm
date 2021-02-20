@@ -69,10 +69,14 @@ export default {
       this.show_modal = false
     },
     filter() {
-      let area = JSON.parse(this.rep.area);
-      let brick = JSON.parse(this.rep.assigned_brick);
-      let district = JSON.parse(this.rep.district);
+      let area = this.rep.area;
+      let brick = this.rep.assigned_brick;
+      let district = this.rep.district;
+      let territory = this.rep.territory;
       let data = this.data;
+      if(territory.length && territory[0] !== 'all') {
+        data =data.filter(customer => territory.includes(customer.territory))
+      }
       if(district.length && district[0] !== 'all') {
         data = data.filter(customer => district.includes(customer.district));
       }

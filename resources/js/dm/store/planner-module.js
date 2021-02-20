@@ -32,22 +32,26 @@ export default {
   },
   actions: {
     fetchAllPlans(module, payload) {
-      if (payload.force) {
-        module.dispatch("getPlans", payload.force).then(() => {
-          module.dispatch("getWorkplacePlans", payload.force).then(() => {
-            module.dispatch("getNonFieldActivityPlans", payload.force);
-          });
+      module.dispatch("getPlans", payload).then(() => {
+        module.dispatch("getWorkplacePlans", payload).then(() => {
+          module.dispatch("getNonFieldActivityPlans", payload);
         });
-      }
+      });
+
     },
-    getPlans: ({ state }, force) => {
-      if (!state.allPlans.length || force) {
+    getPlans: ({ state }, payload) => {
+      if (!state.allPlans.length || payload) {
         state.fetched = false;
         state.repPlans = [];
         state.coachPlans = [];
         state.allPlans = [];
+        let start = null,end = null;
+        if(payload && typeof payload === "object" && payload.cycle) {
+          start = payload.cycle.start || null;
+          end = payload.cycle.end || null;
+        }
         return httpCall
-          .get("dm/v1/planner")
+          .get("dm/v1/planner",{start, end})
           .then(({ data }) => {
             state.fetched = true;
             state.repPlans = data.data.rep;
@@ -57,11 +61,16 @@ export default {
           .catch(err => console.log(err));
       }
     },
-    getNonFieldActivityPlans({ state }, force) {
-      if (!state.nonFieldActivityPlans.length || force) {
+    getNonFieldActivityPlans({ state }, payload) {
+      if (!state.nonFieldActivityPlans.length || payload) {
         this.nonFieldActivityPlans = [];
+        let start = null,end = null;
+        if(payload && typeof payload === "object" &&payload.cycle) {
+          start = payload.cycle.start || null;
+          end = payload.cycle.end || null;
+        }
         return httpCall
-          .get("activity-planner")
+          .get("activity-planner", {start, end})
           .then(({ data }) => {
             state.nonFieldActivityPlans = data.data;
           })
@@ -72,8 +81,13 @@ export default {
       if (!state.workplacePlans.length || payload.force) {
         state.workplacePlans = [];
         state.isWorkplacePlansFetched = false;
+        let start = null,end = null;
+        if(payload && typeof payload === "object" && payload.cycle) {
+          start = payload.cycle.start || null;
+          end = payload.cycle.end || null;
+        }
         return httpCall
-          .get("dm/v1/workplace-planner")
+          .get("dm/v1/workplace-planner", {start, end})
           .then(({ data }) => {
             state.workplacePlans = data.data;
             state.isWorkplacePlansFetched = true;

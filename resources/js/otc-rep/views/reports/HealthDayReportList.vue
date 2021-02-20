@@ -1,6 +1,8 @@
 <template>
   <div class="row mx-auto pb-5">
     <div class="col-lg-3 rounded border py-3">
+        <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
+
       <router-link to="/reports" class="btn btn-sm btn-primary btn-block">
         <span class="fa fa-plus-circle"></span>
         <span>Add Health Day report</span>
@@ -110,13 +112,15 @@
 
 <script>
 import { ExportToExcel, filterData } from "../../../helpers/helpers";
+import CycleSelection from '../../../components/CycleSelection.vue';
 import DeleteReportButton from "../../components/DeleteReportButton.vue";
 export default {
   mounted() {
-    this.$store.dispatch("fetchPharmacyReports", { force: true });
+    this.$store.dispatch("fetchPharmacyReports");
   },
   components: {
-    DeleteReportButton
+    DeleteReportButton,
+    CycleSelection
   },
   computed: {
     reports() {
@@ -124,6 +128,9 @@ export default {
     },
     isFetched() {
       return this.$store.getters.pharmacyReportsFetched;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle
     }
   },
   data: () => ({}),
@@ -160,6 +167,21 @@ export default {
         if (i !== 0 && i % 2 === 0) {
           row.style.backgroundColor = "#e2eaec";
         }
+      });
+    },
+    onSelectCycle() {
+      this.$store.dispatch("fetchPharmacyReports",{
+        force: true,
+        start: this.activeCycle.start,
+        end: this.activeCycle.end
+      });
+    },
+    onResetCycle() {
+      this.$store.commit('resetActiveCycle');
+      this.$store.dispatch("fetchPharmacyReports", {
+        force: true,
+        start: this.activeCycle.start,
+        end: this.activeCycle.end
       });
     }
   }

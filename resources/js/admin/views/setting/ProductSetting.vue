@@ -32,10 +32,11 @@
                   <td class="text-primary font-weight-bold">{{ product }}</td>
                   <td>
                     <input
-                      type="number"
+                      type=""
                       v-model.number="productPrice[product]"
                       class="form-control form-control-sm"
                       min="1"
+                      step="0.001"
                     />
                   </td>
                 </tr>

@@ -7,6 +7,8 @@
     <div class="p-2">
       <div class="row mx-auto">
         <div class="col-lg-3">
+          <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
+
           <data-filter
             :data="$store.getters.allHospitalReports"
             :onUpdate="onUpdate"
@@ -39,7 +41,7 @@
             </table-component>
           </div>
           <div v-else-if="fetched">
-            <p class="text-center font-weight-bold">no data to show</p>
+            <no-data-to-show />
           </div>
           <loader-component v-else></loader-component>
         </div>
@@ -49,16 +51,20 @@
 </template>
 
 <script>
+import CycleSelection from "../../../components/CycleSelection.vue";
+import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent";
-import { ProductWithLader } from '../../../helpers/constants';
+import { ProductWithLader } from "../../../helpers/constants";
 import DataFilter from "../../components/DataFilter";
 export default {
   components: {
     TableComponent,
-    DataFilter
+    DataFilter,
+    CycleSelection,
+    NoDataToShow
   },
   created() {
-    this.$store.dispatch('getAllHospitalReports');
+    this.$store.dispatch("getAllHospitalReports");
   },
   data: () => ({
     headers: [
@@ -79,22 +85,22 @@ export default {
         name: "hospital_type"
       },
       {
-        title: 'Doctor',
-        name: 'customer_name'
+        title: "Doctor",
+        name: "customer_name"
       },
       {
-        title : 'Specialty',
-        name: 'customer_specialty'
+        title: "Specialty",
+        name: "customer_specialty"
       },
       ...ProductWithLader,
       {
-        title: 'Comment',
-        name: 'comment',
-        fallback: '--------'
+        title: "Comment",
+        name: "comment",
+        fallback: "--------"
       },
       {
-        title: 'Feedback',
-        name: 'feedback'
+        title: "Feedback",
+        name: "feedback"
       },
       {
         title: "Address",
@@ -107,7 +113,7 @@ export default {
       {
         title: "Area",
         name: "area"
-      },
+      }
     ]
   }),
   computed: {
@@ -116,26 +122,40 @@ export default {
     },
     fetched() {
       return this.$store.getters.isHospitalReportsFetched;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle;
     }
   },
   methods: {
     onUpdate(resolve) {
-      this.$store.commit('setRepHospitalsReports', []);
-      resolve.then(data => this.$store.commit('setRepHospitalsReports', data));
+      this.$store.commit("setRepHospitalsReports", []);
+      resolve.then(data => this.$store.commit("setRepHospitalsReports", data));
     },
     onReset() {
       let reset = () => {
         return new Promise((resolve, reject) => {
           resolve(this.$store.getters.allHospitalReports);
         });
-      }
-      this.$store.commit('setRepHospitalsReports', []);
-      reset().then(data => this.$store.commit('setRepHospitalsReports', data));
+      };
+      this.$store.commit("setRepHospitalsReports", []);
+      reset().then(data => this.$store.commit("setRepHospitalsReports", data));
     },
     refreshLists() {
-      this.$store.dispatch('getAllHospitalReports', true).then(() => {
+      this.$store.dispatch("getAllHospitalReports", true).then(() => {
         this.onReset();
-      })
+      });
+    },
+    onSelectCycle() {
+      this.$store.dispatch("getAllHospitalReports", {
+        cycle: this.activeCycle
+      });
+    },
+    onResetCycle() {
+      this.$store.commit("resetActiveCycle");
+      this.$store.dispatch("getAllHospitalReports", {
+        cycle: this.activeCycle
+      });
     }
   }
 };

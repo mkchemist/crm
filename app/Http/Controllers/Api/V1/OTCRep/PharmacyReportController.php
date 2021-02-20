@@ -5,15 +5,20 @@ namespace App\Http\Controllers\Api\V1\OTCRep;
 use App\Helpers\CycleHelper;
 use App\Helpers\ResponseHelper;
 use App\Helpers\Setting\ReportIntervalSetting;
+use App\Helpers\Traits\UserWithAssignment;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OTCRep\PharmacyReportResource;
 use App\OTCPharmacyReport;
+use App\Pharmacy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PharmacyReportController extends Controller
 {
+
+    use UserWithAssignment;
 
     protected $user;
 
@@ -34,7 +39,12 @@ class PharmacyReportController extends Controller
 
         $user = Auth::user();
         $reports = OTCPharmacyReport::with(['user', 'pharmacy'])->where('user_id', $user->id);
-        //$reports = CycleHelper::getCycleData($reports, 'visit_date');
+        if(request()->start && request()->end) {
+          $reports = $reports->whereBetween('visit_date', [request()->start, request()->end]);
+        } else {
+
+          $reports = CycleHelper::getCycleData($reports, 'visit_date');
+        }
         $reports = $reports->get();
         return response([
             'code' => 200,
@@ -205,5 +215,23 @@ class PharmacyReportController extends Controller
             'code' => 200,
             'message' => 'Report deleted',
         ]);
+    }
+
+    public function coverageReport()
+    {
+      $coverage = DB::table('pharmacies as p')
+      ->select(
+        'u.name as rep',
+        'p.brick AS brick',
+        DB::raw('COUNT(DISTINCT r.visit_date) as coverage')
+      )->join('otc_pharmacy_reports as r','r.pharmacy_id', '=', 'p.id')
+      ->join('users as u','u.id','=','r.user_id')
+      ->where('r.user_id', $this->user->id)
+      ->where('r.type','regular');
+      $coverage=$coverage->groupBy('rep','brick')->get();
+      return response([
+        'data'  =>  $coverage,
+        'code'  =>  200
+      ]);
     }
 }

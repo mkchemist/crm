@@ -5,6 +5,7 @@
         <option value="bar">Bar</option>
         <option value="line">Line</option>
         <option value="pie">Pie</option>
+        <option value="doughnut">Doughnut</option>
       </select>
     </div>
     <div>
@@ -15,6 +16,8 @@
 
 <script>
 import Chart from "chart.js/dist/Chart.bundle";
+//import ChartDataLabels from "chartjs-plugin-datalabels";
+//Chart.plugins.register(ChartDataLabels)
 export default {
   props: {
     id: {
@@ -47,6 +50,7 @@ export default {
   }),
   methods: {
     generateChartOptions(type, labels, data) {
+
       this.chart = {
         type,
         data: {
@@ -62,7 +66,12 @@ export default {
                 }
               }
             ]
-          }
+          },
+          /* plugins: {
+            datalabels: {
+              color: "#36A2EB"
+            }
+          } */
         }
       };
     },

@@ -7,6 +7,10 @@
         <select name="" id="" class="" v-model="type">
           <option value="type">Analysis by request Type</option>
           <option value="product">Analysis by Product</option>
+          <option value="brick">Analysis by brick</option>
+          <option value="area">Analysis by area</option>
+          <option value="district">Analysis by district</option>
+          <option value="territory">Analysis by territory</option>
         </select>
         <button class="btn btn-sm btn-primary" @click="getData">start analysis</button>
         <span>choose item and then press ok to view analysis</span>
@@ -47,7 +51,7 @@ export default {
             label: `Analysis by Request ${this.type}`,
             data: [],
             backgroundColor: CHART_COLOR_LIST,
-            fill: false
+            fill: false,
           }
         ]
       }
@@ -83,7 +87,7 @@ export default {
       },
       {
         title: "Total Item Cost",
-        name: row => `${row.cost} EGP`
+        name: row => `${(row.cost/1000).toFixed(1)}K`
       },
       {
         title: "%",
@@ -94,8 +98,12 @@ export default {
   methods: {
     getData() {
       this.data= [];
+      let join = null
+      if(['area','brick','district', 'territory'].includes(this.type)) {
+          join = "customer";
+      }
       httpCall
-        .get("v1/requests/search/"+this.type)
+        .get("v1/requests/search/"+this.type, {join})
         .then(({ data }) => {
           this.data = data.data;
         })

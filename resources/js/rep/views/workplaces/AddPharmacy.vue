@@ -28,9 +28,6 @@
                   />
                 </ValidationProvider>
               </div>
-            </div>
-
-            <div class="row mx-auto">
               <div class="col-lg">
                 <label for="type" class="text-muted">Type</label>
                 <ValidationProvider
@@ -50,6 +47,27 @@
                       type
                     }}</option>
                   </select>
+                </ValidationProvider>
+              </div>
+            </div>
+
+            <div class="row mx-auto">
+              <div class="col-lg">
+                <label for="name" class="text-muted">Phone</label>
+                <ValidationProvider
+                  name="phone"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <span class="text-danger small">{{ errors[0] }}</span>
+                  <input
+                    type="number"
+                    id="phone"
+                    name="phone"
+                    class="form-control form-control-sm"
+                    placeholder="Enter pharmacy phone"
+                    v-model="pharmacy.phone"
+                  />
                 </ValidationProvider>
               </div>
               <div class="col-lg">
@@ -168,7 +186,8 @@ export default {
       key_person: "",
       address: "",
       brick: "",
-      area: ""
+      area: "",
+      phone: ""
     },
     pharmacyLocation: {}
   }),

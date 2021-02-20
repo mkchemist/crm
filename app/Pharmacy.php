@@ -14,7 +14,7 @@ class Pharmacy extends Model
   protected $fillable = [
     'name', 'type', 'key_person', 'address', 'brick',
     'area', 'district', 'territory', 'region', 'state',
-    'approved_by',
+    'approved_by','added_by','approved',
     'phone'
   ];
 
@@ -45,4 +45,9 @@ class Pharmacy extends Model
     return $this->getRelatedUserData($model,'visit_date',[$cycle->start, $cycle->end]);
   }
 
+
+  public function added_by()
+  {
+    return $this->belongsTo('App\User','added_by', 'id');
+  }
 }

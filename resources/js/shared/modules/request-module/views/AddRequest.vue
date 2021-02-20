@@ -413,7 +413,7 @@ export default {
       if (
         !["Samples", "Study", "Club", "Hotel Reservation", "Donation"].includes(
           this.request.type
-        ) && !["admin", "accountant"].includes(this.user.role)
+        ) && ["admin", "accountant"].includes(this.user.role)
       ) {
         return true;
       }

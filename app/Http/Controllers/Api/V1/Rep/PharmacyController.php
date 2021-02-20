@@ -79,6 +79,7 @@ class PharmacyController extends Controller
 
     $data = $request->all();
     $data['state'] = "New Added by $user->name";
+    $data['added_by'] = $user->id;
     $pharmacy = Pharmacy::create($data);
 
     return response()->json([

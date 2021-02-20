@@ -60,6 +60,11 @@ export default {
         title: "View Non Field Activity Report",
         icon: "fa-book",
         link: "/reports/activity-report?type=non-field-activity"
+      },
+      {
+        title: "Coverage Report",
+        icon: "fa-book",
+        link: "/reports/coverage"
       }
     ],
     addLinks: [

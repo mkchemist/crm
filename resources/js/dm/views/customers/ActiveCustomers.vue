@@ -6,124 +6,103 @@
         <span class="font-weight-bold">Active customers</span>
       </p>
       <div class="p-2">
-        <div class="text-right">
-          <filter-by-rep :onFilter="onFilter" :onReset="onReset" :data="$store.getters.activeCustomers">
-          <button
-            class="btn btn-primary btn-sm"
-            @click="$store.dispatch('customersGetAll', true)"
-          >
-            <span><i class="fa fa-redo"></i></span>
-            <span>refresh list</span>
-          </button>
-          </filter-by-rep>
-        </div>
-        <div v-if="activeCustomers.length">
-          <table-component
-            :heads="heads"
+        <div class="p-2" v-if="activeCustomers.length">
+          <customer-list-component
             :data="activeCustomers"
-            headClass="bg-success text-light"
-            :with-favorite="true"
-            :actionCell="1"
-          >
-            <template v-slot:head:before>
-              <th></th>
-            </template>
-            <template v-slot:body:before="{ item }">
-              <td>
-                <router-link :to="`/customers/view/${item.id}`">
-                  <span><i class="fa fa-eye"></i></span>
-                </router-link>
-              </td>
-            </template>
-            <template v-slot:head>
-              <th>Diff</th>
-              <th>State</th>
-              <th>Address</th>
-            </template>
-            <template v-slot:body="{item}">
-              <td>{{ item.plans - item.reports }}</td>
-              <td :class="customerState(item).style">{{ customerState(item).state }}</td>
-              <td>{{ item.address }}</td>
-            </template>
-          </table-component>
+            :refreshCallback="forceRefreshCallback"
+          />
         </div>
         <div v-else-if="isFetched">
-          <p class="text-center font-weight-bold text-dark">No data to show</p>
+          <no-data-to-show />
         </div>
-        <div v-else class="text-center">
-          <loader-component />
-        </div>
+        <loader-component v-else></loader-component>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import TableComponent from "../../../components/TableComponent";
-import { DM_CUSTOMERS_HEADS } from "../../../helpers/constants";
-import FilterByRep from '../../components/FilterByRep';
+import CustomerListComponent from "../../../components/CustomerListComponent.vue";
+import NoDataToShow from "../../../components/NoDataToShow.vue";
 export default {
   computed: {
     activeCustomers() {
-      if(this.shouldFilter) {
-        return [];
-      }
-      if(this.filteredList.length) {
-        return this.filteredList;
-      }
-      return this.$store.getters.activeCustomers;
+      let customers = this.$store.getters.activeCustomers;
+      return this.prepareCustomerTable(customers);
     },
     isFetched() {
       return this.$store.getters.isCustomersFetched;
+    },
+    reps() {
+      let reps = [...this.$store.getters.allReps];
+      try {
+        reps.forEach(r => {
+          try {
+            r.area = JSON.parse(r.area);
+            r.district = JSON.parse(r.district);
+            r.territory = JSON.parse(r.territory);
+            r.assigned_brick = JSON.parse(r.assigned_brick);
+          } catch (e) {
+            return;
+          }
+          if (r.assigned_brick[0] === "all") {
+            r.assigned_brick = [];
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+      return reps;
     }
   },
   components: {
-    TableComponent,
-    FilterByRep
+    CustomerListComponent,
+    NoDataToShow
   },
-  data: () => ({
-    heads: DM_CUSTOMERS_HEADS,
-    filteredList: [],
-    shouldFilter: false
-  }),
+  data: () => ({}),
   methods: {
+    prepareCustomerTable(data) {
+      data.forEach(item => {
+        let { rep, line } = this.getRepName(item);
+        item["rep"] = rep;
+        item["line"] = line;
+        item["diff"] = item.reports - item.plans;
+        item["status"] = this.customerState(item);
+      });
+      return data;
+    },
     customerState(item) {
-      let diff = item.plans - item.reports;
-      if(diff > 0) {
-        return {
-          state: 'Missed',
-          style: 'bg-danger text-light p-1'
-        }
-      } else if(diff < 0) {
-        return {
-          state : 'Over',
-          style: 'bg-primary text-light p-1'
-        }
-      } else if(diff === 0 && item.plans ===0) {
-        return {
-          state: 'Not targeted',
-          style : 'bg-dark text-light p-1',
-        }
-        return 'Not targeted';
+      let diff = item.reports - item.plans;
+      if (diff > 0) {
+        return "over";
+      } else if (diff === 0 && item.plans !== 0) {
+        return "accomplished";
+      } else if (diff === 0 && item.plans === 0) {
+        return "not_targeted";
+      } else if (diff === -1 * item.plans && item.plans !== 0) {
+        return "uncovered";
       } else {
-        return {
-          state : 'Accomplished',
-          style: 'bg-success text-light p-1'
-        }
+        return "under";
       }
     },
-    onFilter(data) {
-      this.shouldFilter = true;
-     let async = () => Promise.resolve(data);
-      async().then(() => {
-        this.filteredList =data;
-        this.shouldFilter = false;
+    getRepName(c) {
+      let rep = "-------";
+      let line = "------";
+      this.reps.map(r => {
+        if (
+          r.assigned_brick.includes(c.brick) &&
+          r.area.includes(c.area) &&
+          r.territory.includes(c.territory) &&
+          r.district.includes(c.district)
+        ) {
+            rep = r.name;
+          line = r.line;
+        }
       });
-
+      return { rep, line };
     },
-    onReset() {
-      this.shouldFilter = false;
-      this.filteredList = false;
+    forceRefreshCallback() {
+      this.$store.dispatch("customersGetAll", true);
     }
   }
 };
