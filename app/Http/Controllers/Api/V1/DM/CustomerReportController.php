@@ -8,8 +8,10 @@ use App\Helpers\Setting\ActiveCycleSetting;
 use App\Helpers\Setting\ReportIntervalSetting;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DM\CustomerReportResource;
+use App\Planner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerReportController extends Controller
@@ -27,11 +29,19 @@ class CustomerReportController extends Controller
         $reps[] = $user->id;
         $activeCycle = new ActiveCycleSetting;
         $activeCycle = $activeCycle->all();
+        $start = $activeCycle->start;
+        $end = $activeCycle->end;
+        if(request()->start) {
+          $start = request()->start;
+        }
+        if(request()->end) {
+          $end = request()->end;
+        }
         $reports = CustomerReport::with([
             'customer', 'user', 'customer.params', 'coach', 'customer.planner', 'customer.report', 'coach2',
         ])->whereIn('user_id', $reps);
         if ($activeCycle) {
-            $reports = $reports->whereBetween('visit_date', [$activeCycle->start, $activeCycle->end]);
+            $reports = $reports->whereBetween('visit_date', [$start, $end]);
         }
         $reports = $reports->get();
 
@@ -173,4 +183,6 @@ class CustomerReportController extends Controller
           'message' =>  'Report Deleted'
         ]);
     }
+
+
 }

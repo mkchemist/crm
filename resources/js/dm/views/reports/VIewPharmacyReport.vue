@@ -7,6 +7,7 @@
     <div class="p-2 pb-5 bg-light">
       <div class="row mx-auto">
         <div class="col-lg-3">
+          <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
           <data-filter
             :data="$store.getters.allPharmaciesReports"
             :keys="{ rep: 'user_id', date: 'date' }"
@@ -31,19 +32,27 @@
               sort-by="Date,asc|Pharmacy,asc"
               head-class="bg-success text-light"
             >
-            <template v-slot:head:before>
-              <th>Actions</th>
-            </template>
-            <template v-slot:body:before="{item}">
-              <td>
-                <router-link :to="`/reports/edit/pharmacy/${item.id}`" class="btn btn-sm btn-warning" v-if="isOwner(item.user_id)">
-                  <span class="fa fa-edit"></span>
-                </router-link>
-                <button class="btn btn-sm btn-danger" v-if="isOwner(item.user_id)" @click="removeReport(item)">
-                  <span class="fa fa-trash"></span>
-                </button>
-              </td>
-            </template>
+              <template v-slot:head:before>
+                <th>Actions</th>
+              </template>
+              <template v-slot:body:before="{ item }">
+                <td>
+                  <router-link
+                    :to="`/reports/edit/pharmacy/${item.id}`"
+                    class="btn btn-sm btn-warning"
+                    v-if="isOwner(item.user_id)"
+                  >
+                    <span class="fa fa-edit"></span>
+                  </router-link>
+                  <button
+                    class="btn btn-sm btn-danger"
+                    v-if="isOwner(item.user_id)"
+                    @click="removeReport(item)"
+                  >
+                    <span class="fa fa-trash"></span>
+                  </button>
+                </td>
+              </template>
             </table-component>
           </div>
           <div
@@ -51,7 +60,7 @@
             v-else-if="fetched"
             style="min-height:300px"
           >
-            <p class="text-center font-weight-bold">No data to show</p>
+            <no-data-to-show />
           </div>
           <loader-component v-else></loader-component>
         </div>
@@ -61,14 +70,18 @@
 </template>
 
 <script>
+import CycleSelection from "../../../components/CycleSelection.vue";
+import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent";
-import { ProductWithRate } from '../../../helpers/constants';
-import { httpCall } from '../../../helpers/http-service';
+import { ProductWithRate } from "../../../helpers/constants";
+import { httpCall } from "../../../helpers/http-service";
 import DataFilter from "../../components/DataFilter";
 export default {
   components: {
     TableComponent,
-    DataFilter
+    DataFilter,
+    CycleSelection,
+    NoDataToShow
   },
   mounted() {
     this.$store.dispatch("getAllPharmaciesReports");
@@ -82,6 +95,9 @@ export default {
     },
     user() {
       return this.$store.getters.user;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle;
     }
   },
   data: () => ({
@@ -137,10 +153,10 @@ export default {
       );
     },
     isOwner(id) {
-      return id === this.user.id
+      return id === this.user.id;
     },
     removeReport(item) {
-      if(item.user_id !== this.user.id) {
+      if (item.user_id !== this.user.id) {
         this.$swal({
           title: "Warning",
           text: "You cannot delete this visits",
@@ -153,19 +169,36 @@ export default {
         icon: "warning",
         showCancelButton: true
       }).then(res => {
-        if(res.isConfirmed) {
-          return httpCall.post('dm/v1/reports/workplaces/delete/pharmacy/'+item.id, {_method:"DELETE"})
-          .then(({data}) => {
-            this.handleResponse(data, data => {
-              this.$swal({
-                title: "Deleted",
-                icon: "success"
+        if (res.isConfirmed) {
+          return httpCall
+            .post("dm/v1/reports/workplaces/delete/pharmacy/" + item.id, {
+              _method: "DELETE"
+            })
+            .then(({ data }) => {
+              this.handleResponse(data, data => {
+                this.$swal({
+                  title: "Deleted",
+                  icon: "success"
+                });
+                this.$store.dispatch("getAllPharmaciesReports", {
+                  force: true
+                });
               });
-              this.$store.dispatch('getAllPharmaciesReports', {force: true})
-            });
-          }).catch(err => console.log(err))
+            })
+            .catch(err => console.log(err));
         }
-      })
+      });
+    },
+    onSelectCycle() {
+      this.$store.dispatch("getAllPharmaciesReports", {
+        cycle: this.activeCycle
+      });
+    },
+    onResetCycle() {
+      this.$store.commit("resetActiveCycle");
+      this.$store.dispatch("getAllPharmaciesReports", {
+        cycle: this.activeCycle
+      });
     }
   }
 };

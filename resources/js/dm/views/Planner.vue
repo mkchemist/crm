@@ -2,6 +2,7 @@
   <div>
     <div class="row mx-auto bg-light p-2">
       <div class="col-lg-3">
+        <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
         <div class="border p-2 rounded shadow-sm bg-white">
           <div class="form-group">
             <label for="rep" class="small text-muted p-1">Planner of :</label>
@@ -45,17 +46,22 @@
 <script>
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
+import CycleSelection from '../../components/CycleSelection.vue';
 export default {
   mounted() {
     this.$store.dispatch("fetchAllPlans", { force: true });
     this.setPlannerUser(this.$store.state.user.id);
   },
   components: {
-    VueCal
+    VueCal,
+    CycleSelection
   },
   computed: {
     reps() {
       return this.$store.getters.allReps;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle
     }
   },
   data: () => ({
@@ -69,6 +75,13 @@ export default {
     setPlannerUser(id) {
       this.plannerUser = id;
       this.getUserPlanner();
+    },
+    onSelectCycle() {
+      this.$store.dispatch("fetchAllPlans", { force: true, cycle: this.activeCycle });
+    },
+    onResetCycle() {
+      this.$store.commit('resetActiveCycle');
+      this.$store.dispatch("fetchAllPlans", { force: true, cycle: this.activeCycle });
     }
   }
 };

@@ -21,6 +21,7 @@ Route::group([
   Route::apiResource('planner', 'PlannerController');
   /* Reports Routes */
   Route::group(['prefix' => 'reports'], function() {
+    Route::get('pharmacy/analysis/coverage','PharmacyReportController@coverageReport');
     Route::apiResource('pharmacy', 'PharmacyReportController');
   });
 });

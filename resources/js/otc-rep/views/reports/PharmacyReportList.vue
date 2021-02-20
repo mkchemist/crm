@@ -6,6 +6,7 @@
     </p>
     <div class="row mx-auto p-2">
       <div class="col-lg-3">
+        <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
         <sidebar-component :links="views" />
         <div class="my-2">
           <router-link
@@ -35,20 +36,26 @@
 </template>
 
 <script>
+import CycleSelection from '../../../components/CycleSelection.vue';
 import SidebarComponent from "../../../components/SidebarComponent.vue";
 export default {
   mounted() {
     this.$store.dispatch("fetchPharmacyReports");
   },
   components: {
-    SidebarComponent
+    SidebarComponent,
+    CycleSelection
   },
   computed: {
+
     plans() {
       return this.$store.getters.pharmacyReports;
     },
     fetched() {
       return this.$store.getters.pharmacyReportsFetched;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle
     }
   },
   data: () => ({
@@ -69,7 +76,24 @@ export default {
         link: "/reports/view/pharmacy/product"
       }
     ]
-  })
+  }),
+  methods: {
+    onSelectCycle() {
+      this.$store.dispatch("fetchPharmacyReports",{
+        force: true,
+        start: this.activeCycle.start,
+        end: this.activeCycle.end
+      });
+    },
+    onResetCycle() {
+      this.$store.commit('resetActiveCycle');
+      this.$store.dispatch("fetchPharmacyReports", {
+        force: true,
+        start: this.activeCycle.start,
+        end: this.activeCycle.end
+      });
+    }
+  }
 };
 </script>
 

@@ -6,6 +6,8 @@
     </p>
     <div class="row mx-auto p-2">
       <div class="col-lg-3">
+        <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
+
         <sidebar-component :links="views" />
         <router-link to="/reports" class="btn btn-dark btn-sm btn-block my-2">
           <span class="fa fa-chevron-circle-left"></span>
@@ -26,6 +28,7 @@
 </template>
 
 <script>
+import CycleSelection from '../../../components/CycleSelection.vue';
 import SidebarComponent from '../../../components/SidebarComponent.vue'
 export default {
   mounted() {
@@ -33,6 +36,7 @@ export default {
   },
   components: {
     SidebarComponent,
+    CycleSelection
   },
   computed: {
     plans() {
@@ -40,6 +44,9 @@ export default {
     },
     fetched() {
       return this.$store.getters.isPlannerFetched;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle
     }
   },
   data: () => ({
@@ -55,7 +62,24 @@ export default {
         link: '/reports/view/plan/health-day'
       }
     ]
-  })
+  }),
+   methods: {
+    onSelectCycle() {
+      this.$store.dispatch("fetchPlans",{
+        force: true,
+        start: this.activeCycle.start,
+        end: this.activeCycle.end
+      });
+    },
+    onResetCycle() {
+      this.$store.commit('resetActiveCycle');
+      this.$store.dispatch("fetchPlans", {
+        force: true,
+        start: this.activeCycle.start,
+        end: this.activeCycle.end
+      });
+    }
+  }
 }
 </script>
 

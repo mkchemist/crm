@@ -43,68 +43,52 @@
             >
               <thead>
                 <tr>
-                  <th rowspan="2">Rep</th>
-                  <th rowspan="2">Total Planned</th>
-                  <th rowspan="2">Total Achieved</th>
-                  <th rowspan="2">%</th>
-                  <th rowspan="2">Planned days</th>
-                  <th rowspan="2">Achieved days</th>
-                  <th rowspan="2">Plan visit/day</th>
-                  <th rowspan="2">Report visit/day</th>
-                  <th rowspan="2">Coaching visits</th>
-                  <th
-                    :colspan="specialtyCollection.size"
-                    class="bg-secondary text-light"
-                  >
-                    Plan Specialites
-                  </th>
-                  <th
-                    :colspan="specialtyCollection.size"
-                    class="bg-primary text-light"
-                  >
-                    Report Specialites
-                  </th>
-                  <th
-                    :colspan="parameterCollection.size"
-                    class="bg-secondary text-light"
-                  >
-                    Plan Parameters
-                  </th>
-                  <th
-                    :colspan="parameterCollection.size"
-                    class="bg-primary text-light"
-                  >
-                    Plan Parameters
-                  </th>
+                  <th :rowspan="2">Rep</th>
+                  <th :rowspan="2">Total Planned</th>
+                  <th :rowspan="2">Total Achieved</th>
+                  <th :rowspan="2">%</th>
+                  <th :rowspan="2">Planned days</th>
+                  <th :rowspan="2">Achieved days</th>
+                  <th :rowspan="2">Plan visit/day</th>
+                  <th :rowspan="2">Report visit/day</th>
+                  <th :rowspan="2">Coaching visits</th>
                 </tr>
                 <tr>
                   <th
+                    :rowspan="1"
+                    colspan="2"
                     v-for="(item, index) in specialtyCollection"
-                    :key="`plan_specialty_collection_${index}`"
-                    class="bg-secondary text-light"
+                    :key="`sp_${index}_sub_header`"
                   >
-                    {{ item }}
+                    <table>
+                      <thead>
+                        <tr>
+                          <th colspan="2">{{ item }}</th>
+                        </tr>
+                        <tr>
+                          <th>Plan</th>
+                          <th>Report</th>
+                        </tr>
+                      </thead>
+                    </table>
                   </th>
                   <th
-                    v-for="(item, index) in specialtyCollection"
-                    :key="`report_specialty_collection_${index}`"
-                    class="bg-primary text-light"
-                  >
-                    {{ item }}
-                  </th>
-                  <th
+                    :rowspan="1"
+                    colspan="2"
                     v-for="(item, index) in parameterCollection"
-                    :key="`plan_parameter_collection_${index}`"
-                    class="bg-secondary text-light"
+                    :key="`parameter_${index}_sub_header`"
                   >
-                    {{ item }}
-                  </th>
-                  <th
-                    v-for="(item, index) in parameterCollection"
-                    :key="`report_parameter_collection_${index}`"
-                    class="bg-primary text-light"
-                  >
-                    {{ item }}
+                    <table>
+                      <thead>
+                        <tr>
+                          <th colspan="2">{{ item }}</th>
+                        </tr>
+                        <tr>
+                          <th>Plan</th>
+                          <th>Report</th>
+                        </tr>
+                      </thead>
+                    </table>
                   </th>
                 </tr>
               </thead>
@@ -136,7 +120,39 @@
                     }}
                   </td>
                   <td>{{ data.reports.coach.length }}</td>
-                  <td
+                  <template v-for="(item, index) in specialtyCollection">
+                    <td :key="`plan_rep_specialty_collection_${index}_plan`">
+                      {{
+                      data.plans.specialty[item]
+                        ? data.plans.specialty[item].length
+                        : 0
+                    }}
+                    </td>
+                    <td :key="`report_rep_specialty_collection_${index}_report`">
+                      {{
+                      data.reports.specialty[item]
+                        ? data.reports.specialty[item].length
+                        : 0
+                    }}
+                    </td>
+                  </template>
+                  <template v-for="(item, index) in parameterCollection">
+                    <td :key="`plan_rep_parameter_collection_${index}_plan`">
+                      {{
+                      data.plans.param[item]
+                        ? data.plans.param[item].length
+                        : 0
+                    }}
+                    </td>
+                    <td :key="`report_rep_parameter_collection_${index}_report`">
+                      {{
+                      data.reports.param[item]
+                        ? data.reports.param[item].length
+                        : 0
+                    }}
+                    </td>
+                  </template>
+                 <!--  <td
                     v-for="(item, index) in specialtyCollection"
                     :key="`plan_rep_specialty_collection_${index}`"
                   >
@@ -145,8 +161,8 @@
                         ? data.plans.specialty[item].length
                         : 0
                     }}
-                  </td>
-                  <td
+                  </td> -->
+                  <!-- <td
                     v-for="(item, index) in specialtyCollection"
                     :key="`report_rep_specialty_collection_${index}`"
                   >
@@ -173,7 +189,7 @@
                         ? data.reports.param[item].length
                         : 0
                     }}
-                  </td>
+                  </td> -->
                 </tr>
               </tbody>
             </table>
@@ -209,8 +225,9 @@ import {
   sortDates
 } from "../../../../helpers/helpers";
 import DataFilter from "../../../components/DataFilter";
-import ChartView from "../../../../components/ChartView"
-import { CHART_COLOR_LIST } from '../../../../helpers/constants';
+import ChartView from "../../../../components/ChartView";
+import { CHART_COLOR_LIST } from "../../../../helpers/constants";
+import { httpCall } from "../../../../helpers/http-service";
 export default {
   components: {
     DataFilter,
@@ -277,14 +294,14 @@ export default {
       this.plans.map(plan => {
         this.specialtyCollection.add(plan.specialty);
         this.parameterCollection.add(plan.param);
-        if(!this.dateCollection.includes(plan.start)) {
+        if (!this.dateCollection.includes(plan.start)) {
           this.dateCollection.push(plan.start);
         }
       });
       this.reports.map(report => {
         this.specialtyCollection.add(report.specialty);
         this.parameterCollection.add(report.param);
-        if(!this.dateCollection.includes(report.date)) {
+        if (!this.dateCollection.includes(report.date)) {
           this.dateCollection.push(report.date);
         }
       });
@@ -299,7 +316,7 @@ export default {
           let kpi = {};
           let plans = this.getDataByRep(this.plans, "user_name");
           let reports = this.getDataByRep(this.reports, "user_name");
-          Object.keys(plans).forEach((rep,i) => {
+          Object.keys(plans).forEach((rep, i) => {
             let processingData = () =>
               new Promise((resolve, reject) => {
                 try {
@@ -330,22 +347,22 @@ export default {
                 kpi[rep] = {};
                 kpi[rep] = data;
                 let repDailyPerformance = [];
-                this.dateCollection.forEach(date=> {
+                this.dateCollection.forEach(date => {
                   let len = 0;
-                  if(data.reports.date[date]) {
-                    len = data.reports.date[date].length
+                  if (data.reports.date[date]) {
+                    len = data.reports.date[date].length;
                   }
-                  repDailyPerformance.push(len)
+                  repDailyPerformance.push(len);
                 });
                 let colors = CHART_COLOR_LIST;
                 this.chartData.push({
                   label: rep,
                   data: repDailyPerformance,
                   borderColor: colors[i],
-                  borderWidth:2,
+                  borderWidth: 2,
                   backgroundColor: colors[i],
                   fill: false
-                })
+                });
                 res(kpi);
               })
               .catch(err => {
@@ -362,7 +379,7 @@ export default {
       ExportToExcel("#analysis-tbl", "rep-pm-analysis-" + new Date());
     },
     generatePerformanceChart() {
-      if(this.showPerformanceChart) {
+      if (this.showPerformanceChart) {
         this.showPerformanceChart = false;
       } else {
         this.showPerformanceChart = true;

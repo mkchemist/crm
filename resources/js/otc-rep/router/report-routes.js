@@ -15,6 +15,7 @@ import ViewPharmacyPlan from '../components/ViewPharmacyPlan.vue';
 import ViewHealthDayPlan from '../components/ViewHealthDayPlan.vue';
 import AddActivityReport from "../../components/AddActivityReport.vue";
 import ActivityReportContainer from "../views/reports/ActivityReportContainer.vue";
+import CoverageReport from "../views/reports/CoverageReport.vue";
 export default {
   path: "/reports",
   component: Report,
@@ -86,6 +87,10 @@ export default {
     {
       path: "activity-report",
       component: ActivityReportContainer
+    },
+    {
+      path: "coverage",
+      component: CoverageReport
     }
   ]
 };

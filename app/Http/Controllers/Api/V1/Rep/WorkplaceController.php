@@ -89,6 +89,7 @@ class WorkplaceController extends Controller
 
     $data = $request->all();
     $data["state"] = "New Added by $user->name";
+    $data['added_by'] = $user->id;
     $hospital = Workplace::create($data);
     return response()->json([
       'code'  =>  201,

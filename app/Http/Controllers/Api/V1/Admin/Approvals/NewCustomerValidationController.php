@@ -20,7 +20,7 @@ class NewCustomerValidationController extends Controller
    */
     public function getNewCustomers()
     {
-        $customers = Customer::where('state', '!=', 'approved')->get();
+        $customers = Customer::with('added_by')->where('state', '!=', 'approved')->get();
 
         return response([
       "code"  =>  200,

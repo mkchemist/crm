@@ -7,6 +7,8 @@
     <div class="p-2">
       <div class="row mx-auto">
         <div class="col-lg-3">
+          <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
+
           <data-filter
             :data="$store.state.PlannerModule.repPlans"
             :onReset="onReset"
@@ -61,27 +63,35 @@
 </template>
 
 <script>
+import CycleSelection from "../../../components/CycleSelection.vue";
+
 import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent";
 import DataFilter from "../../components/DataFilter";
 export default {
   mounted() {
-    this.$store.dispatch("getPlans").then(() => {
-      this.repPlans = this.$store.state.PlannerModule.repPlans;
-    });
+    this.$store.dispatch("getPlans")
   },
   components: {
     TableComponent,
     DataFilter,
-    NoDataToShow
+    NoDataToShow,
+    CycleSelection,
+
   },
   computed: {
+    repPlans() {
+      return this.$store.getters.repPlans;
+    },
     fetched() {
       return this.$store.getters.isPlanFetched;
+    },
+     activeCycle() {
+      return this.$store.getters.activeCycle;
     }
   },
   data: () => ({
-    repPlans: [],
+  /*   repPlans: [], */
     heads: [
       {
         title: "Rep",
@@ -173,6 +183,17 @@ export default {
         }
       }
       return result;
+    },
+     onSelectCycle() {
+      this.$store.dispatch("getPlans", {
+        cycle: this.activeCycle
+      });
+    },
+    onResetCycle() {
+      this.$store.commit("resetActiveCycle");
+      this.$store.dispatch("getPlans", {
+        cycle: this.activeCycle
+      });
     }
   }
 };

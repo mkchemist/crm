@@ -81,7 +81,7 @@ class CustomerRequestService
      */
     protected function createStoredRequestCollection(Request $request)
     {
-        $users = json_decode($request->user_id);
+        $user = $request->user_id;
         $products = json_decode($request->products);
         $customers = json_decode($request->customers);
         $data = [];
@@ -92,21 +92,19 @@ class CustomerRequestService
         $costShare = $this->calculateProductCost($products, $request->cost * $request->quantity);
         // looping through customer then
         // looping through products
-        foreach($users as $user) {
-          foreach ($customers as $customer) {
-              foreach ($products as $product) {
-                  $item = [
-                      'user_id' => $user,
-                      'customer_id' => $customer,
-                      'product' => $product->name,
-                      'cost' => $costShare[$product->name] / count($customers),
-                      'rx' => $product->rx,
-                      'rx_months' => $product->rx_months,
-                  ];
-                  $item = array_merge($shared, $item, $pharmacies);
-                  $data[] = $item;
-              }
-          }
+        foreach ($customers as $customer) {
+            foreach ($products as $product) {
+                $item = [
+                    'user_id' => $user,
+                    'customer_id' => $customer,
+                    'product' => $product->name,
+                    'cost' => $costShare[$product->name] / count($customers),
+                    'rx' => $product->rx,
+                    'rx_months' => $product->rx_months,
+                ];
+                $item = array_merge($shared, $item, $pharmacies);
+                $data[] = $item;
+            }
         }
         return $data;
     }
@@ -309,11 +307,15 @@ class CustomerRequestService
 
     public function analysisCost($search)
     {
+      if(request()->join) {
+        $search = request()->join.".".$search;
+      }
       $data = DB::table('customer_requests as req')
       ->select(
         "$search AS Item",
         DB::raw('SUM(cost) AS total_cost')
-      )->groupBy($search)->get();
+      )->join("customers as customer","customer.id","=","req.customer_id")
+      ->groupBy($search)->get();
 
       return response([
         'data' => $data,

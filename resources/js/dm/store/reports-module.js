@@ -52,10 +52,15 @@ export default {
      * @param {VuexStore} {state}
      * @param {boolean} force
      */
-    getAllRepPmReports({ state }, force) {
-      if (!state.reports.length || force) {
+    getAllRepPmReports({ state }, payload) {
+      if (!state.reports.length || payload) {
         state.fetched = false;
-        return httpCall.get("dm/v1/reports/pm").then(({ data }) => {
+        let start = null,end = null;
+        if(payload && typeof payload === "object" &&payload.cycle) {
+          start = payload.cycle.start || null;
+          end = payload.cycle.end || null;
+        }
+        return httpCall.get("dm/v1/reports/pm", {start,end}).then(({ data }) => {
           ResponseHandler.methods.handleResponse(data, data => {
             state.repReports = data.data;
             state.reports = data.data;
@@ -70,10 +75,15 @@ export default {
      * @param {VuexStore} {state}
      * @param {boolean} force
      */
-    getAllHospitalReports({state}, force) {
-      if(!state.allHospitalReports.length || force) {
+    getAllHospitalReports({state}, payload) {
+      if(!state.allHospitalReports.length || payload) {
         state.isHospitalReportsFetched = false;
-        return httpCall.get('dm/v1/reports/workplaces/hospitals')
+        let start = null,end = null;
+        if(payload && typeof payload === "object" &&payload.cycle) {
+          start = payload.cycle.start || null;
+          end = payload.cycle.end || null;
+        }
+        return httpCall.get('dm/v1/reports/workplaces/hospitals', {start, end})
         .then(({data}) => {
           state.allRepHospitalReports = data.data;
           state.allHospitalReports = data.data;
@@ -87,10 +97,15 @@ export default {
      * @param {VuexStore} {state}
      * @pararm {boolean} force
      */
-    getAllPharmaciesReports({state}, force) {
-      if(!state.allPharmaciesReports.length || force) {
+    getAllPharmaciesReports({state}, payload) {
+      if(!state.allPharmaciesReports.length || payload) {
         state.isPharmaciesReportsFetched = false;
-        return httpCall.get('dm/v1/reports/workplaces/pharmacies')
+        let start = null,end = null;
+        if(payload && typeof payload === "object" &&payload.cycle) {
+          start = payload.cycle.start || null;
+          end = payload.cycle.end || null;
+        }
+        return httpCall.get('dm/v1/reports/workplaces/pharmacies', {start, end})
         .then(({data}) => {
           state.allPharmaciesReports = data.data;
           state.allRepPharmaciesReports = data.data;

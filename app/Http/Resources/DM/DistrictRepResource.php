@@ -20,7 +20,8 @@ class DistrictRepResource extends JsonResource
           'area'  =>  $this->area,
           'assigned_brick' => $this->assigned_brick,
           'district'        =>  $this->district,
-          'territory'       =>  $this->territory
+          'territory'       =>  $this->territory,
+          'line'            =>  json_decode($this->line)
         ];
     }
 }

@@ -21,9 +21,18 @@ class RepWorkplacePlannerController extends Controller
       $reps = $relations->reps ?? [];
       $activeCycle = new ActiveCycleSetting;
       $data =  $activeCycle->all();
+      $start = $data->start;
+      $end = $data->end;
+      if(request()->start) {
+        $start = request()->start;
+      }
+
+      if(request()->end) {
+        $end = request()->end;
+      }
       $plans = WorkplacePlanner::with(['workplace', 'user'])
       ->whereIn('user_id', $reps)
-      ->whereBetween('plan_date', [$data->start, $data->end])
+      ->whereBetween('plan_date', [$start, $end])
       ->orderBy('plan_date','asc')->get();
 
       return response([

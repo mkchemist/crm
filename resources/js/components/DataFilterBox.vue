@@ -9,25 +9,26 @@
         <span>Data Filter</span>
       </template>
       <template v-slot:body>
-        <div class="row mx-auto justify-content-between">
+        <div class="row mx-auto justify-content-between text-left">
           <div
-            v-for="field in Object.keys(filterFields)"
+            v-for="field in Object.keys(filterData.fields)"
             :key="`filter_${field}`"
             class="form-group flex-item px-2"
           >
             <label :for="field" class="text-muted small">{{
-              field.toUpperCase()
+              filterData.titles[field]
             }}</label>
             <select
               :name="field"
               :id="`${field}_selection`"
               class="form-control form-control-sm"
               @change="updateQuery"
+              :disabled="Object.keys(filterData.fields[field]).length <= 1"
             >
-              <option :value="null">Select {{ field }}</option>
+              <option :value="null" v-if="Object.keys(filterData.fields[field]).length > 1">Select {{ field }}</option>
               <option
                 :value="index"
-                v-for="(item, index) in filterFields[field]"
+                v-for="(item, index) in filterData.fields[field]"
                 :key="`filter_selection_${field}_${index}`"
                 >{{ index }} ({{ item.length }})</option
               >
@@ -118,12 +119,29 @@ export default {
     }
   },
   computed: {
-    filterFields() {
-      let fields = {};
+    filterKeys() {
+      let keys = [];
       this.queryKeys.map(key => {
-        fields[key] = filterData(this.data, key);
+        if(typeof key !== "object") {
+          keys.push({
+            name: key,
+            title: key.toUpperCase()
+          })
+        } else {
+          keys.push(key)
+        }
       });
-      return fields;
+      return keys
+    },
+    filterData() {
+      let fields = {};
+      let titles = {};
+
+      this.filterKeys.map(key => {
+        fields[key.name] = filterData(this.data, key.name);
+        titles[key.name] = key.title
+      });
+      return {fields, titles};
     }
   },
   data: () => ({

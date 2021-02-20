@@ -44,6 +44,14 @@ export const CUSTOMERS_TABLE_HEADS = [
 
 export const DM_CUSTOMERS_HEADS = [
   {
+    title: "Rep",
+    name: "rep"
+  },
+  {
+    title: "Line",
+    name: "line"
+  },
+  {
     title: "ID",
     name: "id"
   },
@@ -82,6 +90,48 @@ export const DM_CUSTOMERS_HEADS = [
   {
     title: "Reports",
     name: "reports"
+  },
+  {
+    title: "Diff",
+    name: "diff"
+  },
+  {
+    title: "Status",
+    name: row => {
+
+      switch (row.status.toLowerCase()) {
+        case "over":
+          return `<span class="badge badge-info p-1">Over</span>`;
+        case "under":
+          return `<span class="badge badge-warning p-1">Under</span>`;
+        case "uncovered":
+          return `<span class="badge badge-danger p-1">Uncovered</span>`;
+        case "not_targeted":
+          return `<span class="badge badge-dark p-1">Not Targeted</span>`;
+        default:
+          return `<span class="badge badge-success p-1">Accomplished</span>`;
+      }
+    }
+  },
+  {
+    title: "Address",
+    name: "address"
+  },
+  {
+    title: "Area",
+    name: "area"
+  },
+  {
+    title: "District",
+    name: "district"
+  },
+  {
+    title: "Territory",
+    name: "territory"
+  },
+  {
+    title: "Region",
+    name: "region"
   }
 ];
 

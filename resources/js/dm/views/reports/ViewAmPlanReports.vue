@@ -1,6 +1,8 @@
 <template>
   <div class="p-2 row mx-auto">
     <div class="col-lg-3">
+          <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
+
       <user-filter-box :users="reps" :data="data" :onFilter="onFilter" :onReset="onReset" />
       <date-filter-box :data="data" :onFilter="onFilter" :onReset="onReset" :dateField="`start`"/>
       <router-link to="/reports" class="btn btn-sm btn-dark btn-block my-2">
@@ -31,6 +33,7 @@
 </template>
 
 <script>
+import CycleSelection from "../../../components/CycleSelection.vue";
 import DateFilterBox from '../../../components/DateFilterBox.vue'
 import NoDataToShow from '../../../components/NoDataToShow.vue';
 import TableComponent from '../../../components/TableComponent.vue';
@@ -45,12 +48,15 @@ export default {
     UserFilterBox,
     TableComponent,
     NoDataToShow,
+    CycleSelection,
   },
   computed: {
     reps() {
       return this.$store.getters.allReps;
     },
-
+    activeCycle() {
+      return this.$store.getters.activeCycle
+    }
   },
   data: () =>({
     data: [],
@@ -89,10 +95,12 @@ export default {
     ]
   }),
   methods: {
-    getPlans(){
+    getPlans(cycle = {}){
       this.data =[];
       this.isDataFetched =false;
-      httpCall.get('dm/v1/workplace-planner')
+      let start = cycle.start || null;
+      let end = cycle.end || null;
+      httpCall.get('dm/v1/workplace-planner', {start, end})
       .then(({data}) => {
         this.data = data.data;
         this._rawData = data.data;
@@ -108,6 +116,14 @@ export default {
       this.data =[];
       let async = () => Promise.resolve(this._rawData);
       async().then(data => this.data = data);
+    },
+    onSelectCycle(){
+      this.getPlans(this.activeCycle)
+    },
+    onResetCycle() {
+      this.$store.commit('resetActiveCycle');
+this.getPlans(this.activeCycle)
+
     }
   }
 }

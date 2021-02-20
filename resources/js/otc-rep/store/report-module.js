@@ -30,12 +30,20 @@ export default {
   },
   mutations: {},
   actions: {
-    fetchPharmacyReports(module, payload) {
+    fetchPharmacyReports(module, payload = {}) {
       module.state.pharmacyReports = [];
       module.state.pharmacyReportsFetched = false;
       if (!module.state.pharmacyReports.length || payload.force) {
+        let start = null;
+        let end = null;
+        if(payload.start) {
+          start = payload.start;
+        }
+        if(payload.end) {
+          end = payload.end;
+        }
         return httpCall
-          .get("otc-rep/v1/reports/pharmacy")
+          .get("otc-rep/v1/reports/pharmacy",{start, end})
           .then(({ data }) => {
             module.state.pharmacyReports = data.data;
             module.state.pharmacyReportsFetched = true;

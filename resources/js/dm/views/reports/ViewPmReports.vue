@@ -8,6 +8,7 @@
       <div class="row mx-auto">
         <!-- filter section -->
         <div class="col-lg-3">
+          <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
           <data-filter
             :data="$store.getters.allRepPmReports"
             :onUpdate="onUpdate"
@@ -49,7 +50,11 @@
                   >
                     <span class="fa fa-edit"></span>
                   </router-link>
-                  <button class="btn btn-sm btn-danger" v-if="item.user_id === $store.getters.user.id" @click="removeVisit(item.id)">
+                  <button
+                    class="btn btn-sm btn-danger"
+                    v-if="item.user_id === $store.getters.user.id"
+                    @click="removeVisit(item.id)"
+                  >
                     <span class="fa fa-trash"></span>
                   </button>
                 </td>
@@ -84,7 +89,7 @@
           </div>
 
           <div v-else-if="fetched">
-            <p class="text-center font-weight-bold">No data to show</p>
+            <no-data-to-show />
           </div>
 
           <loader-component v-else></loader-component>
@@ -95,10 +100,12 @@
 </template>
 
 <script>
+import CycleSelection from "../../../components/CycleSelection.vue";
+import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent";
 import { ProductWithLader, ProductWithRate } from "../../../helpers/constants";
 import { sortBy } from "../../../helpers/helpers";
-import { httpCall } from '../../../helpers/http-service';
+import { httpCall } from "../../../helpers/http-service";
 import DataFilter from "../../components/DataFilter";
 export default {
   mounted() {
@@ -106,7 +113,9 @@ export default {
   },
   components: {
     TableComponent,
-    DataFilter
+    DataFilter,
+    CycleSelection,
+    NoDataToShow
   },
   computed: {
     reports() {
@@ -114,6 +123,9 @@ export default {
     },
     fetched() {
       return this.$store.getters.isRepPmReportsFetched;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle;
     }
   },
   data: () => ({
@@ -191,26 +203,35 @@ export default {
         };
       }
     },
-    removeVisit(id){
+    removeVisit(id) {
       this.$swal({
         title: "Are you sure ?",
         text: "you want to delete this visit",
         icon: "warning",
         showCancelButton: true
       }).then(res => {
-        if(res.isConfirmed) {
-          return httpCall.post("dm/v1/reports/pm/"+id, {_method: "DELETE"})
-          .then(({data}) => {
-            this.handleResponse(data, data => {
-              this.$store.dispatch("getAllRepPmReports",{force: true})
-              this.$swal({
-                title: "Deleted",
-                icon: "success"
-              })
-            });
-          }).catch(err => console.log(err))
+        if (res.isConfirmed) {
+          return httpCall
+            .post("dm/v1/reports/pm/" + id, { _method: "DELETE" })
+            .then(({ data }) => {
+              this.handleResponse(data, data => {
+                this.$store.dispatch("getAllRepPmReports", { force: true });
+                this.$swal({
+                  title: "Deleted",
+                  icon: "success"
+                });
+              });
+            })
+            .catch(err => console.log(err));
         }
-      })
+      });
+    },
+    onSelectCycle() {
+      this.$store.dispatch("getAllRepPmReports", { cycle: this.activeCycle });
+    },
+    onResetCycle() {
+      this.$store.commit("resetActiveCycle");
+      this.$store.dispatch("getAllRepPmReports", { cycle: this.activeCycle });
     }
   }
 };

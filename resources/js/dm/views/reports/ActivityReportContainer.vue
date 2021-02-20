@@ -1,6 +1,6 @@
 <template>
   <div>
-    <activity-report :users="reps" />
+    <activity-report :users="reps" :cycle="activeCycle" />
   </div>
 </template>
 
@@ -11,6 +11,9 @@ export default {
   computed: {
     reps() {
       return [this.$store.getters.user,...this.$store.getters.allReps];
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle;
     }
   }
 }

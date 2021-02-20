@@ -23,7 +23,11 @@ class Customer extends Model
     "area",
     "district",
     "territory",
-    "region"
+    "region",
+    'state',
+    "added_by",
+    'approved_by',
+    'approved'
   ];
 
   /* protected $with = [
@@ -92,5 +96,10 @@ class Customer extends Model
 
   public function requests() {
     return $this->hasMany('App\CustomerRequest','customer_id', 'id');
+  }
+
+  public function added_by()
+  {
+    return $this->belongsTo('App\User','added_by', 'id');
   }
 }
