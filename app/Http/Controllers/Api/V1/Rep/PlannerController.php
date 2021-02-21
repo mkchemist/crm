@@ -186,8 +186,8 @@ class PlannerController extends Controller
         if ($validator->fails()) {
             return response()->json(ResponseHelper::validationErrorResponse($validator));
         }
-        if ($this->isPassedDay($request->date)) {
-            return $this->isPassedDay($request->date);
+        if ($this->isPassedDay($request->replan_date)) {
+            return $this->isPassedDay($request->replan_date);
         }
         $rejected = [];
         $accepted = [];
