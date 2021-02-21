@@ -54,7 +54,7 @@ class PlannerController extends Controller
     if($data) {
       $pm = $pm->whereBetween('plan.plan_date', [$data->start, $data->end]);
     }
-    $pm = $pm->get();
+    $pm = $pm->take(5000);
   /*   $pm = Planner::with([
       'customer','customer.params','user','customer.frequency'
     ]);
