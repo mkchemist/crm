@@ -24,7 +24,7 @@ class PlannerController extends Controller
     /**
      * pm plans
      */
-   /*  $pm = DB::table('planners as plan')
+    $pm = DB::table('planners as plan')
     ->select(
       'plan.plan_date as Date',
       'user.name as Rep',
@@ -52,11 +52,8 @@ class PlannerController extends Controller
       $pm = $pm->where('plan.user_id', request()->user);
     }
     if($data) {
-      $pm = CycleHelper::getCycleData($pm,'plan.plan_date');
+      $pm = $pm->whereBetween('plan.plan_date', [$data->start, $data->end]);
     }
-    $pm = $pm->get(); */
-    $pm = Planner::with(['customer','customer.params','user','customer.frequency']);
-    $pm = CycleHelper::getCycleData($pm,'plan_date');
     $pm = $pm->get();
   /*   $pm = Planner::with([
       'customer','customer.params','user','customer.frequency'
