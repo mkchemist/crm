@@ -52,9 +52,9 @@ class PlannerController extends Controller
       $pm = $pm->where('plan.user_id', request()->user);
     }
     if($data) {
-      $pm = $pm->whereBetween('plan.plan_date', [$data->start, $data->end]);
+      $pm = CycleHelper::getCycleData($pm,'plan.plan_date');
     }
-    $pm = $pm->take(5000);
+    $pm = $pm->get();
   /*   $pm = Planner::with([
       'customer','customer.params','user','customer.frequency'
     ]);
