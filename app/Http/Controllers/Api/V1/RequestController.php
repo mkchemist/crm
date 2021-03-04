@@ -64,6 +64,7 @@ class RequestController extends Controller
           'pharmacy_2','pharmacy_3','pharmacy_4',
           'customer.params'
         ])
+        ->where('serial', $id)
         ->whereNotIn('state', ['canceled', 'changed'])->get();
 
         if(!count($request)) {
