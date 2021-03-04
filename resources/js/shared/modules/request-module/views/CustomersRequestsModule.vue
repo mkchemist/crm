@@ -66,22 +66,28 @@ export default {
           link: "/customers-requests/list"
         },
         {
-          title: "Shared with me",
-          icon: "fa-share",
-          link: "/customer-requests/shared"
-        },
-        {
           title: "Analysis",
           icon: "fa-flask",
           link: "/customers-requests/analysis"
         }
       ];
+      if(!["admin", "accountant".includes(this.user.role)]) {
+        view.push({
+          title: "Shared with me",
+          icon: "fa-share",
+          link: "/customers-requests/shared/list"
+        })
+      }
 
       if (["admin", "accountant"].includes(this.user.role)) {
         views.push({
           title: "Cost Center",
           icon: "fa-flask",
           link: "/customers-requests/cost-center"
+        },{
+          title: "Events",
+          icon: "fa-calendar-alt",
+          link: "/customers-requests/events"
         });
       }
 

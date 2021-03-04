@@ -21,6 +21,8 @@ trait CustomData {
         break;
       case 'admin':
         break;
+      case 'accountant':
+          break;
       default:
         $model = $this->getRelatedRepsData($user, $model);
         break;

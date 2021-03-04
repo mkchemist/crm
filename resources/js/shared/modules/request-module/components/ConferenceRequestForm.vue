@@ -19,6 +19,7 @@
             "
             placeholder="Conference Name"
             v-model="request.comment.item"
+            :disabled="!editMode"
           />
         </ValidationProvider>
       </div>
@@ -52,6 +53,7 @@
             "
             placeholder="Write hotel name"
             v-model="location"
+            :disabled="!editMode"
           />
         </ValidationProvider>
       </div>
@@ -64,7 +66,7 @@
           rules="required"
           v-slot="{ errors }"
         >
-          <input type="checkbox" v-model="withTickets" />
+          <input type="checkbox" v-model="withTickets"  :disabled="!editMode"/>
           <span class="text-danger small" v-if="errors[0]">* required</span>
 
           <label for="" class="form-check-label mx-1">with tickets</label>
@@ -81,6 +83,10 @@ export default {
     request: {
       type: Object,
       required: true
+    },
+    editMode: {
+      type: Boolean,
+      default: () => true
     }
   },
   data: () => ({

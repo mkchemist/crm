@@ -19,6 +19,7 @@ class CreateCustomerRequestsTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('customer_id')->unsigned();
             $table->string('type');
+            $table->string('origin_type')->default('owner');
             $table->integer('cost')->default(0);
             $table->integer('quantity')->default(1);
             $table->string('product')->nullable();
@@ -34,9 +35,9 @@ class CreateCustomerRequestsTable extends Migration
             $table->longText('others')->nullable();
             $table->string('state')->default('pending');
             $table->boolean('am_approval')->default(false);
-            $table->date('am_approval_date')->default(Date("20y-m-d"));
+            $table->date('am_approval_date')->nullable()->default(NULL);
             $table->boolean('rm_approval')->default(false);
-            $table->date('rm_approval_date')->default(Date("20y-m-d"));
+            $table->date('rm_approval_date')->nullable()->default(NULL);
             $table->longText('reject_due')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete(NULL);

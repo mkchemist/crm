@@ -136,6 +136,9 @@ export const DM_CUSTOMERS_HEADS = [
 ];
 
 export const COACH_REPORT = {
+  "Customer Parameter": {
+    "Actual customer Potentiality as you see" : ""
+  },
   "Pre-call Planning": {
     "Review notes, call history,prescribing information and the profile for each Customer prior":
       "",

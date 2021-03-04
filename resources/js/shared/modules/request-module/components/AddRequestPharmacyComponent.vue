@@ -1,6 +1,6 @@
 <template>
   <div class="p-2">
-    <div class="form-inline justify-content-between">
+    <div class="form-inline justify-content-between" v-if="!['share','view'].includes(mode)">
       <select
         name="pharmacies"
         id="pharmacies"
@@ -25,6 +25,9 @@
         <span class="fa fa-plus"></span>
       </button>
     </div>
+    <div class="" v-else>
+      <p class="font-weight-bold small text-muted">Request Pharmacies</p>
+    </div>
 
     <div class="" style="max-height:200px;overflow:auto">
       <div v-for="(c, ci) in view" :key="c.id" class="my-1">
@@ -39,6 +42,7 @@
                   href=""
                   class="btn btn-sm btn-danger"
                   @click.prevent="removePharmacy(ci)"
+                  v-if="!['share','view'].includes(mode)"
                 >
                   <span class="fa fa-times"></span>
                 </a>
@@ -61,7 +65,20 @@ export default {
     requestPharmacies: {
       type: Array,
       required: true
+    },
+    mode: {
+      type: String,
+      default: () => 'edit',
+      validator: (v) => ['view','edit','share'].indexOf(v) !== -1
+    },
+    viewPharmacies: {
+      type: Array,
+      default: () => []
     }
+  },
+  created() {
+    this.view = this.viewPharmacies;
+
   },
   data: () => ({
     selected: null,

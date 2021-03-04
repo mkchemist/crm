@@ -17,6 +17,11 @@ export const Calendar = function (date) {
     return createCalendarInstance(this.year, this.month-1, diff);
   }
 
+  this.add= function (v) {
+    let diff = this.day+v;
+    return createCalendarInstance(this.year, this.month-1, diff);
+  }
+
   this.toString = function() {
     return `${this.year}-${this.month.toString().padStart(2,0)}-${this.day.toString().padStart(2,0)}`;
   }

@@ -14,6 +14,7 @@
             class="form-control form-control-sm"
             placeholder="Group meeting place"
             v-model="place"
+            :disabled="!editMode"
           />
         </ValidationProvider>
       </div>
@@ -31,6 +32,7 @@
             class="form-control form-control-sm"
             placeholder="No. of attendance"
             v-model="desc"
+            :disabled="!editMode"
           />
         </ValidationProvider>
       </div>
@@ -44,6 +46,10 @@ export default {
     request: {
       type: Object,
       required: true
+    },
+    editMode: {
+      type: Boolean,
+      default: () => true
     }
   },
   mounted() {

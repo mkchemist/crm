@@ -52,6 +52,7 @@ export default {
      */
     fetchCustomerRequests(module, payload = {}) {
       if(!module.state.requests.length || payload.force) {
+        module.commit('resetRequests');
         return httpCall.get('v1/requests')
         .then(({data}) => {
           module.commit('loadRequests', data.data);

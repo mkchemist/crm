@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\UserResources;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,9 +20,23 @@ class UserController extends Controller
      */
     public function index()
     {
-      $users = User::orderBy('district','asc')
+      /* $users = User::orderBy('district','asc')
       ->orderBy('name', 'asc')
-      ->get();
+      ->get(); */
+      $users = DB::table('users as user')
+      ->select(
+        'user.*',
+        'dm.name as dm_name',
+        'am.name as am_name',
+        'rm.name as rm_name'
+      )->leftJoin('users as dm', function($join){
+        $join->on('dm.id','=',DB::raw('JSON_EXTRACT(user.user_relations, "$.dm[0]")'));
+      })->leftJoin('users as am', function($join){
+        $join->on('am.id','=',DB::raw('JSON_EXTRACT(user.user_relations, "$.am[0]")'));
+      })
+      ->leftJoin('users as rm', function($join){
+        $join->on('rm.id','=',DB::raw('JSON_EXTRACT(user.user_relations, "$.rm[0]")'));
+      })->orderBy("user.name","asc")->get();
 
       return response([
         'code'  =>  200,

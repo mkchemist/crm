@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'dmOnly'=> \App\Http\Middleware\dmOnly::class,
         'rmOnly'  =>  \App\Http\Middleware\RMonly::class,
         'otc-rep' => \App\Http\Middleware\OTCRepOnly::class,
-        'otc-manager' => \App\Http\Middleware\OTCManagerOnly::class
+        'otc-manager' => \App\Http\Middleware\OTCManagerOnly::class,
+        'CanManageRequests' => \App\Http\Middleware\CanManageRequests::class
     ];
 }

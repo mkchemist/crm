@@ -1,0 +1,33 @@
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.wrapper {
+  min-height: 628px;
+}
+
+.sidebar {
+  background-color: #34343e;
+  min-height: 628px;
+}
+
+.dashboard-nav {
+  background-color: #282830;
+}
+
+.dashboard-sidebar-nav li:hover {
+  background-color: #3b3b46;
+}
+.dashboard-sidebar-nav .active {
+  background-color: #3b3b46;
+}
+
+.bottom-nav a {
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+.bottom-nav a:hover {
+  background-color: #3b3b46;
+}
+
+/*# sourceMappingURL=dashboard.css.map */

@@ -135,7 +135,7 @@
                       <option value="rm">Regional Manager</option>
                       <option value="tm">Top manager</option>
                       <option value="marketing">Marketing</option>
-                      <option value="account">Account</option>
+                      <option value="accountant">Accountant</option>
                       <option value="hr">HR</option>
                       <option value="admin">Admin</option>
                     </select>
@@ -218,9 +218,9 @@
                       >
                     </select> -->
                     <div style="height:200px;overflow:auto" class="border rounded p-2">
-                      <ul class="nav">
+                      <ul class="nav" id="territory_select">
                         <li class="nav-item col-12 p-2 border-bottom small">
-                          <input type="checkbox" v-model="user.territory" :value="`all`">
+                          <input type="checkbox" v-model="user.territory" :value="`all`" @click="checkAllItems('#territory_select','territories','territory')">
                           <span class="form-check-label mx-1">{{ 'All' }}</span>
                         </li>
                         <li class="nav-item col-12 p-2 border-bottom small" v-for="(val,key) in territories" :key="`line_${key}`">
@@ -589,11 +589,11 @@ export default {
         })
         .catch(err => {
           console.log(err);
-          this.$toasted.error("Something wrong happend");
+          this.$toasted.error("Something wrong happened");
         });
     },
     /**
-     * fitler data by the given item and cond
+     * filTer data by the given item and condition
      *
      * @param {array} data
      * @param {string} item
@@ -638,6 +638,21 @@ export default {
         ? JSON.stringify(request.assigned_specialties)
         : JSON.stringify([]);
       return request;
+    },
+    checkAllItems(dom,values,target) {
+      dom = document.querySelectorAll(`${dom} input[type="checkbox"]`);
+      console.log(event.target, event.target.checked)
+      if(event.target.checked) {
+        dom.forEach(item => {
+          item.checked = true;
+        })
+        this.user[target] = this[values];
+      } else {
+        dom.forEach(item => {
+          item.checked = false;
+        })
+        this.user[target] = [];
+      }
     }
   }
 };

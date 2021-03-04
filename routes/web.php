@@ -90,10 +90,26 @@ Route::group(['middleware' => ['auth']], function () {
         return view('pages.otc-manager.index', ['hash_key' => $hash_key->all()]);
     })->where("name", ".*")->middleware('otc-manager');
 
+    // Requests Manager routes
+    Route::get('/acc/{name?}', function() {
+      $hash_key = new ForceRefreshHashKeySetting;
+        return view('pages.acc.index', ['hash_key' => $hash_key->all()]);
+    })->where("name", ".*")->middleware('CanManageRequests');
+
     // admin application
     Route::get('/admin/{name?}', function() {
       $hash_key = new ForceRefreshHashKeySetting;
 
         return view('pages.admin.index', ['hash_key' => $hash_key->all()]);
     })->where("name", ".*")->middleware('adminOnly');
+
+    Route::group([
+      'prefix'  =>  '/accountant'
+    ], function() {
+      Route::get('/', 'Accountant\HomePageController@index');
+      Route::resource('/requests', 'Accountant\CustomerRequestController');
+    });
 });
+
+
+

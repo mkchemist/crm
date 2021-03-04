@@ -25,6 +25,7 @@
                 class="form-control form-control-sm"
                 v-model="d_product.name"
                 @change="updateRequestCommentDescription"
+                :disabled="!editMode"
               >
                 <option :value="null"></option>
                 <option
@@ -50,6 +51,7 @@
                 class="form-control form-control-sm"
                 v-model="d_product.q"
                 @change="updateRequestCommentDescription"
+                :disabled="!editMode"
               />
             </ValidationProvider>
           </div>
@@ -73,6 +75,10 @@ export default {
     request: {
       type: Object,
       required: true
+    },
+    editMode: {
+      type: Boolean,
+      default: () => true
     }
   },
   computed: {

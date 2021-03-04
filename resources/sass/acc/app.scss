@@ -1,0 +1,39 @@
+$dark-blue: #282830;
+$dark-grey: #282828;
+$blue: #03a9f4;
+
+.bg-dark-blue {
+  background-color: $dark-blue;
+}
+
+.bg-dark-grey {
+  background-color: $dark-grey;
+}
+
+.active-page {
+  transition: .3s;
+  background-color: lighten($dark-blue, 15%);
+  border-radius: 5px;
+}
+
+
+td,tr {
+  white-space: nowrap;
+}
+
+
+.dt-buttons {
+  .btn {
+    font-size: smaller;
+    padding:0.4rem;
+    background-color: $blue;
+    border:none;
+
+    &:hover {
+      background-color: lighten($blue, 8%);
+    }
+  }
+}
+
+
+

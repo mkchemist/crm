@@ -16,7 +16,6 @@
           />
           <!-- brick select -->
           <div class="p-2 my-2 border rounded">
-
             <div class="form-group">
               <label for="">Brick</label>
               <select
@@ -27,7 +26,7 @@
                 class="form-control form-control-sm"
               >
                 <option
-                  v-for="(brick,id) in bricks"
+                  v-for="(brick, id) in bricks"
                   :key="id"
                   :value="brick.brick"
                   >{{ brick.brick }}</option
@@ -36,7 +35,10 @@
             </div>
 
             <div class="form-group">
-              <button class="btn btn-sm btn-block btn-primary" @click="fetchCustomers">
+              <button
+                class="btn btn-sm btn-block btn-primary"
+                @click="fetchCustomers"
+              >
                 <span class="fa fa-check-circle"></span>
                 <span>select</span>
               </button>
@@ -45,9 +47,10 @@
           <!-- end of brick select -->
           <!-- customer select -->
           <div class="p-2 my-2 border rounded">
-
             <div class="form-group">
-              <label for="">{{ visitType === 'pharmacy' ? 'Pharmacy':'Customer' }}</label>
+              <label for="">{{
+                visitType === "pharmacy" ? "Pharmacy" : "Customer"
+              }}</label>
               <select
                 name=""
                 id=""
@@ -59,13 +62,20 @@
                   v-for="customer in customers"
                   :key="customer.id"
                   :value="customer"
-                  >{{ customer.name }} ({{ visitType === 'pharmacy' ? customer.type :customer.specialty }})</option
+                  >{{ customer.name }} ({{
+                    visitType === "pharmacy"
+                      ? customer.type
+                      : customer.specialty
+                  }})</option
                 >
               </select>
             </div>
 
             <div class="form-group">
-              <button class="btn btn-sm btn-block btn-primary" @click="viewReport">
+              <button
+                class="btn btn-sm btn-block btn-primary"
+                @click="viewReport"
+              >
                 <span class="fa fa-check-circle"></span>
                 <span>select</span>
               </button>
@@ -81,7 +91,14 @@
         </div>
         <div class="col-lg-9">
           <div v-if="showReport">
-            <visit-component :customer="customer" :user="user" :rep="rep" :type="visitType" :backUrl="backUrl" :onSave="saveReport" />
+            <visit-component
+              :customer="customer"
+              :user="user"
+              :rep="rep"
+              :type="visitType"
+              :backUrl="backUrl"
+              :onSave="saveReport"
+            />
           </div>
           <div v-else class="py-5 text-center shadow rounded">
             <div>
@@ -89,8 +106,12 @@
             </div>
             <div>
               <p class="lead text-muted pt-2" v-if="!rep">Select Rep</p>
-              <p class="lead text-muted pt-2" v-else-if="!brick">Select Brick</p>
-              <p class="lead text-muted pt-2" v-else-if="!customer">Select Customer</p>
+              <p class="lead text-muted pt-2" v-else-if="!brick">
+                Select Brick
+              </p>
+              <p class="lead text-muted pt-2" v-else-if="!customer">
+                Select Customer
+              </p>
             </div>
           </div>
         </div>
@@ -100,9 +121,9 @@
 </template>
 
 <script>
-import { httpCall } from '../helpers/http-service';
-import VisitComponent from './VisitComponent.vue';
-import UserFilterBox from './UserFilterBox.vue';
+import { httpCall } from "../helpers/http-service";
+import VisitComponent from "./VisitComponent.vue";
+import UserFilterBox from "./UserFilterBox.vue";
 
 export default {
   props: {
@@ -112,7 +133,7 @@ export default {
     },
     visitType: {
       type: String,
-      default: () => 'single'
+      default: () => "single"
     },
     user: {
       type: Object,
@@ -120,15 +141,15 @@ export default {
     },
     backUrl: {
       type: String,
-      default: () => '/reports'
+      default: () => "/reports"
     },
     onSave: {
-      type:Function
-    },
+      type: Function
+    }
   },
   components: {
     VisitComponent,
-    UserFilterBox,
+    UserFilterBox
   },
   data: () => ({
     rep: null,
@@ -140,33 +161,35 @@ export default {
   }),
   methods: {
     fetchCustomers() {
-      let pharmacy = false
-      if(this.visitType === "pharmacy") {
+      let pharmacy = false;
+      if (this.visitType === "pharmacy") {
         pharmacy = true;
       }
-      return httpCall.get('v1/user-customers/customers/'+this.brick, {pharmacy})
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.customers = data.data;
+      return httpCall
+        .get("v1/user-customers/customers/" + this.brick, { pharmacy })
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.customers = data.data;
+          });
         })
-      }).catch(err => console.log(err));
+        .catch(err => console.log(err));
     },
     fetchLocations() {
       let id = this.rep.id;
       let pharmacy = false;
-      if(this.visitType === "pharmacy") {
-        pharmacy = true
+      if (this.visitType === "pharmacy") {
+        pharmacy = true;
       }
       return httpCall
-        .get("v1/user-customers/bricks/" + id, {pharmacy})
+        .get("v1/user-customers/bricks/" + id, { pharmacy })
         .then(({ data }) => {
-          this.handleResponse(data ,data => {
+          this.handleResponse(data, data => {
             this.bricks = data.data;
           });
         })
         .catch(err => console.log(err));
     },
-    viewReport(){
+    viewReport() {
       this.showReport = true;
     },
     onFilterUsers(d, q, u) {
@@ -177,7 +200,7 @@ export default {
       this.rep = null;
     },
     saveReport(data) {
-      if(this.visitType === 'coaching') {
+      if (this.visitType === "coaching") {
         this.saveCoachingVisit({
           coach: JSON.stringify(data.coach),
           rep_id: this.rep.id,
@@ -186,7 +209,7 @@ export default {
           customer_id: this.customer.id
         });
       }
-      if(this.visitType === "single") {
+      if (this.visitType === "single") {
         this.saveSingleVisit({
           customer_id: this.customer.id,
           products: JSON.stringify(data.products),
@@ -195,38 +218,43 @@ export default {
           feedback: data.feedback
         });
       }
-      if(this.visitType === 'pharmacy') {
+      if (this.visitType === "pharmacy") {
         this.savePharmacyVisit({
           pharmacy_id: this.customer.id,
           products: JSON.stringify(data.products),
           date: data.date,
           feedback: data.feedback
-        })
+        });
       }
     },
-    saveCoachingVisit(data){
-      return httpCall.post('v1/coach-reports',data)
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.onSave()
+    saveCoachingVisit(data) {
+      return httpCall
+        .post("v1/coach-reports", data)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.onSave();
+          });
         })
-      }).catch(err => console.log(err))
+        .catch(err => console.log(err));
     },
     saveSingleVisit(data) {
-      return httpCall.post('v1/single-visit/customer', data)
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.onSave();
+      return httpCall
+        .post("v1/single-visit/customer", data)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.onSave();
+          });
         });
-      })
     },
     savePharmacyVisit(data) {
-      return httpCall.post('v1/single-visit/pharmacy',data)
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.onSave()
-        });
-      }).catch(err => console.log(err))
+      return httpCall
+        .post("v1/single-visit/pharmacy", data)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.onSave();
+          });
+        })
+        .catch(err => console.log(err));
     }
   }
 };

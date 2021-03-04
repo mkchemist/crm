@@ -4,7 +4,9 @@
       <router-link to="/" class="navbar-brand">
         <img :src="base_url+'images/logo.png'" alt="NPMT logo">
         <br>
-        <span class="px-2 text-muted">Welcome {{ $store.state.user.name }}</span>
+        <span class="px-2 text-success font-weight-bold small">{{ $store.state.user.name }}</span>
+        <br>
+        <span class="small font-weight-bold px-2"><span>{{ JSON.parse($store.state.user.line).join(" | ") }}</span></span>
       </router-link>
       <button class="navbar-toggler" data-toggle="collapse" data-target="#navbar">
         <span class="navbar-toggler-icon"></span>
@@ -17,8 +19,8 @@
             </router-link>
           </li>
           <li class="nav-item dropdown">
-            <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">
-              <span>User</span>
+            <a href="" class="nav-link dropdown-toggle font-weight-bold" data-toggle="dropdown">
+              <span>{{ userFirstName }}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
               <a :href="base_url+'change-password'" class="dropdown-item small">
@@ -41,6 +43,11 @@
 <script>
 
 export default {
+  computed: {
+    userFirstName() {
+      return this.$store.state.user.name.split(" ")[0]
+    }
+  },
   data: () => ({
     base_url : document.getElementById("APP_API_URL").value.replace("api/", ''),
     links: [
