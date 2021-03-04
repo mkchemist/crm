@@ -11,8 +11,10 @@
           <option value="area">Analysis by area</option>
           <option value="district">Analysis by district</option>
           <option value="territory">Analysis by territory</option>
+          <option value="rm" v-if="['admin', 'accountant'].includes(user.role)">Analysis by Business Unit</option>
+          <option value="am" v-if="['admin', 'accountant'].includes(user.role)">Analysis by Area Manager</option>
         </select>
-        <button class="btn btn-sm btn-primary" @click="getData">start analysis</button>
+        <button class="btn btn-sm btn-primary" @click="getData">Start Analysis</button>
         <span>choose item and then press ok to view analysis</span>
       </div>
       <div class="my-2 p-2">
@@ -75,6 +77,12 @@ export default {
         chart,
         totalCost
       }
+    },
+    user() {
+      return this.$store.getters['UserModule/user'];
+    },
+    canShowUsersAnalysis() {
+      return ['admin', 'accountant'].includes(this.user.role)
     }
   },
   data: () => ({
@@ -101,6 +109,8 @@ export default {
       let join = null
       if(['area','brick','district', 'territory'].includes(this.type)) {
           join = "customer";
+      } else if(['dm','am','rm'].includes(this.type)) {
+        join="user"
       }
       httpCall
         .get("v1/requests/search/"+this.type, {join})

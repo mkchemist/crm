@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\CustomerRequest;
+use App\Helpers\ResponseHelper;
+use App\Helpers\Setting\ProductFactoryPriceSetting;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +36,7 @@ class RequestController extends Controller
      */
     public function index()
     {
-      return $this->service->readAll(request()->all(), $this->user->id);
+      return $this->service->readAll();
     }
 
     /**
@@ -56,7 +59,24 @@ class RequestController extends Controller
      */
     public function show($id)
     {
-        //
+        $request = CustomerRequest::with([
+          'customer','user','pharmacy_1',
+          'pharmacy_2','pharmacy_3','pharmacy_4',
+          'customer.params'
+        ])
+        ->whereNotIn('state', ['canceled', 'changed'])->get();
+
+        if(!count($request)) {
+          return response(ResponseHelper::INVALID_ID);
+        }
+
+        $priceList = new ProductFactoryPriceSetting;
+
+        return response([
+          'code'  =>  200,
+          'data'  =>  $request,
+          'priceList' =>  $priceList->all()
+        ]);
     }
 
     /**
@@ -68,7 +88,7 @@ class RequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return $this->service->update($request, $id);
     }
 
     /**
@@ -97,5 +117,70 @@ class RequestController extends Controller
     public function analysis($search)
     {
       return $this->service->analysisCost($search);
+    }
+
+    /**
+     * Cancel Request
+     *
+     *
+     * @param string $serial
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelRequest(string $serial)
+    {
+      return $this->service->handleRequestCancel($serial);
+    }
+
+    /**
+     * submit Request
+     *
+     *
+     * @param string $serial
+     * @return \Illuminate\Http\Response
+     */
+    public function submitRequest(string $serial)
+    {
+      return $this->service->handleRequestSubmit($serial);
+    }
+
+    /**
+     * approve Request
+     *
+     *
+     * @param string $serial
+     * @return \Illuminate\Http\Response
+     */
+    public function approveRequest(Request $request)
+    {
+      return $this->service->handleRequestApproval($request);
+    }
+
+    /**
+     * sharing in the given request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $serial
+     * @return \Illuminate\Http\Response
+     */
+    public function sharing(Request $request,string $serial)
+    {
+      return $this->service->shareIn($request, $serial);
+    }
+
+
+    /**
+     * read shared requests
+     *
+     *
+     */
+    public function readShared()
+    {
+      return $this->service->readShared();
+    }
+
+
+    public function setCost(Request $request)
+    {
+      return $this->service->setRequestCost($request);
     }
 }

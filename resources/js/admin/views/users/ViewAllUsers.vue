@@ -24,8 +24,11 @@
               </td>
             </template>
             <template v-slot:head>
-              <th>Line</th>
+              <th>Business Unit</th>
+              <th>Area Manager</th>
+              <th>District Manager</th>
               <th>Role</th>
+              <th>Line</th>
               <th>Area</th>
               <th>District</th>
               <th>Territory</th>
@@ -34,6 +37,9 @@
               <th>Assigned bricks</th>
             </template>
             <template v-slot:body="{item}">
+              <td>{{ item.bm }}</td>
+              <td>{{ item.am }}</td>
+              <td>{{ item.dm }}</td>
               <td>
                 <ul class="nav">
                   <li class="nav col-12 p-0" v-for="(val,key) in item.line" :key="`line_${key}`">{{ val }}</li>
@@ -133,4 +139,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+</style>

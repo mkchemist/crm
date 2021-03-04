@@ -64,6 +64,7 @@ Route::group([
     Route::get('v1/coach-reports/view/table','Api\V1\CoachReportModuleController@tableView');
     /* user customers */
     Route::get('v1/user-customers/customers/{brick}','Api\V1\UserCustomersController@customersInBrick');
+    Route::post('v1/user-customers/search/customers','Api\V1\UserCustomersController@searchCustomers');
     Route::get('v1/user-customers/pharmacies/{brick}','Api\V1\UserCustomersController@pharmaciesInBrick');
     Route::get('v1/user-customers/bricks/{id?}','Api\V1\UserCustomersController@getUserCustomersLocations');
     /* Single Visits */
@@ -72,7 +73,15 @@ Route::group([
     Route::put('v1/single-visit/pharmacy/{id}', 'Api\V1\SingleVisitsController@editSinglePharmacyVisit');
     /* Requests Routes */
     Route::get('v1/requests/search/{search}', 'Api\V1\RequestController@analysis');
+    Route::post('v1/requests/cancel/{serial}','Api\V1\RequestController@cancelRequest');
+    Route::post('v1/requests/submit/{serial}','Api\V1\RequestController@submitRequest');
+    Route::post('v1/requests/approve','Api\V1\RequestController@approveRequest');
+    Route::post('v1/requests/sharing/{serial}','Api\V1\RequestController@sharing');
+    Route::get("v1/requests/shared/list", "Api\V1\RequestController@readShared");
+    Route::post('v1/requests/set-cost','Api\V1\RequestController@setCost');
     Route::apiResource('v1/requests', 'Api\V1\RequestController');
+    Route::apiResource('v1/request-events','Api\V1\RequestEventManagerController');
+    Route::get('v1/price-list', 'Api\V1\ProductFactoryPriceController@index')->middleware(['CanManageRequests']);
 
 });
 

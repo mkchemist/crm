@@ -25,7 +25,7 @@
               @change="updateQuery"
               :disabled="Object.keys(filterData.fields[field]).length <= 1"
             >
-              <option :value="null" v-if="Object.keys(filterData.fields[field]).length > 1">Select {{ field }}</option>
+              <option :value="null" v-if="Object.keys(filterData.fields[field]).length > 1">Select {{ filterData.titles[field] }}</option>
               <option
                 :value="index"
                 v-for="(item, index) in filterData.fields[field]"
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { filterData } from "../helpers/helpers";
+import { filterData, ObjectNotation } from "../helpers/helpers";
 import ModalFade from "./ModalFade.vue";
 export default {
   components: {
@@ -166,7 +166,7 @@ export default {
       if (!this.queryOnly) {
         data = this.data;
         for (let i in query) {
-          data = data.filter(item => item[i] == query[i]);
+          data = data.filter(item => ObjectNotation(item, i,'-----') == query[i]);
         }
       }
       this.onFilter(query, data);

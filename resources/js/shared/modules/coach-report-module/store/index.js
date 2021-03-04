@@ -28,7 +28,7 @@ export default {
       return state.users.rep ? state.users.rep : []
     },
     coachModuleDistrictManagers: state =>
-      state.users.am ? state.users.dm : [],
+      state.users.dm ? state.users.dm : [],
     coachModuleAreaManagers: state => (state.users.am ? state.users.am : []),
     coachModuleRegionalManagers: state =>
       state.users.rm ? state.users.rm : [],

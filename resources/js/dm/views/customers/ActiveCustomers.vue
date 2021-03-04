@@ -27,8 +27,13 @@ import NoDataToShow from "../../../components/NoDataToShow.vue";
 export default {
   computed: {
     activeCustomers() {
-      let customers = this.$store.getters.activeCustomers;
-      return this.prepareCustomerTable(customers);
+      try {
+        let customers = this.$store.getters.activeCustomers;
+        return this.prepareCustomerTable(customers);
+
+      } catch(e) {
+        console.log(e)
+      }
     },
     isFetched() {
       return this.$store.getters.isCustomersFetched;
@@ -64,8 +69,8 @@ export default {
     prepareCustomerTable(data) {
       data.forEach(item => {
         let { rep, line } = this.getRepName(item);
-        item["rep"] = rep;
-        item["line"] = line;
+        /* item["rep"] = rep;
+        item["line"] = line; */
         item["diff"] = item.reports - item.plans;
         item["status"] = this.customerState(item);
       });

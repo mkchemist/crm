@@ -10,6 +10,7 @@ class CustomerRequest extends Model
         'user_id',
         'customer_id',
         'type',
+        'origin_type',
         'comment',
         'state',
         'query_date',
@@ -36,6 +37,9 @@ class CustomerRequest extends Model
 
     protected $attributes = [
         'reject_due' => '',
+        'origin_type' => 'owner',
+        'am_approval_date'  => NULL,
+        'rm_approval_date' => NULL
     ];
 
     public function user()

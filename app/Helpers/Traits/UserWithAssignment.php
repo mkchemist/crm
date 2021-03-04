@@ -36,23 +36,28 @@ trait UserWithAssignment {
 
   }
 
-  protected function getQueryWithAssignment($user, $query, $withSpecialty= false)
+  protected function getQueryWithAssignment($user, $query, $withSpecialty= false, $table=null)
   {
+    if($table) {
+      $table = $table.".";
+    } else {
+      $table = "";
+    }
     $this->isUserHasAssignment($user);
     if($this->area[0] !== 'all') {
-      $query->whereIn('area', $this->area);
+      $query->whereIn($table.'area', $this->area);
     }
     if($this->district[0] !== 'all') {
-      $query->whereIn('district', $this->district);
+      $query->whereIn($table.'district', $this->district);
     }
     if($this->territory[0] !== 'all') {
-      $query->whereIn('territory', $this->territory);
+      $query->whereIn($table.'territory', $this->territory);
     }
     if($this->region[0] !== 'all') {
-      $query->whereIn('region', $this->region);
+      $query->whereIn($table.'region', $this->region);
     }
     if(count($this->bricks)) {
-      $query->whereIn('brick', $this->bricks);
+      $query->whereIn($table.'brick', $this->bricks);
     }
     if($withSpecialty) {
       if(count($this->specialties)) {

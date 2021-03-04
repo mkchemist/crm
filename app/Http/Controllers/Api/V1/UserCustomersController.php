@@ -98,4 +98,25 @@ class UserCustomersController extends Controller
         'data'  =>  $pharmacies
       ]);
     }
+
+    public function searchCustomers(Request $request)
+    {
+      $name = $request->name;
+      $customers = Customer::with('params')
+      ->where('name','like', "%$name%");
+      $customers = $this->getQueryWithAssignment($this->user, $customers);
+      if($request->brick) {
+        $customers = $customers->where('brick', $request->brick);
+      }
+      if($request->paginate) {
+        $customers = $customers->paginate($request->paginate);
+      } else {
+        $customers = $customers->get();
+      }
+
+      return response([
+        'code'  =>  200,
+        'data'  =>  $customers
+      ]);
+    }
 }

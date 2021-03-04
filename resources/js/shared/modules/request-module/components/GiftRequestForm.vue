@@ -11,6 +11,7 @@
             class="form-control form-control-sm"
             placeholder="Write what gift you will present"
             v-model="request.comment.item"
+            :disabled="!editMode"
           />
         </ValidationProvider>
       </div>
@@ -24,6 +25,7 @@
             class="form-control form-control-sm"
             placeholder="Write Gift description"
             v-model="request.comment.desc"
+            :disabled="!editMode"
           ></textarea>
         </ValidationProvider>
       </div>
@@ -39,6 +41,10 @@ export default {
     request: {
       type: Object,
       required: true
+    },
+    editMode: {
+      type: Boolean,
+      default: () => true
     }
   }
 };

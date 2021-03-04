@@ -14,6 +14,7 @@ export default {
       return sortBy(this.$store.getters.coachModuleReps, 'name');
     },
     districtManagers() {
+      let coaches = this.$store.getters.coachModuleDistrictManagers;
       return sortBy(this.$store.getters.coachModuleDistrictManagers, 'name');
     }
   }

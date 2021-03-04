@@ -30,10 +30,22 @@
                       id=""
                       v-if="shouldOpenRequestOwnerSelector"
                       v-model="request.user_id"
-                      :class="`form-control form-control-sm ${errors[0] ? 'border border-danger': ''}`"
+                      :class="
+                        `form-control form-control-sm small ${
+                          errors[0] ? 'border border-danger' : ''
+                        }`
+                      "
                     >
                       <option :value="null">Select User</option>
-                      <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }} ({{ user.role }})  ({{ JSON.parse(user.line).join(" | ") }}) </option>
+                      <option
+                        v-for="user in users"
+                        :key="user.id"
+                        :value="user.id"
+                        class="small"
+                        >{{ user.name }} ({{ user.role }}) ({{
+                          JSON.parse(user.line).join(" | ")
+                        }})
+                      </option>
                     </select>
                     <input
                       v-else
@@ -88,8 +100,8 @@
                   <input
                     type="date"
                     class="form-control form-control-sm"
-                    :value="today"
-                    :disabled="true"
+                    :disabled="!isSuperUser"
+                    v-model="request.query_date"
                   />
                   <span class="form-text small text-muted"
                     >* date of querying request</span
@@ -116,6 +128,7 @@
                         }`
                       "
                       v-model="request.apply_date"
+                      :min="requestApplyDateStart"
                     />
                     <span class="form-text small text-muted"
                       >* date of execution</span
@@ -131,6 +144,7 @@
                   <add-request-customer-component
                     :customers="customers"
                     :requestCustomers="request.customers"
+                    :searchBrick="fetch_brick"
                   />
                 </div>
                 <!-- Pharmacies -->
@@ -209,7 +223,7 @@
                       :request="request"
                     />
                     <brand-reminder-request-form
-                      v-if="request.type === 'Brand Reminder'"
+                      v-if="['Brand Reminder', 'Others'].includes(request.type)"
                       :request="request"
                     />
 
@@ -249,8 +263,12 @@
 
               <!-- Request cost and Quantity -->
               <div class="row mx-auto p-2 border rounded">
-                <p class="col-12 alert alert-warning font-weight-bold" v-if="!canSetPrice">
-                  Request cost will be determined later by Customers Request Manager
+                <p
+                  class="col-12 alert alert-warning font-weight-bold"
+                  v-if="!canSetPrice"
+                >
+                  Request cost will be determined later by Customers Request
+                  Manager
                 </p>
                 <div class="col-lg">
                   <label for="cost" class="font-weight-bold small">Cost</label>
@@ -313,6 +331,7 @@
                 </div>
               </div>
               <hr />
+
               <!-- Form controller -->
               <div class="form-group text-right">
                 <router-link
@@ -349,23 +368,9 @@ import GroupMeetingRequestForm from "../components/GroupMeetingRequestForm";
 import HotelReservationRequestForm from "../components/HotelReservationRequestForm";
 import TicketReservationRequestForm from "../components/TicketReservationRequestForm";
 import AddRequestProductSelection from "../components/AddRequestProductSelection.vue";
+import { Calendar } from "../../../../helpers/date-helpers";
 
-/** new request object */
-const newRequest = {
-  user_id: null,
-  customers: [],
-  pharmacies: [],
-  products: [],
-  apply_date: null,
-  type: null,
-  cost: 1,
-  quantity: 1,
-  comment: {
-    item: null,
-    desc: null
-  },
-  others: null
-};
+let today = new Date().toISOString().split("T")[0];
 
 export default {
   components: {
@@ -381,15 +386,19 @@ export default {
     TicketReservationRequestForm,
     AddRequestProductSelection
   },
+  created() {
+    this.request = this.createRequestTemplate();
 
+  },
   computed: {
     users() {
-      let relatedUsers = this.$store.getters['UserModule/relations'];
+      let relatedUsers = this.$store.getters["UserModule/relations"];
       let users = [];
-      for(let key in relatedUsers) {
+      for (let key in relatedUsers) {
         users = [...users, ...relatedUsers[key]];
       }
-      return sortBy(users, 'name');
+      users = users.filter(user => !['rep', 'otc-rep'].includes(user.role));
+      return sortBy(users, "name");
     },
     user() {
       return this.$store.state.CustomerRequestModule.UserModule.user;
@@ -413,23 +422,24 @@ export default {
       if (
         !["Samples", "Study", "Club", "Hotel Reservation", "Donation"].includes(
           this.request.type
-        ) && ["admin", "accountant"].includes(this.user.role)
+        ) ||
+        this.isSuperUser
       ) {
         return true;
       }
       return false;
     },
-    today() {
-      let date = new Date();
-      if(date.format) {
-        date = date.format()
-        console.log('with Format')
+    isSuperUser() {
+      return ["admin", "accountant"].includes(this.user.role);
+    },
+    requestApplyDateStart() {
+      if(this.isSuperUser) {
+        return "2020-01-01";
       } else {
-        date = date.toISOString()
-        date = date.split('T');
-        date = date[0];
+
+        let today = new Calendar(this.today);
+        return today.add(15).toString();
       }
-      return date;
     }
   },
   data: function() {
@@ -438,11 +448,29 @@ export default {
       customers: [],
       pharmacies: [],
       isFetchingRequestLoaded: false,
-      request: Object.assign({}, newRequest),
+      request: {},
       show_request_form: false
     };
   },
   methods: {
+    createRequestTemplate() {
+      return {
+        user_id: null,
+        customers: [],
+        pharmacies: [],
+        products: [],
+        apply_date: null,
+        query_date: today,
+        type: null,
+        cost: 1,
+        quantity: 1,
+        comment: {
+          item: null,
+          desc: null
+        },
+        others: null
+      };
+    },
     showAlert(text, title = "Warning", icon = "warning") {
       this.$swal({
         title,
@@ -453,7 +481,7 @@ export default {
     prepareRequest() {
       let request = Object.assign({}, this.request);
       if (!this.shouldOpenRequestOwnerSelector) {
-        request.user_id = [this.user.id];
+        request.user_id = this.user.id;
       }
       request = serialize(request, [
         "user_id",
@@ -466,6 +494,10 @@ export default {
     },
     /* Save request */
     saveRequest() {
+      if (!this.request.apply_date) {
+        this.showAlert("You didn't pick an apply date");
+        return;
+      }
       if (!this.request.products.length) {
         this.showAlert("You must pick at least one product");
         return;
@@ -486,10 +518,29 @@ export default {
         .post("v1/requests", request)
         .then(({ data }) => {
           if (data.code === 200) {
-            this.showAlert(data.message, "Success", "success");
-            this.request = Object.assign({}, newRequest);
-            this.$store.dispatch("RequestModule/fetchCustomerRequests", {force: true})
+            this.$swal({
+              title: "Success",
+              text: data.message,
+              icon: 'success',
+             /*  toast: true, */
+              confirmButtonText: `<i class="fa fa-chevron-left"></i> back to list`,
+              showCancelButton: true,
+              cancelButtonText: `<i class="fa fa-plus"></i> create another request`
+            }).then(res => {
+              if(res.isConfirmed) {
+                this.$router.push("/customers-requests/list")
+              }
+            })
+            //this.showAlert(data.message, "Success", "success");
+            this.resetRequestAfterSave();
+            this.$store.dispatch("RequestModule/fetchCustomerRequests", {
+              force: true
+            });
           } else {
+            if (data.can_be_shared) {
+              this.handleSharingResponse(data);
+              return;
+            }
             if (!data.message) {
               data.message = "Something wrong happened";
             }
@@ -497,6 +548,43 @@ export default {
           }
         })
         .catch(err => console.log(err));
+    },
+    handleSharingResponse(data) {
+      this.$swal({
+        title: "Already Created",
+        html: `<div class="small">Request is already created by <b class="text-primary">${data.data.creator}
+                </b> with serial <b class="text-danger">${data.data.serial}</b>
+                <br>
+                you can share in this request by going to <b>Shared with me</b> page and enter request serial
+                </div>`,
+        showCancelButton: true,
+        cancelButtonText: `<i class="fa fa-times-circle"></i> Cancel`,
+        confirmButtonText: `<i class="fa fa-share"></i> Share in Request`,
+        icon: "info"
+      }).then(response => {
+        if (response.isConfirmed) {
+          this.$router.push(
+            `/customers-requests/shared/create?serial=${data.data.serial}`
+          );
+        }
+        if (response.isDenied || response.isDismissed) {
+          this.$swal({
+            title: "Info.",
+            text: "Do you want to create another request",
+            showCancelButton: true,
+            cancelButtonText: `<i class="fa fa-chevron-circle-left"></i> back to Requests list`,
+            confirmButtonText: `<i class="fa fa-plus-circle"></i> new request`,
+            icon: "info"
+          }).then(response => {
+            if (response.isConfirmed) {
+              this.resetRequestAfterSave();
+            } else {
+              this.resetRequestAfterSave();
+              this.$router.push("/customers-requests/list");
+            }
+          });
+        }
+      });
     },
     /* fetching brick customers and pharmacies */
     fetchBrickCustomersAndPharmacies() {
@@ -526,7 +614,13 @@ export default {
       this.request.comment.item = null;
       this.request.comment.desc = null;
       this.show_request_form = false;
+    },
+    resetRequestAfterSave() {
+      this.request = this.createRequestTemplate();
     }
+  },
+  destroyed() {
+    this.request = null;
   }
 };
 </script>

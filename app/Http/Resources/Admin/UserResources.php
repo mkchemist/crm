@@ -29,7 +29,11 @@ class UserResources extends JsonResource
           'region'        =>  json_decode($this->region),
           'active'        =>  $this->active,
           'api_token'     =>  $this->api_token,
-          'relations'     =>  json_decode($this->user_relations)
+          'relations'     =>  json_decode($this->user_relations),
+          "dm" => $this->dm_name,
+          "am" => $this->am_name,
+          "bm" => $this->rm_name,
+
         ];
     }
 }

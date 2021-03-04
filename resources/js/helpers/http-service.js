@@ -24,15 +24,22 @@ const generateApiUrl = (path,query = {}) => {
 export const httpCall = {};
 
 
-axios
 
-httpCall.get = (path,query) => {
-  return axios.get(generateApiUrl(path, query))
+httpCall.get = (path,query, base = false) => {
+  let url = generateApiUrl(path, query);
+  if(base) {
+    url = path;
+  }
+  return axios.get(url)
 }
 
-httpCall.post = (path, data) => {
+httpCall.post = (path, data, base = false) => {
   data = new URLSearchParams(data);
-  return axios.post(generateApiUrl(path),data);
+  let url = generateApiUrl(path);
+  if(base) {
+    url = path;
+  }
+  return axios.post(url,data);
 }
 
 

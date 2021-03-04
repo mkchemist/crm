@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <div class="row mx-auto">
+  <div class="col-12 px-0">
+    <div class="row mx-auto px-0">
       <div class="col-lg-4">
-        <div class="form-group">
+        <div class="form-group" v-if="!['share','view'].includes(mode)">
           <label for="product" class="font-weight-bold small">Product</label>
           <select
             name="product"
@@ -28,6 +28,9 @@
             <span class="fa fa-check-circle"></span>
             <span>Ok</span>
           </button>
+        </div>
+        <div v-else>
+          <p class="font-weight-bold text-muted small">Request Products</p>
         </div>
       </div>
       <div class="col-lg-8">
@@ -62,6 +65,7 @@
                         }`
                       "
                       placeholder="Product Rx"
+                      :disabled="['share','view'].includes(mode)"
                     />
                   </ValidationProvider>
                 </td>
@@ -73,6 +77,7 @@
                     type="number"
                     v-model.number="product.rx_months"
                     :class="`form-control form-control-sm`"
+                    :disabled="['share','view'].includes(mode)"
                   />
                 </td>
                 <td>
@@ -83,6 +88,7 @@
                     type="button"
                     class="btn btn-sm btn-danger"
                     @click="removeProduct(i)"
+                    v-if="!['share','view'].includes(mode)"
                   >
                     <span class="fa fa-times"></span>
                   </button>
@@ -102,6 +108,11 @@ export default {
     requestProducts: {
       type: Array,
       required: true
+    },
+    mode: {
+      type: String,
+      default: () => 'edit',
+      validator: v => ['share','view','edit'].includes(v)
     }
   },
   computed: {

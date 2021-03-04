@@ -127,10 +127,7 @@ export default {
     },
     buttons() {
       return [
-        {
-          text: '<span class="fa fa-print mx-1"></span> Print',
-          extend: "print"
-        },
+
         {
           text: '<span class="fa fa-redo mx-1"></span> Refresh',
           action: (e, dt) => {
@@ -144,6 +141,12 @@ export default {
           action: (e, dt) => this.$router.push("/coach")
         },
         {
+          text: '<span class="fa fa-plus-circle"></span> Report',
+          action: (e, dt) => {
+            this.$router.push("/coach/add")
+          }
+        },
+        {
           text: '<span class="fa fa-book-reader mx-1"></span> View',
           action: (e, dt) => {
             let row = dt.rows({ selected: true }).data()[0];
@@ -155,7 +158,8 @@ export default {
               `/coach/view?date=${row.date}&coach=${row.coach_id}&rep=${row.rep_id}`
             );
           }
-        }
+        },
+
       ];
     },
     cols() {

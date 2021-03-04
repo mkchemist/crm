@@ -35,7 +35,7 @@ export const CustomerRequest = function(request, user) {
   this.canSubmit = function() {
     if (
       this.isOwner() &&
-      !["approved", "confirmed"].includes(this.request.state)
+      !["approved", "confirmed","pending","rejected"].includes(this.request.state)
     ) {
       return true;
     }
@@ -54,7 +54,7 @@ export const CustomerRequest = function(request, user) {
   this.canEdit = function() {
     if (
       (this.user.isManagerOf(this.request.user.id) || this.isOwner()) &&
-      !["approved", "confirmed"].includes(this.request.state)
+      !["approved", "confirmed","pending","rejected"].includes(this.request.state)
     ) {
       return true;
     }
@@ -63,7 +63,7 @@ export const CustomerRequest = function(request, user) {
 
   this.canDelete = function() {
     return (
-      this.isOwner() && !["approved", "confirmed"].includes(this.request.state)
+      this.isOwner() && !["approved", "confirmed","pending","rejected"].includes(this.request.state)
     );
   };
 };

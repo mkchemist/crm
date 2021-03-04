@@ -41,6 +41,10 @@ export default {
     request: {
       type: Object,
       required: true
+    },
+    editMode: {
+      type: Boolean,
+      default: () => true
     }
   },
   mounted() {

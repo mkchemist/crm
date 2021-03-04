@@ -14,7 +14,12 @@
               class="mb-1 border-bottom small form-inline justify-content-between"
             >
               <span>Date</span>
-              <input type="date" v-model="visit_date" required :max="new Date().format()" />
+              <input
+                type="date"
+                v-model="visit_date"
+                required
+                :max="new Date().format()"
+              />
             </div>
             <p class="mb-1 border-bottom small clearfix">
               <span>User</span>
@@ -34,19 +39,28 @@
                 customer.name
               }}</span>
             </p>
-            <p class="mb-1 border-bottom small clearfix" v-if="type === 'pharmacy'">
+            <p
+              class="mb-1 border-bottom small clearfix"
+              v-if="type === 'pharmacy'"
+            >
               <span>Type</span>
               <span class="font-weight-bold text-primary float-right">{{
                 customer.type
               }}</span>
             </p>
-            <p class="mb-1 border-bottom small clearfix" v-if="type!== 'pharmacy'">
+            <p
+              class="mb-1 border-bottom small clearfix"
+              v-if="type !== 'pharmacy'"
+            >
               <span>Specialty</span>
               <span class="font-weight-bold text-primary float-right">{{
                 customer.specialty
               }}</span>
             </p>
-            <p class="mb-1 border-bottom small clearfix" v-if="type!== 'pharmacy'">
+            <p
+              class="mb-1 border-bottom small clearfix"
+              v-if="type !== 'pharmacy'"
+            >
               <span>Parameter</span>
               <span class="font-weight-bold text-primary float-right">{{
                 customer.params && customer.params.length
@@ -58,7 +72,7 @@
           <div class="col-lg">
             <p class="mb-1 border-bottom small clearfix">
               <span>Address</span>
-              <span class="font-weight-bold text-primary float-right" >{{
+              <span class="font-weight-bold text-primary float-right">{{
                 customer.address
               }}</span>
             </p>
@@ -91,7 +105,7 @@
       </div>
       <!-- end Visit Info -->
       <div class="p-2">
-        <ValidationObserver v-slot="{handleSubmit}">
+        <ValidationObserver v-slot="{ handleSubmit }">
           <form @submit.prevent="handleSubmit(saveReport)">
             <!-- Coaching Visit -->
             <div class="my-2 p-2" v-if="type === 'coaching'">
@@ -118,14 +132,24 @@
                   >
                     <td>{{ i }}</td>
                     <td>
-                      <select
-
-                        v-model="data[key][i]"
-                        class="coach-select"
-                      >
+                      <select v-model="data[key][i]" class="coach-select">
+                        <template v-if="key==='Customer Parameter'">
+                          <option value="HH">HH</option>
+                          <option value="HM">HM</option>
+                          <option value="HL">HL</option>
+                          <option value="MH">MH</option>
+                          <option value="MM">MM</option>
+                          <option value="ML">ML</option>
+                          <option value="LH">LH</option>
+                          <option value="LM">LM</option>
+                          <option value="LL">LL</option>
+                          <option value="NN">NN</option>
+                        </template>
+                        <template v-else>
                         <option value="">N</option>
                         <option value="S">S</option>
                         <option value="U">U</option>
+                        </template>
                       </select>
                     </td>
                   </tr>
@@ -134,9 +158,12 @@
             </div>
             <!-- End of coach visits -->
             <!-- Single Visit -->
-            <div v-if="['single','pharmacy'].includes(type)">
+            <div v-if="['single', 'pharmacy'].includes(type)">
               <div class="p-2 border rounded">
-                <visit-products :data="products" :pharmacyProducts="type === 'pharmacy' ? true : false" />
+                <visit-products
+                  :data="products"
+                  :pharmacyProducts="type === 'pharmacy' ? true : false"
+                />
               </div>
               <div class="row mx-auto border rounded my-1 p-2">
                 <div class="col-lg" v-if="type !== 'pharmacy'">
@@ -161,20 +188,30 @@
                 </div>
                 <div class="col-lg" v-if="type === 'pharmacy'">
                   <label for="" class="text-muted">General Feedback</label>
-                  <ValidationProvider name="feedback" rules="required" v-slot="{errors}">
-                    <span v-if="errors[0]" class="text-danger small">{{ errors[0] }}</span>
+                  <ValidationProvider
+                    name="feedback"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <span v-if="errors[0]" class="text-danger small">{{
+                      errors[0]
+                    }}</span>
                     <textarea
                       cols="30"
                       rows="5"
                       v-model="visit_feedback"
                       placeholder="write visit comment"
-                      :class="`form-control form-control-sm ${errors[0] ? 'border border-danger': ''}`"
+                      :class="
+                        `form-control form-control-sm ${
+                          errors[0] ? 'border border-danger' : ''
+                        }`
+                      "
                     ></textarea>
                   </ValidationProvider>
                 </div>
               </div>
             </div>
-            <hr>
+            <hr />
             <!-- Report control -->
             <div class="my-2 form-group text-right">
               <router-link :to="backUrl" class="btn btn-sm btn-dark">
@@ -199,6 +236,9 @@ import { COACH_REPORT } from "../helpers/constants";
 import VisitProducts from "../rep/components/VisitProducts.vue";
 export default {
   components: { VisitProducts },
+  created() {
+    this.data = this.createCoachReportTemplate();
+  },
   props: {
     customer: {
       type: Object,
@@ -225,36 +265,39 @@ export default {
     }
   },
   data: () => ({
-    data: COACH_REPORT,
+    data: {},
     products: [],
     visit_date: null,
     visit_comment: null,
     visit_feedback: null
   }),
   methods: {
+    createCoachReportTemplate() {
+      return Object.assign({},COACH_REPORT)
+    },
     saveReport() {
-      if(!this.visit_date) {
+      if (!this.visit_date) {
         this.$swal({
-          text: 'Visit Date Required',
-          title: 'You must pick a date',
-          icon: 'warning'
-        })
+          text: "Visit Date Required",
+          title: "You must pick a date",
+          icon: "warning"
+        });
         return;
       }
-      if(['single','pharmacy'].includes(this.type) && !this.products.length) {
+      if (["single", "pharmacy"].includes(this.type) && !this.products.length) {
         this.$swal({
-          text: 'No Products Provided',
-          title: 'You must pick at least one Product',
-          icon: 'warning'
-        })
+          text: "No Products Provided",
+          title: "You must pick at least one Product",
+          icon: "warning"
+        });
         return;
       }
-      if(this.type === 'pharmacy' && !this.visit_feedback) {
+      if (this.type === "pharmacy" && !this.visit_feedback) {
         this.$swal({
-          text: 'No Feedback Provided',
-          title: 'You provide a visit general feedback',
-          icon: 'warning'
-        })
+          text: "No Feedback Provided",
+          title: "You provide a visit general feedback",
+          icon: "warning"
+        });
         return;
       }
       this.onSave({
@@ -263,8 +306,11 @@ export default {
         feedback: this.visit_feedback,
         coach: this.data,
         products: this.products
-      })
+      });
     }
+  },
+  destroyed() {
+    this.data = {};
   }
 };
 </script>

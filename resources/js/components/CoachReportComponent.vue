@@ -13,10 +13,12 @@
           <td>
             <span
               >Date:
-              <span class="font-weight-bold text-primary export-highlight" v-if="!editMode">{{
-                report.visit_date
-              }}</span>
-              <input type="date" v-model="report.visit_date" v-if="editMode">
+              <span
+                class="font-weight-bold text-primary export-highlight"
+                v-if="!editMode"
+                >{{ report.visit_date }}</span
+              >
+              <input type="date" v-model="report.visit_date" v-if="editMode" />
             </span>
           </td>
           <td>
@@ -117,10 +119,7 @@
             <th>Mark</th>
           </tr>
         </thead>
-        <tbody
-          v-for="(row, key) in report.data"
-          :key="`report_${key}_data`"
-        >
+        <tbody v-for="(row, key) in report.data" :key="`report_${key}_data`">
           <tr class="export-table-headers">
             <td colspan="2" class="bg-dark text-light">{{ key }}</td>
           </tr>
@@ -132,8 +131,23 @@
             <td>
               <span v-if="!editMode">{{ degree }}</span>
               <select name="" id="" v-model="report.data[key][name]" v-else>
-                <option value="S">S</option>
-                <option value="U">U</option>
+                <template v-if="key === 'Customer Parameter'">
+                  <option value="HH">HH</option>
+                  <option value="HM">HM</option>
+                  <option value="HL">HL</option>
+                  <option value="MH">MH</option>
+                  <option value="MM">MM</option>
+                  <option value="ML">ML</option>
+                  <option value="LH">LH</option>
+                  <option value="LM">LM</option>
+                  <option value="LL">LL</option>
+                  <option value="NN">NN</option>
+                </template>
+                <template v-else>
+                  <option value="">N</option>
+                  <option value="S">S</option>
+                  <option value="U">U</option>
+                </template>
               </select>
             </td>
           </tr>
@@ -161,9 +175,9 @@ export default {
     },
     editMode: {
       type: Boolean,
-      default : () => false
+      default: () => false
     }
-  },
+  }
 };
 </script>
 

@@ -49,13 +49,15 @@ class CustomerRequestResource extends JsonResource
           'total_rx'    =>  $this->rx * $this->rx_months,
           'serial'      =>  $this->serial,
           'pharmacy1'   =>  $this->pharmacy_1->name,
-          'pharmacy2'   =>  $this->pharmacy_2?$this->pharmacy2->name: null,
-          'pharmacy3'   =>  $this->pharmacy_3?$this->pharmacy3->name: null,
-          'pharmacy4'   =>  $this->pharmacy_4?$this->pharmacy4->name: null,
+          'pharmacy2'   =>  $this->pharmacy_2?$this->pharmacy_2->name: null,
+          'pharmacy3'   =>  $this->pharmacy_3?$this->pharmacy_3->name: null,
+          'pharmacy4'   =>  $this->pharmacy_4?$this->pharmacy_4->name: null,
           'comment'     =>  json_decode($this->comment),
           'others'      =>  $this->others,
           'area_manager_approval' =>  $this->am_approval ? true : false,
           'business_unit_approval' =>  $this->rm_approval ? true : false,
+          'area_manager_approval_date' =>  $this->am_approval_date ,
+          'business_unit_approval_date' =>  $this->rm_approval_date ,
           'state'       =>  $this->state,
           'reject_due'  =>  $this->reject_due
         ];
