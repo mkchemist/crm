@@ -37,11 +37,7 @@ class PharmacyReportController extends Controller
         $reports = OTCPharmacyReport::with(['user', 'pharmacy']);
         $reports = $this->getRelatedUserData($reports);
         //$reports = CycleHelper::getCycleData($reports, 'visit_date');
-        $reports = $reports->get([
-          'id','name','type',
-          'key_person', 'address', 'brick','area',
-          'district', 'territory'
-        ]);
+        $reports = $reports->get();
 
         return response([
           'code'  =>  200,

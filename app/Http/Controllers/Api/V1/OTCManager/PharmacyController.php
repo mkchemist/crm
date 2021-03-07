@@ -22,7 +22,11 @@ class PharmacyController extends Controller
       $user = Auth::user();
       $pharmacies = Pharmacy::query();
       $pharmacies = $this->getQueryWithAssignment($user,$pharmacies);
-      $pharmacies = $pharmacies->get();
+      $pharmacies = $pharmacies->get([
+        'id','name','type',
+        'key_person', 'address', 'brick','area',
+        'district', 'territory'
+      ]);
       return response([
         'code'  =>  200,
         'data'  => $pharmacies
