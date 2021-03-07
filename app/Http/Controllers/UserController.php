@@ -68,7 +68,7 @@ class UserController extends Controller
             case 'otc-manager':
                 return redirect('/otc-manager');
             case 'accountant':
-                return redirect("/acc");
+                return redirect("/accountant");
             default:
                 return redirect('/rep');
         }

@@ -148,13 +148,27 @@ export default {
     },
     requestsData() {
       let requests = this.requests;
+      let isSuperUser = ["admin", "accountant"].includes(this.user.role);
       requests.forEach(request => {
-        request['cost'] = request.cost/request.quantity;
-        request['total_cost'] = request.cost;
-        request['line'] = request.user.line.join(" | ");
-        request['bu'] = this.getBUName(request);
-        request['am'] = this.getAMName(request);
-      })
+        request["cost"] = request.cost / request.quantity;
+        request["total_cost"] = request.cost;
+        request["line"] = request.user.line.join(" | ");
+        request["bu"] = this.getBUName(request);
+        request["am"] = this.getAMName(request);
+        if (isSuperUser) {
+          request["total_benefits"] =
+            parseInt(request.total_rx) *
+            parseInt(request.rx_months) *
+            this.priceList[request.product];
+          request["cost_benefit_ratio"] = (
+            (request["total_cost"] / request["total_benefits"]) *
+            100
+          ).toFixed(1);
+          request["recommendation"] = this.handleRequestRecommendationState(
+            request.cost_benefit_ratio
+          );
+        }
+      });
       return requests;
     },
     requests() {
@@ -162,6 +176,12 @@ export default {
         return this.filteredList;
       }
       return this.$store.getters["RequestModule/requests"];
+    },
+    priceList() {
+      return this.$store.getters["PriceListModule/priceList"];
+    },
+    isPriceListFetched() {
+      return this.$store.getters["PriceListModule/isFetched"];
     },
     user() {
       return this.$store.getters["UserModule/user"];
@@ -213,22 +233,21 @@ export default {
       return buttons;
     },
     cols() {
-      let cols = [
+      let shared_request_info = [
         {
           title: "Submitted",
-          name: row => {
-            let status;
-            switch (row.state) {
+          name: "state",
+          renderAs: (el, value) => {
+            switch (value) {
               case "created":
-                status = '<i class="fa fa-times text-danger"></i>';
+                $(el).html(`<i class="fa fa-times text-danger"><i> No`)
                 break;
               case "canceled":
-                status = `<i class="fa fa-trash text-muted"></i>`;
+                $(el).html(`<i class="fa fa-trash text-muted"><i> No`)
                 break;
               default:
-                status = `<i class="fa fa-check text-success"></i>`;
+                $(el).html(`<i class="fa fa-check text-success"><i> Yes`)
             }
-            return status;
           }
         },
         {
@@ -266,7 +285,9 @@ export default {
         {
           title: "Total Cost",
           name: "total_cost"
-        },
+        }
+      ];
+      let shared_user_info = [
         {
           title: "User",
           name: "user.name"
@@ -372,7 +393,103 @@ export default {
           name: "customer.territory"
         }
       ];
+      let cols = [];
+      let isSuperAdmin = ["admin", "accountant"].includes(this.user.role);
+      if (isSuperAdmin) {
+        cols = [
+          {
+            title: "Recommendation",
+            name: "recommendation",
+            renderAs: (x, d) => {
+              let color, icon;
+              if (d === "Recommended") {
+                color ="bg-success text-light"
+                icon ="fa fa-check-circle"
+              } else if (d === "Risky") {
+                color ="bg-warning text-dark"
+                icon ="fa fa-exclamation-triangle"
+              } else {
+                color ="bg-danger text-light"
+                icon ="fa fa-times-circle"
+              }
+              return $(x).html(`<span class="${color} p-1">${d} <span class="${icon}"></span></span>`)
+            }
+          },
+
+          ...shared_request_info,
+          {
+            title: "Total Request Benefits",
+            name: "total_benefits"
+          },
+           {
+            title: "Cost Benefit Ratio",
+            name: row => `${row.cost_benefit_ratio} %`
+          },
+          ...shared_user_info
+        ];
+      } else {
+        cols = [...shared_request_info, ...shared_request_info];
+      }
       return cols;
+    },
+    filterQueryKeys() {
+      let keys = [
+        {
+          title: "Type",
+          name: "type"
+        },
+        {
+          title: "Serial",
+          name: "serial"
+        },
+        {
+          title: "Apply Date",
+          name: "apply_date"
+        },
+        {
+          title: "State",
+          name: "state"
+        },
+        {
+          title: "Business Unit",
+          name: "bu"
+        },
+        {
+          title: "Area Manager",
+          name: "am"
+        },
+        {
+          title: "Requested By",
+          name: "user.name"
+        },
+        {
+          title: "Customer",
+          name: "customer.name"
+        },
+        {
+          title: "Specialty",
+          name: "customer.specialty"
+        },
+        {
+          title: "Approved By Area Manager",
+          name: "area_manager_approval"
+        },
+        {
+          title: "Approved By Business unit",
+          name: "business_unit_approval"
+        },
+        {
+          title: "Cost",
+          name: "total_cost"
+        }
+      ];
+      if (["admin", "accountant"].includes(this.user.role)) {
+        keys.push({
+          title: "Recommendation",
+          name: "recommendation"
+        });
+      }
+      return keys;
     }
   },
   data: () => ({
@@ -383,57 +500,7 @@ export default {
     set_cost: 1,
     shouldRenderFilter: false,
     filteredList: [],
-    showFilterBox: false,
-    filterQueryKeys: [
-      {
-        title: "Type",
-        name: "type"
-      },
-      {
-        title: "Serial",
-        name: "serial"
-      },
-      {
-        title: "Apply Date",
-        name: "apply_date"
-      },
-      {
-        title: "State",
-        name: "state"
-      },
-      {
-        title: "Business Unit",
-        name: "bu"
-      },
-      {
-        title: "Area Manager",
-        name: "am"
-      },
-      {
-        title: "Requested By",
-        name: "user.name"
-      },
-      {
-        title: "Customer",
-        name: "customer.name"
-      },
-      {
-        title: "Specialty",
-        name: "customer.specialty"
-      },
-      {
-        title: "Approved By Area Manager",
-        name: "area_manager_approval"
-      },
-      {
-        title: "Approved By Business unit",
-        name: "business_unit_approval"
-      },
-      {
-        title: "Cost",
-        name: "total_cost"
-      }
-    ]
+    showFilterBox: false
   }),
   methods: {
     openActionModal() {
@@ -655,33 +722,43 @@ export default {
     getBUName(row) {
       let users = this.users.filter(user => user.role === "rm");
       let name = "----------";
-     if(row.user.role === "rm") {
+      if (row.user.role === "rm") {
         return row.user.name;
       } else {
-
         users.map(user => {
           let rel = JSON.parse(user.user_relations);
-          if(rel[row.user.role].includes(row.user.id)) {
-            name =user.name;
+          if (rel[row.user.role].includes(row.user.id)) {
+            name = user.name;
           }
-        })
+        });
         return name;
       }
     },
     getAMName(row) {
       let users = this.users.filter(user => user.role === "am");
       let name = "----------";
-      if(["am", "rm"].includes(row.user.role)) {
+      if (["am", "rm"].includes(row.user.role)) {
         return row.user.name;
       } else {
         users.map(user => {
           let rel = JSON.parse(user.user_relations);
-          if(rel[row.user.role].includes(row.user.id)) {
-            name =user.name;
+          if (rel[row.user.role].includes(row.user.id)) {
+            name = user.name;
           }
-        })
+        });
         return name;
       }
+    },
+    handleRequestRecommendationState(ratio) {
+      let tag, color, icon;
+      if (ratio <= 10) {
+        tag = "Recommended";
+      } else if (10 < ratio <= 20) {
+        tag = "Risky";
+      } else {
+        tag = "Should be avoided";
+      }
+      return tag;
     }
   }
 };

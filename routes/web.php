@@ -91,7 +91,7 @@ Route::group(['middleware' => ['auth']], function () {
     })->where("name", ".*")->middleware('otc-manager');
 
     // Requests Manager routes
-    Route::get('/acc/{name?}', function() {
+    Route::get('/accountant/{name?}', function() {
       $hash_key = new ForceRefreshHashKeySetting;
         return view('pages.acc.index', ['hash_key' => $hash_key->all()]);
     })->where("name", ".*")->middleware('CanManageRequests');
@@ -102,13 +102,6 @@ Route::group(['middleware' => ['auth']], function () {
 
         return view('pages.admin.index', ['hash_key' => $hash_key->all()]);
     })->where("name", ".*")->middleware('adminOnly');
-
-    Route::group([
-      'prefix'  =>  '/accountant'
-    ], function() {
-      Route::get('/', 'Accountant\HomePageController@index');
-      Route::resource('/requests', 'Accountant\CustomerRequestController');
-    });
 });
 
 

@@ -25,7 +25,7 @@ export default {
       component: ReportHome
     },
     {
-      path: "add/pharmacy",
+      path: "add/pharmacy/:id?",
       component: AddPharmacyReport
     },
     {

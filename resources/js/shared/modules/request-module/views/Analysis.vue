@@ -13,6 +13,7 @@
           <option value="territory">Analysis by territory</option>
           <option value="rm" v-if="['admin', 'accountant'].includes(user.role)">Analysis by Business Unit</option>
           <option value="am" v-if="['admin', 'accountant'].includes(user.role)">Analysis by Area Manager</option>
+          <option value="recommendation" v-if="['admin', 'accountant'].includes(user.role)">Analysis by Recommendation</option>
         </select>
         <button class="btn btn-sm btn-primary" @click="getData">Start Analysis</button>
         <span>choose item and then press ok to view analysis</span>
@@ -38,7 +39,7 @@ import ChartView from '../../../../components/ChartView.vue';
 import DataTableComponent from '../../../../components/DataTableComponent.vue';
 import PageTitleComponent from "../../../../components/PageTitleComponent.vue";
 import { CHART_COLOR_LIST } from '../../../../helpers/constants';
-import { httpCall } from '../../../../helpers/http-service';
+import { asyncDataFlow, httpCall } from '../../../../helpers/http-service';
 
 export default {
   components: { PageTitleComponent, DataTableComponent, ChartView },
@@ -46,13 +47,19 @@ export default {
     analysisData() {
       let data = this.data;
       let res = [];
+      let backgroundColor;
+      if(this.type === "recommendation") {
+        backgroundColor = ["#4caf50", "#ffc107", "#f44336"]
+      } else {
+        backgroundColor = CHART_COLOR_LIST;
+      }
       let chart = {
         labels: [],
         data: [
           {
             label: `Analysis by Request ${this.type}`,
             data: [],
-            backgroundColor: CHART_COLOR_LIST,
+            backgroundColor,
             fill: false,
           }
         ]
@@ -83,6 +90,15 @@ export default {
     },
     canShowUsersAnalysis() {
       return ['admin', 'accountant'].includes(this.user.role)
+    },
+    requests() {
+      return this.$store.getters['RequestModule/requests'];
+    },
+    isRequestsFetched() {
+      return this.$store.getters['RequestModule/fetched'];
+    },
+    priceList() {
+      return this.$store.getters['PriceListModule/priceList']
     }
   },
   data: () => ({
@@ -111,6 +127,10 @@ export default {
           join = "customer";
       } else if(['dm','am','rm'].includes(this.type)) {
         join="user"
+      }else if(this.type === "recommendation") {
+        asyncDataFlow(this.generateRecommendationReports(),data => this.data = data);
+        /* this.data = this.generateRecommendationReports(); */
+        return ;
       }
       httpCall
         .get("v1/requests/search/"+this.type, {join})
@@ -118,6 +138,37 @@ export default {
           this.data = data.data;
         })
         .catch(err => console.log(err));
+    },
+    detectRequestRecommendationState(ratio) {
+      let state = "";
+      if(ratio >= 10) {
+        state = "Recommended";
+      } else if(10 < ratio <= 20 ) {
+        state ="Risky"
+      }else {
+        state = "Should be "
+      }
+
+      return state;
+    },
+    generateRecommendationReports() {
+      let requests = this.requests;
+      let risky = {Item: "Risky", total_cost: 0};
+      let recommended = {Item:"Recommended", total_cost : 0};
+      let shouldBeAvoided = {Item:"Should be avoided", total_cost: 0};
+      requests.map(req => {
+        let tb = req.total_rx * req.rx_months * this.priceList[req.product];
+        let ratio = ((req.cost *req.quantity) / tb) * 100;
+        if(ratio >= 10) {
+          recommended.total_cost += req.cost * req.quantity;
+        } else if(10 < ratio <= 20 ) {
+          risky.total_cost += req.cost * req.quantity;
+        }else {
+          shouldBeAvoided.total_cost += req.cost * req.quantity;
+        }
+      });
+
+      return [recommended, risky, shouldBeAvoided];
     }
   }
 };

@@ -54,20 +54,22 @@
         <no-data-to-show />
       </div>
       <loader-component v-else></loader-component>
+      <data-filter-box :show="showFilterModal" :onClose="closeFilterModal" :onFilter="onFilter" :onReset="onReset" :data="pharmacies" />
     </div>
   </div>
 </template>
 
 <script>
-import DataFilterBox from "../../../components/DataFilterBox";
 import DataTableComponent from '../../../components/DataTableComponent.vue';
 import { asyncDataFlow } from '../../../helpers/http-service';
 import { createDataTableButton, createEditButton, createViewButton } from '../../../helpers/data-table-helpers';
+import DataFilterBox from '../../../components/DataFilterBox.vue';
 
 export default {
   components: {
     DataFilterBox,
     DataTableComponent,
+    DataFilterBox,
 
   },
   computed: {
@@ -83,28 +85,38 @@ export default {
     tableButtons() {
       return [
         createDataTableButton(this, {
-          icon: 'fa-filter',
-          title: 'Filter',
-          action: () => this.openFilterModal(),
-          className: 'filter-btn'
-        }),
-        createDataTableButton(this, {
           icon: 'fa-plus-circle',
-          title: 'New Pharmacy',
+          title: 'New',
           action: () => this.$router.push('/pharmacies/new'),
-          className: 'new-btn'
         }),
+
+        {
+          text: `<i class="fas fa-filter"></i> Filter`,
+          action: (e,dt) =>  {
+            this.openFilterModal();
+          }
+        }
+        ,
+        {
+          text: `<i class="fa fa-handshake"></i> visit`,
+          action: (e,dt) => {
+            let row = dt.rows({selected: true}).data()[0];
+            if(!row) {
+              this.$toasted.error("Select pharmacy first");
+              return;
+            }
+            this.$router.push("/reports/add/pharmacy/"+row.id+`?name=${row.name}`)
+          }
+        },
         createViewButton(this,{
           field: 'id',
           url: '/pharmacies/view/',
           onError: () => this.$toasted.show('Must select an item'),
-          className:'view-btn'
         }),
         createEditButton(this, {
           field: 'id',
           url: '/pharmacies/edit/',
           onError: () => this.$toasted.show('Must select an item'),
-          className:'edit-btn'
         })
       ]
     }

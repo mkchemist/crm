@@ -1,9 +1,14 @@
 $dark-blue: #282830;
 $dark-grey: #282828;
 $blue: #03a9f4;
+$success: #38c172;
 
 .bg-dark-blue {
   background-color: $dark-blue;
+}
+
+.bg-blue {
+  background-color: $blue;;
 }
 
 .bg-dark-grey {
@@ -12,7 +17,7 @@ $blue: #03a9f4;
 
 .active-page {
   transition: .3s;
-  background-color: lighten($dark-blue, 15%);
+  background-color: darken($blue, 15%);
   border-radius: 5px;
 }
 
@@ -34,6 +39,4 @@ td,tr {
     }
   }
 }
-
-
 

@@ -24,7 +24,12 @@ class PharmacyController extends Controller
         $user = Auth::user();
         $pharmacies = Pharmacy::with(['otcReport']);
         $pharmacies = $this->getQueryWithAssignment($user, $pharmacies)
-        ->orderBy('name')->get();
+        ->orderBy('name')->get([
+          'id', 'name', 'type',
+          'key_person','address','brick',
+          'area','district',
+          'territory', 'phone'
+        ]);
 
         return response([
             'code' => 200,

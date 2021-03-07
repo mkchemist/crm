@@ -64,7 +64,7 @@ import { UrlHelper } from "../../helpers/http-service";
 export default {
   data: () => ({
     baseUrl: UrlHelper.base(),
-    logoUrl: UrlHelper.generate("images/Logo.png"),
+    logoUrl: UrlHelper.generate("images/logo.png"),
     changePassword: UrlHelper.generate('change-password'),
     logout: UrlHelper.generate('logout'),
     links: [

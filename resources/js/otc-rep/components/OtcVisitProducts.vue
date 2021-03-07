@@ -169,6 +169,7 @@
               <option :value="null"></option>
               <option value="Rx">Rx</option>
               <option value="OTC">OTC</option>
+              <option value="None">None</option>
             </select>
           </ValidationProvider>
         </div>
@@ -321,6 +322,7 @@
               <option :value="null"></option>
               <option value="Rx">Rx</option>
               <option value="OTC">OTC</option>
+              <option value="None">None</option>
             </select>
           </ValidationProvider>
         </div>

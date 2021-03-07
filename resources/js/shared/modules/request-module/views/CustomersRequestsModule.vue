@@ -31,16 +31,14 @@ import SidebarComponent from "../../../../components/SidebarComponent.vue";
 
 export default {
   mounted() {
-    this.$store
-      .dispatch("UserModule/startRelatedUserRequest")
-      .then(() => {
-        this.$store.dispatch("LocationsModule/startBricksFetchRequest");
-      })
-      .then(() => {
-        this.$store.dispatch("RequestModule/fetchRequestTypes");
-      }).then(() =>{
-        this.$store.dispatch("UserModule/startUserProductsRequest");
-      })
+    Promise.all([
+      this.$store.dispatch("PriceListModule/fetchProductPriceList"),
+      this.$store.dispatch("UserModule/startRelatedUserRequest"),
+      this.$store.dispatch("LocationsModule/startBricksFetchRequest"),
+      this.$store.dispatch("RequestModule/fetchRequestTypes"),
+      this.$store.dispatch("UserModule/startUserProductsRequest"),
+      this.$store.dispatch("RequestModule/fetchCustomerRequests")
+    ]);
   },
   components: { SidebarComponent },
 
@@ -71,24 +69,27 @@ export default {
           link: "/customers-requests/analysis"
         }
       ];
-      if(!["admin", "accountant".includes(this.user.role)]) {
+      if (!["admin", "accountant".includes(this.user.role)]) {
         view.push({
           title: "Shared with me",
           icon: "fa-share",
           link: "/customers-requests/shared/list"
-        })
+        });
       }
 
       if (["admin", "accountant"].includes(this.user.role)) {
-        views.push({
-          title: "Cost Center",
-          icon: "fa-flask",
-          link: "/customers-requests/cost-center"
-        },{
-          title: "Events",
-          icon: "fa-calendar-alt",
-          link: "/customers-requests/events"
-        });
+        views.push(
+          {
+            title: "Cost Center",
+            icon: "fa-flask",
+            link: "/customers-requests/cost-center"
+          },
+          {
+            title: "Events",
+            icon: "fa-calendar-alt",
+            link: "/customers-requests/events"
+          }
+        );
       }
 
       return views;

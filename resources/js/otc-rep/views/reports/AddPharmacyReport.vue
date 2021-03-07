@@ -38,7 +38,7 @@
             <!-- end of date -->
             <!-- pharmacy -->
             <div class="col-lg  mx-1 rounded form-group border p-2">
-              <div class="row mx-auto">
+              <div class="row mx-auto align-items-center">
                 <div class="col-lg">
                   <label for="pharmacy" class="text-muted">Pharmacy</label>
                   <ValidationProvider
@@ -58,36 +58,133 @@
                           errors[0] ? 'border border-danger' : ''
                         }`
                       "
-                      :disabled="!isFetched"
+                      :disabled="!isFetched||preset"
                     >
-                      <option :value="null">Select Pharmacy</option>
-                      <option
-                        :value="pharmacy.id"
-                        v-for="pharmacy in pharmacies"
-                        :key="pharmacy.id"
-                        >{{ pharmacy.name }}</option
-                      >
+                      <template v-if="!preset">
+                        <option :value="null">Select Pharmacy</option>
+                        <option
+                          :value="pharmacy.id"
+                          v-for="pharmacy in pharmacies"
+                          :key="pharmacy.id"
+                          >{{ pharmacy.name }}</option
+                        >
+                      </template>
+                      <option :value="visit.pharmacy">{{ presetPharmacyName }}</option>
                     </select>
                   </ValidationProvider>
                 </div>
-                <div class="col-lg-auto">
-                  <button
-                    class="btn btn-sm btn-primary"
-                    type="button"
-                    @click="openFilterBox"
-                  >
-                    <span class="fa fa-filter"></span>
-                    <span>Filter</span>
-                  </button>
-                  <data-filter-box
-                    :show="showFilterBox"
-                    :queryOnly="false"
-                    :onClose="closeFilterBox"
-                    :onReset="onReset"
-                    :onFilter="onFilter"
-                    :queryKeys="filterQueryKeys"
-                    :data="pharmacies"
-                  />
+                <div class="col-lg-auto" v-if="!preset">
+                  <div class="btn-group">
+                    <button
+                      class="btn btn-sm btn-primary"
+                      type="button"
+                      @click="openFilterBox"
+
+                    >
+                      <span class="fa fa-filter"></span>
+                      <span>Filter</span>
+                    </button>
+                    <button
+                      class="btn btn-sm btn-primary"
+                      type="button"
+                      @click="openSearchBox"
+                      :disabled="!pharmacies.length"
+                    >
+                      <span class="fa fa-search"></span>
+                    </button>
+                    <data-filter-box
+                      :show="showFilterBox"
+                      :queryOnly="false"
+                      :onClose="closeFilterBox"
+                      :onReset="onReset"
+                      :onFilter="onFilter"
+                      :queryKeys="filterQueryKeys"
+                      :data="pharmacies"
+                    />
+                    <modal-fade
+                      :show="search.show"
+                      @onClose="closeSearchBox"
+                      :headerStyle="`bg-primary text-light`"
+                      :id="search.id"
+                    >
+                      <template v-slot:header>
+                        <span>Search Pharmacies</span>
+                      </template>
+                      <template v-slot:body>
+                        <div class="form-inline">
+                          <input
+                            type="text"
+                            v-model="search.keyword"
+                            class="form-control form-control-sm col mx-2"
+                            placeholder="Enter pharmacy name"
+                            @keyup.enter="searchPharmacies"
+                          />
+                          <a
+                            href=""
+                            class="text-decoration-none"
+                            @click.prevent="searchPharmacies"
+                          >
+                            <span class="fa fa-search"></span>
+                          </a>
+                        </div>
+                        <div class="small my-2">
+                          <span>Total found : {{ search.result.length }}</span>
+                        </div>
+                        <div
+                          v-if="search.result.length"
+                          style="max-height:200px;overflow:auto"
+                        >
+                          <table
+                            class="table table-sm small table-responsive table-striped"
+                          >
+                            <thead>
+                              <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Brick</th>
+                                <th>Area</th>
+                                <th>District</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="p in search.result" :key="p.id">
+                                <th>
+                                  <button
+                                    class="btn btn-primary btn-sm"
+                                    type="button"
+                                    @click="selectPharmacy(p.id)"
+                                  >
+                                    <span class="fa fa-handshake"></span>
+                                  </button>
+                                </th>
+                                <td>{{ p.name }}</td>
+                                <td>{{ p.address }}</td>
+                                <td>{{ p.brick }}</td>
+                                <td>{{ p.area }}</td>
+                                <td>{{ p.district }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div v-else class="p-1">
+                          <p class="text-muted small">
+                            Enter keyword to search pharmacies
+                          </p>
+                        </div>
+                        <div class="form-group text-right">
+                          <button
+                            class="btn btn-sm btn-dark"
+                            @click="closeSearchBox"
+                            type="button"
+                          >
+                            <span class="fa fa-chevron-circle-left"></span>
+                            <span>Cancel</span>
+                          </button>
+                        </div>
+                      </template>
+                    </modal-fade>
+                  </div>
                 </div>
               </div>
             </div>
@@ -148,12 +245,17 @@
 
 <script>
 import DataFilterBox from "../../../components/DataFilterBox.vue";
+import ModalFade from "../../../components/ModalFade.vue";
 import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
 import OtcVisitProducts from "../../components/OtcVisitProducts.vue";
 export default {
-  components: { DataFilterBox, OtcVisitProducts },
+  components: { DataFilterBox, OtcVisitProducts, ModalFade },
   mounted() {
-    this.$store.dispatch("fetchPharmacies");
+    if(this.$route.params.id) {
+      this.presetPharmacyVisit(this.$route.params.id);
+    } else {
+      this.$store.dispatch("fetchPharmacies");
+    }
   },
   computed: {
     pharmacies() {
@@ -176,10 +278,23 @@ export default {
       date: new Date().format(),
       products: [],
       general_feedback: null,
-      type: 'regular'
-    }
+      type: "regular"
+    },
+    search: {
+      show: false,
+      result: [],
+      id: "search_modal",
+      keyword: null
+    },
+    preset: false,
+    presetPharmacyName: null
   }),
   methods: {
+    presetPharmacyVisit(id) {
+      this.visit.pharmacy = parseInt(id);
+      this.presetPharmacyName = this.$route.query.name;
+      this.preset = true;
+    },
     /* save report */
     saveReport() {
       if (!this.visit.products.length) {
@@ -226,6 +341,26 @@ export default {
     /* close filter */
     closeFilterBox() {
       this.showFilterBox = false;
+    },
+    /* open Search */
+    openSearchBox() {
+      this.search.show = true;
+    },
+    /* close Search */
+    closeSearchBox() {
+      this.search.show = false;
+    },
+    searchPharmacies(e) {
+      if(!this.search.keyword) {
+        return;
+      }
+      this.search.result = this.pharmacies.filter(p =>
+        p.name.toLowerCase().includes(this.search.keyword.toLowerCase())
+      );
+    },
+    selectPharmacy(id) {
+      this.visit.pharmacy = id;
+      this.closeSearchBox();
     }
   }
 };

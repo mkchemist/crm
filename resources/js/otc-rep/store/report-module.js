@@ -31,9 +31,9 @@ export default {
   mutations: {},
   actions: {
     fetchPharmacyReports(module, payload = {}) {
-      module.state.pharmacyReports = [];
-      module.state.pharmacyReportsFetched = false;
       if (!module.state.pharmacyReports.length || payload.force) {
+        module.state.pharmacyReports = [];
+        module.state.pharmacyReportsFetched = false;
         let start = null;
         let end = null;
         if(payload.start) {

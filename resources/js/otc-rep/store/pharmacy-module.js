@@ -11,7 +11,7 @@ export default {
   },
   mutations: {},
   actions: {
-    fetchPharmacies(module, payload) {
+    async fetchPharmacies(module, payload) {
       if (!module.state.pharmacies.length || payload) {
         module.state.pharmacies = [];
         module.state.fetched = false;

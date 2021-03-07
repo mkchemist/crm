@@ -39,6 +39,7 @@ class MissedCustomerController extends Controller
       })
       ->where('plan.user_id',$user->id)
       ->whereBetween('plan.plan_date', [$cycle->start, $today])
+      ->whereBetween('report.visit_date', [$cycle->start, $today])
       ->groupBy('Customer','Specialty','Rep','Parameter','brick','address','area')
       ->having('Difference', '!=', 0)
       ->get();

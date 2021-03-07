@@ -5,7 +5,7 @@ import ErrorPage from "../../components/ErrorPage.vue"
 
 Vue.use(VueRouter)
 
-let base = document.getElementById("APP_BASE_URI").value + "acc";
+let base = document.getElementById("APP_BASE_URI").value + "accountant";
 export default new VueRouter({
   mode: 'history',
   base,
@@ -17,6 +17,10 @@ export default new VueRouter({
     {
       path: "*",
       component: ErrorPage
+    },
+    {
+      path: "/reports",
+      redirect: "/"
     }
   ]
 })
