@@ -13,8 +13,11 @@ import Navbar from './components/Navbar.vue'
 export default {
   components: { Navbar },
   mounted() {
-    this.$store.dispatch('getAllRelations')
-    this.$store.dispatch('fetchingApplicationSettings')
+    Promise.all([
+      this.$store.dispatch('getAllRelations'),
+     this.$store.dispatch('fetchingApplicationSettings')
+
+    ])
   }
 }
 </script>

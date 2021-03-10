@@ -26,7 +26,8 @@ class PharmacyResource extends JsonResource
           'territory'   =>  $this->territory,
           'reports'     =>  count($this->otcReport),
           'reports_details'=> $this->otcReport,
-          'phone'       =>  $this->phone
+          'phone'       =>  $this->phone,
+          'isFavorite'  => count($this->favorite) ? 'yes': 'No'
         ];
     }
 }

@@ -26,7 +26,7 @@
     </div> -->
     <!-- data view -->
     <div class="p-2">
-      <div v-if="pharmacies.length">
+      <div v-if="pharmacies.length && isPharmaciesFetched">
         <!-- <table-component
           :data="pharmacies"
           :heads="heads"
@@ -48,34 +48,49 @@
             </td>
           </template>
         </table-component> -->
-        <data-table-component :data="pharmacies" :cols="heads" :buttons="tableButtons" />
+        <data-table-component
+          :data="pharmacies"
+          :cols="heads"
+          :buttons="tableButtons"
+        />
       </div>
       <div v-else-if="isPharmaciesFetched">
         <no-data-to-show />
       </div>
       <loader-component v-else></loader-component>
-      <data-filter-box :show="showFilterModal" :onClose="closeFilterModal" :onFilter="onFilter" :onReset="onReset" :data="pharmacies" />
+      <data-filter-box
+        :show="showFilterModal"
+        :onClose="closeFilterModal"
+        :onFilter="onFilter"
+        :onReset="onReset"
+        :data="pharmacies"
+        :queryKeys="queryKeys"
+        :queryOnly="false"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import DataTableComponent from '../../../components/DataTableComponent.vue';
-import { asyncDataFlow } from '../../../helpers/http-service';
-import { createDataTableButton, createEditButton, createViewButton } from '../../../helpers/data-table-helpers';
-import DataFilterBox from '../../../components/DataFilterBox.vue';
+import DataTableComponent from "../../../components/DataTableComponent.vue";
+import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
+import {
+  createDataTableButton,
+  createEditButton,
+  createViewButton
+} from "../../../helpers/data-table-helpers";
+import DataFilterBox from "../../../components/DataFilterBox.vue";
 
 export default {
   components: {
     DataFilterBox,
     DataTableComponent,
-    DataFilterBox,
-
+    DataFilterBox
   },
   computed: {
     pharmacies() {
-      if(this.shouldRenderFilter) {
-        return this.filteredList
+      if (this.shouldRenderFilter) {
+        return this.filteredList;
       }
       return this.$store.getters.allPharmacies;
     },
@@ -85,40 +100,52 @@ export default {
     tableButtons() {
       return [
         createDataTableButton(this, {
-          icon: 'fa-plus-circle',
-          title: 'New',
-          action: () => this.$router.push('/pharmacies/new'),
+          icon: "fa-plus-circle",
+          title: "",
+          action: () => this.$router.push("/pharmacies/new")
         }),
 
         {
-          text: `<i class="fas fa-filter"></i> Filter`,
-          action: (e,dt) =>  {
+          text: `<i class="fas fa-filter" title="Filter list"></i>`,
+          action: (e, dt) => {
             this.openFilterModal();
           }
-        }
-        ,
+        },
         {
-          text: `<i class="fa fa-handshake"></i> visit`,
-          action: (e,dt) => {
-            let row = dt.rows({selected: true}).data()[0];
-            if(!row) {
+          text: `<i class="fa fa-handshake" title="visit pharmacy"></i>`,
+          action: (e, dt) => {
+            let row = dt.rows({ selected: true }).data()[0];
+            if (!row) {
               this.$toasted.error("Select pharmacy first");
               return;
             }
-            this.$router.push("/reports/add/pharmacy/"+row.id+`?name=${row.name}`)
+            this.$router.push(
+              "/reports/add/pharmacy/" + row.id + `?name=${row.name}`
+            );
           }
         },
-        createViewButton(this,{
-          field: 'id',
-          url: '/pharmacies/view/',
-          onError: () => this.$toasted.show('Must select an item'),
+        {
+          text: `<i class="fa fa-star" title="Add to Favorite"></i>`,
+          action: (e, dt) => {
+            let row = dt.rows({ selected: true }).data()[0];
+            if (!row) {
+              this.$toasted.error("Select pharmacy first");
+              return;
+            }
+            this.linkPharmacyToFavoriteList(row.id);
+          }
+        },
+        createViewButton(this, {
+          field: "id",
+          url: "/pharmacies/view/",
+          onError: () => this.$toasted.show("Must select an item")
         }),
         createEditButton(this, {
-          field: 'id',
-          url: '/pharmacies/edit/',
-          onError: () => this.$toasted.show('Must select an item'),
+          field: "id",
+          url: "/pharmacies/edit/",
+          onError: () => this.$toasted.show("Must select an item")
         })
-      ]
+      ];
     }
   },
   data: () => ({
@@ -141,7 +168,7 @@ export default {
       },
       {
         title: "Visits",
-        name: 'reports'
+        name: "reports"
       },
       {
         title: "Address",
@@ -166,7 +193,37 @@ export default {
     ],
     showFilterModal: false,
     shouldRenderFilter: false,
-    filteredList: []
+    filteredList: [],
+    queryKeys: [
+      {
+        title: "Type",
+        name: "type"
+      },
+      {
+        title: "Visits",
+        name: "reports"
+      },
+      {
+        title: "Address",
+        name: "address"
+      },
+      {
+        title: "Brick",
+        name: "brick"
+      },
+      {
+        title: "Area",
+        name: "area"
+      },
+      {
+        title: "District",
+        name: "district"
+      },
+      {
+        title: "Territory",
+        name: "territory"
+      }
+    ]
   }),
   methods: {
     openFilterModal() {
@@ -180,13 +237,30 @@ export default {
       this.filteredList = [];
       asyncDataFlow(data, data => {
         this.filteredList = data;
-      })
+      });
     },
     onReset() {
       this.filteredList = [];
-      asyncDataFlow(new Array, d => {
-        this.shouldRenderFilter=false;
-      })
+      asyncDataFlow(new Array(), d => {
+        this.shouldRenderFilter = false;
+      });
+    },
+    linkPharmacyToFavoriteList(id) {
+      try {
+        return httpCall
+          .post("v1/favorite-pharmacies", { id })
+          .then(() => {
+            this.$toasted.success("Added to List");
+          })
+          .catch(err => {
+            let { status, data } = err.response;
+            if (status === 409) {
+              this.$toasted.info(data.message);
+            }
+          });
+      } catch (e) {
+        console.log("We found an issue");
+      }
     }
   }
 };

@@ -10,7 +10,7 @@ export const Api = document.getElementById('APP_API_URL').value;
 
 export const Token = document.getElementById('token').value;
 
-const generateApiUrl = (path,query = {}) => {
+const buildHttpQuery = (query = {}) => {
   let q = {};
   for(let key in query) {
     if(query[key]) {
@@ -18,7 +18,15 @@ const generateApiUrl = (path,query = {}) => {
     }
   }
   let queryString = Object.keys(q).map(key => `${key}=${q[key]}`).join('&');
-  return Api+path+'?api_token='+Token+'&'+queryString;
+  if(Object.keys(q).length) {
+    queryString = '&'+queryString;
+  }
+  return queryString;
+}
+
+const generateApiUrl = (path,query = {}) => {
+  let queryString = buildHttpQuery(query);
+  return Api+path+'?api_token='+Token+queryString;
 }
 
 export const httpCall = {};
@@ -28,7 +36,7 @@ export const httpCall = {};
 httpCall.get = (path,query, base = false) => {
   let url = generateApiUrl(path, query);
   if(base) {
-    url = path;
+    url = path+buildHttpQuery(query);
   }
   return axios.get(url)
 }
@@ -52,6 +60,12 @@ export const UrlHelper = {
   },
   generate: function(url="") {
     return this.base()+url;
+  },
+  addToken: function (url) {
+    if(url.includes('?')) {
+      return url + '&api_token='+Token;
+    }
+    return url+'?api_token='+Token;
   }
 }
 

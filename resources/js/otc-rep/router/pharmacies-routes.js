@@ -6,6 +6,7 @@ import ViewPharmacy from '../views/pharmacies/ViewPharmacy.vue'
 import ViewPharmacyInfo from "../views/pharmacies/ViewPharmacyInfo.vue"
 import ViewPharmacyReport from "../views/pharmacies/ViewPharmacyReport.vue";
 import ViewPharmacyHealthDayReport from "../views/pharmacies/ViewPharmacyHealthDayReport.vue";
+import PharmacyFavoriteList from "../../components/PharmacyFavoriteList.vue"
 
 export default {
   path: '/pharmacies',
@@ -40,6 +41,10 @@ export default {
           component: ViewPharmacyHealthDayReport
         }
       ]
+    },
+    {
+      path: "favorite",
+      component: PharmacyFavoriteList
     }
   ]
 }

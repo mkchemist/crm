@@ -109,6 +109,20 @@ export default {
           dataSrc: this.groupBy
         }
       };
+    },
+    generateExportFileName() {
+      try {
+        let user = document.getElementById("user").value;
+        user = JSON.parse(user);
+        user = user.name;
+        let route = this.$route.path.split("/").join("_");
+        return `${user}_${route}_${new Date()
+          .toLocaleDateString()
+          .replace(/\//gm, "_")}`;
+      } catch (e) {
+        console.log(e);
+        return "";
+      }
     }
   },
   methods: {
@@ -124,7 +138,11 @@ export default {
       let buttons = [
         {
           extend: "excel",
-          text: '<i class="fa fa-file-excel"></i> Excel'
+          text: '<i class="fa fa-file-excel"></i> Excel',
+           filename: this.generateExportFileName,
+          messageTop: "This Table Export From NPMT CRM System",
+          title: this.generateExportFileName,
+          sheetName: 'Export'
         },
         {
           extend: "pdf",

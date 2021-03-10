@@ -69,7 +69,6 @@ export default {
       this.fetched = false;
       return httpCall.get('rm/v1/customers/'+id)
       .then(({data}) => {
-        console.log(data);
         this.handleResponse(data, data => {
           this.customer = data.data;
           this.fetched = true;

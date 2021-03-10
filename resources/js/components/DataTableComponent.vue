@@ -29,7 +29,11 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-sm btn-primary" type="button" @click="saveNewGroupBy">
+            <button
+              class="btn btn-sm btn-primary"
+              type="button"
+              @click="saveNewGroupBy"
+            >
               <span class="fa fa-check-circle"></span>
               <span>Ok</span>
             </button>
@@ -83,6 +87,10 @@ export default {
     selectable: {
       type: Boolean,
       default: () => true
+    },
+    exportFileName: {
+      type: String,
+      default: () => null
     }
   },
   watch: {
@@ -92,16 +100,23 @@ export default {
     }
   },
   data: () => ({
-    defaultButtons: [
-      {
-        extend: "excel",
-        text: '<i class="fa fa-file-excel"></i> Excel'
-      }
-    ],
     table: null,
     groupBy: []
   }),
   computed: {
+    defaultButtons() {
+      let defaultButtons = [
+        {
+          extend: "excel",
+          text: '<i class="fa fa-file-excel"></i> Excel',
+          filename: this.generateExportFileName,
+          messageTop: "This Table Export From NPMT CRM System",
+          title: this.generateExportFileName,
+          sheetName: 'Export'
+        }
+      ];
+      return defaultButtons;
+    },
     hasGroupByExt() {
       if (!this.groupBy.length) {
         return {};
@@ -111,6 +126,26 @@ export default {
           dataSrc: this.groupBy
         }
       };
+    },
+    generateExportFileName() {
+      try {
+        let user = document.getElementById("user").value;
+        user = JSON.parse(user);
+        user = user.name;
+        let route = this.$route.path.split("/").join("_");
+        return `${user}_${route}_${new Date()
+          .toLocaleDateString()
+          .replace(/\//gm, "_")}`;
+      } catch (e) {
+        console.log(e);
+        return "";
+      }
+    }
+  },
+  watch: {
+    data: function($new, $old) {
+      this.table.destroy();
+      this.createTable();
     }
   },
   mounted() {
@@ -136,8 +171,7 @@ export default {
           searchPlaceholder: "Search ..."
         },
         ...this.hasGroupByExt,
-        colReorder: true,
-
+        colReorder: true
       });
     },
     prepareDataColumns(data) {
@@ -153,8 +187,8 @@ export default {
         if (this.notSearchCols.includes(col.nam)) {
           data["searchable"] = false;
         }
-        if(col.renderAs) {
-          data['fnCreatedCell'] = col.renderAs
+        if (col.renderAs) {
+          data["fnCreatedCell"] = col.renderAs;
         }
         cols.push(data);
       });
@@ -180,7 +214,7 @@ export default {
     saveNewGroupBy() {
       this.table.destroy();
       this.createTable();
-      $("#group_by_modal").modal('hide')
+      $("#group_by_modal").modal("hide");
     }
   },
   destroyed() {

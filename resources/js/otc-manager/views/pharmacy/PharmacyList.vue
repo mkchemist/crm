@@ -19,7 +19,11 @@
           </select>
         </div>
         <div class="form-group text-right p-2">
-          <button class="btn btn-sm btn-primary" @click="filter" :disabled="!rep">
+          <button
+            class="btn btn-sm btn-primary"
+            @click="filter"
+            :disabled="!rep"
+          >
             <span class="fa fa-check-circle"></span>
             <span>Ok</span>
           </button>
@@ -37,7 +41,7 @@
           <span class="font-weight-bold">Pharmacy List</span>
         </p>
         <div class="p-2">
-          <div class="p-2" v-if="pharmacies.length">
+          <div class="p-2" v-if="pharmacies.length && fetched">
             <data-table-component
               :data="pharmacies"
               :cols="cols"
@@ -48,30 +52,50 @@
           <div v-else-if="fetched">
             <no-data-to-show />
           </div>
-          <loader-component v-else></loader-component>
+          <loader-component
+            v-else
+            :text="
+              `loading ${pagination.current} of ${
+                pagination.last ? pagination.last : 'calculating'
+              }`
+            "
+          ></loader-component>
         </div>
       </div>
     </div>
+    <data-filter-box
+      :show="showFilterBox"
+      :onClose="closeFilterBox"
+      :onFilter="onFilterPharmacies"
+      :onReset="onResetFilter"
+      :data="pharmacies"
+      :queryKeys="queryKeys"
+      :queryOnly="false"
+    />
   </div>
 </template>
 
 <script>
+import DataFilterBox from "../../../components/DataFilterBox.vue";
 import DataTableComponent from "../../../components/DataTableComponent.vue";
 import { createDataTableButton } from "../../../helpers/data-table-helpers";
-import { asyncDataFlow } from '../../../helpers/http-service';
+import { asyncDataFlow } from "../../../helpers/http-service";
 export default {
-  components: { DataTableComponent },
+  components: { DataTableComponent, DataFilterBox },
 
   mounted() {},
   computed: {
     pharmacies() {
-      if(this.shouldRenderFilter) {
+      if (this.shouldRenderFilter) {
         return this.filteredList;
       }
       return this.$store.getters.allPharmacies;
     },
     fetched() {
       return this.$store.getters.isPharmaciesFetched;
+    },
+    pagination() {
+      return this.$store.getters.pharmacyPagination;
     },
     buttons() {
       return [
@@ -87,9 +111,12 @@ export default {
               return;
             }
             this.$router.push("/pharmacies/view/" + row.id);
-          },
-          className: "view-btn"
-        })
+          }
+        }),
+        {
+          text: `<i class="fa fa-filter"></i> Filter`,
+          action: () => this.openFilterBox()
+        }
       ];
     },
     reps() {
@@ -138,7 +165,30 @@ export default {
     ],
     rep: null,
     shouldRenderFilter: false,
-    filteredList: []
+    filteredList: [],
+    showFilterBox: false,
+    queryKeys: [
+      {
+        title: "Type",
+        name: "type"
+      },
+      {
+        title: "Brick",
+        name: "brick"
+      },
+      {
+        title: "Area",
+        name: "area"
+      },
+      {
+        title: "District",
+        name: "district"
+      },
+      {
+        title: "Territory",
+        name: "territory"
+      }
+    ]
   }),
   methods: {
     /**
@@ -150,7 +200,7 @@ export default {
      *
      */
     filter() {
-      if(this.rep === null) {
+      if (this.rep === null) {
         return;
       }
       let { area, district, territory, region } = this.rep;
@@ -159,14 +209,15 @@ export default {
       territory = JSON.parse(territory);
       region = JSON.parse(region);
       let filtered = this.$store.getters.allPharmacies;
-      filtered = filtered.filter(item => region.includes(item.region))
-                .filter(item => territory.includes(item.territory))
-                .filter(item=> district.includes(item.district))
-                .filter(item => area.includes(item.area))
+      filtered = filtered
+        /*  .filter(item => region.includes(item.region))
+        .filter(item => territory.includes(item.territory))
+        .filter(item => district.includes(item.district)) */
+        .filter(item => area.includes(item.area))
+        .filter(item => district.includes(item.district))
       this.shouldRenderFilter = true;
       this.filteredList = [];
-      asyncDataFlow(filtered, data => this.filteredList = data);
-
+      asyncDataFlow(filtered, data => (this.filteredList = data));
     },
     /**
      * reset rep filters
@@ -176,7 +227,28 @@ export default {
     reset() {
       this.filteredList = [];
       this.rep = null;
-      asyncDataFlow(this.$store.getters.allPharmacies, data => this.filteredList = data);
+      asyncDataFlow(
+        this.$store.getters.allPharmacies,
+        data => (this.filteredList = data)
+      );
+    },
+    openFilterBox() {
+      this.showFilterBox = true;
+    },
+    closeFilterBox() {
+      this.showFilterBox = false;
+    },
+    onFilterPharmacies(q, data) {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      asyncDataFlow(data, data => (this.filteredList = data));
+    },
+    onResetFilter() {
+      this.filteredList = [];
+      asyncDataFlow([], data => {
+        this.filteredList = [];
+        this.shouldRenderFilter = false;
+      });
     }
   }
 };

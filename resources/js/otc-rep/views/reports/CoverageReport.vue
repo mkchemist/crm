@@ -4,7 +4,7 @@
     <div class="p-2">
       <div v-if="reports.data.length" class="row mx-auto">
         <div class="col-lg">
-          <data-table-component :data="reports.data" :cols="cols"/>
+          <data-table-component :data="reports.data" :cols="cols" :buttons="buttons"/>
         </div>
         <div class="col-lg">
           <chart-view :labels="reports.chartData.labels" :chartData="reports.chartData.data" />
@@ -88,6 +88,14 @@ export default {
         data: reports,
         chartData
       };
+    },
+    buttons() {
+      return [
+        {
+          text: '<i class="fa fa-chevron-circle-left"></i> back',
+          action: () => this.$router.push("/reports")
+        }
+      ]
     }
   }
 }

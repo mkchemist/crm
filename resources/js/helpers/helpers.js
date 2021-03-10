@@ -72,6 +72,9 @@ export function filterData(data, param, check = true) {
     if (checkQuery(item)) {
       if (typeof param === "string") {
         let key = ObjectNotation(item, param);
+        if(typeof key === "string") {
+          key = capitalize(key);
+        }
         if (!res[key]) {
           res[key] = [];
         }
@@ -83,6 +86,9 @@ export function filterData(data, param, check = true) {
             res[paramName] = {};
           }
           let key = ObjectNotation(item, paramName);
+          if(typeof key === "string") {
+            key = capitalize(key);
+          }
           if (!res[paramName][key]) {
             res[paramName][key] = [];
           }
@@ -127,6 +133,7 @@ const isNumber = v => "number" === typeof v;
  */
 const isNull = v => v === null || v === "";
 
+
 /**
  * Exceptions
  */
@@ -149,16 +156,18 @@ function compare(a, b, item, factor) {
     throw new Error(INVALID_OBJECT_TYPE_ERROR);
   }
 
-  let val1 = a[item];
-  let val2 = b[item];
-
+  let val1 = ObjectNotation(a,item);
+  let val2 = ObjectNotation(b,item);
+  if(val1 === null || val2 === null || typeof val1 === "boolean" || typeof val2 === "boolean") {
+    return 0;
+  }
   if (
     !isString(val1) &&
     !isString(val2) &&
     !isNumber(val1) &&
     !isNumber(val2)
   ) {
-    throw new Error(INVALID_ITEM_TYPE_ERROR);
+    return 0;
   }
 
   if (isString(val1)) {
@@ -337,4 +346,40 @@ export const serialize = (container, keys = []) => {
     }
   })
   return container;
+}
+
+/**
+ * log console with coloring
+ *
+ * @param {string} message
+ * @param {string} type
+ */
+export const logger = (message, type = 'success', withStack = false) => {
+  let bg,color;
+  switch(type) {
+    case 'success' :
+      bg = '#38c172';
+      color='white';
+      break;
+    case 'danger' :
+      bg = '#f44336';
+      color='white';
+      break;
+    case 'info' :
+      bg = '#00bcd4';
+      color='white';
+      break;
+    default:
+      bg = 'white';
+      color='white';
+  }
+  console.log(`%c [${new Date().toLocaleTimeString().split('T')[0]}]: ${message} `,`background:${bg};color:${color}`)
+  if(withStack) {
+    console.log(withStack);
+  }
+}
+
+
+export function capitalize(v) {
+  return v[0].toUpperCase()+v.slice(1);
 }

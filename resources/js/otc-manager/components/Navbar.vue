@@ -4,19 +4,11 @@
       <router-link to="/" class="navbar-brand">
         <img :src="logoUrl" alt="NPMT logo" class="img-fluid logo-img" />
         <br />
-        <span class="small"
-          >Welcome :
-          <span class="font-weight-bold text-success">{{
-            user.name
-          }}</span></span
-        >
-        <br />
-        <span class="small"
-          >Line:
-          <span class="font-weight-bold text-success">{{
-            $store.getters.userLine
-          }}</span></span
-        >
+        <p class="mb-0 small text-muted pl-4">
+          <span class="font-weight-bold text-success">{{ user.name }}</span>
+          <span> | </span>
+          <span class="font-weight-bold text-success">{{ $store.getters.userLine }}</span>
+        </p>
       </router-link>
       <button
         type="button"
@@ -64,7 +56,7 @@ import { UrlHelper } from "../../helpers/http-service";
 export default {
   data: () => ({
     baseUrl: UrlHelper.base(),
-    logoUrl: UrlHelper.generate("images/Logo.png"),
+    logoUrl: UrlHelper.generate("images/logo.png"),
     changePassword: UrlHelper.generate('change-password'),
     logout: UrlHelper.generate('logout'),
     links: [

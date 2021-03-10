@@ -83,7 +83,6 @@
         <label for="competitor" class="text-muted small">Competitor</label>
         <select
           name="competitor"
-          id="competitor"
           class="form-control form-control-sm"
           v-model="product.competitor"
         >

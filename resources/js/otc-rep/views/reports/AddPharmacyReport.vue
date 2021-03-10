@@ -100,6 +100,7 @@
                       :onFilter="onFilter"
                       :queryKeys="filterQueryKeys"
                       :data="pharmacies"
+                      :sortBy="`name`"
                     />
                     <modal-fade
                       :show="search.show"
@@ -148,7 +149,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr v-for="p in search.result" :key="p.id">
+                              <tr v-for="p in search.result" :key="`search_result_${p.id}`">
                                 <th>
                                   <button
                                     class="btn btn-primary btn-sm"
@@ -272,7 +273,20 @@ export default {
     showFilterBox: false,
     shouldRenderFilter: false,
     filteredList: [],
-    filterQueryKeys: ["area", "brick"],
+    filterQueryKeys: [
+      {
+        title : "Area",
+        name: "area"
+      },
+      {
+        title: "Brick",
+        name: "brick"
+      },
+      {
+        title: "Favorite",
+        name: "isFavorite"
+      }
+    ],
     visit: {
       pharmacy: null,
       date: new Date().format(),
@@ -322,6 +336,7 @@ export default {
      * @param {Array} data [filtered list]
      */
     onFilter(query, data) {
+      console.log(query)
       this.shouldRenderFilter = true;
       this.filteredList = [];
       asyncDataFlow(data, data => (this.filteredList = data));

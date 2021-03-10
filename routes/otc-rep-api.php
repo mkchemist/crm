@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
  * @version 1
  */
 
+Route::get('v1/reports/pharmacy/analysis/coverage','PharmacyReportController@coverageReport');
+Route::get('v1/reports/pharmacy/analysis/order','PharmacyReportController@orderAnalysis');
 Route::group([
   'prefix'  =>  'v1'
 ], function () {
@@ -21,7 +23,6 @@ Route::group([
   Route::apiResource('planner', 'PlannerController');
   /* Reports Routes */
   Route::group(['prefix' => 'reports'], function() {
-    Route::get('pharmacy/analysis/coverage','PharmacyReportController@coverageReport');
     Route::apiResource('pharmacy', 'PharmacyReportController');
   });
 });

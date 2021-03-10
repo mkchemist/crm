@@ -105,7 +105,7 @@ class UserCustomersController extends Controller
       $customers = Customer::with('params')
       ->where('name','like', "%$name%");
       $customers = $this->getQueryWithAssignment($this->user, $customers);
-      if($request->brick) {
+      if($request->brick !== "null") {
         $customers = $customers->where('brick', $request->brick);
       }
       if($request->paginate) {

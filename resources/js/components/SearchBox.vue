@@ -7,6 +7,11 @@
           placeholder="search customer"
           v-model="search"
           class="form-control form-control-sm col mx-1"
+          autofocus="true"
+          autocomplete="true"
+          @keyup.enter="querySearchKeyword()"
+          @keyup.right="querySearchKeyword(pagination_meta.next_page_url, true)"
+          @keyup.left="querySearchKeyword(pagination_meta.prev_page_url, true)"
         />
         <button
           type="button"
@@ -42,6 +47,7 @@
           class="btn btn-sm btn-primary"
           :disabled="!pagination_meta.prev_page_url"
           @click="querySearchKeyword(pagination_meta.prev_page_url, true)"
+
         >
           <span class="fa fa-chevron-circle-left"></span>
         </button>
@@ -54,6 +60,7 @@
           class="btn btn-sm btn-primary"
           :disabled="!pagination_meta.next_page_url"
           @click="querySearchKeyword(pagination_meta.next_page_url, true)"
+
         >
           <span class="fa fa-chevron-circle-right"></span>
         </button>
@@ -124,7 +131,7 @@ export default {
       } else {
         url = this.prepareUrl(url);
       }
-          this.fetched = false;
+      this.fetched = false;
       this.searchResult = [];
 
       httpCall[this.method](url, { name: this.search, paginate: rpp, brick: this.searchBrick },base)

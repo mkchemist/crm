@@ -38,8 +38,7 @@ class Pharmacy extends Model
    */
   public function otcReport()
   {
-    $model = $this->hasMany('App\OTCPharmacyReport','pharmacy_id', 'id')
-    ->orderBy('visit_date');
+    $model = $this->hasMany('App\OTCPharmacyReport','pharmacy_id', 'id');
     $active = new ActiveCycleSetting;
     $cycle = $active->all();
     return $this->getRelatedUserData($model,'visit_date',[$cycle->start, $cycle->end]);
@@ -49,5 +48,11 @@ class Pharmacy extends Model
   public function added_by()
   {
     return $this->belongsTo('App\User','added_by', 'id');
+  }
+
+  public function favorite()
+  {
+    $model = $this->hasMany('App\PharmacyFavoriteList');
+    return $this->getRelatedUserData($model,'user_id');
   }
 }

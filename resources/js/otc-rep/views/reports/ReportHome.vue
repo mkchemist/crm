@@ -49,7 +49,7 @@ export default {
       {
         title: 'View Orders',
         icon: 'fa-book-reader',
-        link: '/reports/view/order'
+        link: '/reports/view/orders'
       },
       {
         title: "View Field Activity Report",

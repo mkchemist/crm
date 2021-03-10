@@ -122,7 +122,8 @@ export default {
     },
     refreshPlans() {
       this.$store.dispatch('fetchPlans', {force: true});
-    }
+    },
+
   }
 };
 </script>

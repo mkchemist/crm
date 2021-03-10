@@ -37,11 +37,6 @@ export default {
         icon: 'fa-plus-circle',
         link: '/reports/add/activity-report?type=non-field-activity'
       },
-      {
-        title: 'Create new Request',
-        icon: 'fa-plus-circle',
-        link: '/reports/add/request'
-      },
     ],
      viewLinks: [
      /*  {
@@ -53,6 +48,11 @@ export default {
         title: 'Coaching',
         icon: 'fa-book-reader',
         link: '/coach'
+      },
+      {
+        title: "Single",
+        icon: "fa-book-reader",
+        link: "/single-visit"
       },
       {
         title: 'View PM reports',
@@ -78,7 +78,8 @@ export default {
         title: 'View Missed customer',
         icon: 'fa-book-reader',
         link: '/reports/view/missed-customers'
-      }
+      },
+
     ],
      analysisLinks: [
       {

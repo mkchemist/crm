@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { filterData, ObjectNotation } from "../helpers/helpers";
+import { filterData, ObjectNotation, sortBy } from "../helpers/helpers";
 import ModalFade from "./ModalFade.vue";
 export default {
   components: {
@@ -116,6 +116,10 @@ export default {
     onReset: {
       type: Function,
       required: true
+    },
+    sortBy: {
+      type: String,
+      default: () => null
     }
   },
   computed: {
@@ -136,9 +140,10 @@ export default {
     filterData() {
       let fields = {};
       let titles = {};
-
+      let data = this.data;
       this.filterKeys.map(key => {
-        fields[key.name] = filterData(this.data, key.name);
+        let t = sortBy(data, key.name);
+        fields[key.name] = filterData(t, key.name);
         titles[key.name] = key.title
       });
       return {fields, titles};
@@ -175,7 +180,8 @@ export default {
     reset() {
       this.onReset();
       this.onClose();
-    }
+    },
+
   }
 };
 </script>

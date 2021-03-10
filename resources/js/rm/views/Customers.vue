@@ -28,16 +28,13 @@ export default {
     views: [
       {
         title: "Active",
-
+        icon : 'fa-book-open',
         link: "/customers/"
       },
       {
         title: "Inactive",
+        icon : 'fa-book',
         link: "/customers/inactive"
-      },
-      {
-        title: "All",
-        link: "/customers/all"
       }
     ]
   })

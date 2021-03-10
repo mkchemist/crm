@@ -3,6 +3,7 @@
 namespace App\Http\Resources\OTCRep;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class PharmacyReportResource extends JsonResource
 {
@@ -48,5 +49,13 @@ class PharmacyReportResource extends JsonResource
           'competitor2_type' => $this->competitor2_type,
           'competitor3_type' => $this->competitor3_type,
         ];
+       /*  return [$this->collection]; */
+       /* return $this->collection; */
+    }
+
+    public function with($request) {
+      return [
+        "code"  =>  200
+      ];
     }
 }

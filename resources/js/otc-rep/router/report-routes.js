@@ -16,6 +16,9 @@ import ViewHealthDayPlan from '../components/ViewHealthDayPlan.vue';
 import AddActivityReport from "../../components/AddActivityReport.vue";
 import ActivityReportContainer from "../views/reports/ActivityReportContainer.vue";
 import CoverageReport from "../views/reports/CoverageReport.vue";
+import PharmacyReportTableView from "../views/reports/pharmacy/TableView.vue";
+import OrderAnalysisReport from "../views/reports/OrderAnalysis.vue"
+
 export default {
   path: "/reports",
   component: Report,
@@ -43,6 +46,10 @@ export default {
         {
           path: "product",
           component: ProductView
+        },
+        {
+          path: "table",
+          component: PharmacyReportTableView
         }
       ]
     },
@@ -91,6 +98,10 @@ export default {
     {
       path: "coverage",
       component: CoverageReport
+    },
+    {
+      path: 'view/orders',
+      component: OrderAnalysisReport
     }
   ]
 };

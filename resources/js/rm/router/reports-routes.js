@@ -100,6 +100,7 @@ export default {
     {
       path: 'requests',
       component: RequestReportContainer
-    }
+    },
+
   ]
 }

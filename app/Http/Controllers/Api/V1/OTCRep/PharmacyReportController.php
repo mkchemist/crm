@@ -217,8 +217,17 @@ class PharmacyReportController extends Controller
         ]);
     }
 
+    /**
+     * generate coverage report
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function coverageReport()
     {
+      $users =[$this->user->id];
+      if($this->user->role === "otc-manager") {
+        $users = json_decode($this->user->user_relations)->reps;
+      }
       $coverage = DB::table('pharmacies as p')
       ->select(
         'u.name as rep',
@@ -226,12 +235,46 @@ class PharmacyReportController extends Controller
         DB::raw('COUNT(DISTINCT r.visit_date) as coverage')
       )->join('otc_pharmacy_reports as r','r.pharmacy_id', '=', 'p.id')
       ->join('users as u','u.id','=','r.user_id')
-      ->where('r.user_id', $this->user->id)
+      ->whereIn('r.user_id', $users)
       ->where('r.type','regular');
       $coverage=$coverage->groupBy('rep','brick')->get();
       return response([
         'data'  =>  $coverage,
         'code'  =>  200
+      ]);
+    }
+
+    /**
+     * Order analysis
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function orderAnalysis()
+    {
+      $users = [$this->user->id];
+      if($this->user->role === "otc-manager") {
+        $users = array_merge($users, json_decode($this->user->user_relations)->reps);
+      }
+      $report = DB::table('otc_pharmacy_reports as report')
+      ->select(
+        DB::raw('DISTINCT CONCAT(MONTHNAME(report.visit_date),"-",YEAR(report.visit_date)) as Month'),
+        'user.name as Rep',
+        'report.product as Product',
+        DB::raw('SUM(report.order) as TotalOrder'),
+        'report.distributor as Distributor'
+      )->join('users as user','user.id', '=', 'report.user_id')
+      ->where('report.order','!=', 0)
+      ->whereIn('report.user_id', $users)
+      ->orderBy("Month")
+      ->orderBy('Distributor')
+      ->groupBy(
+        'Month','Rep','Product','Distributor'
+      )
+      ->get();
+
+      return response([
+        'code'  =>  200,
+        'data'  => $report
       ]);
     }
 }

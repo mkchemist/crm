@@ -12,8 +12,10 @@ import Navbar from './components/Navbar.vue'
 export default {
   components: { Navbar },
   mounted() {
-    this.$store.dispatch('getManagerReps');
-    this.$store.dispatch('fetchingApplicationSettings');
+    Promise.all([
+      this.$store.dispatch('getManagerReps'),
+      this.$store.dispatch('fetchingApplicationSettings')
+    ])
   }
 }
 </script>

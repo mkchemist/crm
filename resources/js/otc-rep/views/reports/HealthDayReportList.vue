@@ -3,7 +3,7 @@
     <div class="col-lg-3 rounded border py-3">
         <cycle-selection :onSelect="onSelectCycle" :onReset="onResetCycle" />
 
-      <router-link to="/reports" class="btn btn-sm btn-primary btn-block">
+      <router-link to="/reports/add/health-day" class="btn btn-sm btn-primary btn-block">
         <span class="fa fa-plus-circle"></span>
         <span>Add Health Day report</span>
       </router-link>

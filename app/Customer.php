@@ -40,7 +40,7 @@ class Customer extends Model
 
   public function params()
   {
-   $model = $this->hasMany('App\CustomerParameter');
+   $model = $this->hasMany('App\CustomerParameter','customer_id', 'id');
    return $this->getRelatedUserData($model);
   }
 

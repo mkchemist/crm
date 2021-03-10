@@ -26,7 +26,9 @@ export default {
     fetchPlans(module, payload = {}) {
       if(!module.state.plans.length || payload.force) {
         module.commit('resetPlans')
-        return httpCall.get('otc-manager/v1/planner')
+        let start = payload.start || null;
+        let end = payload.end || null;
+        return httpCall.get('otc-manager/v1/planner', {start, end})
         .then(({data}) => {
           module.commit('loadPlans', {data: data.data, lock:data.submitted})
         }).catch(err => console.log(err))

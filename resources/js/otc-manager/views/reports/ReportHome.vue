@@ -8,6 +8,14 @@
         <sidebar-component :links="views.read" />
       </div>
     </div>
+    <div class="row mx-auto my-2">
+      <div class="col-lg">
+
+      </div>
+      <div class="col-lg">
+        <sidebar-component :links="views.activity"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -47,7 +55,24 @@ export default {
           title:'View Market Feedback',
           icon: 'fa-chart-line',
           link: '/reports/market-feedback'
-        }
+        },
+        {
+          title:'Coverage',
+          icon: 'fa-chart-pie',
+          link: '/reports/coverage'
+        },
+      ],
+      activity: [
+        {
+          title: "View Field Activity Reports",
+          icon: 'fa-book-open',
+          link: '/reports/activity?type=field'
+        },
+        {
+          title: "View Non-Field Activity Reports",
+          icon: 'fa-book-open',
+          link: '/reports/activity?type=non-field'
+        },
       ]
     }
   })

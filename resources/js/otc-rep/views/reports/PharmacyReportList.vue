@@ -74,6 +74,11 @@ export default {
         title: "Product View",
         icon: "fa-gift",
         link: "/reports/view/pharmacy/product"
+      },
+      {
+        title: "Table View",
+        icon: "fa-table",
+        link: "/reports/view/pharmacy/table"
       }
     ]
   }),

@@ -1,22 +1,36 @@
-import { httpCall } from "../../helpers/http-service";
+import { httpCall, UrlHelper } from "../../helpers/http-service";
 
 export default {
   state: {
     pharmacies: [],
-    fetched: false
+    fetched: false,
+    pagination: {
+      current: 1,
+      total: null,
+      from: 0,
+      to: 3000,
+      last: null
+    }
+
   },
   getters: {
     allPharmacies: state => state.pharmacies,
-    isPharmaciesFetched: state=> state.fetched
+    isPharmaciesFetched: state=> state.fetched,
+    pharmacyPagination: state => state.pagination
   },
   mutations: {
     resetPharmacies(state) {
       state.fetched = false;
       state.pharmacies = [];
     },
-    loadPharmacies(state, payload = {}) {
-      state.pharmacies = payload.data;
-      state.fetched = payload.fetched;
+    loadPharmacies(state, payload) {
+      state.pharmacies = [...state.pharmacies,...payload];
+    },
+    updatePagination(state, payload) {
+      state.pagination = payload
+    },
+    setAsDone(state) {
+      state.fetched = true;
     }
   },
   actions: {
@@ -29,15 +43,34 @@ export default {
      */
     fetchPharmacies(module, payload = {}) {
       if(!module.state.pharmacies.length || payload.force) {
-        module.commit('resetPharmacies');
+        let url = payload.url || "otc-manager/v1/pharmacies";
+        let base = payload.base || false;
+        if(!payload.paginate) {
+          module.commit('resetPharmacies');
+        }
         let rep = payload.rep || null;
 
-        return httpCall.get('otc-manager/v1/pharmacies', {rep})
+        return httpCall.get(url, {rep}, base)
         .then(({data}) => {
-          module.commit('loadPharmacies', {
-            data: data.data,
-            fetched: true
+          module.commit('loadPharmacies', data.data.data)
+          module.commit('updatePagination', {
+            total: data.data.total,
+            current: data.data.current_page,
+            from : data.data.from,
+            to: data.data.to,
+            last: data.data.last_page
           })
+          if(data.data.next_page_url) {
+            let url = UrlHelper.addToken(data.data.next_page_url);
+            module.dispatch('fetchPharmacies', {
+              url,
+              force: true,
+              base: true,
+              paginate: true
+            })
+          } else {
+            module.commit('setAsDone');
+          }
         }).catch(err => console.log(err))
 
       }

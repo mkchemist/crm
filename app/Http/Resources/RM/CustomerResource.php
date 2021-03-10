@@ -15,19 +15,20 @@ class CustomerResource extends JsonResource
     public function toArray($request)
     {
         return [
-          'id'  =>  $this->id,
-          'name'  =>  $this->name,
-          'user_id' =>  $this->frequency[0]->user_id,
-          'frequency' =>  $this->frequency[0]->current,
-          'rep' =>  $this->frequency[0]->user->name,
-          'parameter' =>  count($this->params) ? $this->params[0]->current : 'NN',
-          'plans'     =>  count($this->planner),
-          'specialty' =>  $this->specialty,
-          'address'   =>  $this->address,
-          'brick'     =>  $this->brick,
-          'area'      =>  $this->area,
-          'district'  =>  $this->district,
-          'territory' =>  $this->territory
+          'id'  =>  $this->customer->id,
+          'name'  =>  $this->customer->name,
+          'specialty' => $this->customer->specialty,
+          'area'    =>  $this->customer->area,
+          'brick' =>  $this->customer->brick,
+          'address' =>  $this->customer->address,
+          'district'  =>  $this->customer->district,
+          'territory' => $this->customer->territory,
+          'rep'       =>  $this->user->name,
+          'line'      =>  implode(' | ',json_decode($this->user->line)),
+          'parameter' => $this->current,
+          'frequency' => count($this->customer->frequency) ? $this->customer->frequency[0]->current : 0,
+          'plans'     =>  $this->customer->planner->where('user_id','=', $this->user->id),
+          'reports'   =>  $this->customer->report->where('user_id','=', $this->user->id)
         ];
     }
 }

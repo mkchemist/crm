@@ -7,6 +7,7 @@
     <div class="p-2">
       <div class="row mx-auto">
         <div class="col-lg-3">
+          <cycle-selection :onSelect="selectCycle" :onReset="resetCycle" />
           <sidebar-component :links="views" />
           <router-link to="/reports" class="btn btn-sm btn-dark btn-block my-2">
             <span class="fa fa-chevron-circle-left"></span>
@@ -14,10 +15,10 @@
           </router-link>
         </div>
         <div class="col-lg-9 pb-5 shadow rounded px-0">
-          <div v-if="reports.length">
+          <div v-if="reports.length && fetched">
             <router-view :data="reports" :withUsername="true"></router-view>
           </div>
-          <div v-else-if="fetched">
+          <div v-else-if="fetched" class="p-5">
             <no-data-to-show />
           </div>
           <loader-component v-else></loader-component>
@@ -28,10 +29,12 @@
 </template>
 
 <script>
+import CycleSelection from '../../../components/CycleSelection.vue'
 import SidebarComponent from '../../../components/SidebarComponent.vue'
 export default {
   components: {
-    SidebarComponent
+    SidebarComponent,
+    CycleSelection
 
   },
   computed: {
@@ -40,6 +43,9 @@ export default {
     },
     fetched() {
       return this.$store.getters.isReportsFetched;
+    },
+    activeCycle() {
+      return this.$store.getters.activeCycle;
     }
   },
   data:() => ({
@@ -58,9 +64,25 @@ export default {
         title: 'Product View',
         icon: 'fa-gift',
         link: '/reports/view/pharmacy/product'
+      },
+      {
+        title: "Table View",
+        icon: "fa-table",
+        link: "/reports/view/pharmacy/table"
       }
     ]
-  })
+  }),
+  methods: {
+    selectCycle() {
+      let {start, end} = this.activeCycle;
+      this.$store.dispatch('fetchReports', {start, end, force: true})
+    },
+    resetCycle() {
+      this.$store.commit('resetActiveCycle');
+      let {start, end} = this.activeCycle;
+      this.$store.dispatch('fetchReports',{start, end, force: true})
+    }
+  }
 }
 </script>
 

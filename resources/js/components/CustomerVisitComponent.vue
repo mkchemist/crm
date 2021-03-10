@@ -1,8 +1,10 @@
 <template>
   <div class="px-0 shadow rounded pb-5">
     <p class="alert alert-success">
-      <span class="fa fa-plus-circle"></span>
-      <span class="font-weight-bold">Add {{ visitType }} visit Report</span>
+      <span :class="`fa ${editMode ? `fa-edit` : `fa-plus-circle`}`"></span>
+      <span class="font-weight-bold"
+        >{{ editMode ? "Edit" : "Add" }} {{ visitType }} visit Report</span
+      >
     </p>
     <div class="p-2">
       <div class="row mx-auto">
@@ -13,7 +15,17 @@
             :onFilter="onFilterUsers"
             :onReset="onResetUsers"
             :singleUser="true"
+            v-if="!editMode"
           />
+          <div class="border rounded p-2" v-else-if="editMode && rep">
+            <label for="">Creator</label>
+            <input
+              type="text"
+              :disabled="true"
+              class="form-control form-control-sm"
+              :value="rep.name"
+            />
+          </div>
           <!-- brick select -->
           <div class="p-2 my-2 border rounded">
             <div class="form-group">
@@ -22,19 +34,24 @@
                 name=""
                 id=""
                 v-model="brick"
-                :disabled="!bricks.length"
+                :disabled="!bricks.length || editMode"
                 class="form-control form-control-sm"
               >
-                <option
-                  v-for="(brick, id) in bricks"
-                  :key="id"
-                  :value="brick.brick"
-                  >{{ brick.brick }}</option
-                >
+                <template v-if="!editMode">
+                  <option
+                    v-for="(brick, id) in bricks"
+                    :key="id"
+                    :value="brick.brick"
+                    >{{ brick.brick }}</option
+                  >
+                </template>
+                <template v-else>
+                  <option :value="brick">{{ brick }}</option>
+                </template>
               </select>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" v-if="!editMode">
               <button
                 class="btn btn-sm btn-block btn-primary"
                 @click="fetchCustomers"
@@ -57,6 +74,7 @@
                 v-model="customer"
                 :disabled="!customers.length"
                 class="form-control form-control-sm"
+                v-if="!editMode"
               >
                 <option
                   v-for="customer in customers"
@@ -69,9 +87,16 @@
                   }})</option
                 >
               </select>
+              <input
+                type="text"
+                v-else-if="editMode&& customer"
+                class="form-control form-control-sm"
+                :disabled="true"
+                :value="customer.name"
+              />
             </div>
 
-            <div class="form-group">
+            <div class="form-group" v-if="!editMode">
               <button
                 class="btn btn-sm btn-block btn-primary"
                 @click="viewReport"
@@ -98,6 +123,8 @@
               :type="visitType"
               :backUrl="backUrl"
               :onSave="saveReport"
+              :editMode="editMode"
+              :presetReport="editReport"
             />
           </div>
           <div v-else class="py-5 text-center shadow rounded">
@@ -145,11 +172,23 @@ export default {
     },
     onSave: {
       type: Function
+    },
+    editMode: {
+      type: Boolean,
+      default: () => false
     }
   },
   components: {
     VisitComponent,
     UserFilterBox
+  },
+  mounted() {
+    this.fetchEditReport();
+  },
+  computed: {
+    collection() {
+      return this.visitType === "pharmacy" ? "pharmacy" : "customer";
+    }
   },
   data: () => ({
     rep: null,
@@ -157,9 +196,32 @@ export default {
     bricks: [],
     customers: [],
     customer: null,
-    showReport: false
+    showReport: false,
+    editReport: null
   }),
   methods: {
+    fetchEditReport() {
+      if (this.editMode) {
+        let id = this.$route.params.id;
+        return httpCall
+          .get(`v1/single/${this.collection}/${id}`)
+          .then(({ data }) => {
+            let report = data.data;
+            let customer;
+            if (this.visitType === "pharmacy") {
+              customer = report.pharmacy;
+            } else {
+              customer = report.customer;
+            }
+            this.brick = customer.brick;
+            this.customer = customer;
+            this.rep = report.user;
+            this.showReport = true;
+            this.editReport = report;
+          })
+          .catch(err => console.log(err));
+      }
+    },
     fetchCustomers() {
       let pharmacy = false;
       if (this.visitType === "pharmacy") {
@@ -210,13 +272,23 @@ export default {
         });
       }
       if (this.visitType === "single") {
-        this.saveSingleVisit({
-          customer_id: this.customer.id,
-          products: JSON.stringify(data.products),
-          date: data.date,
-          comment: data.comment,
-          feedback: data.feedback
-        });
+        if (this.editMode) {
+          this.editSingleVisit({
+            collection_type: this.visitType,
+            products: JSON.stringify(data.products),
+            comment: data.comment,
+            feedback: data.feedback,
+            date: data.date
+          });
+        } else {
+          this.saveSingleVisit({
+            customer_id: this.customer.id,
+            products: JSON.stringify(data.products),
+            date: data.date,
+            comment: data.comment,
+            feedback: data.feedback
+          });
+        }
       }
       if (this.visitType === "pharmacy") {
         this.savePharmacyVisit({
@@ -238,21 +310,49 @@ export default {
         .catch(err => console.log(err));
     },
     saveSingleVisit(data) {
-      return httpCall
-        .post("v1/single-visit/customer", data)
-        .then(({ data }) => {
-          this.handleResponse(data, data => {
-            this.onSave();
-          });
+      return httpCall.post("v1/single/customer", data).then(({ data }) => {
+        this.handleResponse(data, data => {
+          this.onSave();
         });
+      });
     },
     savePharmacyVisit(data) {
+      let url = "v1/single/pharmacy";
+      if(this.editMode) {
+        url += `/${this.editReport.id}`;
+        data["_method"] = "PUT"
+      }
+      console.log(url)
       return httpCall
-        .post("v1/single-visit/pharmacy", data)
+        .post(url, data)
         .then(({ data }) => {
           this.handleResponse(data, data => {
             this.onSave();
           });
+        })
+        .catch(err => console.log(err));
+    },
+    editSingleVisit(data) {
+      return httpCall
+        .post("v1/single/customer/" + this.editReport.id, {
+          ...data,
+          _method: "PUT"
+        })
+        .then(({ data }) => {
+          if (data.code === 200) {
+            this.$swal({
+              title: "Success",
+              icon: "success",
+              text: data.message,
+              showCancelButton: true,
+              confirmButtonText: `<i class="fa fa-chevron-circle-left"></i> back to list`,
+              cancelButtonText: `<i class="fa fa-times"></i> Keep in this page`
+            }).then(res => {
+              if (res.isConfirmed) {
+                this.$router.push("/single-visit");
+              }
+            });
+          }
         })
         .catch(err => console.log(err));
     }

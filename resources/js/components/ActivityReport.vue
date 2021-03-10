@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { httpCall } from "../helpers/http-service";
+import { asyncDataFlow, httpCall } from "../helpers/http-service";
 import CycleSelection from "./CycleSelection.vue";
 import DateFilterBox from "./DateFilterBox.vue";
 import NoDataToShow from "./NoDataToShow.vue";
@@ -132,7 +132,8 @@ export default {
         return "Non Field activity";
       }
       return "Field Activity";
-    }
+    },
+
   },
   methods: {
     getReports() {
@@ -143,7 +144,7 @@ export default {
       };
       this.isReportsFetched = false;
       this.reports = [];
-      httpCall
+      return httpCall
         .get("activity-reports", request)
         .then(({ data }) => {
           this.reportData = data.data;
@@ -165,9 +166,9 @@ export default {
       this.reportData = [];
       async().then(data => (this.reportData = data));
     },
-    resetCycle() {
+    async resetCycle() {
       this.$store.commit("resetActiveCycle");
-      this.getReports();
+      asyncDataFlow(true, () => this.getReports())
     }
   }
 };

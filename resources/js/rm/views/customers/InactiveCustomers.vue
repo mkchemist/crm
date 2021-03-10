@@ -6,50 +6,78 @@
     </p>
     <div class="p-2">
       <div v-if="isFetched">
-        <data-table-component :data="customers" :cols="cols" :buttons="buttons" />
+        <data-table-component
+          :data="customers"
+          :cols="cols"
+          :buttons="buttons"
+        />
       </div>
       <loader-component
-        :text="`Loading page ${currentPage} of ${lastPage}`"
+        :text="`Loading inactive customers list`"
         v-else
       ></loader-component>
     </div>
+    <data-filter-box
+      :show="showFilterBox"
+      :onClose="closeFilterBox"
+      :queryOnly="false"
+      :queryKeys="queryKeys"
+      :onFilter="onFilter"
+      :onReset="onReset"
+      :data="customers"
+    />
   </div>
 </template>
 
 <script>
+import DataFilterBox from "../../../components/DataFilterBox.vue";
 import DataTableComponent from "../../../components/DataTableComponent.vue";
+import { asyncDataFlow } from "../../../helpers/http-service";
 export default {
+  mounted() {
+    this.$store.dispatch("fetchInactiveCustomers");
+  },
   components: {
-    DataTableComponent
+    DataTableComponent,
+    DataFilterBox
   },
   computed: {
     customers() {
-      return this.$store.getters.inactiveCustomers;
+      if (this.shouldRenderFilter) {
+        return this.filteredList;
+      }
+      return this.rawCustomers;
+    },
+    rawCustomers() {
+      let customers = this.$store.getters.inactiveCustomers;
+
+      customers.forEach(customer => {
+        customer["workplace"] = customer.workplace ? customer.workplace.name : null;
+      });
+      return customers;
     },
     isFetched() {
-      return this.$store.getters.isCustomersFetched;
+      return this.$store.getters.isInactiveCustomersFetched;
     },
-    currentPage() {
-      return this.$store.getters.customersCurrentPageLoading;
-    },
-    lastPage() {
-      return this.$store.getters.customersLoadingLastPage;
-    },
+
     buttons() {
       return [
         {
-          text: 'View',
-          className: 'view-btn',
-          action: (e,dt) => {
-            let row  = dt.rows({selected: true}).data()[0];
-            if(!row) {
-              this.$toasted.error('You must select customer First');
+          text: '<i class="fa fa-book-reader"></i> View',
+          action: (e, dt) => {
+            let row = dt.rows({ selected: true }).data()[0];
+            if (!row) {
+              this.$toasted.error("You must select customer First");
               return;
             }
-            this.$router.push('/customers/view/'+row.id)
+            this.$router.push("/customers/view/" + row.id);
           }
+        },
+        {
+          text: `<i class="fa fa-filter"></i> filter`,
+          action: () => this.openFilterBox()
         }
-      ]
+      ];
     }
   },
   data: () => ({
@@ -68,70 +96,79 @@ export default {
         name: "specialty"
       },
       {
-        title: "Parameter",
-        name: "params[0].current"
+        title: "Workplace",
+        name: "workplace"
       },
       {
-        title: "Frequency",
-        name: "frequency[0].current"
+        title: "Address",
+        name: "address"
       },
       {
-        title: "Plans",
-        name: "planner.length"
-      },
-      {
-        title: "Reports",
-        name: "report.length"
-      },
-      {
-        title: "Missed",
-        name: row => {
-          return row.report.length - row.planner.length;
-        }
-      },
-      {
-        title: "Status",
-        name: row => {
-          let diff = row.report.length - row.planner.length;
-          let flag, style;
-          if (diff === row.planner.length) {
-            flag = "Uncovered";
-            style = "bg-danger text-light";
-          } else if (diff > 0) {
-            flag = "Uncovered";
-            style = "bg-danger text-light";
-          } else if (diff === 0) {
-            flag = "Uncovered";
-            style = "bg-danger text-light";
-          } else {
-            flag = "Uncovered";
-            style = "bg-danger text-light";
-          }
-          return `<span class="${style} p-1">${flag}<span>`;
-        }
-      },
-      {
-        title:'Address',
-        name: 'address'
-      },
-      {
-        title: 'Brick',
-        name: 'brick'
+        title: "Brick",
+        name: "brick"
       },
       {
         title: "Area",
-        name: 'area'
+        name: "area"
       },
       {
-        title: 'District',
-        name: 'district'
+        title: "District",
+        name: "district"
       },
       {
-        title: 'Territory',
-        name: 'territory'
+        title: "Territory",
+        name: "territory"
       }
-    ]
-  })
+    ],
+    queryKeys: [
+      {
+        title: "Specialty",
+        name: "specialty"
+      },
+      {
+        title: "Workplace",
+        name: "workplace"
+      },
+
+      {
+        title: "Brick",
+        name: "brick"
+      },
+      {
+        title: "Area",
+        name: "area"
+      },
+      {
+        title: "District",
+        name: "district"
+      },
+      {
+        title: "Territory",
+        name: "territory"
+      }
+    ],
+    shouldRenderFilter: false,
+    filteredList: [],
+    showFilterBox: false
+  }),
+  methods: {
+    openFilterBox() {
+      this.showFilterBox = true;
+    },
+    closeFilterBox() {
+      this.showFilterBox = false;
+    },
+    onFilter(q, data) {
+      this.shouldRenderFilter = true;
+      asyncDataFlow(data, d => {
+        this.filteredList = d;
+      });
+    },
+    onReset() {
+      this.filteredList = [];
+      asyncDataFlow([], () => (this.shouldRenderFilter = false));
+    }
+  }
 };
 </script>
 

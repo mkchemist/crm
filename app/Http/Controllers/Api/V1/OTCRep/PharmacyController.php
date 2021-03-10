@@ -14,6 +14,18 @@ use Illuminate\Support\Facades\Validator;
 class PharmacyController extends Controller
 {
     use UserWithAssignment;
+
+    public $user;
+
+
+    public function __construct()
+    {
+      $this->middleware(function($request, $next) {
+        $this->user = Auth::user();
+
+        return $next($request);
+      });
+    }
     /**
      * Display a listing of the resource.
      *
@@ -21,21 +33,16 @@ class PharmacyController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $pharmacies = Pharmacy::with(['otcReport']);
-        $pharmacies = $this->getQueryWithAssignment($user, $pharmacies)
-        ->orderBy('name')->get([
-          'id', 'name', 'type',
-          'key_person','address','brick',
-          'area','district',
-          'territory', 'phone'
-        ]);
+        $pharmacies = Pharmacy::with(['otcReport', 'favorite']);
+        $pharmacies = $this->getQueryWithAssignment($this->user, $pharmacies);
+        $pharmacies = $pharmacies->orderBy('name')->paginate(1000);
 
-        return response([
+        return PharmacyResource::collection($pharmacies);
+        /* return response([
             'code' => 200,
             'data' => PharmacyResource::collection($pharmacies),
 
-        ]);
+        ]); */
     }
 
     /**
@@ -46,7 +53,6 @@ class PharmacyController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'type' => 'required|string',
@@ -76,7 +82,7 @@ class PharmacyController extends Controller
         }
 
         $data = $request->all();
-        $data['state'] = "New Add by $user->name";
+        $data['state'] = "New Add by $this->user->name";
         Pharmacy::create($data);
 
         return response([
@@ -96,11 +102,10 @@ class PharmacyController extends Controller
         if (!is_numeric($id)) {
             return response(ResponseHelper::BAD_REQUEST_INPUT);
         }
-        $user = Auth::user();
         $pharmacy = Pharmacy::with('otcReport')->where([
             'id' => $id,
         ]);
-        $pharmacy = $this->getQueryWithAssignment($user, $pharmacy)->first();
+        $pharmacy = $this->getQueryWithAssignment($this->user, $pharmacy)->first();
 
         return response([
             'code' => 200,
@@ -131,7 +136,7 @@ class PharmacyController extends Controller
         if($validator->fails()) {
           return response(ResponseHelper::validationErrorResponse($validator));
         }
-        $user =Auth::user();
+        $user =$this->user;
         $pharmacy = Pharmacy::where('id', $id);
         $pharmacy = $this->getQueryWithAssignment($user, $pharmacy)
           ->first();

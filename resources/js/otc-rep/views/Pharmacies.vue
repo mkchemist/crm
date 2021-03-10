@@ -29,6 +29,11 @@ export default {
         title: 'Pharmacies List',
         icon: 'fa-list',
         link: '/pharmacies'
+      },
+      {
+        title: "Favorite List",
+        icon: "fa-star",
+        link: "/pharmacies/favorite"
       }
     ]
   })

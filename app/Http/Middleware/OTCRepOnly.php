@@ -16,7 +16,7 @@ class OTCRepOnly
      */
     public function handle($request, Closure $next)
     {
-      if(Auth::user()->role === "otc-rep") {
+      if(in_array(Auth::user()->role,['otc-rep', 'otc-manager'])) {
         return $next($request);
       } else {
         return redirect("/")->with([

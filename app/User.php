@@ -53,4 +53,7 @@ class User extends Authenticatable
       'assigned_brick'  =>  "[]",
       'assigned_specialties' => "[]"
     ];
+
+
+
 }

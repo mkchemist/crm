@@ -68,9 +68,12 @@ Route::group([
     Route::get('v1/user-customers/pharmacies/{brick}','Api\V1\UserCustomersController@pharmaciesInBrick');
     Route::get('v1/user-customers/bricks/{id?}','Api\V1\UserCustomersController@getUserCustomersLocations');
     /* Single Visits */
+    Route::get('v1/single-visit/collection', 'Api\V1\SingleVisitsController@index');
     Route::post('v1/single-visit/customer', 'Api\V1\SingleVisitsController@pmSingleVisit');
+    Route::get('v1/single-visit/collection/show/{id}', 'Api\V1\SingleVisitsController@show');
     Route::post('v1/single-visit/pharmacy', 'Api\V1\SingleVisitsController@pharmacySingleVisit');
     Route::put('v1/single-visit/pharmacy/{id}', 'Api\V1\SingleVisitsController@editSinglePharmacyVisit');
+    Route::put("v1/single-visit/customer/{id}", 'Api\V1\SingleVisitsController@updatePMSingleVisit');
     /* Requests Routes */
     Route::get('v1/requests/search/{search}', 'Api\V1\RequestController@analysis');
     Route::post('v1/requests/cancel/{serial}','Api\V1\RequestController@cancelRequest');
@@ -83,6 +86,13 @@ Route::group([
     Route::apiResource('v1/request-events','Api\V1\RequestEventManagerController');
     Route::get('v1/price-list', 'Api\V1\ProductFactoryPriceController@index')->middleware(['CanManageRequests']);
 
+    /** favorite pharmacy list */
+    Route::apiResource('v1/favorite-pharmacies', 'Api\v1\PharmacyFavoriteListController');
+
+    Route::prefix('v1/single')->group(function() {
+      Route::apiResource('customer', 'Api\V1\CustomerSingleVisitController');
+      Route::apiResource('pharmacy', 'Api\V1\PharmacySingleVisitController');
+    });
 });
 
 /** Rep routes */

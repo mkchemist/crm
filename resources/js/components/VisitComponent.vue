@@ -1,8 +1,8 @@
 <template>
   <div class="px-0 shadow rounded pb-5">
     <p class="alert alert-success">
-      <span class="fa fa-plus-circle"></span>
-      <span class="font-weight-bold">{{ `New ${type} visit` }}</span>
+      <span :class="`fa ${editMode ?'fa-edit' :`fa-plus-circle`}`"></span>
+      <span class="font-weight-bold">{{ `${editMode ? 'Edit' : 'New'} ${type} visit` }}</span>
     </p>
     <div class="p-2">
       <!-- Visit Info -->
@@ -236,8 +236,11 @@ import { COACH_REPORT } from "../helpers/constants";
 import VisitProducts from "../rep/components/VisitProducts.vue";
 export default {
   components: { VisitProducts },
-  created() {
+  mounted() {
     this.data = this.createCoachReportTemplate();
+    if(this.presetReport && Object.keys(this.presetReport)) {
+      this.publishPresetReport()
+    }
   },
   props: {
     customer: {
@@ -262,6 +265,14 @@ export default {
     onSave: {
       type: Function,
       required: true
+    },
+    editMode: {
+      type: Boolean,
+      default: () => false
+    },
+    presetReport: {
+      type: Object,
+      default: () => {}
     }
   },
   data: () => ({
@@ -307,6 +318,12 @@ export default {
         coach: this.data,
         products: this.products
       });
+    },
+    publishPresetReport() {
+      this.visit_date = this.presetReport.visit_date;
+      this.products = JSON.parse(this.presetReport.products);
+      this.visit_comment = this.presetReport.comment;
+      this.visit_feedback = this.presetReport.general_feedback;
     }
   },
   destroyed() {
