@@ -104,7 +104,9 @@ class UserCustomersController extends Controller
       $name = $request->name;
       $customers = Customer::with('params')
       ->where('name','like', "%$name%");
-      $customers = $this->getQueryWithAssignment($this->user, $customers);
+      if(!in_array($this->user->role,['admin', 'accountant'])) {
+        $customers = $this->getQueryWithAssignment($this->user, $customers);
+      }
       if($request->brick !== "null") {
         $customers = $customers->where('brick', $request->brick);
       }
