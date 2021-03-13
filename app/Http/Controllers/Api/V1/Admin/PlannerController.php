@@ -17,6 +17,26 @@ use Illuminate\Validation\Rule;
 class PlannerController extends Controller
 {
 
+  /**
+   * Auth admin
+   *
+   * @var User
+   */
+  public $admin;
+
+  /**
+   * Planner controller constructor
+   */
+  public function __construct()
+  {
+    $this->middleware(function($request, $next) {
+      $this->user = Auth::user();
+      $this->cycle = (new ActiveCycleSetting)->all();
+
+      return $next($request);
+    });
+  }
+
   public function index()
   {
     $activeCycle= new ActiveCycleSetting;
@@ -117,13 +137,9 @@ class PlannerController extends Controller
     if($validator->fails()) {
       return response(ResponseHelper::validationErrorResponse($validator));
     }
-    $admin = Auth::user();
 
-    $active = new ActiveCycleSetting;
-    $cycle = $active->all();
-
-    $plans = Planner::whereBetween('plan_date', [$cycle->start, $cycle->end]);
-    $workplacePlans = WorkplacePlanner::whereBetween('plan_date', [$cycle->start, $cycle->end]);
+    $plans = Planner::whereBetween('plan_date', [$this->cycle->start, $this->cycle->end]);
+    $workplacePlans = WorkplacePlanner::whereBetween('plan_date', [$this->cycle->start, $this->cycle->end]);
     // detect if action for single user or for all
     if(in_array($request->action,['approved', 'reset'])) {
       $plans = $plans->where(['user_id' => $request->user]);
@@ -133,20 +149,22 @@ class PlannerController extends Controller
     $action = in_array($request->action,['approved', 'approved-all']) ? true : false;
 
     if($action) {
-      $plans = $plans->where(['submitted' => false]);
+      $plans = $plans->where(['submitted' => false])
+      ->orWhere('approved', false);
     } else {
-      $plans = $plans->where(['submitted' => true]);
+      $plans = $plans->where(['submitted' => true])
+      ->orWhere('approved', true);
     }
 
     $plans->update([
       'submitted' => $action,
       'approved' => $action,
-      'approved_by' =>  $admin->id
+      'approved_by' =>  $this->admin->id
     ]);
     $workplacePlans->update([
       'submitted' => $action,
       'approved' => $action,
-      'approved_by' =>  $admin->id
+      'approved_by' =>  $this->admin->id
     ]);
     return response([
       'code'  =>  200,

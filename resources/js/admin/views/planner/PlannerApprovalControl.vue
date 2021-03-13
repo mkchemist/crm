@@ -234,7 +234,9 @@ export default {
         .post("admin/v1/planner/approval", request)
         .then(({ data }) => {
           this.handleResponse(data, data => {
-            this.selectRep();
+            if(this.rep) {
+              this.selectRep();
+            }
           });
         })
         .catch(err => console.log(err));
