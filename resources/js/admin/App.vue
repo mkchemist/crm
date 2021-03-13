@@ -37,8 +37,14 @@ export default {
     NewBroadcastMessage
   },
   mounted() {
-    this.$store.dispatch('getAllUsers')
-    this.$store.dispatch("fetchingApplicationSettings")
+    /* Promise.all([
+      this.$store.dispatch('getAllUsers'),
+      this.$store.dispatch("fetchingApplicationSettings")
+    ]) */
+    (async () => {
+     await this.$store.dispatch("getAllUsers");
+     await this.$store.dispatch("fetchingApplicationSettings");
+    })();
   }
 };
 </script>

@@ -8,6 +8,10 @@
         >
       </div>
       <div class="col-lg-4">
+        <span class="text-danger small" v-if="!reportInterval && isReportIntervalFetched">
+          <span class="fa fa-exclamation-triangle"></span>
+          Interval is missing
+        </span>
         <input
           type="number"
           class="form-control form-control-sm"
@@ -15,8 +19,9 @@
           min="0"
           placeholder="Number of days"
           v-model="reportInterval"
-          v-if="reportInterval"
+          v-if="reportInterval || isReportIntervalFetched"
         />
+
         <loader-component v-else></loader-component>
       </div>
     </div>
@@ -28,7 +33,7 @@
         >
       </div>
       <div class="col-lg-4">
-        <div v-if="reportInterval" class="custom-control custom-switch">
+        <div v-if="reportInterval || isReportIntervalFetched" class="custom-control custom-switch">
          <input type="checkbox" class="custom-control-input" id="customSwitch1" v-model="canEditDate">
   <label class="custom-control-label" for="customSwitch1">User can edit date</label>
         </div>
@@ -74,6 +79,15 @@ export default {
      * save report interval
      */
     saveReportInterval() {
+      if(!this.reportInterval) {
+        this.$swal({
+          title: "Report Interval Error",
+          text: "You must add a value for report interval",
+          toast: true,
+          icon: "error"
+        });
+        return;
+      }
       let request = {
         interval : this.reportInterval,
         can_edit_date: this.canEditDate

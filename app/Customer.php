@@ -98,7 +98,7 @@ class Customer extends Model
     return $this->hasMany('App\CustomerRequest','customer_id', 'id');
   }
 
-  public function added_by()
+  public function addedBy()
   {
     return $this->belongsTo('App\User','added_by', 'id');
   }

@@ -20,8 +20,13 @@ class NewCustomerValidationController extends Controller
    */
     public function getNewCustomers()
     {
-        $customers = Customer::with('added_by')->where('state', '!=', 'approved')->get();
-
+        $customers = Customer::with([
+          'addedBy' => function($query) {
+            $query->select('id', 'name', 'line');
+          }
+        ])->where('state', '!=', 'approved')
+        ->get();
+          $customers = $customers->makeHidden(['created_at','updated_at','workplace_id']);
         return response([
       "code"  =>  200,
       "data"  =>  $customers

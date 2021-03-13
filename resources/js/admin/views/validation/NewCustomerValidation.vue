@@ -77,11 +77,9 @@
           </button>
         </div>
 
-        <table-component
-          :heads="heads"
+        <data-table-component
+          :cols="heads"
           :data="customers"
-          head-class="bg-success text-light"
-          :unselectable="true"
         >
           <template v-slot:head:before>
             <th>
@@ -103,7 +101,7 @@
               {{ item.state.toUpperCase() }}
             </td>
           </template>
-        </table-component>
+        </data-table-component>
       </div>
       <div v-else-if="fetched" class="text-center">
         <no-data-to-show title="No waiting response" />
@@ -115,7 +113,7 @@
 
 <script>
 import { httpCall } from "../../../helpers/http-service";
-import TableComponent from "../../../components/TableComponent";
+import DataTableComponent from "../../../components/DataTableComponent";
 import { checkerSelect } from "../../../helpers/helpers";
 import NoDataToShow from "../../../components/NoDataToShow";
 export default {
@@ -123,7 +121,7 @@ export default {
     this.getNewCustomers();
   },
   components: {
-    TableComponent,
+    DataTableComponent,
     NoDataToShow
   },
   data: () => ({
