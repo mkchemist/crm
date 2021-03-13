@@ -82,7 +82,7 @@ class PharmacyController extends Controller
         }
 
         $data = $request->all();
-        $data['state'] = "New Add by $this->user->name";
+        $data['state'] = "New Add by {$this->user->name}";
         Pharmacy::create($data);
 
         return response([
