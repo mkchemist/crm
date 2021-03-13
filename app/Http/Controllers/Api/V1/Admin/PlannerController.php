@@ -30,7 +30,7 @@ class PlannerController extends Controller
   public function __construct()
   {
     $this->middleware(function($request, $next) {
-      $this->user = Auth::user();
+      $this->admin = Auth::user();
       $this->cycle = (new ActiveCycleSetting)->all();
 
       return $next($request);
