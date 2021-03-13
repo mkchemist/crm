@@ -17,7 +17,7 @@
           <option :value="terr.name" v-for="(terr, i) in territories" :key="`terr_${i}`">{{ terr.name }}</option>
         </select>
         <button
-          class="btn btn-sm btn-primary col-lg btn-block"
+          class="btn btn-sm skin-btn col-lg btn-block"
           @click="loadList"
           :disabled="!territories.length"
         >
@@ -27,7 +27,7 @@
       <div class="p-2" v-if="isFetched">
         <div v-if="customers.length">
           <!-- <table-component :data="customers" :heads="heads" :headClass="`bg-success text-light`"></table-component> -->
-          <data-table-component :data="customers" :cols="heads" :buttons="buttons" />
+          <data-table-component :data="customers" :cols="heads" :buttons="buttons" :tableHeadClass="`skin-table`" />
         </div>
         <div v-else>
           <no-data-to-show />

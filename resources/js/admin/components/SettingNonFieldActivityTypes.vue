@@ -9,7 +9,7 @@
         <div class="form-group p-2 border rounded">
           <label for="type" class="text-muted">Type : </label>
           <input type="text" name="activity_type" id="activity_type" v-model="type" class="form-control form-control-sm" placeholder="write new type name">
-          <button class="btn btn-sm btn-primary btn-block my-2" @click="addType">
+          <button class="btn btn-sm skin-btn btn-block my-2" @click="addType">
             <span class="fa fa-plus"></span>
             <span>add</span>
           </button>
@@ -38,7 +38,7 @@
         <span class="fa fa-redo"></span>
         <span>reset</span>
       </button>
-      <button class="btn btn-sm btn-primary" @click="saveTypes">
+      <button class="btn btn-sm skin-btn" @click="saveTypes">
         <span class="fa fa-save"></span>
         <span>save</span>
       </button>

@@ -19,7 +19,7 @@
               >{{ user.name }} - ({{ user.role }})</option
             >
           </select>
-          <button class="btn btn-sm btn-primary mx-1" @click="fetchUser">
+          <button class="btn btn-sm skin-btn mx-1" @click="fetchUser">
             <span class="fa fa-check-circle"></span>
             <span>select</span>
           </button>

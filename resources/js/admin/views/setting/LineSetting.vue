@@ -7,13 +7,13 @@
     <div class="p-2">
       <ul class="nav nav-tabs">
         <li class="nav-item border">
-          <router-link to="/setting/lines" class="nav-link" active-class="bg-success text-light" exact>
+          <router-link to="/setting/lines" class="nav-link" active-class="active" exact>
             <span class="fa fa-book-reader"></span>
             <span>View All</span>
           </router-link>
         </li>
         <li class="nav-item border">
-          <router-link to="/setting/lines/new" class="nav-link" active-class="bg-success text-light" exact>
+          <router-link to="/setting/lines/new" class="nav-link" active-class="active">
             <span class="fa fa-book-reader"></span>
             <span>new lines</span>
           </router-link>

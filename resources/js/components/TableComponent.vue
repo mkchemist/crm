@@ -16,7 +16,7 @@
           <slot name="head"></slot>
         </tr>
       </thead>
-      <tbody>
+      <tbody style="max-height:600px;overflow:auto">
         <tr v-for="(item, i) in rows" :key="i">
           <!-- <td v-for="(head, i) in heads" :key="i">{{ item[head.name] }}</td> -->
           <slot name="body:before" :item="item"></slot>
@@ -87,7 +87,8 @@ export default {
     "notResponsive",
     "actionCell",
     "unselectable",
-    "id"
+    "id",
+    "responsive"
   ],
   data: () => ({
     table: null,
@@ -172,6 +173,7 @@ export default {
           header: true,
           footer: true
         },
+        responsive: this.responsive,
         colReorder: true,
         ...this.hasGroupByExt,
       });

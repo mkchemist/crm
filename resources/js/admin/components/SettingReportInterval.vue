@@ -42,7 +42,7 @@
     </div>
     <hr />
     <div class="p-2 text-right">
-      <button class="btn btn-sm btn-primary" @click="saveReportInterval">
+      <button class="btn btn-sm skin-btn" @click="saveReportInterval">
         <span class="fa fa-save"></span>
         <span>Save</span>
       </button>

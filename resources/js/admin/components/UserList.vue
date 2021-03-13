@@ -12,7 +12,7 @@
           user.name
         }}</option>
       </select>
-      <button class="btn btn-sm btn-primary col-lg-auto mx-1" @click="selectUser">
+      <button class="btn btn-sm skin-btn col-lg-auto mx-1" @click="selectUser">
         <span><i class="fa fa-check-circle"></i></span>
         <span>select</span>
       </button>

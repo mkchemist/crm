@@ -11,14 +11,18 @@
             :heads="heads"
             :data="users"
             :unselectable="true"
-            head-class="bg-success text-light"
+            head-class="skin-table"
+            :responsive="true"
           >
             <template v-slot:head:before>
               <th>Action</th>
             </template>
-            <template v-slot:body:before="{item}">
+            <template v-slot:body:before="{ item }">
               <td>
-                <router-link :to="`/users/edit/${item.id}`" class="btn btn-sm btn-warning">
+                <router-link
+                  :to="`/users/edit/${item.id}`"
+                  class="btn btn-sm btn-warning"
+                >
                   <span><i class="fa fa-edit"></i></span>
                 </router-link>
               </td>
@@ -36,45 +40,80 @@
               <th>Active</th>
               <th>Assigned bricks</th>
             </template>
-            <template v-slot:body="{item}">
+            <template v-slot:body="{ item }">
               <td>{{ item.bm }}</td>
               <td>{{ item.am }}</td>
               <td>{{ item.dm }}</td>
               <td>
                 <ul class="nav">
-                  <li class="nav col-12 p-0" v-for="(val,key) in item.line" :key="`line_${key}`">{{ val }}</li>
+                  <li
+                    class="nav col-12 p-0"
+                    v-for="(val, key) in item.line"
+                    :key="`line_${key}`"
+                  >
+                    {{ val }}
+                  </li>
                 </ul>
               </td>
               <td>{{ item.role }}</td>
-               <td>
+              <td>
                 <ul class="nav">
-                  <li class="nav col-12 p-0" v-for="(val,key) in item.area" :key="`line_${key}`">{{ val }}</li>
+                  <li
+                    class="nav col-2 p-0"
+                    v-for="(val, key) in item.area"
+                    :key="`line_${key}`"
+                  >
+                    {{ val }}
+                  </li>
                 </ul>
               </td>
-               <td>
+              <td>
                 <ul class="nav">
-                  <li class="nav col-12 p-0" v-for="(val,key) in item.district" :key="`line_${key}`">{{ val }}</li>
+                  <li
+                    class="nav col-2 p-0"
+                    v-for="(val, key) in item.district"
+                    :key="`line_${key}`"
+                  >
+                    {{ val }}
+                  </li>
                 </ul>
               </td>
-               <td>
+              <td>
                 <ul class="nav">
-                  <li class="nav col-12 p-0" v-for="(val,key) in item.territory" :key="`line_${key}`">{{ val }}</li>
+                  <li
+                    class="nav col-2 p-0"
+                    v-for="(val, key) in item.territory"
+                    :key="`line_${key}`"
+                  >
+                    {{ val }}
+                  </li>
                 </ul>
               </td>
-               <td>
+              <td>
                 <ul class="nav">
-                  <li class="nav col-12 p-0" v-for="(val,key) in item.region" :key="`line_${key}`">{{ val }}</li>
+                  <li
+                    class="nav col-2 p-0"
+                    v-for="(val, key) in item.region"
+                    :key="`line_${key}`"
+                  >
+                    {{ val }}
+                  </li>
                 </ul>
               </td>
-              <td>{{ item.active === 1 ? 'yes' : 'no' }}</td>
+              <td>{{ item.active === 1 ? "yes" : "no" }}</td>
               <td class="text-left">
                 <span v-if="!item.assigned_brick.length">No assigment</span>
                 <ul class="nav col-12" v-else>
-                  <li class="nav-item col-12 p-0 m-0" v-for="(item, i) in item.assigned_brick" :key="i">{{ item }}</li>
+                  <li
+                    class="nav-item col-2 p-0 m-0"
+                    v-for="(item, i) in item.assigned_brick"
+                    :key="i"
+                  >
+                    {{ item }}
+                  </li>
                 </ul>
               </td>
             </template>
-
           </table-component>
         </div>
         <div v-else-if="fetched" class="text-center">
@@ -109,8 +148,8 @@ export default {
       {
         title: "E-mail",
         name: "email"
-      },
-     /*  {
+      }
+      /*  {
         title: "Line",
         name: "line"
       },
@@ -139,6 +178,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

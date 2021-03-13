@@ -196,6 +196,17 @@ function compare(a, b, item, factor) {
  * @param {string} dir      [Asc|Desc]
  */
 export function sortBy(arr, item, dir = "asc") {
+  if(item === undefined) {
+    return arr.sort((a,b) => {
+      if(a>b) {
+        return 1
+      } else if(b>a) {
+        return -1
+      } else {
+        return 0;
+      }
+    })
+  }
   let res = Array.from(arr);
   let factor = dir.toUpperCase() === "ASC" ? 1 : -1;
   return res.sort((a, b) => {

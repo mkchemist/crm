@@ -20,7 +20,7 @@
             }}</option>
           </select>
           <button
-            class="btn btn-sm btn-primary col-lg-auto mx-1"
+            class="btn btn-sm skin-btn col-lg-auto mx-1"
             @click="selectUser"
             :disabled="!users.length"
           >
@@ -32,25 +32,97 @@
         <!-- end of user selection -->
         <!-- user info.-->
         <div class="p-2 border rounded" v-if="user">
-          <div class="row mx-auto">
-            <div class="col-lg">
-              <p class="lead text-muted">User Info.</p>
-              <hr />
-              <p class="mb-0">Username: <span class="font-weight-bold text-primary">{{ user.username }}</span></p>
-              <p class="mb-0">Name: <span class="font-weight-bold text-primary">{{ user.name }}</span></p>
-              <p class="mb-0">E-mail: <span class="font-weight-bold text-primary">{{ user.email }}</span></p>
-              <p class="mb-0">Line: <span class="font-weight-bold text-primary">{{ user.line }}</span></p>
-              <p class="mb-0">Role: <span class="font-weight-bold text-primary">{{ user.role }}</span></p>
-            </div>
-            <div class="col-lg">
-              <p class="lead text-muted">Area Info.</p>
-              <hr />
-              <p class="mb-0">Area: <span class="font-weight-bold text-primary">{{ user.area }}</span></p>
-              <p class="mb-0">District: <span class="font-weight-bold text-primary">{{ user.district }}</span></p>
-              <p class="mb-0">Territory: <span class="font-weight-bold text-primary">{{ user.territory }}</span></p>
-              <p class="mb-0">Region: <span class="font-weight-bold text-primary">{{ user.region }}</span></p>
-            </div>
+          <p class="small font-weight-bold">
+            Username:
+            <span class="font-weight-bold text-primary">{{
+              user.username
+            }}</span>
+          </p>
+          <p class="small font-weight-bold">
+            Name:
+            <span class="font-weight-bold text-primary">{{ user.name }}</span>
+          </p>
+          <p class="small font-weight-bold">
+            E-mail:
+            <span class="font-weight-bold text-primary">{{ user.email }}</span>
+          </p>
+          <p class="small font-weight-bold">
+            Line:
+            <span class="font-weight-bold text-primary">{{ user.line }}</span>
+          </p>
+          <p class="small font-weight-bold">
+            Role:
+            <span class="font-weight-bold text-primary">{{ user.role }}</span>
+          </p>
+          <div class="small form-inline mb-1">
+            <span class="font-weight-bold">Bricks</span>
+            <input
+              type="text"
+              class="custom-input"
+              v-model="brickSearchKeyword"
+            />
+            <span class="fa fa-search"></span>
           </div>
+          <div class="row mx-auto">
+            <p
+              class="col-lg-2 col-md-3 col-4 mb-1"
+              style="font-size:75%"
+              v-for="(item, i) in bricks"
+              :key="`brick_${i}`"
+            >
+              {{ item }}
+            </p>
+          </div>
+          <div class="small form-inline mb-1">
+            <span class="font-weight-bold">Area</span>
+            <input
+              type="text"
+              class="custom-input"
+              v-model="areaSearchKeyword"
+            />
+            <span class="fa fa-search"></span>
+          </div>
+          <div class="row mx-auto">
+            <p
+              class="col-lg-2 col-md-3 col-4 mb-1"
+              style="font-size:75%"
+              v-for="(item, i) in area"
+              :key="`area_${i}`"
+            >
+              {{ item }}
+            </p>
+          </div>
+          <div class="small form-inline mb-1">
+            <span class="font-weight-bold">District</span>
+            <input
+              type="text"
+              class="custom-input"
+              v-model="districtSearchKeyword"
+            />
+            <span class="fa fa-search"></span>
+          </div>
+          <div class="row mx-auto">
+            <p
+              class="col-lg-2 col-md-3 col-4 mb-1"
+              style="font-size:75%"
+              v-for="(item, i) in area"
+              :key="`district_${i}`"
+            >
+              {{ item }}
+            </p>
+          </div>
+          <p class="small font-weight-bold">
+            Territory:
+            <span class="font-weight-bold text-primary">{{
+              user.territory.join(" & ")
+            }}</span>
+          </p>
+          <p class="small font-weight-bold">
+            Region:
+            <span class="font-weight-bold text-primary">{{
+              user.region.join(" & ")
+            }}</span>
+          </p>
         </div>
         <div class="p-2 user-info-waiting" v-else>
           <p>
@@ -64,21 +136,71 @@
 </template>
 
 <script>
-import { sortBy } from '../../../helpers/helpers';
+import { sortBy } from "../../../helpers/helpers";
 export default {
-  mounted() {
-  },
+  mounted() {},
   computed: {
     users() {
-      return sortBy(this.$store.getters.users,'name');
+      return sortBy(this.$store.getters.users, "name");
     },
     isUsesFetched() {
       return this.$store.getters.allUsersFetched;
-    }
+    },
+    bricks() {
+      if (!this.user) {
+        return [];
+      }
+      try {
+        let bricks = sortBy(this.user.assigned_brick);
+        if (this.brickSearchKeyword) {
+          bricks = bricks.filter(i => i.toLowerCase().includes(this.brickSearchKeyword.toLowerCase()));
+        }
+        return bricks;
+      } catch (e) {
+        console.log(e);
+        return [];
+      }
+    },
+    area() {
+      if (!this.user) {
+        return [];
+      }
+      try {
+        let area = sortBy(this.user.area);
+        if (this.areaSearchKeyword) {
+          area = area.filter(i => i.toLowerCase().includes(this.areaSearchKeyword.toLowerCase()));
+        }
+        return area;
+      } catch (e) {
+        console.log(e);
+        return [];
+      }
+    },
+    district() {
+      if (!this.user) {
+        return [];
+      }
+      try {
+        let district = sortBy(this.user.district);
+        if (this.districtSearchKeyword) {
+          district = district.filter(i =>
+            i.toLowerCase().includes(this.districtSearchKeyword.toLowerCase())
+          );
+        }
+        return district;
+      } catch (e) {
+        console.log(e);
+        return [];
+      }
+    },
+    territory() {}
   },
   data: () => ({
     userIndex: "",
-    user: null
+    user: null,
+    brickSearchKeyword: null,
+    areaSearchKeyword: null,
+    districtSearchKeyword: null
   }),
   methods: {
     selectUser() {

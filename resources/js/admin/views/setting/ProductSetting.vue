@@ -64,7 +64,7 @@
               <span class="fa fa-chevron-circle-left"></span>
               <span>back</span>
             </router-link>
-            <button class="btn btn-sm btn-primary">
+            <button class="btn btn-sm skin-btn">
               <span class="fa fa-save"></span>
               <span>save</span>
             </button>

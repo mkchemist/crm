@@ -1,7 +1,7 @@
 <template>
   <div class="p-2">
     <div class="p-2" v-if="lines.length">
-      <table-component :data="lines" :heads="heads" :headClass="`text-light bg-success`" :orderBy="`Line Name,asc`" :unselectable="true">
+      <table-component :data="lines" :heads="heads" :headClass="`skin-table`" :orderBy="`Line Name,asc`" :unselectable="true" :responsive="true">
         <template v-slot:head>
           <th>Products</th>
           <th>Specialties</th>
@@ -9,7 +9,14 @@
         </template>
         <template v-slot:body="{item}">
           <td>
-            <ul class="nav p-0 m-0">
+            <div v-for="(val,key) in item.products" :key="`product_${key}`" class="border rounded p-2 my-1">
+              <p class="font-weight-bold border-bottom">{{ val.name }}</p>
+              <p class="font-weight-bold text-danger border-bottom" v-if="val.competitors.length">Competitors</p>
+              <div class="row mx-auto justify-content-between">
+                <span  v-for="(competitor, index) in val.competitors" :key="`product_${val.name}_competitor_${index}`" class="col-lg">{{ competitor }}</span>
+              </div>
+            </div>
+            <!-- <ul class="nav p-0 m-0">
               <li v-for="(val,key) in item.products" :key="`product_${key}`"  class="nav-item col-12  border rounded my-1">
                 <span class="font-weight-bold">{{ val.name }}</span>
                 <br>
@@ -21,7 +28,7 @@
                 </ul>
                 <span class="text-muted" v-else>Not registered</span>
               </li>
-            </ul>
+            </ul> -->
           </td>
           <td>
             <ul class="nav p-0 m-0" v-if="item.specialties.length">

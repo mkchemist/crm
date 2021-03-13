@@ -6,7 +6,7 @@
     </p>
     <div class="p-2">
       <div class="p-2 text-right">
-        <button class="btn btn-sm btn-primary" type="button" @click="addGroup">
+        <button class="btn btn-sm skin-btn" type="button" @click="addGroup">
           <span class="fa fa-plus-circle"></span>
           <span>New group</span>
         </button>
@@ -53,7 +53,7 @@
           <span class="fa fa-chevron-circle-left"></span>
           <span>back</span>
         </router-link>
-        <button class="btn btn-primary btn-sm" type="button" @click="saveGroups">
+        <button class="btn btn-sm skin-btn" type="button" @click="saveGroups">
           <span class="fa fa-save"></span>
           <span>save</span>
         </button>

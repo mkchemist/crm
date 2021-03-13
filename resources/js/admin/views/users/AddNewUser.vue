@@ -386,7 +386,7 @@
                   <span><i class="fa fa-chevron-circle-left"></i></span>
                   <span>back</span>
                 </router-link>
-                <button class="btn btn-sm btn-success">
+                <button class="btn btn-sm skin-btn">
                   <span><i class="fa fa-save"></i></span>
                   <span>save</span>
                 </button>

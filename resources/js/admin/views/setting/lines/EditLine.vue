@@ -106,7 +106,7 @@
             <div class="p-2 border rounded">
               <div>
                 <button
-                  class="btn btn-sm btn-primary"
+                  class="btn btn-sm skin-btn"
                   type="button"
                   @click="createNewDosage"
                 >
@@ -194,7 +194,7 @@
                 <span class="fa fa-redo"></span>
                 <span>reset</span>
               </button>
-              <button type="submit" class="btn btn-sm btn-primary">
+              <button type="submit" class="btn btn-sm skin-btn">
                 <span class="fa fa-save"></span>
                 <span>save</span>
               </button>

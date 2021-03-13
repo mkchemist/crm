@@ -8,31 +8,31 @@
       <nav>
         <ul class="nav nav-tabs">
           <li class="nav-item border" >
-            <router-link to="/setting" class="nav-link" active-class="bg-success text-light" exact>
+            <router-link to="/setting" class="nav-link" active-class="active" exact>
               <span class="fa fa-cogs"></span>
               <span>General</span>
             </router-link>
           </li>
           <li class="nav-item border">
-            <router-link to="/setting/cycle" class="nav-link" active-class="bg-success text-light" exact>
+            <router-link to="/setting/cycle" class="nav-link" active-class="active">
               <span class="fa fa-hourglass-start"></span>
               <span>Cycle</span>
             </router-link>
           </li>
           <li class="nav-item border">
-            <router-link to="/setting/lines" class="nav-link" active-class="bg-success text-light" exact>
+            <router-link to="/setting/lines" class="nav-link" active-class="active">
               <span class="fa fa-users"></span>
               <span>Lines</span>
             </router-link>
           </li>
           <li class="nav-item border">
-            <router-link to="/setting/requests" class="nav-link" active-class="bg-success text-light" exact>
+            <router-link to="/setting/requests" class="nav-link" active-class="active">
               <span class="fa fa-dollar-sign"></span>
               <span>Requests</span>
             </router-link>
           </li>
           <li class="nav-item border">
-            <router-link to="/setting/products" class="nav-link" active-class="bg-success text-light" exact>
+            <router-link to="/setting/products" class="nav-link" active-class="active">
               <span class="fa fa-gift"></span>
               <span>Products</span>
             </router-link>

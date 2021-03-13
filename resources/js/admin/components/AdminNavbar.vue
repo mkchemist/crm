@@ -1,57 +1,102 @@
 <template>
-  <div class="bg-success d-flex p-2">
-    <div class="col-3 text-center">
-      <span class="lead text-light">Admin Dashboard</span>
-    </div>
-    <div class="col-9 d-flex">
-      <ul class="nav ml-auto">
-        <li class="nav-item">
-          <a :href="`${base_url}logout`" class="nav-link text-light">
-            <span><i class="fa fa-door-open"></i></span>
-            <span>logout</span>
-          </a>
-        </li>
-        <li class="nav-item dropdown">
-          <a
-            href=""
-            class="nav-link text-light dropdown-toggle"
-            data-toggle="dropdown"
-          >
-            <span><i class="fa fa-cogs"></i></span>
-            <span>Actions</span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <a href="#" class="dropdown-item small" @click.prevent="$store.commit('toggleBroadcastModal', true)">
-              <span class="fa fa-envelope-open" style="color:purple"></span>
-              <span>broadcast a message</span>
+  <header>
+    <nav class="navbar navbar-expand-md admin-nav navbar-dark shadow">
+      <!-- brand -->
+      <a href="" class="navbar-brand d-flex" title="Brand view">
+        <img
+          :src="baseUrl+`images/admin-suit.png`"
+          alt="Admin profile picture"
+          class="img-fluid admin-nav-pic"
+        />
+        <div class="d-flex flex-column justify-content-center">
+          <span class="small font-weight-bold">{{ user.name }}</span>
+          <span class="small font-weight-bold">{{ user.role | upperCase }}</span>
+        </div>
+      </a>
+      <!-- navbar toggler -->
+      <button
+        class="navbar-toggler"
+        data-toggle="collapse"
+        data-target="#admin_navbar"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- navbar menu container -->
+      <div class="navbar-collapse collapse" id="admin_navbar">
+        <!-- desktop nav -->
+        <ul class="navbar-nav ml-auto flex-row justify-content-center">
+          <li class="nav-item mx-md-0 mx-2 d-md-none d-block">
+            <a href="" class="nav-link" title="user profile">
+              <span class="far fa-bell"></span>
             </a>
-            <a :href="`${base_url}change-password`" class="dropdown-item small">
-              <span class="fa fa-lock text-danger"></span>
-              <span>change password</span>
-            </a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a href="" class="nav-link text-light" data-toggle="dropdown">
-            <span class=""
-              ><i class="fa fa-globe-africa"></i
-              ><sup class="text-light"><b>2</b></sup></span
+          </li>
+          <li class="nav-item notifications d-md-block d-none">
+            <a
+              href="#notification_menu"
+              class="nav-link "
+              title="notifications"
+              data-toggle="collapse"
             >
-          </a>
-          <div class="dropdown-menu">
-            <a href="" class="dropdown-item">link</a>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
+              <span class="fa-layers fa-layers-bottom-right">
+                <i class="far fa-bell"></i>
+                <span class="fa-layers-counter bell-counter small">2</span>
+              </span>
+            </a>
+            <ul
+              id="notification_menu"
+              class="notification-menu nav collapse col-12 bg-white"
+            >
+              <li class="nav-item col-12 small border-bottom">
+               Under construction
+              </li>
+
+            </ul>
+          </li>
+          <li class="nav-item mx-md-0 mx-2">
+            <a href="" class="nav-link" title="user profile">
+              <span class="far fa-user"></span>
+            </a>
+          </li>
+          <li class="nav-item mx-md-0 mx-2">
+            <a href="" class="nav-link" title="Create broadcast message">
+              <span class="fa fa-bullhorn"></span>
+            </a>
+          </li>
+          <li class="nav-item mx-md-0 mx-2">
+            <a :href="baseUrl+'change-password'" class="nav-link" title="Change password">
+              <span class="fa fa-lock"></span>
+            </a>
+          </li>
+
+          <li class="nav-item mx-md-0 mx-2">
+            <a :href="baseUrl+'logout'" class="nav-link" title="sign out">
+              <span class="fa fa-sign-out-alt"></span>
+            </a>
+          </li>
+        </ul>
+        <app-menu />
+      </div>
+    </nav>
+  </header>
 </template>
 
 <script>
+import AppMenu from './AppMenu.vue';
 export default {
+  components: { AppMenu },
+  computed: {
+    user() {
+      return JSON.parse(document.getElementById("user").value);
+    }
+  },
   data: () => ({
-    base_url: document.getElementById('APP_API_URL').value.replace('api/', '')
-  })
+    baseUrl: document.getElementById("APP_API_URL").value.replace("api/", "")
+  }),
+  filters: {
+    upperCase : (v) => {
+      return v[0].toUpperCase()+v.substr(1);
+    }
+  }
 };
 </script>
 

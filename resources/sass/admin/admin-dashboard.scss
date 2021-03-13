@@ -1,0 +1,177 @@
+$dark-blue: #282830;
+$primary: #03a9f4;
+$success: #4caf50;
+$danger: #f44336;
+$orange: #ff5722;
+$dark: #282828;
+
+$colors : (
+  "dark-blue": $dark-blue,
+  "primary": $primary,
+  "success" : $success,
+  "danger" : $danger,
+  "orange" : $orange,
+  "dark"   : $dark
+);
+
+:root{
+  @each $name, $val in $colors {
+    --#{$name}: #{$val};
+  }
+};
+
+body {
+  background-color: #1112;
+}
+
+@each $name, $val in $colors {
+  .skin-#{$name} {
+    @media(max-width:767.98px) {
+      width: 100% !important;
+    }
+    .admin-nav {
+      background-color: $val;
+      .bell-counter{
+        background-color: white;
+        color: $val;
+
+      }
+
+      li {
+        a{
+          color: white !important;
+        }
+
+        ul {
+          li {
+            a {
+              color: $dark !important;
+            }
+          }
+        }
+      }
+    }
+
+
+    .dt-buttons .btn,.skin-table, .skin-btn  {
+      /* margin-left: 5px !important; */
+      background-color: $val !important;
+      border-color: $val !important;
+      color: white !important;
+
+    }
+
+    .skin-text {
+      color: $val;
+    }
+
+    .custom-input {
+      border:none;
+      border-bottom:1px solid lighten($val,10%);
+      margin-inline: 1rem;
+      &:focus{
+        border:none;
+        border-bottom: 1px solid lighten($val,25%) !important;
+        font-weight: bold;
+        color: $val;
+        outline: none;
+      }
+
+    }
+
+
+    .admin-main {
+      @media(min-width:577.9px) {
+        min-height: 500px;
+      }
+      .alert {
+        background-color: lighten($val,25%) !important;
+        color: darken($val, 25%);
+        font-weight: bold;
+      }
+      .admin-sidebar {
+        a {
+          color: $dark;
+          font-weight: 500;
+        }
+        li {
+          transition: .2s;
+          &:hover{
+            background-color: lighten($val,40%);
+          }
+        }
+      }
+
+      .nav-tabs, .nav-tabs a, .nav a {
+        color: $val;
+      }
+
+
+
+      .active {
+        background-color: lighten($val, 20%);
+        border-left: 5px solid $val;
+        color:white !important;
+        a, .nav-link {
+          color:white !important;
+        }
+      }
+    }
+  }
+  .skin-switcher-#{$name} {
+    margin: 0 0.2rem;
+    cursor: pointer;
+    padding: 0;
+    width:15px;
+    border-radius: 50%;
+    overflow: hidden;
+    a {
+      transition: 0.3s;
+
+      background-color: $val;
+    }
+    &:hover {
+      background-color: inherit !important;
+      border: none !important;
+      a {
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+.admin-nav {
+  .admin-nav-pic {
+    width: 50px;
+
+    @media (min-width:992px) {
+      width: 100px;
+    }
+  }
+  .bell-counter{
+    padding:0 .2rem;
+    border-radius: 25%;
+    font-weight: bolder;
+  }
+
+  .notifications {
+    position: relative;
+
+    @media(min-width: 577.9px) {
+      .notification-menu {
+        max-width:300px !important;
+        width:300px;
+        top: 35px;
+        right:0px !important;
+        position: absolute;
+        background-color: #fff;
+        border-radius: 2px;
+        z-index:10000;
+        box-shadow: 1px 1px 3px 5px #1111;
+      }
+    }
+  }
+
+}
+
+

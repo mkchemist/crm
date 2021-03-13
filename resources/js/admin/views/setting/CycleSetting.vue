@@ -7,7 +7,7 @@
     <div class="p-2">
       <!-- new cycle button -->
       <div class="p-2 text-right">
-        <button class="btn btn-sm btn-primary" @click="showNewCycleModal">
+        <button class="btn btn-sm skin-btn" @click="showNewCycleModal">
           <span class="fa fa-plus-circle"></span>
           <span>New cycle</span>
         </button>
@@ -16,7 +16,7 @@
       <div class="p-2">
         <div v-if="cycles.length" class="p-2">
           <table class="table table-sm small table-bordered">
-            <thead class="bg-success text-light">
+            <thead class="skin-table">
               <tr>
                 <th>Cycle Name</th>
                 <th>Start</th>
@@ -46,9 +46,9 @@
       </div>
 
       <!-- add new cycle modal -->
-      <modal-fade :show="activeNewCycleModal" id="new_cycle_modal" @onClose="closeNewCycleModal" headerStyle="bg-primary text-light">
+      <modal-fade :show="activeNewCycleModal" id="new_cycle_modal" @onClose="closeNewCycleModal" headerStyle="skin-table">
         <template v-slot:header>
-          <span class="lead">Add new cycle</span>
+          <span>Add new cycle</span>
         </template>
         <template v-slot:body>
           <div class="p-2">
@@ -69,7 +69,7 @@
                 <span class="fa fa-times"></span>
                 <span>cancel</span>
               </button>
-              <button type="button" class="btn btn-sm btn-primary" @click="saveNewCycle">
+              <button type="button" class="btn btn-sm skin-btn" @click="saveNewCycle">
                 <span class="fa fa-save"></span>
                 <span>save</span>
               </button>
@@ -78,7 +78,7 @@
         </template>
       </modal-fade>
 
-      <modal-fade :show="activeEditCycleModal" :headerStyle="`bg-dark text-light`" id="edit_cycle_modal" @onClose="closeEditCycleModal">
+      <modal-fade :show="activeEditCycleModal" :headerStyle="`skin-table`" id="edit_cycle_modal" @onClose="closeEditCycleModal">
         <template v-slot:header>
           <span v-if="editCycle.name">Edit cycle {{ editCycle.name }}</span>
         </template>
@@ -101,7 +101,7 @@
                 <span class="fa fa-times"></span>
                 <span>cancel</span>
               </button>
-              <button type="button" class="btn btn-sm btn-primary" @click="saveEditCycle">
+              <button type="button" class="btn btn-sm skin-btn" @click="saveEditCycle">
                 <span class="fa fa-save"></span>
                 <span>save</span>
               </button>

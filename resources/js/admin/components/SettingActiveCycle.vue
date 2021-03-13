@@ -30,7 +30,7 @@
     </div>
     <hr />
     <div class="p-2 text-right">
-      <button class="btn btn-primary btn-sm" @click="saveActiveCycle">
+      <button class="btn skin-btn btn-sm" @click="saveActiveCycle">
         <span class="fa fa-save"></span>
         <span>Save</span>
       </button>
