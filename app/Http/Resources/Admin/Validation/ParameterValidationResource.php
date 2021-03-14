@@ -28,7 +28,8 @@ class ParameterValidationResource extends JsonResource
           'area'            =>  $this->customer ?$this->customer->area : null,
           'district'        =>  $this->customer ?$this->customer->district : null,
           'territory'       =>  $this->customer ?$this->customer->territory : null,
-          'region'          =>  $this->customer ?$this->customer->region : null
+          'region'          =>  $this->customer ?$this->customer->region : null,
+          'line'            =>  json_decode($this->user->line)
         ];
     }
 }

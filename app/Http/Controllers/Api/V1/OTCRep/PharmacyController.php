@@ -53,6 +53,10 @@ class PharmacyController extends Controller
      */
     public function store(Request $request)
     {
+        return [
+          "pharmacy" => ucwords($request->name),
+          "key_person"  =>  ucwords($request->key_person)
+        ];
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'type' => 'required|string',
@@ -82,7 +86,9 @@ class PharmacyController extends Controller
         }
 
         $data = $request->all();
-        $data['state'] = "New Add by {$this->user->name}";
+        $data['state'] = "New";
+        $data['name'] = ucwords($data['name']);
+        $data['key_person'] = ucwords($data['key_person']);
         Pharmacy::create($data);
 
         return response([

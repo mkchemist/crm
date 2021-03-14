@@ -176,10 +176,12 @@ export default {
       }
       this.onFilter(query, data);
       this.onClose();
+      this.query = {};
     },
     reset() {
       this.onReset();
       this.onClose();
+      this.query = {};
     },
 
   }

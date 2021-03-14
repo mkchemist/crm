@@ -93,12 +93,7 @@ export default {
       default: () => null
     }
   },
-  watch: {
-    data: function() {
-      /* this.table.destroy();
-      this.createTable(); */
-    }
-  },
+
   data: () => ({
     table: null,
     groupBy: []
@@ -165,7 +160,7 @@ export default {
         buttons,
         select,
         dom: "Bflirtp",
-        lengthMenu: [20, 50, 100],
+        lengthMenu: [20, 50, 100,150,200],
         deferRender: true,
         language: {
           searchPlaceholder: "Search ..."

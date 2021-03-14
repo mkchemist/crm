@@ -7,12 +7,12 @@
     <div class="px-2">
       <ul class="nav">
         <li class="nav-item border">
-          <router-link to="/planner" class="nav-link" active-class="bg-primary text-light" exact>
+          <router-link to="/planner" class="nav-link" active-class="active" exact>
             <span>PM</span>
           </router-link>
         </li>
         <li class="nav-item border">
-          <router-link to="/planner/am" class="nav-link" active-class="bg-primary text-light" exact>
+          <router-link to="/planner/am" class="nav-link" active-class="active" exact>
             <span>AM</span>
           </router-link>
         </li>

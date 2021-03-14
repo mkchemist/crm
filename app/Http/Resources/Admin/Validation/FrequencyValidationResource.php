@@ -29,7 +29,8 @@ class FrequencyValidationResource extends JsonResource
           'region'        =>  $this->customer ?$this->customer->region :'',
           'from'          =>  $this->current,
           'to'            =>  $this->next,
-          'locked'        =>  $this->locked ? true : false
+          'locked'        =>  $this->locked ? true : false,
+          'line'          =>  json_decode($this->user->line)
         ];
     }
 }

@@ -45,13 +45,14 @@
             />
             <label for="" class="form-check-label text-muted">Rejected</label>
           </div>
+          <a href="" class="btn btn-sm skin-btn" @click.prevent="onResetFilter" v-if="shouldRenderFilter && !filteredList.length">Reset Filter</a>
         </div>
       </div>
       <hr />
-      <div v-if="customers.length" id="validation-data">
+      <div v-if="requests.length" id="validation-data">
         <div class="text-right p-2">
           <button
-            class="btn btn-primary btn-sm"
+            class="btn skin-btn btn-sm"
             :disabled="!this.validated.length"
             @click="approveRequest"
           >
@@ -77,52 +78,71 @@
           </button>
         </div>
 
-        <data-table-component
-          :cols="heads"
-          :data="customers"
+        <table-component
+          :heads="heads"
+          :data="requests"
+          headClass="skin-table"
+          :buttons="buttons"
         >
           <template v-slot:head:before>
             <th>
               <input type="checkbox" @click="selectAll" />
             </th>
-            <th>Approved</th>
-            <th>State</th>
           </template>
           <template v-slot:body:before="{ item }">
             <td>
-              <input type="checkbox" @click="selectCustomer(item.id)" />
-            </td>
-            <td>
-              <span>{{
-                item.approved === 1 ? "Approved" : "Not approved"
-              }}</span>
-            </td>
-            <td>
-              {{ item.state.toUpperCase() }}
+              <input type="checkbox" @click="selectCustomer(item.id)" :checked="validated.includes(item.id)" />
             </td>
           </template>
-        </data-table-component>
+        </table-component>
       </div>
       <div v-else-if="fetched" class="text-center">
         <no-data-to-show title="No waiting response" />
       </div>
       <loader-component v-else></loader-component>
     </div>
+    <data-filter-box
+      :show="showFilterBox"
+      :onClose="closeFilterBox"
+      :queryKeys="queryKeys"
+      :queryOnly="false"
+      :data="requests"
+      :onFilter="onFilterRequests"
+      :onReset="onResetFilter"
+    />
   </div>
 </template>
 
 <script>
-import { httpCall } from "../../../helpers/http-service";
-import DataTableComponent from "../../../components/DataTableComponent";
+import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
+import TableComponent from "../../../components/TableComponent";
 import { checkerSelect } from "../../../helpers/helpers";
 import NoDataToShow from "../../../components/NoDataToShow";
+import DataFilterBox from "../../../components/DataFilterBox.vue";
 export default {
-  mounted() {
-    this.getNewCustomers();
+  async mounted() {
+    await this.getNewCustomers();
   },
   components: {
-    DataTableComponent,
-    NoDataToShow
+    TableComponent,
+    NoDataToShow,
+    DataFilterBox
+  },
+  computed: {
+    buttons() {
+      return [
+        {
+          text: `<i class="fa fa-filter"></i> Filter`,
+          action: () => this.openFilterBox()
+        }
+      ];
+    },
+    requests() {
+      if (this.shouldRenderFilter) {
+        return this.filteredList;
+      }
+      return this.customers;
+    }
   },
   data: () => ({
     customers: [],
@@ -132,13 +152,21 @@ export default {
     requestState: null,
     heads: [
       {
-        title: "Area",
-        name: "area",
-        style: "font-weight-bold"
+        title: "Approved",
+        name: "approved"
+      },
+      {
+        title: "State",
+        name: "state"
       },
       {
         title: "Customer",
         name: "name",
+        style: "font-weight-bold"
+      },
+      {
+        title: "Area",
+        name: "area",
         style: "font-weight-bold"
       },
       {
@@ -149,6 +177,14 @@ export default {
       {
         title: "Title",
         name: "title"
+      },
+      {
+        title: "Added By",
+        name: "added_by.name"
+      },
+      {
+        title: "Line",
+        name: "added_by.line"
       },
       {
         title: "Address",
@@ -175,7 +211,50 @@ export default {
         name: "region"
       }
     ],
-    dataFilter: "all"
+    dataFilter: "all",
+    showFilterBox: false,
+    shouldRenderFilter: false,
+    filteredList: [],
+    queryKeys: [
+      {
+        title: "State",
+        name: "state"
+      },
+      {
+        title: "Added By",
+        name: "added_by.name"
+      },
+      {
+        title: "Specialty",
+        name: "specialty",
+        style: "font-weight-bold"
+      },
+      {
+        title: "Approved",
+        name: "approved"
+      },
+      {
+        title: "Line",
+        name: "added_by.line"
+      },
+      {
+        title: "Area",
+        name: "area",
+        style: "font-weight-bold"
+      },
+      {
+        title: "Brick",
+        name: "brick"
+      },
+      {
+        title: "District",
+        name: "district"
+      },
+      {
+        title: "Territory",
+        name: "territory"
+      }
+    ]
   }),
 
   methods: {
@@ -186,6 +265,11 @@ export default {
     getNewCustomers() {
       this.fetched = false;
       httpCall.get("admin/v1/validation/new-customers").then(({ data }) => {
+        data.data.forEach(item => {
+          item["state"] = item.state;
+          item["approved"] = item.approved === 1 ? "Approved" : "Not Approved";
+          item.added_by.line = JSON.parse(item.added_by.line).join(" | ")
+        });
         this.handleResponse(data, data => {
           this.fetched = true;
           this.customers = data.data;
@@ -209,7 +293,7 @@ export default {
       this.validated = [];
       if (event.target.checked) {
         this.toggleAllInputs(true);
-        this.validated = this.customers.map(customer => customer.id);
+        this.validated = this.requests.map(customer => customer.id);
       } else {
         this.toggleAllInputs(false);
         this.validated = [];
@@ -320,6 +404,29 @@ export default {
       let async = () => Promise.resolve(data);
       this.customers = [];
       async().then(data => (this.customers = data));
+    },
+    openFilterBox() {
+      this.showFilterBox = true;
+    },
+    closeFilterBox() {
+      this.showFilterBox = false;
+    },
+    onFilterRequests(q, data) {
+      //this.validated = [];
+      this.filteredList = [];
+      this.shouldRenderFilter = true;
+
+      asyncDataFlow(data, (data) => {
+        this.filteredList = data;
+        this.shouldRenderFilter = true;
+      })
+
+    },
+    onResetFilter() {
+      this.filteredList = [];
+      asyncDataFlow([], d => {
+        this.shouldRenderFilter = false;
+      });
     }
   }
 };

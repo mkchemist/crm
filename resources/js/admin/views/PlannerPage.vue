@@ -6,19 +6,16 @@
     </p>
     <div class="px-2">
       <ul class="nav" v-if="navLinks.length">
-        <li
-          v-for="(row, index) in navLinks"
-          :key="`nav_link_${index}`"
-          class="nav-item border"
-        >
-          <router-link
-            :to="row.link"
-            class="nav-link"
-            active-class="bg-primary text-light"
-            exact
-          >
-            <span v-if="row.icon" :class="`fa ${row.icon}`"></span>
-            <span>{{ row.title }}</span>
+        <li class="nav-item border">
+          <router-link to="/planner" class="nav-link small font-weight-bold" active-class="active" exact>
+            <span :class="`fa fa-calendar-check`"></span>
+            <span>List plans</span>
+          </router-link>
+        </li>
+         <li class="nav-item border">
+          <router-link to="/planner/approval" class="nav-link small font-weight-bold" active-class="active" exact>
+            <span :class="`fa fa-check-circle`"></span>
+            <span>Approval Control</span>
           </router-link>
         </li>
       </ul>
@@ -31,20 +28,18 @@
 
 <script>
 export default {
-  mounted() {
-
-  },
+  mounted() {},
   data: () => ({
     navLinks: [
       {
-        title: 'List plans',
-        icon : 'fa-calendar-check',
-        link: '/planner'
+        title: "List plans",
+        icon: "fa-calendar-check",
+        link: "/planner"
       },
       {
-        title: 'Approvals',
-        icon: 'fa-check-circle',
-        link: '/planner/approval'
+        title: "Approvals",
+        icon: "fa-check-circle",
+        link: "/planner/approval"
       }
     ]
   })

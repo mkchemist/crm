@@ -2,13 +2,13 @@
   <div>
     <div class="p-2">
        <div class="p-2 text-right">
-        <button class="btn btn-sm btn-primary" @click="startLoading">
+        <button class="btn btn-sm skin-btn" @click="startLoading">
           <span class="fa fa-download"></span>
           <span>Start loading</span>
         </button>
       </div>
       <div v-if="plans.length">
-        <table-component :data="plans" :heads="heads" :headClass="`bg-success text-light`">
+        <table-component :data="plans" :heads="heads" :headClass="`skin-table`">
            <template v-slot:head:before>
             <th>Business Unit Manager</th>
             <th>Area Manager</th>

@@ -5,10 +5,10 @@
       <span class="font-weight-bold">Parameters Validation Requests</span>
     </p>
     <div class="p-2 pb-5">
-      <div v-if="requests.length" id="validation-data">
+      <div v-if="list.length" id="validation-data">
         <div class="p-2 text-right">
           <button
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm skin-btn"
             :disabled="!validated.length"
             @click="approveRequests"
           >
@@ -27,27 +27,22 @@
           </button>
         </div>
         <table-component
-          :data="requests"
+          :data="list"
           :heads="heads"
-          headClass="bg-success text-light"
+          headClass="skin-table"
           :orderBy="`Customer,asc|Area,asc`"
           :unselectable="true"
+          :buttons="buttons"
         >
           <template v-slot:head:before>
             <th>
-              <input type="checkbox" @click="selectAll">
+              <input type="checkbox" @click="selectAll" />
             </th>
-            <th>Business Unit Manager</th>
-            <th>Area Manager</th>
-            <th>District Manager</th>
           </template>
-          <template v-slot:body:before="{item}">
+          <template v-slot:body:before="{ item }">
             <td>
-              <input type="checkbox" @click="selectRequest(item.id)">
+              <input type="checkbox" @click="selectRequest(item.id)" :checked="validated.includes(item.id)" />
             </td>
-            <td>{{ getRepRegionalManager(item.user_id) }}</td>
-            <td>{{ getRepAreaManager(item.user_id) }}</td>
-            <td>{{ getRepManager(item.user_id) }}</td>
           </template>
         </table-component>
       </div>
@@ -56,17 +51,52 @@
       </div>
       <loader-component v-else></loader-component>
     </div>
+    <data-filter-box
+      :show="showFilterBox"
+      :onClose="closeFilterBox"
+      :queryKeys="queryKeys"
+      :queryOnly="false"
+      :onFilter="onFilterRequests"
+      :onReset="onResetRequests"
+      :data="list"
+    />
   </div>
 </template>
 
 <script>
+import DataFilterBox from '../../../components/DataFilterBox.vue';
 import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent.vue";
 import { checkerSelect } from "../../../helpers/helpers";
-import { httpCall } from "../../../helpers/http-service";
+import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
 export default {
   mounted() {
     this.getAllRequests();
+  },
+  computed: {
+    list() {
+      if(this.shouldRenderFilter) {
+        return this.filteredList;
+      }
+      return this.requests;
+    },
+    dms() {
+      return this.$store.getters.dms;
+    },
+    rms() {
+      return this.$store.getters.rms;
+    },
+    ams() {
+      return this.$store.getters.ams;
+    },
+    buttons() {
+      return [
+        {
+          text: `<i class="fa fa-filter"></i> Filter`,
+          action: () => this.openFilterBox()
+        }
+      ]
+    }
   },
   data: () => ({
     requests: [],
@@ -75,16 +105,32 @@ export default {
     requestState: null,
     heads: [
       {
-        title: "Rep",
-        name: "user"
+        title: "Customer",
+        name: "customer"
       },
       {
         title: "Area",
         name: "area"
       },
       {
-        title: "Customer",
-        name: "customer"
+        title: "Businees Unit",
+        name: "bu"
+      },
+      {
+        title: "Area Manager",
+        name: "am"
+      },
+      {
+        title: "Supervisor",
+        name: "dm"
+      },
+       {
+        title: "Line",
+        name: "line"
+      },
+      {
+        title: "Rep",
+        name: "user"
       },
       {
         title: "Specialty",
@@ -118,23 +164,71 @@ export default {
         title: "Region",
         name: "region"
       }
-    ]
+    ],
+     queryKeys: [
+
+
+      {
+        title: "Businees Unit",
+        name: "bu"
+      },
+      {
+        title: "Area Manager",
+        name: "am"
+      },
+      {
+        title: "Supervisor",
+        name: "dm"
+      },
+       {
+        title: "Line",
+        name: "line"
+      },
+      {
+        title: "Rep",
+        name: "user"
+      },
+      {
+        title: "Area",
+        name: "area"
+      },
+      {
+        title: "Specialty",
+        name: "specialty"
+      },
+      {
+        title: "From",
+        name: "from"
+      },
+      {
+        title: "To",
+        name: "to"
+      },
+
+      {
+        title: "Brick",
+        name: "brick"
+      },
+      {
+        title: "District",
+        name: "district"
+      },
+      {
+        title: "Territory",
+        name: "territory"
+      },
+
+    ],
+    showFilterBox: false,
+    shouldRenderFilter: false,
+    filteredList: []
   }),
   components: {
     TableComponent,
-    NoDataToShow
+    NoDataToShow,
+    DataFilterBox
   },
-  computed: {
-    dms() {
-      return this.$store.getters.dms
-    },
-    rms() {
-      return this.$store.getters.rms
-    },
-    ams(){
-      return this.$store.getters.ams
-    }
-  },
+
   methods: {
     /**
      * get all requests
@@ -145,6 +239,15 @@ export default {
       this.fetched = false;
       httpCall.get("admin/v1/validation/parameters").then(({ data }) => {
         this.handleResponse(data, data => {
+         data.data.forEach(item => {
+              item['bu'] = this.getRepRegionalManager(item.user_id);
+              item['am'] = this.getRepAreaManager(item.user_id);
+              item['dm'] = this.getRepManager(item.user_id);
+              item['state'] = item.state === false && item.approval === true
+                  ? "rejected"
+                  : "Requested"
+              item["line"] = item.line.join(" | ")
+            })
           this.requests = data.data;
           this.fetched = true;
         });
@@ -160,9 +263,9 @@ export default {
     },
     selectAll() {
       this.validated = [];
-      if(event.target.checked) {
+      if (event.target.checked) {
         this.toggleCheckBox(true);
-        this.validated = this.requests.map(request => request.id);
+        this.validated = this.list.map(request => request.id);
       } else {
         this.toggleCheckBox(false);
         this.validated = [];
@@ -174,84 +277,108 @@ export default {
      *
      * @param {boolean} check
      */
-    toggleCheckBox(check){
-      let inputs = document.querySelectorAll('#validation-data input[type="checkbox"]');
-      inputs.forEach(input => input.checked = check);
+    toggleCheckBox(check) {
+      let inputs = document.querySelectorAll(
+        '#validation-data input[type="checkbox"]'
+      );
+      inputs.forEach(input => (input.checked = check));
     },
     /**
      * approve requests
      *
      */
     approveRequests() {
-      this.requestState="approved";
+      this.requestState = "approved";
       this.sendRequests();
     },
     /**
      * reject requests
      */
     rejectRequests() {
-      this.requestState="rejected";
+      this.requestState = "rejected";
       this.sendRequests();
     },
     /**
      * send requests
      */
     sendRequests() {
-      if(!this.validated.length) {
-        this.$toasted.error('You must pick one request at least', {
-          icon : 'exclamation'
-        })
+      if (!this.validated.length) {
+        this.$toasted.error("You must pick one request at least", {
+          icon: "exclamation"
+        });
         return;
       }
       let request = {
         ids: JSON.stringify(this.validated),
         state: this.requestState,
-        _method: 'PUT'
-      }
-      httpCall.post('admin/v1/validation/parameters', request)
-      .then(({data}) => {
-        this.handleResponse(data, data => {
-          this.requests = [];
-          this.getAllRequests();
-          this.validated = [];
-          this.requestState = null;
+        _method: "PUT"
+      };
+      httpCall
+        .post("admin/v1/validation/parameters", request)
+        .then(({ data }) => {
+          this.handleResponse(data, data => {
+            this.requests = [];
+            this.getAllRequests();
+            this.validated = [];
+            this.requestState = null;
+          });
         })
-      }).catch(err => {
-        this.$toasted.show(err.message, {
-          icon: 'sad'
+        .catch(err => {
+          this.$toasted.show(err.message, {
+            icon: "sad"
+          });
+          console.log(err);
         });
-        console.log(err);
-      })
     },
     getRepManager(id) {
-      let manager ="-------";
+      let manager = "-------";
       this.dms.map(user => {
-        let reps =user.relations.reps;
-        if(reps.includes(id)) {
+        let reps = user.relations.reps;
+        if (reps.includes(id)) {
           manager = user.name;
         }
-      })
+      });
       return manager;
     },
     getRepAreaManager(id) {
-      let manager ="-------";
+      let manager = "-------";
       this.ams.map(user => {
-        let reps =user.relations.reps;
-        if(reps.includes(id)) {
+        let reps = user.relations.reps;
+        if (reps.includes(id)) {
           manager = user.name;
         }
-      })
+      });
       return manager;
     },
     getRepRegionalManager(id) {
-      let manager ="-------";
+      let manager = "-------";
       this.rms.map(user => {
-        let reps =user.relations.reps;
-        if(reps.includes(id)) {
+        let reps = user.relations.reps;
+        if (reps.includes(id)) {
           manager = user.name;
         }
-      })
+      });
       return manager;
+    },
+    onFilterRequests(q,d) {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      asyncDataFlow(d, d => {
+        this.filteredList = d;
+      })
+    },
+    onResetRequests() {
+      this.filteredList = [];
+      asyncDataFlow([], d => {
+        this.filteredList = d;
+        this.shouldRenderFilter = false;
+      })
+    },
+    openFilterBox(){
+      this.showFilterBox = true;
+    },
+    closeFilterBox(){
+      this.showFilterBox = false;
     }
   }
 };

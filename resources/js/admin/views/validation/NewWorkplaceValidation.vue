@@ -5,10 +5,10 @@
       <span class="font-weight-bold">New workplace Validation</span>
     </p>
     <div class="p-2">
-      <div v-if="requests.length" id="validation-data">
+      <div v-if="list.length" id="validation-data">
         <div class="p-2 text-right">
           <button
-            class="btn btn-primary btn-sm"
+            class="btn skin-btn btn-sm"
             :disabled="!validated.length"
             @click="approveRequests"
           >
@@ -27,10 +27,11 @@
           </button>
         </div>
         <table-component
-          :data="requests"
+          :data="list"
           :heads="heads"
-          head-class="bg-success text-light"
+          head-class="skin-table"
           :unselectable="true"
+          :buttons="buttons"
         >
           <template v-slot:head:before>
             <th><input type="checkbox" @click="selectAll" /></th>
@@ -45,21 +46,48 @@
       </div>
       <loader-component v-else></loader-component>
     </div>
+    <data-filter-box
+      :show="showFilterBox"
+      :onClose="closeFilterBox"
+      :onFilter="onFilterRequests"
+      :onReset="onResetList"
+      :data="list"
+      :queryKeys="queryKeys"
+      :queryOnly="false"
+    />
   </div>
 </template>
 
 <script>
 import TableComponent from "../../../components/TableComponent";
 import NoDataToShow from "../../../components/NoDataToShow";
-import { httpCall } from "../../../helpers/http-service";
+import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
 import { checkerSelect } from "../../../helpers/helpers";
+import DataFilterBox from '../../../components/DataFilterBox.vue';
 export default {
   mounted() {
     this.getRequests();
   },
   components: {
     TableComponent,
-    NoDataToShow
+    NoDataToShow,
+    DataFilterBox
+  },
+  computed: {
+    list() {
+      if(this.shouldRenderFilter) {
+        return this.filteredList
+      }
+      return this.requests;
+    },
+    buttons() {
+      return [
+        {
+          text: `<i class="fa fa-filter"></i> Filter`,
+          action: () => this.openFilterBox()
+        }
+      ]
+    }
   },
   data: () => ({
     requests: [],
@@ -72,12 +100,20 @@ export default {
         name: "state"
       },
       {
-        title: "Area",
-        name: "area"
-      },
-      {
         title: "Workplace",
         name: "name"
+      },
+      {
+        title: "Added By",
+        name: "added_by.name"
+      },
+      {
+        title : "Line",
+        name: "added_by.line"
+      },
+      {
+        title: "Area",
+        name: "area"
       },
       {
         title: "Type",
@@ -107,7 +143,49 @@ export default {
         title: "Request Date",
         name: "created_at"
       }
-    ]
+    ],
+     queryKeys: [
+      {
+        title : "State",
+        name: "state"
+      },
+
+      {
+        title: "Added By",
+        name: "added_by.name"
+      },
+      {
+        title : "Line",
+        name: "added_by.line"
+      },
+      {
+        title: "Area",
+        name: "area"
+      },
+
+
+      {
+        title: "Brick",
+        name: "brick"
+      },
+      {
+        title: "District",
+        name: "district"
+      },
+      {
+        title: "Territory",
+        name: "territory"
+      },
+      {
+        title: "Region",
+        name: "region"
+      },
+
+    ],
+    showFilterBox: false,
+    shouldRenderFilter: false,
+    filteredList: [],
+
   }),
   methods: {
     getRequests() {
@@ -117,6 +195,11 @@ export default {
         .get("admin/v1/validation/workplaces")
         .then(({ data }) => {
           this.handleResponse(data, data => {
+            data.data.forEach(item => {
+              if(item.added_by) {
+                item.added_by.line = JSON.parse(item.added_by.line).join(" | ")
+              }
+            })
             this.requests = data.data;
             this.fetched = true;
           });
@@ -135,7 +218,7 @@ export default {
       if (event.target.checked) {
         this.validated = [];
         this.toggleCheckboxes(true);
-        this.validated = this.requests.map(request => request.id);
+        this.validated = this.list.map(request => request.id);
       } else {
         this.toggleCheckboxes(false);
         this.validated = [];
@@ -181,6 +264,26 @@ export default {
           this.$toasted.error(err.message);
           console.log(err);
         });
+    },
+    openFilterBox(){
+      this.showFilterBox = true;
+    },
+    closeFilterBox(){
+      this.showFilterBox = false;
+    },
+    onFilterRequests(q,d) {
+        this.filteredList = [];
+        this.shouldRenderFilter = true;
+      asyncDataFlow(d, d => {
+        this.filteredList = d;
+      });
+    },
+    onResetList(){
+      this.filteredList = [];
+      asyncDataFlow([], d => {
+        this.filteredList = d;
+        this.shouldRenderFilter = false;
+      });
     }
   }
 };

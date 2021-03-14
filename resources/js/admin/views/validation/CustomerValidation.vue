@@ -5,7 +5,13 @@
       <span class="font-weight-bold">Validate customers details</span>
     </p>
     <div class="p-2 pb-5">
-      <div v-if="requests.length" id="validation-data">
+      <div class="form-group text-right" v-if="!list.length && shouldRenderFilter">
+        <button class="btn btn-sm skin-btn" @click="onResetRequests">
+          <span class="fa fa-redo"></span>
+          <span>Reset</span>
+        </button>
+      </div>
+      <div v-if="list.length" id="validation-data">
         <div class="p-2 my-1 text-right">
           <button
             class="btn btn-sm btn-info"
@@ -15,7 +21,7 @@
             <span>refresh list</span>
           </button>
           <button
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm skin-btn"
             :disabled="!validated.length"
             @click="approveRequests"
           >
@@ -42,22 +48,18 @@
         </div>
         <table-component
           :heads="heads"
-          :data="requests"
+          :data="list"
           :orderBy="`Customer,asc`"
-          head-class="bg-success text-light"
+          head-class="skin-table"
           :unselectable="true"
+          :buttons="buttons"
+
         >
           <template v-slot:head:before>
             <th>
               <input type="checkbox" @click="selectAllRequests" />
             </th>
-            <th>Business Unit Manager</th>
-            <th>Area Manager</th>
-            <th>District Manager</th>
-            <th>Rep</th>
-            <th>
-              State
-            </th>
+
           </template>
           <template v-slot:body:before="{ item }">
             <td>
@@ -65,19 +67,10 @@
                 type="checkbox"
                 @click="selectRequest(item.id)"
                 :disabled="item.state === false && item.approval === true"
+                :checked="validated.includes(item.id)"
               />
             </td>
-            <td>{{ getRepRegionalManager(item.user_id) }}</td>
-            <td>{{ getRepAreaManager(item.user_id) }}</td>
-            <td>{{ getRepManager(item.user_id) }}</td>
-            <td>{{ item.user }}</td>
-            <td>
-              <span>{{
-                item.state === false && item.approval === true
-                  ? "rejected"
-                  : "Requested"
-              }}</span>
-            </td>
+
           </template>
         </table-component>
       </div>
@@ -86,21 +79,57 @@
       </div>
       <loader-component v-else></loader-component>
     </div>
+    <data-filter-box
+      :show="showFilterBox"
+      :onClose="closeFilterBox"
+      :queryKeys="queryKeys"
+      :queryOnly="false"
+      :onFilter="onFilterRequests"
+      :onReset="onResetRequests"
+      :data="list"
+    />
   </div>
 </template>
 
 <script>
-import { httpCall } from "../../../helpers/http-service";
+import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
 import TableComponent from "../../../components/TableComponent";
 import { checkerSelect } from "../../../helpers/helpers";
 import NoDataToShow from "../../../components/NoDataToShow";
+import DataFilterBox from '../../../components/DataFilterBox.vue';
 export default {
-  mounted() {
-    this.getAllRequests();
+  async mounted() {
+    await this.getAllRequests();
   },
   components: {
     TableComponent,
-    NoDataToShow
+    NoDataToShow,
+    DataFilterBox
+  },
+  computed: {
+    list() {
+      if(this.shouldRenderFilter) {
+        return this.filteredList
+      }
+      return this.requests;
+    },
+    dms() {
+      return this.$store.getters.dms
+    },
+    rms() {
+      return this.$store.getters.rms
+    },
+    ams(){
+      return this.$store.getters.ams
+    },
+    buttons() {
+      return [
+        {
+          text: `<i class="fa fa-filter"></i> Filter`,
+          action: () => this.openFilterBox()
+        }
+      ]
+    }
   },
   data: () => ({
     requests: [],
@@ -109,13 +138,38 @@ export default {
     requestState: null,
     heads: [
       {
+        title: "Customer",
+        name: "customer"
+      },
+      {
         title: "Area",
         name: "area"
       },
       {
-        title: "Customer",
-        name: "customer"
+        title: "Businees Unit",
+        name: "bu"
       },
+      {
+        title: "Area Manager",
+        name: "am"
+      },
+      {
+        title: "Supervisor",
+        name: "dm"
+      },
+      {
+        title: "Rep",
+        name: "user"
+      },
+      {
+        title: "Line",
+        name: "line"
+      },
+      {
+        title : "State",
+        name: "state"
+      },
+
       {
         title: "Specialty",
         name: "specialty"
@@ -168,19 +222,54 @@ export default {
         title: "Region",
         name: "region"
       }
-    ]
+    ],
+    queryKeys: [
+      {
+        title: "Businees Unit",
+        name: "bu"
+      },
+      {
+        title: "Area Manager",
+        name: "am"
+      },
+      {
+        title: "Supervisor",
+        name: "dm"
+      },
+      {
+        title: "Rep",
+        name: "user"
+      },
+      {
+        title: "Line",
+        name: "line"
+      },
+      {
+        title: "Area",
+        name: "area"
+      },
+      {
+        title: "Specialty",
+        name: "specialty"
+      },
+      {
+        title: "Brick",
+        name: "brick"
+      },
+      {
+        title: "District",
+        name: "district"
+      },
+      {
+        title: "Territory",
+        name: "territory"
+      }
+    ],
+    showFilterBox: false,
+    shouldRenderFilter: false,
+    filteredList: []
   }),
-  computed: {
-    dms() {
-      return this.$store.getters.dms
-    },
-    rms() {
-      return this.$store.getters.rms
-    },
-    ams(){
-      return this.$store.getters.ams
-    }
-  },
+
   methods: {
     /**
      * get all customer validation requests
@@ -194,6 +283,15 @@ export default {
         .then(({ data }) => {
           data.message = "Request list loaded";
           this.handleResponse(data, data => {
+            data.data.forEach(item => {
+              item['bu'] = this.getRepRegionalManager(item.user_id);
+              item['am'] = this.getRepAreaManager(item.user_id);
+              item['dm'] = this.getRepManager(item.user_id);
+              item['state'] = item.state === false && item.approval === true
+                  ? "rejected"
+                  : "Requested"
+              item["line"] = item.line.join(" | ")
+            })
             this.fetched = true;
             this.requests = data.data;
           });
@@ -220,8 +318,8 @@ export default {
       if (event.target.checked) {
         this.toggleCheckBoxes(true);
         this.validated = [];
-        this.requests.map(request => {
-          if (request.approval === false && request.state === false) {
+        this.list.map(request => {
+          if (request.approval === false && request.state === "Requested") {
             this.validated.push(request.id);
           }
         });
@@ -327,6 +425,26 @@ export default {
         }
       })
       return manager;
+    },
+    onFilterRequests(q,d) {
+      this.shouldRenderFilter = true;
+      this.filteredList = [];
+      asyncDataFlow(d, d => {
+        this.filteredList = d;
+      })
+    },
+    onResetRequests() {
+      this.filteredList = [];
+      asyncDataFlow([], d => {
+        this.filteredList = d;
+        this.shouldRenderFilter = false;
+      })
+    },
+    openFilterBox(){
+      this.showFilterBox = true;
+    },
+    closeFilterBox(){
+      this.showFilterBox = false;
     }
   }
 };

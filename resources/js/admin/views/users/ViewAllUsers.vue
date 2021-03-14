@@ -31,8 +31,8 @@
               <th>Business Unit</th>
               <th>Area Manager</th>
               <th>District Manager</th>
-              <th>Role</th>
               <th>Line</th>
+              <th>Role</th>
               <th>Area</th>
               <th>District</th>
               <th>Territory</th>
@@ -55,7 +55,7 @@
                   </li>
                 </ul>
               </td>
-              <td>{{ item.role }}</td>
+              <td>{{ translateAppRolesToCompanyRoles(item.role )}}</td>
               <td>
                 <ul class="nav">
                   <li
@@ -174,7 +174,23 @@ export default {
         name: "region"
       } */
     ]
-  })
+  }),
+  methods: {
+    translateAppRolesToCompanyRoles(role){
+      switch(role) {
+        case 'rm':
+          return "Business Unit";
+        case 'am':
+          return "Area Manager";
+        case "dm":
+          return "Supervisor";
+        case "rep":
+          return "Medical Rep";
+        default:
+          return role
+      }
+    }
+  }
 };
 </script>
 

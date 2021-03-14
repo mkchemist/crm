@@ -3,7 +3,6 @@
     <div class="p-2">
       <div v-if="plans.length">
         <table-component :data="plans" :heads="heads" :headClass="`bg-success text-light`">
-
         </table-component>
       </div>
       <div class="" v-else-if="isPlanFetched">

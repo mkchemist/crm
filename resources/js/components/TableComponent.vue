@@ -46,7 +46,7 @@
                   :key="`col_${i}`"
                   class="nav-item small col-lg-6"
                 >
-                  <input type="checkbox" :value="i+1" v-model="groupBy" />
+                  <input type="checkbox" :value="i + 1" v-model="groupBy" />
                   <span>{{ col.title }}</span>
                 </li>
               </ul>
@@ -88,11 +88,13 @@ export default {
     "actionCell",
     "unselectable",
     "id",
-    "responsive"
+    "responsive",
+    "buttons"
   ],
   data: () => ({
     table: null,
-    groupBy: []
+    groupBy: [],
+    shouldStopResponsiveProperty: false
   }),
   mounted() {
     this.createTable();
@@ -126,6 +128,12 @@ export default {
       }
     }
   },
+  watch: {
+    data: function($new, $old) {
+      this.table.destroy();
+      this.createTable();
+    }
+  },
   methods: {
     _notation(container, key, $default) {
       return ObjectNotation(container, key, $default);
@@ -140,10 +148,10 @@ export default {
         {
           extend: "excel",
           text: '<i class="fa fa-file-excel"></i> Excel',
-           filename: this.generateExportFileName,
+          filename: this.generateExportFileName,
           messageTop: "This Table Export From NPMT CRM System",
           title: this.generateExportFileName,
-          sheetName: 'Export'
+          sheetName: "Export"
         },
         {
           extend: "pdf",
@@ -159,13 +167,14 @@ export default {
 
       buttons = this.addFavoriteButton(buttons);
       buttons = this.addUnlinkButton(buttons);
+      buttons = [...buttons, this.buttons];
       let select = this.unselectable ? false : { style: "single" };
       this.table = $(`#${this.id ? this.id : "data-table"}`).DataTable({
         order: this.ordering(),
         language: {
           searchPlaceholder: "Search..."
         },
-        lengthMenu: [20, 50, 100],
+        lengthMenu: [20, 50, 100,150,200],
         buttons,
         dom: "Bflirtp",
         select,
@@ -175,7 +184,11 @@ export default {
         },
         responsive: this.responsive,
         colReorder: true,
-        ...this.hasGroupByExt,
+        ...this.hasGroupByExt
+      });
+
+      this.table.on("buttons-action", (e, api, dt, node, cf) => {
+        this.table.responsive = false;
       });
     },
     /**

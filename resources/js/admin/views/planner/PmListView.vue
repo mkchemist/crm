@@ -2,14 +2,14 @@
   <div>
     <div class="p-2">
       <div class="p-2 text-right">
-        <button class="btn btn-sm btn-primary" @click="startLoading">
+        <button class="btn btn-sm skin-btn" @click="startLoading">
           <span class="fa fa-download"></span>
           <span>Start loading</span>
         </button>
       </div>
       <hr />
       <div v-if="plans.length">
-        <data-table-component :data="plans" :cols="heads" :selectable="false">
+        <data-table-component :data="plans" :cols="heads" :selectable="false" :tableHeadClass="`skin-table`">
         </data-table-component>
       </div>
       <div

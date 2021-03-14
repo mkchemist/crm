@@ -15,15 +15,15 @@ class AddCreatedByToCustomers extends Migration
     {
         Schema::table('customers', function (Blueprint $table) {
             $table->bigInteger('added_by')->unsigned()->nullable()->after('state');
-            $table->foreign('added_by')->references('id')->on('users');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete(NULL);
         });
         Schema::table('pharmacies', function (Blueprint $table) {
             $table->bigInteger('added_by')->unsigned()->nullable()->after('state');
-            $table->foreign('added_by')->references('id')->on('users');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete(NULL);
         });
         Schema::table('workplaces', function (Blueprint $table) {
             $table->bigInteger('added_by')->unsigned()->nullable()->after('state');
-            $table->foreign('added_by')->references('id')->on('users');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete(NULL);
         });
     }
 

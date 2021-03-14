@@ -6,7 +6,7 @@
     </p>
     <div class="p-2">
       <div v-if="customers.length" class="p-2">
-        <table-component :headClass="`bg-success text-light`" :data="customers" :heads="tableHeads" :orderBy="`Name`">
+        <table-component :headClass="`skin-table`" :data="customers" :heads="tableHeads" :orderBy="`Name`">
           <template v-slot:head:before>
             <th>Validation</th>
           </template>

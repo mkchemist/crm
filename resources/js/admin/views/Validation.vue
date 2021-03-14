@@ -11,7 +11,7 @@
           <router-link
             to="/validation"
             class="nav-link small"
-            active-class="bg-primary text-light"
+            active-class="active"
             exact
           >
             <span><i class="fa fa-check-circle"></i></span>
@@ -22,7 +22,7 @@
           <router-link
             to="/validation/customers"
             class="nav-link small"
-            active-class="bg-primary text-light"
+            active-class="active"
             exact
           >
             <span><i class="fa fa-check-circle"></i></span>
@@ -33,7 +33,7 @@
           <router-link
             to="/validation/parameters"
             class="nav-link small"
-            active-class="bg-primary text-light"
+            active-class="active"
             exact
           >
             <span><i class="fa fa-check-circle"></i></span>
@@ -44,7 +44,7 @@
           <router-link
             to="/validation/frequency"
             class="nav-link small"
-            active-class="bg-primary text-light"
+            active-class="active"
             exact
           >
             <span><i class="fa fa-check-circle"></i></span>
@@ -55,7 +55,7 @@
           <router-link
             to="/validation/workplaces"
             class="nav-link small"
-            active-class="bg-primary text-light"
+            active-class="active"
             exact
           >
             <span><i class="fa fa-check-circle"></i></span>
@@ -66,7 +66,7 @@
           <router-link
             to="/validation/pharmacies"
             class="nav-link small"
-            active-class="bg-primary text-light"
+            active-class="active"
             exact
           >
             <span><i class="fa fa-check-circle"></i></span>
@@ -82,7 +82,10 @@
 </template>
 
 <script>
-export default {};
+export default {
+  async mounted() {
+  }
+};
 </script>
 
 <style></style>

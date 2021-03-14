@@ -121,7 +121,7 @@
         </li>
         <li class="nav-item col-12">
           <router-link
-            to="/users/duplicate-customers"
+            to="/customers/duplicate-customers"
             class="nav-link small text-primary"
           >
             <span class="fa fa-clone"></span>

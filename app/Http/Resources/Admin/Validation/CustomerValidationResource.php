@@ -36,6 +36,7 @@ class CustomerValidationResource extends JsonResource
           'region'        =>  $this->customer->region,
           'state'         =>  $this->approved === 1 ? true : false,
           'approval'      =>  $this->approved_by ? true : false,
+          "line"          =>  json_decode($this->user->line)
 
         ];
     }

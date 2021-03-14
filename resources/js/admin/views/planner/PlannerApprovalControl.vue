@@ -23,7 +23,7 @@
         </div>
         <div class="form-group text-right">
           <button
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm skin-btn"
             @click="selectRep"
             :disabled="!rep"
           >
@@ -38,7 +38,7 @@
             <span class="fa fa-redo"></span>
             <span>reset</span>
           </button>
-          <button class="btn btn-sm btn-primary" @click="approveAllPlans">
+          <button class="btn btn-sm skin-btn" @click="approveAllPlans">
             <span class="fa fa-check-circle"></span>
             <span>Approve All</span>
           </button>
@@ -51,7 +51,7 @@
       <div class="p-2">
         <div class="p-2" v-if="plans.length">
           <div class="p-2 text-right">
-            <button class="btn btn-sm btn-primary" @click="approvePlans">
+            <button class="btn btn-sm skin-btn" @click="approvePlans">
               <span class="fa fa-check-circle"></span>
               <span>Approve</span>
             </button>
@@ -64,7 +64,7 @@
             :data="plans"
             :heads="heads"
             :unselectable="true"
-            :headClass="`bg-success text-light`"
+            :headClass="`skin-table`"
           >
             <template v-slot:head:before>
               <th>Business Unit</th>
@@ -98,8 +98,8 @@ export default {
     NoDataToShow,
     TableComponent
   },
-  mounted() {
-    this.$store.dispatch("getAllUsers");
+ async mounted() {
+    await this.$store.dispatch("getAllUsers");
   },
   computed: {
     reps() {

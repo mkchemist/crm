@@ -23,13 +23,23 @@ class CustomerValidationController extends Controller
    */
     public function index()
     {
-        $customers = CustomerValidation::with(['customer','customer.workplace', 'workplace', 'user'])
+        $customers = CustomerValidation::with(['customer',
+        'customer.workplace' => function($query) {
+          $query->select("id", "name");
+        },
+        'workplace' => function($query) {
+          $query->select("id", "name");
+        },
+          'user' => function($query) {
+            $query->select("id","name","line");
+          }
+        ])
     ->where([
       'approved' => false
     ])->get();
         return response([
       'code'  =>  200,
-      'data'  =>  CustomerValidationResource::collection($customers)
+      'data'  =>  CustomerValidationResource::collection($customers),
     ]);
     }
 

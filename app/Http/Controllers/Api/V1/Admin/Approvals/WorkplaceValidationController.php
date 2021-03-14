@@ -22,7 +22,8 @@ class WorkplaceValidationController extends Controller
     public function index()
     {
 
-        $requests = Workplace::where('state', '!=', 'approved')->get();
+        $requests = Workplace::with(['added_by'])
+        ->where('state', '!=', 'approved')->get();
         return response([
             'code' => 200,
             'data' => $requests,
