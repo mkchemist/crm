@@ -81,6 +81,7 @@ class PharmacyValidationController extends Controller
                 'p.state' => 'approved',
                 'p.approved' => true,
                 'p.approved_by' => $user,
+                "p.added_by"    =>  $user
             ]);
     }
 

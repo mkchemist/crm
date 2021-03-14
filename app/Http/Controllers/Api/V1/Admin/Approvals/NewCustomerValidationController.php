@@ -66,7 +66,8 @@ class NewCustomerValidationController extends Controller
         Customer::whereIn('id', $ids)->update([
           "state"       =>  $state,
           "approved"    =>  true,
-          "approved_by" =>  $user->id
+          "approved_by" =>  $user->id,
+          "added_by"    =>  $user->id
         ]);
         return response([
           'code'    =>  200,

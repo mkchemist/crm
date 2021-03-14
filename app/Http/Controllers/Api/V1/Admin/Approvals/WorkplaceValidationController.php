@@ -63,6 +63,7 @@ class WorkplaceValidationController extends Controller
                     'w.state' => 'approved',
                     'w.approved' => true,
                     'w.approved_by' => $user,
+                    "w.added_by"    =>  $user
                 ]);
         } else {
             DB::table('workplaces')->whereIn('id', $ids)->delete();
