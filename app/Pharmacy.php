@@ -45,7 +45,7 @@ class Pharmacy extends Model
   }
 
 
-  public function added_by()
+  public function addedBy()
   {
     return $this->belongsTo('App\User','added_by', 'id');
   }

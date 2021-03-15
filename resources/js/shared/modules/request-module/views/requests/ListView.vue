@@ -151,7 +151,7 @@ export default {
       let isSuperUser = ["admin", "accountant"].includes(this.user.role);
       requests.forEach(request => {
         request["cost"] = request.cost / request.quantity;
-        request["total_cost"] = request.cost;
+        request["total_cost"] = request.cost * request.quantity;
         request["line"] = request.user.line.join(" | ");
         request["bu"] = this.getBUName(request);
         request["am"] = this.getAMName(request);

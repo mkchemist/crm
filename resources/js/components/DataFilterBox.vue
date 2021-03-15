@@ -171,7 +171,8 @@ export default {
       if (!this.queryOnly) {
         data = this.data;
         for (let i in query) {
-          data = data.filter(item => ObjectNotation(item, i,'-----') == query[i]);
+
+          data = data.filter(item => ObjectNotation(item, i,'-----').toLowerCase() == query[i].toLowerCase());
         }
       }
       this.onFilter(query, data);

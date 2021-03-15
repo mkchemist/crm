@@ -268,13 +268,13 @@
             </p>
             <p>
               Total Cost:
-              <span class="badge badge-primary"> {{ request.cost }} L.E</span>
+              <span class="badge badge-primary"> {{ request.cost *request.quantity }} L.E</span>
             </p>
             <p>
               Cost Benefit Ratio:
               <span class="badge badge-primary">
                 {{
-                  Math.ceil((request.cost / request.total_benefits) * 100)
+                  Math.ceil(((request.cost*request.quantity) / request.total_benefits) * 100)
                 }}
                 %</span
               >
@@ -440,7 +440,7 @@ export default {
           });
         }
 
-        request.cost += item.cost * item.quantity;
+        request.cost += item.cost/item.quantity;
         request.apply_date = item.apply_date;
         request.query_date = item.query_date;
         request.creator = item.user.name;
@@ -462,7 +462,7 @@ export default {
       this.canEditApplyDate = false;
     },
     getSystemRecommendation() {
-      let ratio = (this.request.cost / this.request.total_benefits) * 100;
+      let ratio = ((this.request.cost*this.request.quantity) / this.request.total_benefits) * 100;
       ratio = ratio.toFixed(1);
       console.log(ratio)
       let tag = "";

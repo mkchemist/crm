@@ -20,7 +20,12 @@ class PharmacyValidationController extends Controller
      */
     public function index()
     {
-        $requests = Pharmacy::whereNotIn('state', ['approved'])->get();
+        $requests = Pharmacy::with([
+          'addedBy' => function($query) {
+            $query->select('name', 'line', 'id');
+          }
+        ])
+        ->whereNotIn('state', ['approved'])->get();
 
         return response([
             'code' => 200,

@@ -5,10 +5,16 @@
       <span class="font-weight-bold">Pharmacy Validation</span>
     </p>
     <div class="p-2">
-      <div v-if="requests.length" id="validation-data">
+      <div class="form-group text-right" v-if="shouldRenderFilter&&!list.length">
+        <button class="btn btn-sm skin-btn" @click="resetRequests" type="button">
+          <span class="fa fa-redo"></span>
+          <span>reset filter</span>
+        </button>
+      </div>
+      <div v-if="list.length" id="validation-data">
         <div class="p-2 text-right">
           <button
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm skin-btn"
             :disable="!validated.length"
             @click="approveRequests"
           >
@@ -27,10 +33,11 @@
           </button>
         </div>
         <table-component
-          :data="requests"
+          :data="list"
           :heads="heads"
-          head-class="bg-success text-light"
+          head-class="skin-table"
           :unselectable="true"
+          :buttons="buttons"
         >
           <template v-slot:head:before>
             <th><input type="checkbox" @click="selectAll" /></th>
@@ -45,21 +52,48 @@
       </div>
       <loader-component v-else></loader-component>
     </div>
+    <data-filter-box
+      :show="showFilterBox"
+      :onClose="closeFilterBox"
+      :onFilter="filterRequests"
+      :onReset="resetRequests"
+      :queryKeys="queryKeys"
+      :queryOnly="false"
+      :data="list"
+    />
   </div>
 </template>
 
 <script>
+import DataFilterBox from '../../../components/DataFilterBox.vue';
 import NoDataToShow from "../../../components/NoDataToShow.vue";
 import TableComponent from "../../../components/TableComponent";
 import { checkerSelect } from "../../../helpers/helpers";
-import { httpCall } from "../../../helpers/http-service";
+import { asyncDataFlow, httpCall } from "../../../helpers/http-service";
 export default {
   mounted() {
     this.getRequests();
   },
   components: {
     TableComponent,
-    NoDataToShow
+    NoDataToShow,
+    DataFilterBox
+  },
+  computed: {
+    list() {
+      if(this.shouldRenderFilter) {
+        return this.filteredList;
+      }
+      return this.requests;
+    },
+    buttons() {
+      return [
+        {
+          text: `<i class="fa fa-filter"></i> Filter`,
+          action: () => this.openFilterBox()
+        }
+      ]
+    }
   },
   data: () => ({
     requests: [],
@@ -68,16 +102,24 @@ export default {
     requestState: null,
     heads: [
       {
-        title: "State",
-        name: "state"
+        title: "Pharmacy",
+        name: "name"
       },
       {
         title: "Area",
         name: "area"
       },
       {
-        title: "Pharmacy",
-        name: "name"
+        title: "Rep",
+        name: "rep"
+      },
+      {
+        title: "Line",
+        name: "line"
+      },
+      {
+        title: "State",
+        name: "state"
       },
       {
         title: "type",
@@ -103,7 +145,44 @@ export default {
         title: 'Region',
         name: 'region'
       }
-    ]
+    ],
+    queryKeys: [
+
+      {
+        title: "Rep",
+        name: "rep"
+      },
+      {
+        title: "Line",
+        name: "line"
+      },
+      {
+        title: "Area",
+        name: "area"
+      },
+      {
+        title: "State",
+        name: "state"
+      },
+
+
+      {
+        title: "Brick",
+        name: "brick"
+      },
+      {
+        title: 'District',
+        name: 'district'
+      },
+      {
+        title: 'Territory',
+        name: 'territory'
+      },
+
+    ],
+    showFilterBox: false,
+    shouldRenderFilter: false,
+    filteredList: []
   }),
   methods: {
     /**
@@ -116,6 +195,15 @@ export default {
         .get("admin/v1/validation/pharmacies")
         .then(({ data }) => {
           this.handleResponse(data, data => {
+            data.data.forEach(item => {
+              if(item.added_by) {
+                item['line'] = JSON.parse(item.added_by.line).join(" | ");
+                item['rep'] = item.added_by.name;
+              } else {
+                item['line'] = "not set";
+                item['rep'] = "not set";
+              }
+            })
             this.requests = data.data;
             this.fetched = true;
           });
@@ -142,7 +230,7 @@ export default {
     selectAll() {
       this.validated = [];
       if (event.target.checked) {
-        this.validated = this.requests.map(request => request.id);
+        this.validated = this.list.map(request => request.id);
         this.toggleCheckboxes(true);
       } else {
         this.validated = [];
@@ -205,6 +293,25 @@ export default {
             }
           );
         });
+    },
+    openFilterBox() {
+      this.showFilterBox = true;
+    },
+    closeFilterBox() {
+      this.showFilterBox = false;
+    },
+    filterRequests(q, data) {
+      this.filteredList = [];
+        this.shouldRenderFilter = true;
+      asyncDataFlow(data, data => {
+        this.filteredList = data;
+      });
+    },
+    resetRequests() {
+      this.filteredList = [];
+      asyncDataFlow([], () => {
+        this.shouldRenderFilter = false;
+      })
     }
   }
 };
